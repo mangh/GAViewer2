@@ -1,0 +1,19 @@
+--- C:\Users\marek\source\repos\GAViewer\antlr2\CharScanner.hpp.original	2024-11-25 14:13:08.350000000 +0100
++++ C:\Users\marek\source\repos\GAViewer\antlr2\CharScanner.hpp.patched	2024-11-25 14:48:04.238000000 +0100
+@@ -11,6 +11,7 @@
+ #include <antlr/config.hpp>
+ 
+ #include <map>
++#include <functional>
+ 
+ #ifdef HAS_NOT_CCTYPE_H
+ #include <ctype.h>
+@@ -64,7 +65,7 @@
+ 
+ /** Functor for the literals map
+  */
+-class ANTLR_API CharScannerLiteralsLess : public ANTLR_USE_NAMESPACE(std)binary_function<ANTLR_USE_NAMESPACE(std)string,ANTLR_USE_NAMESPACE(std)string,bool> {
++class ANTLR_API CharScannerLiteralsLess : public ANTLR_USE_NAMESPACE(std)function<bool(ANTLR_USE_NAMESPACE(std)string,ANTLR_USE_NAMESPACE(std)string)> {
+ private:
+ 	const CharScanner* scanner;
+ public:
