@@ -1,7 +1,7 @@
 # GAViewer (multi-purpose program for geometric algebra computations and visualization)
 #
 
-message(STATUS "Building GAViewer ...")
+message(DEBUG "Entering the GAViewer subdirectory ...")
 
 # GAViewer console uses code generator app
 add_subdirectory("codegen")
@@ -132,20 +132,6 @@ if(LTO_OPTIMIZATION_SUPPORTED)
   set_property(TARGET ${target} PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
 else()
   message(WARNING "IPO/LTO is not supported: ${LTO_OPTIMIZATION_ERROR}")
-endif()
-
-# # target_link_libraries() command below imports the so called Usage Requirements of
-# # the METROLOGY_LIBRARY, which include (among other things) its include directories
-# # (so there is no need to use the target_include_directories() command):
-# target_link_libraries(${target}
-#     PRIVATE
-#   METROLOGY_LIBRARY
-# )
-if(NOT TARGET fltk::fltk)
-message(STATUS "Target fltk::fltk NOT FOUND!!")
-endif()
-if(NOT TARGET antlr2::antlr2)
-message(STATUS "Target antlr2::antlr2 NOT FOUND!!")
 endif()
 
 target_link_libraries(${target}

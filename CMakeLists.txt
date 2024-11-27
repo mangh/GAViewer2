@@ -95,40 +95,18 @@ endif()
 #   SOURCE PATHS
 #
 
-cmake_path(SET ROOT_DIR "${PROJECT_SOURCE_DIR}")
-#cmake_path(SET CALINE3_DIR "${ROOT_DIR}/CALINE3")
+#cmake_path(SET ROOT_DIR "${PROJECT_SOURCE_DIR}")
 
 ##########################################################################
 #
 #   TARGETS to BUILD
 #
 
-## # zlib data compression library
-## # option(ZLIB_USE_STATIC_LIBS "Look for zlib static libraries" ON)
-## add_subdirectory ("zlib")
-## 
-## FetchContent_GetProperties(zlib)
-## message(STATUS "zlib_SOURCE_DIR = ${zlib_SOURCE_DIR}")
-## message(STATUS "zlib_BINARY_DIR = ${zlib_BINARY_DIR}")
-## message(STATUS "zlib_POPULATED = ${zlib_POPULATED}")
-## 
-## set(ZLIB_INCLUDE_DIR "${zlib_SOURCE_DIR}")
-## set(ZLIB_LIBRARY "${zlib_BINARY_DIR}")
-##  
-## #set(ZLIB_ROOT "c:/Users/marek/lib/zlib-1.3.1")
-## message(STATUS "ZLIB_INCLUDE_DIR = ${ZLIB_INCLUDE_DIR}")
-## message(STATUS "ZLIB_LIBRARY = ${ZLIB_LIBRARY}")
-## 
-## # PNG Reference Library
-## add_subdirectory ("libpng")
-##  
-# Fast Light Tool Kit (cross-platform C++ GUI toolkit)
+# Fast Light Tool Kit (cross-platform C++ GUI toolkit, FLTK).
+# Integral to the FLTK distribution are the following packages: 
+# - data compression library (zlib),
+# - PNG reference library (libpng).
 add_subdirectory ("fltk")
-
-## # Libraries (zlib, libpng, fltk)
-## #set(ZLIB_ROOT "${CMAKE_BINARY_DIR}/_deps/zlib-build")
-## #set(ZLIB_ROOT "C:/Users/marek/lib/zlib-1.3.1")
-## add_subdirectory ("libs")
 
 # ANTLR v2 stable version is 2.7.7 (released November 1, 2006)
 add_subdirectory ("antlr2")

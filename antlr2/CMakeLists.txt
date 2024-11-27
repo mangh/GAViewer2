@@ -1,11 +1,11 @@
 # ANTLR v2 stable version is 2.7.7 (released November 1, 2006)
 #
 
-message(STATUS "Building ANTLR2 ...")
+message(DEBUG "Entering the ANTLR2 subdirectory ...")
 
 ##########################################################################
 #
-#   ANTLR VERSION (default "2.7.7")
+#   PROJECT
 #
 
 set(ANTLR_VERSION_MAJOR 2)
@@ -13,11 +13,6 @@ set(ANTLR_VERSION_MINOR 7)
 set(ANTLR_VERSION_PATCH 7)
 
 set(ANTLR_VERSION "${ANTLR_VERSION_MAJOR}.${ANTLR_VERSION_MINOR}.${ANTLR_VERSION_PATCH}")
-
-##########################################################################
-#
-#   PROJECT
-#
 
 project(antlr
   VERSION "${ANTLR_VERSION}"
@@ -40,9 +35,9 @@ FetchContent_MakeAvailable(antlr2)
 
 FetchContent_GetProperties(antlr2)
 
-message(STATUS "antlr2_SOURCE_DIR = ${antlr2_SOURCE_DIR}")
-message(STATUS "antlr2_BINARY_DIR = ${antlr2_BINARY_DIR}")
-message(STATUS "antlr2_POPULATED = ${antlr2_POPULATED}")
+message(DEBUG "antlr2_SOURCE_DIR = ${antlr2_SOURCE_DIR}")
+message(DEBUG "antlr2_BINARY_DIR = ${antlr2_BINARY_DIR}")
+message(DEBUG "antlr2_POPULATED = ${antlr2_POPULATED}")
 
 ##########################################################################
 #
@@ -58,26 +53,25 @@ cmake_path(SET ANTLR_SRC_DIR "${antlr2_SOURCE_DIR}/lib/cpp/src")
 #	Patching
 #
 #	CharScanner.hpp:
-#   * The std::binary_function template is deprecated (as of C++11)
-#     and the std::function template was used instead.
+#   - The std::binary_function template is deprecated (as of C++11)
+#     and we must use the std::function template instead.
 #
 
-set(_charscanner_hpp "CharScanner.hpp")
-file(STRINGS "${ANTLR_INC_DIR}/${_charscanner_hpp}" _patch_applied REGEX "^#include <functional>$")
+# Save the original (unpatched) file and put the patched file instead
+set(_deprecated "CharScanner.hpp")
+file(STRINGS "${ANTLR_INC_DIR}/${_deprecated}" _patch_applied REGEX "^#include <functional>$")
 if (_patch_applied)
-  message(STATUS "The ${_charscanner_hpp} file has already been patched.")
+  message(DEBUG "The ${_deprecated} file has already been patched.")
 else()
-  message(STATUS "Patching the ${_charscanner_hpp} file ...")
-  # Save the original file
-  file(COPY_FILE "${ANTLR_INC_DIR}/${_charscanner_hpp}" "${CMAKE_CURRENT_SOURCE_DIR}/${_charscanner_hpp}.original")
-  # Put the patched file instead
-  file(COPY_FILE "${CMAKE_CURRENT_SOURCE_DIR}/${_charscanner_hpp}.patched" "${ANTLR_INC_DIR}/${_charscanner_hpp}")
-  message(STATUS "The ${_charscanner_hpp} file has been patched.")
+  message(DEBUG "Patching the ${_deprecated} file ...")
+  file(COPY_FILE "${ANTLR_INC_DIR}/${_deprecated}" "${CMAKE_CURRENT_SOURCE_DIR}/${_deprecated}.original")
+  file(COPY_FILE "${CMAKE_CURRENT_SOURCE_DIR}/${_deprecated}.patched" "${ANTLR_INC_DIR}/${_deprecated}")
+  message(DEBUG "The ${_deprecated} file has been patched.")
 endif()
 
 ##########################################################################
 #
-#	ANTLR static library (target to build)
+#	ANTLR library (target to build)
 #
 
 set(target ANTLR_LIB)
@@ -138,7 +132,6 @@ set(ANTLR_PUBLIC_HEADERS
 
 # antlr library source: ls src/*.cpp (exclude: dll.cpp)
 add_library(${target}
-#    STATIC
   ${ANTLR_SRC_DIR}/ANTLRUtil.cpp
   ${ANTLR_SRC_DIR}/ASTFactory.cpp
   ${ANTLR_SRC_DIR}/ASTNULLType.cpp
@@ -189,48 +182,13 @@ target_include_directories(${target} PUBLIC "${ANTLR_TOP_DIR}")
 #   Link Options
 #
 
-# if (CMAKE_SYSTEM_NAME MATCHES "AIX")
-#   target_link_options(${app} PRIVATE -brtl -bexpall)
-#   target_link_libraries(${app} PRIVATE m ${CMAKE_DL_LIBS})
-
-# elseif(CMAKE_SYSTEM_NAME MATCHES "CYGWIN")
-#   if (${app} MATCHES LUA_INTERPRETER)
-#     target_link_options(${app} PRIVATE "LINKER:-s")
-#   endif()
-#   target_link_libraries(${app} PRIVATE m)
-
-# elseif(CMAKE_SYSTEM_NAME MATCHES "Darwin")
-#   target_link_libraries(${app} PRIVATE m)
-
-# elseif(CMAKE_SYSTEM_NAME MATCHES "FreeBSD|NetBSD|OpenBSD")
-#   target_link_options(${app} PRIVATE "LINKER:-E")
-#   target_link_libraries(${app} PRIVATE m)
-
-# elseif(CMAKE_SYSTEM_NAME MATCHES "Linux")
-#   target_link_options(${app} PRIVATE "LINKER:-E")
-#   target_link_libraries(${app} PRIVATE m ${CMAKE_DL_LIBS})
-
-# elseif(CMAKE_SYSTEM_NAME MATCHES "SunOS")
-#   target_link_libraries(${app} PRIVATE m ${CMAKE_DL_LIBS})
-
-# elseif(CMAKE_SYSTEM_NAME MATCHES "Windows")
-#   if ((${app} MATCHES LUA_INTERPRETER) AND MINGW)
-#     target_link_options(${app} PRIVATE "LINKER:-s")
-#   endif()
-
-# endif()
 
 ##########################################################################
 #
 #   INSTALL
 #
 
-# # Static library on Windows (only) requires a suffix to distinguish it from the shared library import:
-# if(WIN32 AND NOT MINGW)
-#   set(_suffix "-static")
-# else()
-#   set(_suffix "")
-# endif()
+set_target_properties(${target} PROPERTIES FOLDER "${antlr2_BINARY_DIR}")
 set_target_properties(${target} PROPERTIES OUTPUT_NAME "${ANTLR_APP_VER_CFG}")
 
 # install(TARGETS 
@@ -242,20 +200,26 @@ set_target_properties(${target} PROPERTIES OUTPUT_NAME "${ANTLR_APP_VER_CFG}")
 # )
 
 # export(TARGETS ${target} FILE "${ANTLR_APP_VER}-static.cmake")
+
+##########################################################################
+#
+#   Antlr2 as a CMake target(providing Antlr2 usage requirements)
+#
+
 if(antlr2_POPULATED)
   if(NOT TARGET antlr2::antlr2)
     add_library(antlr2::antlr2 UNKNOWN IMPORTED GLOBAL)
     set_target_properties(antlr2::antlr2
         PROPERTIES
       INTERFACE_INCLUDE_DIRECTORIES "${ANTLR_TOP_DIR}"
-#      IMPORTED_LOCATION "${antlr2_BINARY_DIR}"
+#      IMPORTED_LOCATION "${antlr2_BINARY_DIR}/antlr27d.lib"
+#      antlr2_BINARY_DIR = C:/Users/marek/source/repos/GAViewer/out/build/x86-Debug/_deps/antlr2-build
       IMPORTED_LOCATION "c:/Users/marek/source/repos/GAViewer/out/build/x86-Debug/antlr2/antlr27d.lib"
       IMPORTED_LINK_INTERFACE_LANGUAGES "C++"
     )
-
-    # include(DebugTargetProperties OPTIONAL RESULT_VARIABLE DebugTargetProperties_FOUND)
-    # if (DebugTargetProperties_FOUND)
-    #   target_properties_report("antlr2::antlr2" TARGET_IMPORTED_PROPERTIES TARGET_INTERFACE_PROPERTIES)
-    # endif()
+    include(DebugTargetProperties OPTIONAL RESULT_VARIABLE DebugTargetProperties_FOUND)
+    if (DebugTargetProperties_FOUND)
+      target_properties_report("antlr2::antlr2" TARGET_IMPORTED_PROPERTIES TARGET_INTERFACE_PROPERTIES)
+    endif()
   endif()
 endif()
