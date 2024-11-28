@@ -13,8 +13,15 @@ FetchContent_Declare(
 )
 
 FetchContent_MakeAvailable(fltk)
-# if(TARGET fltk::fltk)
-#     message(STATUS "fltk::fltk target found!!!")
-# else()
-#     message(STATUS "fltk::fltk target NOT found!!!")
-# endif()
+
+# The previous command provides the following targets:
+#
+#    fltk::fltk  
+#    fltk::forms 
+#    fltk::gl    
+#    fltk::images
+#    fltk::jpeg  
+#    fltk::png   
+#    fltk::z     
+#
+# (see README.CMake.txt file in the fltk source folder).

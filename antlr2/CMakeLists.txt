@@ -21,8 +21,15 @@ project(antlr
 )
 
 # Naming:
-set(ANTLR_APP_VER "antlr${ANTLR_VERSION_MAJOR}${ANTLR_VERSION_MINOR}")
-set(ANTLR_APP_VER_CFG "${ANTLR_APP_VER}$<$<CONFIG:Debug>:d>")
+set(ANTLR_LIB_VER "antlr${ANTLR_VERSION_MAJOR}${ANTLR_VERSION_MINOR}")
+set(ANTLR_LIB_VER_CFG "${ANTLR_LIB_VER}$<$<CONFIG:Debug>:d>")
+# Path "${CMAKE_SOURCE_DIR}/antlr2/antlr27[d]?.lib"
+set(ANTLR_LIB_PATH "${CMAKE_CURRENT_BINARY_DIR}/${ANTLR_LIB_VER}")
+
+##########################################################################
+#
+#	Downloading source files
+#
 
 Include(FetchContent)
 
@@ -35,18 +42,13 @@ FetchContent_MakeAvailable(antlr2)
 
 FetchContent_GetProperties(antlr2)
 
+message(DEBUG "antlr2_POPULATED = ${antlr2_POPULATED}")
 message(DEBUG "antlr2_SOURCE_DIR = ${antlr2_SOURCE_DIR}")
 message(DEBUG "antlr2_BINARY_DIR = ${antlr2_BINARY_DIR}")
-message(DEBUG "antlr2_POPULATED = ${antlr2_POPULATED}")
-
-##########################################################################
-#
-#	Directories
-#
 
 cmake_path(SET ANTLR_TOP_DIR "${antlr2_SOURCE_DIR}/lib/cpp")
-cmake_path(SET ANTLR_INC_DIR "${antlr2_SOURCE_DIR}/lib/cpp/antlr")
-cmake_path(SET ANTLR_SRC_DIR "${antlr2_SOURCE_DIR}/lib/cpp/src")
+cmake_path(SET ANTLR_INC_DIR "${ANTLR_TOP_DIR}/antlr")
+cmake_path(SET ANTLR_SRC_DIR "${ANTLR_TOP_DIR}/src")
 
 ##########################################################################
 #
@@ -76,59 +78,59 @@ endif()
 
 set(target ANTLR_LIB)
 
-# antlr headers: ls antlr/*.hpp
-set(ANTLR_PUBLIC_HEADERS
-  ${ANTLR_INC_DIR}/ANTLRException.hpp
-  ${ANTLR_INC_DIR}/ANTLRUtil.hpp
-  ${ANTLR_INC_DIR}/AST.hpp
-  ${ANTLR_INC_DIR}/ASTArray.hpp
-  ${ANTLR_INC_DIR}/ASTFactory.hpp
-  ${ANTLR_INC_DIR}/ASTNULLType.hpp
-  ${ANTLR_INC_DIR}/ASTPair.hpp
-  ${ANTLR_INC_DIR}/ASTRefCount.hpp
-  ${ANTLR_INC_DIR}/BaseAST.hpp
-  ${ANTLR_INC_DIR}/BitSet.hpp
-  ${ANTLR_INC_DIR}/CharBuffer.hpp
-  ${ANTLR_INC_DIR}/CharInputBuffer.hpp
-  ${ANTLR_INC_DIR}/CharScanner.hpp
-  ${ANTLR_INC_DIR}/CharStreamException.hpp
-  ${ANTLR_INC_DIR}/CharStreamIOException.hpp
-  ${ANTLR_INC_DIR}/CircularQueue.hpp
-  ${ANTLR_INC_DIR}/CommonAST.hpp
-  ${ANTLR_INC_DIR}/CommonASTWithHiddenTokens.hpp
-  ${ANTLR_INC_DIR}/CommonHiddenStreamToken.hpp
-  ${ANTLR_INC_DIR}/CommonToken.hpp
-  ${ANTLR_INC_DIR}/config.hpp
-  ${ANTLR_INC_DIR}/InputBuffer.hpp
-  ${ANTLR_INC_DIR}/IOException.hpp
-  ${ANTLR_INC_DIR}/LexerSharedInputState.hpp
-  ${ANTLR_INC_DIR}/LLkParser.hpp
-  ${ANTLR_INC_DIR}/MismatchedCharException.hpp
-  ${ANTLR_INC_DIR}/MismatchedTokenException.hpp
-  ${ANTLR_INC_DIR}/NoViableAltException.hpp
-  ${ANTLR_INC_DIR}/NoViableAltForCharException.hpp
-  ${ANTLR_INC_DIR}/Parser.hpp
-  ${ANTLR_INC_DIR}/ParserSharedInputState.hpp
-  ${ANTLR_INC_DIR}/RecognitionException.hpp
-  ${ANTLR_INC_DIR}/RefCount.hpp
-  ${ANTLR_INC_DIR}/SemanticException.hpp
-  ${ANTLR_INC_DIR}/String.hpp
-  ${ANTLR_INC_DIR}/Token.hpp
-  ${ANTLR_INC_DIR}/TokenBuffer.hpp
-  ${ANTLR_INC_DIR}/TokenRefCount.hpp
-  ${ANTLR_INC_DIR}/TokenStream.hpp
-  ${ANTLR_INC_DIR}/TokenStreamBasicFilter.hpp
-  ${ANTLR_INC_DIR}/TokenStreamException.hpp
-  ${ANTLR_INC_DIR}/TokenStreamHiddenTokenFilter.hpp
-  ${ANTLR_INC_DIR}/TokenStreamIOException.hpp
-  ${ANTLR_INC_DIR}/TokenStreamRecognitionException.hpp
-  ${ANTLR_INC_DIR}/TokenStreamRetryException.hpp
-  ${ANTLR_INC_DIR}/TokenStreamRewriteEngine.hpp
-  ${ANTLR_INC_DIR}/TokenStreamSelector.hpp
-  ${ANTLR_INC_DIR}/TokenWithIndex.hpp
-  ${ANTLR_INC_DIR}/TreeParser.hpp
-  ${ANTLR_INC_DIR}/TreeParserSharedInputState.hpp
-)
+# # antlr headers: ls antlr/*.hpp
+# set(ANTLR_PUBLIC_HEADERS
+#   ${ANTLR_INC_DIR}/ANTLRException.hpp
+#   ${ANTLR_INC_DIR}/ANTLRUtil.hpp
+#   ${ANTLR_INC_DIR}/AST.hpp
+#   ${ANTLR_INC_DIR}/ASTArray.hpp
+#   ${ANTLR_INC_DIR}/ASTFactory.hpp
+#   ${ANTLR_INC_DIR}/ASTNULLType.hpp
+#   ${ANTLR_INC_DIR}/ASTPair.hpp
+#   ${ANTLR_INC_DIR}/ASTRefCount.hpp
+#   ${ANTLR_INC_DIR}/BaseAST.hpp
+#   ${ANTLR_INC_DIR}/BitSet.hpp
+#   ${ANTLR_INC_DIR}/CharBuffer.hpp
+#   ${ANTLR_INC_DIR}/CharInputBuffer.hpp
+#   ${ANTLR_INC_DIR}/CharScanner.hpp
+#   ${ANTLR_INC_DIR}/CharStreamException.hpp
+#   ${ANTLR_INC_DIR}/CharStreamIOException.hpp
+#   ${ANTLR_INC_DIR}/CircularQueue.hpp
+#   ${ANTLR_INC_DIR}/CommonAST.hpp
+#   ${ANTLR_INC_DIR}/CommonASTWithHiddenTokens.hpp
+#   ${ANTLR_INC_DIR}/CommonHiddenStreamToken.hpp
+#   ${ANTLR_INC_DIR}/CommonToken.hpp
+#   ${ANTLR_INC_DIR}/config.hpp
+#   ${ANTLR_INC_DIR}/InputBuffer.hpp
+#   ${ANTLR_INC_DIR}/IOException.hpp
+#   ${ANTLR_INC_DIR}/LexerSharedInputState.hpp
+#   ${ANTLR_INC_DIR}/LLkParser.hpp
+#   ${ANTLR_INC_DIR}/MismatchedCharException.hpp
+#   ${ANTLR_INC_DIR}/MismatchedTokenException.hpp
+#   ${ANTLR_INC_DIR}/NoViableAltException.hpp
+#   ${ANTLR_INC_DIR}/NoViableAltForCharException.hpp
+#   ${ANTLR_INC_DIR}/Parser.hpp
+#   ${ANTLR_INC_DIR}/ParserSharedInputState.hpp
+#   ${ANTLR_INC_DIR}/RecognitionException.hpp
+#   ${ANTLR_INC_DIR}/RefCount.hpp
+#   ${ANTLR_INC_DIR}/SemanticException.hpp
+#   ${ANTLR_INC_DIR}/String.hpp
+#   ${ANTLR_INC_DIR}/Token.hpp
+#   ${ANTLR_INC_DIR}/TokenBuffer.hpp
+#   ${ANTLR_INC_DIR}/TokenRefCount.hpp
+#   ${ANTLR_INC_DIR}/TokenStream.hpp
+#   ${ANTLR_INC_DIR}/TokenStreamBasicFilter.hpp
+#   ${ANTLR_INC_DIR}/TokenStreamException.hpp
+#   ${ANTLR_INC_DIR}/TokenStreamHiddenTokenFilter.hpp
+#   ${ANTLR_INC_DIR}/TokenStreamIOException.hpp
+#   ${ANTLR_INC_DIR}/TokenStreamRecognitionException.hpp
+#   ${ANTLR_INC_DIR}/TokenStreamRetryException.hpp
+#   ${ANTLR_INC_DIR}/TokenStreamRewriteEngine.hpp
+#   ${ANTLR_INC_DIR}/TokenStreamSelector.hpp
+#   ${ANTLR_INC_DIR}/TokenWithIndex.hpp
+#   ${ANTLR_INC_DIR}/TreeParser.hpp
+#   ${ANTLR_INC_DIR}/TreeParserSharedInputState.hpp
+# )
 
 # antlr library source: ls src/*.cpp (exclude: dll.cpp)
 add_library(${target}
@@ -166,44 +168,22 @@ add_library(${target}
 
 set_target_properties(${target}
     PROPERTIES 
-  PUBLIC_HEADER "${ANTLR_PUBLIC_HEADERS}"
+#  PUBLIC_HEADER "${ANTLR_PUBLIC_HEADERS}"
+  OUTPUT_NAME "${ANTLR_LIB_VER_CFG}"
 )
+
 ##########################################################################
 #
-#   Compile Options
+#   Compile & Link Options
 #
 
 target_compile_options(${target} PRIVATE $<IF:$<C_COMPILER_ID:MSVC>,/W3 /wd4996, -Wall -Wextra>)
-target_compile_definitions(${target} PRIVATE $<IF:$<C_COMPILER_ID:MSVC>,_LIB,>)
 target_include_directories(${target} PUBLIC "${ANTLR_TOP_DIR}")
 
 ##########################################################################
 #
-#   Link Options
-#
-
-
-##########################################################################
-#
-#   INSTALL
-#
-
-set_target_properties(${target} PROPERTIES FOLDER "${antlr2_BINARY_DIR}")
-set_target_properties(${target} PROPERTIES OUTPUT_NAME "${ANTLR_APP_VER_CFG}")
-
-# install(TARGETS 
-#   ${target}
-#     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-#     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-#     PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/antlr
-#     # FILE_SET public_headers DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
-# )
-
-# export(TARGETS ${target} FILE "${ANTLR_APP_VER}-static.cmake")
-
-##########################################################################
-#
-#   Antlr2 as a CMake target(providing Antlr2 usage requirements)
+#   Antlr2 as a CMake target (to communicate
+#   the Antlr2 Usage Requirements to importers)
 #
 
 if(antlr2_POPULATED)
@@ -212,14 +192,14 @@ if(antlr2_POPULATED)
     set_target_properties(antlr2::antlr2
         PROPERTIES
       INTERFACE_INCLUDE_DIRECTORIES "${ANTLR_TOP_DIR}"
-#      IMPORTED_LOCATION "${antlr2_BINARY_DIR}/antlr27d.lib"
-#      antlr2_BINARY_DIR = C:/Users/marek/source/repos/GAViewer/out/build/x86-Debug/_deps/antlr2-build
-      IMPORTED_LOCATION "c:/Users/marek/source/repos/GAViewer/out/build/x86-Debug/antlr2/antlr27d.lib"
+#      IMPORTED_LOCATION "c:/Users/marek/source/repos/GAViewer/out/build/x86-Debug/antlr2/antlr27d.lib"
+      IMPORTED_LOCATION "${ANTLR_LIB_PATH}${CMAKE_LINK_LIBRARY_SUFFIX}"
+      IMPORTED_LOCATION_DEBUG "${ANTLR_LIB_PATH}d${CMAKE_LINK_LIBRARY_SUFFIX}"
       IMPORTED_LINK_INTERFACE_LANGUAGES "C++"
     )
-    include(DebugTargetProperties OPTIONAL RESULT_VARIABLE DebugTargetProperties_FOUND)
-    if (DebugTargetProperties_FOUND)
-      target_properties_report("antlr2::antlr2" TARGET_IMPORTED_PROPERTIES TARGET_INTERFACE_PROPERTIES)
-    endif()
+    # include(DebugTargetProperties OPTIONAL RESULT_VARIABLE DebugTargetProperties_FOUND)
+    # if (DebugTargetProperties_FOUND)
+    #   target_properties_report("antlr2::antlr2" TARGET_IMPORTED_PROPERTIES TARGET_INTERFACE_PROPERTIES)
+    # endif()
   endif()
 endif()
