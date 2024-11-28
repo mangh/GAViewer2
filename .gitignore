@@ -361,3 +361,6 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+# Original fltk/antlr/GAViewr files to be replaced with revised versions (*.patched)
+*.original
