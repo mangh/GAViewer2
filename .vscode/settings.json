@@ -1,0 +1,29 @@
+{
+    "clangd.arguments": [
+        "--compile-commands-dir=${workspaceFolder}/build",
+        "--clang-tidy",
+        "--enable-config"
+    ],
+    "cmake.configureOnOpen": false,
+    "cmake.generator": "Ninja",
+    "cmake.configureSettings": {
+        // "BUILD_SHARED_LIBS": "OFF",
+        // "CMAKE_PREFIX_PATH": [
+        //     "c:/Users/marek/lib/inja/Debug"
+        // ],
+    },
+    // "cmake.loggingLevel": "debug",
+    "cmake.configureArgs": [
+        "--log-level=DEBUG"
+    ],
+    "cmake.buildArgs": [
+        // "--verbose"
+    ],
+    "cmake.exportCompileCommandsFile": true,
+    "doxdocgen.c.commentPrefix": " * ",
+    "doxdocgen.c.firstLine": "/**",
+    "doxdocgen.c.lastLine": " */",
+    "doxdocgen.c.triggerSequence": "/**",
+    "doxdocgen.generic.returnTemplate": "@returns {type} ",
+    "editor.indentSize": "tabSize"
+}

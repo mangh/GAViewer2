@@ -1,0 +1,23 @@
+# VCIDEInstallDir=C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\VC\
+# VCINSTALLDIR=C:\Program Files\Microsoft Visual Studio\2022\Community\VC\
+# VCToolsInstallDir=C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\
+# VCToolsRedistDir=C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Redist\MSVC\14.42.34433\
+# VCToolsVersion=14.42.34433
+# VisualStudioVersion=17.0
+# VS170COMNTOOLS=C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\Tools\
+CompileFlags:
+  Add: 
+  - -std=c++14
+  - -I C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.42.34433/include
+  - -I C:/Users/marek/source/repos/GAViewer/build/_deps/antlr2-src/lib/cpp/antlr
+  - -I C:/Users/marek/source/repos/GAViewer/build/_deps/fltk-src
+  - -I C:/Users/marek/source/repos/GAViewer/build/_deps/fltk-src/FL
+  - -I C:/Users/marek/source/repos/GAViewer/build/_deps/fltk-src/fluid
+  - -I C:/Users/marek/source/repos/GAViewer/build/_deps/fltk-src/GL
+  - -I C:/Users/marek/source/repos/GAViewer/build/_deps/fltk-src/jpeg
+  - -I C:/Users/marek/source/repos/GAViewer/build/_deps/fltk-src/png
+  - -I C:/Users/marek/source/repos/GAViewer/build/_deps/fltk-src/src
+  - -I C:/Users/marek/source/repos/GAViewer/build/_deps/gavr-src/src
+Diagnostics:
+  UnusedIncludes: Strict
+#  ClangTidy: modernize-*
