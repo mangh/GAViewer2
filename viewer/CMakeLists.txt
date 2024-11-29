@@ -26,17 +26,17 @@ message(DEBUG "gavr_BINARY_DIR = ${gavr_BINARY_DIR}")
 #   - LONG -> long ?????
 #
 
-# Save the original (unpatched) file and put the patched file instead
-set(_deprecated "src/mainwindow.h")
-file(STRINGS "${gavr_SOURCE_DIR}/${_deprecated}" _patch_applied REGEX "^[ \t]*long m_fsoStyle, m_fsoExStyle;$")
-if (_patch_applied)
-  message(DEBUG "The ${_deprecated} file has already been patched.")
-else()
-  message(DEBUG "Patching the ${_deprecated} file ...")
-  file(COPY_FILE "${gavr_SOURCE_DIR}/${_deprecated}" "${CMAKE_CURRENT_SOURCE_DIR}/${_deprecated}.original")
-  file(COPY_FILE "${CMAKE_CURRENT_SOURCE_DIR}/${_deprecated}.patched" "${gavr_SOURCE_DIR}/${_deprecated}")
-  message(DEBUG "The ${_deprecated} file has been patched.")
-endif()
+# # Save the original (unpatched) file and put the patched file instead
+# set(_deprecated "src/mainwindow.h")
+# file(STRINGS "${gavr_SOURCE_DIR}/${_deprecated}" _patch_applied REGEX "^[ \t]*long m_fsoStyle, m_fsoExStyle;$")
+# if (_patch_applied)
+#   message(DEBUG "The ${_deprecated} file has already been patched.")
+# else()
+#   message(DEBUG "Patching the ${_deprecated} file ...")
+#   file(COPY_FILE "${gavr_SOURCE_DIR}/${_deprecated}" "${CMAKE_CURRENT_SOURCE_DIR}/${_deprecated}.original")
+#   file(COPY_FILE "${CMAKE_CURRENT_SOURCE_DIR}/${_deprecated}.patched" "${gavr_SOURCE_DIR}/${_deprecated}")
+#   message(DEBUG "The ${_deprecated} file has been patched.")
+# endif()
 
 ##########################################################################
 #
