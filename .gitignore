@@ -362,5 +362,8 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 
-# Original fltk/antlr/GAViewr files to be replaced with revised versions (*.patched)
+# fltk/antlr/GAViewr original files to be replaced with revised versions (*.patched)
 *.original
+
+# VSCode (standard) build folder
+build/
