@@ -8,8 +8,8 @@ Include(FetchContent)
 FetchContent_Declare(
   fltk
   GIT_REPOSITORY https://github.com/fltk/fltk
-  GIT_TAG         master    # release-1.4.0-1	# November, 2024
-  GIT_SHALLOW     TRUE
+  GIT_TAG        d547e1956778ed584248179d9141843b86101a0a # release-1.4.0-1	# November 18, 2024
+  GIT_SHALLOW    TRUE
 )
 
 FetchContent_MakeAvailable(fltk)

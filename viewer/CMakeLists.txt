@@ -5,9 +5,14 @@ message(DEBUG "Entering the GAViewer subdirectory ...")
 
 Include(FetchContent)
 
+# Name: GAViewer-0.86.tar.gz
+# Size: 1274417 bytes : 1244 KiB
+# SHA256: 2bdfbb809c45453edc2fbdcd8b3d0b5937c688ac4795ceb31da4c67d657406cd
+
 FetchContent_Declare(
   gavr
   URL https://geometricalgebra.org/downloads/GAViewer-0.86.tar.gz
+  URL_HASH SHA256=2bdfbb809c45453edc2fbdcd8b3d0b5937c688ac4795ceb31da4c67d657406cd
 )
 
 FetchContent_MakeAvailable(gavr)

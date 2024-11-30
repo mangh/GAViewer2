@@ -30,12 +30,17 @@ set(ANTLR_LIB_PATH "${CMAKE_CURRENT_BINARY_DIR}/${ANTLR_LIB_VER}")
 #
 #	Downloading source files
 #
+# Name: antlr-2.7.7.tar.gz
+# Size: 1816180 bytes : 1773 KiB
+# SHA256: 853aeb021aef7586bda29e74a6b03006bcb565a755c86b66032d8ec31b67dbb9
+#
 
 Include(FetchContent)
 
 FetchContent_Declare(
   antlr2
   URL https://www.antlr2.org/download/antlr-2.7.7.tar.gz
+  URL_HASH SHA256=853aeb021aef7586bda29e74a6b03006bcb565a755c86b66032d8ec31b67dbb9
 )
 
 FetchContent_MakeAvailable(antlr2)
