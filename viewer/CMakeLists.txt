@@ -25,26 +25,52 @@ message(DEBUG "gavr_BINARY_DIR = ${gavr_BINARY_DIR}")
 
 ##########################################################################
 #
-#	Patching
+#	  Patching
 #
-#	src/mainwindow.h
-#   - LONG -> long ?????
+#	  src/mainwindow.h
+#     - missing #include <windows.h> directive to #define LONG typedef
+#
+#	  src/typeset/fontyacc.c
+#     - fontyacc.c:63:8: error: type specifier missing, defaults to 'int'; ISO C99 and later do not support implicit int [-Wimplicit-int]
+#     - fontyacc.c:67:8: error: type specifier missing, defaults to 'int'; ISO C99 and later do not support implicit int [-Wimplicit-int]
+#
+#	  src/typeset/typesetbox.cpp
+#     - typesetbox.cpp:195:17: error: non-constant-expression cannot be narrowed from type 'int' to 'char' in initializer list [-Wc++11-narrowing]
 #
 
-
+# Save the original (unpatched) file and put the patched file instead
 if (WIN32)
-  # Save the original (unpatched) file and put the patched file instead
   set(_deprecated "src/mainwindow.h")
   file(STRINGS "${gavr_SOURCE_DIR}/${_deprecated}" _patch_applied REGEX "^#include <windows.h>$")
   if (_patch_applied)
-    message(DEBUG "The ${_deprecated} file has already been patched.")
+    message(DEBUG "The ${gavr_SOURCE_DIR}/${_deprecated} file has already been patched.")
   else()
-    message(DEBUG "Patching the ${_deprecated} file ...")
     file(COPY_FILE "${gavr_SOURCE_DIR}/${_deprecated}" "${CMAKE_CURRENT_SOURCE_DIR}/${_deprecated}.original")
     file(COPY_FILE "${CMAKE_CURRENT_SOURCE_DIR}/${_deprecated}.patched" "${gavr_SOURCE_DIR}/${_deprecated}")
-    message(DEBUG "The ${_deprecated} file has been patched.")
+    message(DEBUG "The ${gavr_SOURCE_DIR}/${_deprecated} file has been patched.")
   endif()
 endif()
+
+set(_deprecated "src/typeset/fontyacc.c")
+file(STRINGS "${gavr_SOURCE_DIR}/${_deprecated}" _patch_applied REGEX "^void static yyerror\\(const char \\*msg\\) \\{$")
+if (_patch_applied)
+  message(DEBUG "The ${gavr_SOURCE_DIR}/${_deprecated} file has already been patched.")
+else()
+  file(COPY_FILE "${gavr_SOURCE_DIR}/${_deprecated}" "${CMAKE_CURRENT_SOURCE_DIR}/${_deprecated}.original")
+  file(COPY_FILE "${CMAKE_CURRENT_SOURCE_DIR}/${_deprecated}.patched" "${gavr_SOURCE_DIR}/${_deprecated}")
+  message(DEBUG "The ${gavr_SOURCE_DIR}/${_deprecated} file has been patched.")
+endif()
+
+set(_deprecated "src/typeset/typesetbox.cpp")
+file(STRINGS "${gavr_SOURCE_DIR}/${_deprecated}" _patch_applied REGEX "^[ \t]+char str\\[2\\] = \\{\\(char\\)c, \\(char\\)0\\};$")
+if (_patch_applied)
+  message(DEBUG "The ${gavr_SOURCE_DIR}/${_deprecated} file has already been patched.")
+else()
+  file(COPY_FILE "${gavr_SOURCE_DIR}/${_deprecated}" "${CMAKE_CURRENT_SOURCE_DIR}/${_deprecated}.original")
+  file(COPY_FILE "${CMAKE_CURRENT_SOURCE_DIR}/${_deprecated}.patched" "${gavr_SOURCE_DIR}/${_deprecated}")
+  message(DEBUG "The ${gavr_SOURCE_DIR}/${_deprecated} file has been patched.")
+endif()
+
 
 ##########################################################################
 #
@@ -138,6 +164,7 @@ set(_source_files
 # Add executable target to the project using the specified source files:
 add_executable(
   ${target}
+  WIN32
   ${_source_files}
 )
 
@@ -147,13 +174,12 @@ add_executable(
 #
 
 target_compile_features(${target} PRIVATE cxx_std_14)
-target_compile_options(${target} PRIVATE $<IF:$<STREQUAL:${CMAKE_CXX_COMPILER_FRONTEND_VARIANT},MSVC>,/W3,-Wall -Wextra>)
-
+target_compile_options(${target} PRIVATE $<IF:$<STREQUAL:${CMAKE_CXX_COMPILER_FRONTEND_VARIANT},MSVC>,/W3,-Wall>) # but not -Wextra
 
 target_compile_definitions(${target} PRIVATE WIN32)
 target_compile_definitions(${target} PRIVATE _CONSOLE)
 target_compile_definitions(${target} PRIVATE _CRT_SECURE_NO_WARNINGS)
-#target_compile_definitions(${target} PRIVATE WIN32_NO_CONSOLE)
+target_compile_definitions(${target} PRIVATE WIN32_NO_CONSOLE)
 target_compile_definitions(${target} PRIVATE _MBCS)
 
 ##########################################################################

@@ -23,16 +23,16 @@ project(antlr
 # Naming:
 set(ANTLR_LIB_VER "antlr${ANTLR_VERSION_MAJOR}${ANTLR_VERSION_MINOR}")
 set(ANTLR_LIB_VER_CFG "${ANTLR_LIB_VER}$<$<CONFIG:Debug>:d>")
-# Path "${CMAKE_SOURCE_DIR}/antlr2/antlr27[d]?.lib"
+# Path "${CMAKE_SOURCE_DIR}/antlr2/antlr27[d]?.{lib|a}"
 set(ANTLR_LIB_PATH "${CMAKE_CURRENT_BINARY_DIR}/${ANTLR_LIB_VER}")
 
 ##########################################################################
 #
-#	Downloading source files
+#	  Downloading source files
 #
-# Name: antlr-2.7.7.tar.gz
-# Size: 1816180 bytes : 1773 KiB
-# SHA256: 853aeb021aef7586bda29e74a6b03006bcb565a755c86b66032d8ec31b67dbb9
+#   Name: antlr-2.7.7.tar.gz
+#   Size: 1816180 bytes : 1773 KiB
+#   SHA256: 853aeb021aef7586bda29e74a6b03006bcb565a755c86b66032d8ec31b67dbb9
 #
 
 Include(FetchContent)
@@ -57,33 +57,32 @@ cmake_path(SET ANTLR_SRC_DIR "${ANTLR_TOP_DIR}/src")
 
 ##########################################################################
 #
-#	Patching
+#	  Patching
 #
-#	CharScanner.hpp:
-#   - The std::binary_function template is deprecated (as of C++11)
-#     and we must use the std::function template instead.
+#	  lib/cpp/antlr/CharScanner.hpp:
+#     - The std::binary_function template is deprecated (as of C++11).
+#       You can use the std::function template instead.
 #
 
 # Save the original (unpatched) file and put the patched file instead
 set(_deprecated "CharScanner.hpp")
 file(STRINGS "${ANTLR_INC_DIR}/${_deprecated}" _patch_applied REGEX "^#include <functional>$")
 if (_patch_applied)
-  message(DEBUG "The ${_deprecated} file has already been patched.")
+  message(DEBUG "The ${ANTLR_INC_DIR}/${_deprecated} file has already been patched.")
 else()
-  message(DEBUG "Patching the ${_deprecated} file ...")
   file(COPY_FILE "${ANTLR_INC_DIR}/${_deprecated}" "${CMAKE_CURRENT_SOURCE_DIR}/${_deprecated}.original")
   file(COPY_FILE "${CMAKE_CURRENT_SOURCE_DIR}/${_deprecated}.patched" "${ANTLR_INC_DIR}/${_deprecated}")
-  message(DEBUG "The ${_deprecated} file has been patched.")
+  message(DEBUG "The ${ANTLR_INC_DIR}/${_deprecated} file has been patched.")
 endif()
 
 ##########################################################################
 #
-#	ANTLR library (target to build)
+#	  ANTLR library (target to build)
 #
 
 set(target ANTLR_LIB)
 
-# # antlr headers: ls antlr/*.hpp
+# # antlr headers: ls ${ANTLR_INC_DIR}/*.hpp
 # set(ANTLR_PUBLIC_HEADERS
 #   ${ANTLR_INC_DIR}/ANTLRException.hpp
 #   ${ANTLR_INC_DIR}/ANTLRUtil.hpp
@@ -137,7 +136,7 @@ set(target ANTLR_LIB)
 #   ${ANTLR_INC_DIR}/TreeParserSharedInputState.hpp
 # )
 
-# antlr library source: ls src/*.cpp (exclude: dll.cpp)
+# antlr library source: ls ${ANTLR_SRC_DIR}/*.cpp (exclude: dll.cpp)
 add_library(${target}
   ${ANTLR_SRC_DIR}/ANTLRUtil.cpp
   ${ANTLR_SRC_DIR}/ASTFactory.cpp
@@ -182,7 +181,7 @@ set_target_properties(${target}
 #   Compile & Link Options
 #
 
-target_compile_options(${target} PRIVATE $<IF:$<C_COMPILER_ID:MSVC>,/W3 /wd4996, -Wall -Wextra>)
+target_compile_options(${target} PRIVATE $<IF:$<STREQUAL:${CMAKE_CXX_COMPILER_FRONTEND_VARIANT},MSVC>,/W3 /wd4996,-Wall>) # but not -Wextra
 target_include_directories(${target} PUBLIC "${ANTLR_TOP_DIR}")
 
 ##########################################################################
