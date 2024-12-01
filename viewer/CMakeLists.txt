@@ -164,9 +164,10 @@ set(_source_files
 # Add executable target to the project using the specified source files:
 add_executable(
   ${target}
-  WIN32
   ${_source_files}
 )
+# On Windows, create an executable file with a WinMain entry point:
+set_target_properties(${target} PROPERTIES WIN32_EXECUTABLE $<$<BOOL:WIN32>:ON>)
 
 ##########################################################################
 #
