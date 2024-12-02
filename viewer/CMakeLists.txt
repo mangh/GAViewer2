@@ -177,11 +177,15 @@ set_target_properties(${target} PROPERTIES WIN32_EXECUTABLE $<$<BOOL:WIN32>:ON>)
 target_compile_features(${target} PRIVATE cxx_std_14)
 target_compile_options(${target} PRIVATE $<IF:$<STREQUAL:${CMAKE_CXX_COMPILER_FRONTEND_VARIANT},MSVC>,/W3,-Wall>) # but not -Wextra
 
-target_compile_definitions(${target} PRIVATE WIN32)
-target_compile_definitions(${target} PRIVATE _CONSOLE)
-target_compile_definitions(${target} PRIVATE _CRT_SECURE_NO_WARNINGS)
-target_compile_definitions(${target} PRIVATE WIN32_NO_CONSOLE)
-target_compile_definitions(${target} PRIVATE _MBCS)
+if (WIN32)
+  target_compile_definitions(
+      ${target}
+    PRIVATE WIN32             # Application being built for Windows
+    PRIVATE WIN32_NO_CONSOLE  # without a console
+    PRIVATE _MBCS             # for Multibyte Character Set
+    # PRIVATE _CRT_SECURE_NO_WARNINGS # already defined in the top level CMakeLists.txt
+  )
+endif()
 
 ##########################################################################
 #
