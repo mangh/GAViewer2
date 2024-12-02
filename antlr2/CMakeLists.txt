@@ -59,21 +59,15 @@ cmake_path(SET ANTLR_SRC_DIR "${ANTLR_TOP_DIR}/src")
 #
 #	  Patching
 #
-#	  lib/cpp/antlr/CharScanner.hpp:
-#     - The std::binary_function template is deprecated (as of C++11).
-#       You can use the std::function template instead.
 #
 
-# Save the original (unpatched) file and put the patched file instead
-set(_deprecated "CharScanner.hpp")
-file(STRINGS "${ANTLR_INC_DIR}/${_deprecated}" _patch_applied REGEX "^#include <functional>$")
-if (_patch_applied)
-  message(DEBUG "The ${ANTLR_INC_DIR}/${_deprecated} file has already been patched.")
-else()
-  file(COPY_FILE "${ANTLR_INC_DIR}/${_deprecated}" "${CMAKE_CURRENT_SOURCE_DIR}/${_deprecated}.original")
-  file(COPY_FILE "${CMAKE_CURRENT_SOURCE_DIR}/${_deprecated}.patched" "${ANTLR_INC_DIR}/${_deprecated}")
-  message(DEBUG "The ${ANTLR_INC_DIR}/${_deprecated} file has been patched.")
-endif()
+include(Patch)
+patch(
+  "${antlr2_SOURCE_DIR}"          # source directory
+  "lib/cpp/antlr/CharScanner.hpp" # name of the file to patch
+  "^#include <functional>$"       # what should be in the patched (revised) file
+  "${CMAKE_CURRENT_SOURCE_DIR}"   # patch directory containing finished, patched files
+)
 
 ##########################################################################
 #

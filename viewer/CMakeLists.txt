@@ -38,39 +38,30 @@ message(DEBUG "gavr_BINARY_DIR = ${gavr_BINARY_DIR}")
 #     - typesetbox.cpp:195:17: error: non-constant-expression cannot be narrowed from type 'int' to 'char' in initializer list [-Wc++11-narrowing]
 #
 
-# Save the original (unpatched) file and put the patched file instead
+include(Patch)
+
 if (WIN32)
-  set(_deprecated "src/mainwindow.h")
-  file(STRINGS "${gavr_SOURCE_DIR}/${_deprecated}" _patch_applied REGEX "^#include <windows.h>$")
-  if (_patch_applied)
-    message(DEBUG "The ${gavr_SOURCE_DIR}/${_deprecated} file has already been patched.")
-  else()
-    file(COPY_FILE "${gavr_SOURCE_DIR}/${_deprecated}" "${CMAKE_CURRENT_SOURCE_DIR}/${_deprecated}.original")
-    file(COPY_FILE "${CMAKE_CURRENT_SOURCE_DIR}/${_deprecated}.patched" "${gavr_SOURCE_DIR}/${_deprecated}")
-    message(DEBUG "The ${gavr_SOURCE_DIR}/${_deprecated} file has been patched.")
-  endif()
+  patch(
+    "${gavr_SOURCE_DIR}"          # source directory
+    "src/mainwindow.h"            # name of the file to patch
+    "^#include <windows.h>$"      # what should be in the patched (revised) file
+    "${CMAKE_CURRENT_SOURCE_DIR}" # patch directory containing finished, patched files
+  )
 endif()
 
-set(_deprecated "src/typeset/fontyacc.c")
-file(STRINGS "${gavr_SOURCE_DIR}/${_deprecated}" _patch_applied REGEX "^void static yyerror\\(const char \\*msg\\) \\{$")
-if (_patch_applied)
-  message(DEBUG "The ${gavr_SOURCE_DIR}/${_deprecated} file has already been patched.")
-else()
-  file(COPY_FILE "${gavr_SOURCE_DIR}/${_deprecated}" "${CMAKE_CURRENT_SOURCE_DIR}/${_deprecated}.original")
-  file(COPY_FILE "${CMAKE_CURRENT_SOURCE_DIR}/${_deprecated}.patched" "${gavr_SOURCE_DIR}/${_deprecated}")
-  message(DEBUG "The ${gavr_SOURCE_DIR}/${_deprecated} file has been patched.")
-endif()
+patch(
+  "${gavr_SOURCE_DIR}"          # source directory
+  "src/typeset/fontyacc.c"      # name of the file to patch
+  "^void static yyerror\\(const char \\*msg\\) \\{$" # what should be in the patched (revised) file
+  "${CMAKE_CURRENT_SOURCE_DIR}" # patch directory containing finished, patched files
+)
 
-set(_deprecated "src/typeset/typesetbox.cpp")
-file(STRINGS "${gavr_SOURCE_DIR}/${_deprecated}" _patch_applied REGEX "^[ \t]+char str\\[2\\] = \\{\\(char\\)c, \\(char\\)0\\};$")
-if (_patch_applied)
-  message(DEBUG "The ${gavr_SOURCE_DIR}/${_deprecated} file has already been patched.")
-else()
-  file(COPY_FILE "${gavr_SOURCE_DIR}/${_deprecated}" "${CMAKE_CURRENT_SOURCE_DIR}/${_deprecated}.original")
-  file(COPY_FILE "${CMAKE_CURRENT_SOURCE_DIR}/${_deprecated}.patched" "${gavr_SOURCE_DIR}/${_deprecated}")
-  message(DEBUG "The ${gavr_SOURCE_DIR}/${_deprecated} file has been patched.")
-endif()
-
+patch(
+  "${gavr_SOURCE_DIR}"          # source directory
+  "src/typeset/typesetbox.cpp"  # name of the file to patch
+  "^[ \t]+char str\\[2\\] = \\{\\(char\\)c, \\(char\\)0\\}\;$" # what should be in the patched (revised) file
+  "${CMAKE_CURRENT_SOURCE_DIR}" # patch directory containing finished, patched files
+)
 
 ##########################################################################
 #
