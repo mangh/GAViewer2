@@ -3,6 +3,12 @@
 
 message(DEBUG "Entering the FLTK subdirectory ...")
 
+##########################################################################
+#
+#	  Downloading source files
+#
+#
+
 Include(FetchContent)
 
 FetchContent_Declare(
