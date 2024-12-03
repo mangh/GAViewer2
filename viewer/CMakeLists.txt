@@ -58,72 +58,79 @@ if (WIN32)
   patch(
     "${gavr_SOURCE_DIR}"          # source directory
     "src/mainwindow.h"            # name of the file to patch
-    "^#include <windows.h>$"      # what should be in the patched (revised) file
-    "${CMAKE_CURRENT_SOURCE_DIR}" # patch directory containing finished, patched files
+    "^#include <windows.h>$"      # regex (for a string that must be in the patched file)
+    "${CMAKE_CURRENT_SOURCE_DIR}" # patch directory providing patched files
   )
 endif()
 
 patch(
   "${gavr_SOURCE_DIR}"          # source directory
-  "src/typeset/fontyacc.c"      # name of the file to patch
-  "^void static yyerror\\(const char \\*msg\\) \\{$" # what should be in the patched (revised) file
-  "${CMAKE_CURRENT_SOURCE_DIR}" # patch directory containing finished, patched files
+  "src/typeset/fontparse.cpp"      # name of the file to patch
+  "^[ \t]+printf\\(\"fpSetChild\\(\\): invalid input %p %p %d\\n\", parent, child, idx\\)\;$"
+  "${CMAKE_CURRENT_SOURCE_DIR}" # patch directory providing patched files
 )
 
 patch(
   "${gavr_SOURCE_DIR}"          # source directory
-  "src/typeset/typesetbox.cpp"  # name of the file to patch
-  "^[ \t]+char str\\[2\\] = \\{\\(char\\)c, \\(char\\)0\\}\;$" # what should be in the patched (revised) file
-  "${CMAKE_CURRENT_SOURCE_DIR}" # patch directory containing finished, patched files
+  "src/typeset/fontyacc.c"      # name of the file to patch
+  "^void static yyerror\\(const char \\*msg\\) \\{$" # regex (for a string that must be in the patched file)
+  "${CMAKE_CURRENT_SOURCE_DIR}" # patch directory providing patched files
 )
 
 patch(
   "${gavr_SOURCE_DIR}"          # source directory
   "src/typeset/liststack.h"  # name of the file to patch
   "^[ \t]+printf\\(\"tsItemList::ensureMax\\(\\): memory allocation failure for '%zu' bytes\\n\", sizeof\\(type\\)\\)\;$"
-  "${CMAKE_CURRENT_SOURCE_DIR}" # patch directory containing finished, patched files
+  "${CMAKE_CURRENT_SOURCE_DIR}" # patch directory providing patched files
 )
 
 patch(
   "${gavr_SOURCE_DIR}"          # source directory
   "src/typeset/typeset.cpp"   # name of the file to patch
   "^[ \t]+printf\\(\"typesetState::addLine\\(\\): memory allocation failure for '%zu' bytes\\n\", sizeof\\(double\\) * 2 * nbVertices\\)\;$"
-  "${CMAKE_CURRENT_SOURCE_DIR}" # patch directory containing finished, patched files
+  "${CMAKE_CURRENT_SOURCE_DIR}" # patch directory providing patched files
+)
+
+patch(
+  "${gavr_SOURCE_DIR}"          # source directory
+  "src/typeset/typesetbox.cpp"  # name of the file to patch
+  "^[ \t]+char str\\[2\\] = \\{\\(char\\)c, \\(char\\)0\\}\;$" # regex (for a string that must be in the patched file)
+  "${CMAKE_CURRENT_SOURCE_DIR}" # patch directory providing patched files
 )
 
 patch(
   "${gavr_SOURCE_DIR}"          # source directory
   "src/c3ga/c3ga.cpp"   # name of the file to patch
   "^[ \t]+printf\\(\"c3ga_ben::addName\\(\\): memory allocation failure for '%zu' bytes\\n\", sizeof\\(c3gai_be*\\) * \\(m_nbBen + 1\\)\\)\;$"
-  "${CMAKE_CURRENT_SOURCE_DIR}" # patch directory containing finished, patched files
+  "${CMAKE_CURRENT_SOURCE_DIR}" # patch directory providing patched files
 )
 
 patch(
   "${gavr_SOURCE_DIR}"          # source directory
   "src/c5ga/c5ga.cpp"   # name of the file to patch
   "^[ \t]+printf\\(\"c5ga_ben::addName\\(\\): memory allocation failure for '%zu' bytes\\n\", sizeof\\(c5gai_be*\\) * \\(m_nbBen + 1\\)\\)\;$"
-  "${CMAKE_CURRENT_SOURCE_DIR}" # patch directory containing finished, patched files
+  "${CMAKE_CURRENT_SOURCE_DIR}" # patch directory providing patched files
 )
 
 patch(
   "${gavr_SOURCE_DIR}"          # source directory
   "src/e3ga/e3ga.cpp"   # name of the file to patch
   "^[ \t]+printf\\(\"e3ga_ben::addName\\(\\): memory allocation failure for '%zu' bytes\\n\", sizeof\\(e3gai_be*\\) * \\(m_nbBen + 1\\)\\)\;$"
-  "${CMAKE_CURRENT_SOURCE_DIR}" # patch directory containing finished, patched files
+  "${CMAKE_CURRENT_SOURCE_DIR}" # patch directory providing patched files
 )
 
 patch(
   "${gavr_SOURCE_DIR}"          # source directory
   "src/i2ga/i2ga.cpp"   # name of the file to patch
-  "^[ \t]+printf\\(\"i2ga_ben::addName\\(\\): memory allocation failure for '%d' bytes\\n\", sizeof\\(i2gai_be*\\) * \\(m_nbBen + 1\\)\\)\;$"
-  "${CMAKE_CURRENT_SOURCE_DIR}" # patch directory containing finished, patched files
+  "^[ \t]+printf\\(\"i2ga_ben::addName\\(\\): memory allocation failure for '%zu' bytes\\n\", sizeof\\(i2gai_be*\\) * \\(m_nbBen + 1\\)\\)\;$"
+  "${CMAKE_CURRENT_SOURCE_DIR}" # patch directory providing patched files
 )
 
 patch(
   "${gavr_SOURCE_DIR}"          # source directory
   "src/p3ga/p3ga.cpp"   # name of the file to patch
-  "^[ \t]+printf\\(\"p3ga_ben::addName\\(\\): memory allocation failure for '%d' bytes\\n\", sizeof\\(p3gai_be*\\) * \\(m_nbBen + 1\\)\\)\;$"
-  "${CMAKE_CURRENT_SOURCE_DIR}" # patch directory containing finished, patched files
+  "^[ \t]+printf\\(\"p3ga_ben::addName\\(\\): memory allocation failure for '%zu' bytes\\n\", sizeof\\(p3gai_be*\\) * \\(m_nbBen + 1\\)\\)\;$"
+  "${CMAKE_CURRENT_SOURCE_DIR}" # patch directory providing patched files
 )
 
 ##########################################################################
