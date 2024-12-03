@@ -65,15 +65,15 @@ include(Patch)
 patch(
   "${antlr2_SOURCE_DIR}"          # source directory
   "lib/cpp/antlr/CharScanner.hpp" # name of the file to patch
-  "^#include <functional>$"       # what should be in the patched (revised) file
-  "${CMAKE_CURRENT_SOURCE_DIR}"   # patch directory containing finished, patched files
+  "^#include <functional>$"       # regex (for a string that must be in the patched file)
+  "${CMAKE_CURRENT_SOURCE_DIR}"   # patch directory providing patched files
 )
 
 patch(
   "${antlr2_SOURCE_DIR}"          # source directory
   "lib/cpp/src/String.cpp"        # name of the file to patch
-  "^[ \t]+sprintf\\(tmp,\"%zu\",rhs\\)\;$"  # what should be in the patched (revised) file
-  "${CMAKE_CURRENT_SOURCE_DIR}"   # patch directory containing finished, patched files
+  "^[ \t]+sprintf\\(tmp,\"%zu\",rhs\\)\;$"  # regex (for a string that must be in the patched file)
+  "${CMAKE_CURRENT_SOURCE_DIR}"   # patch directory providing patched files
 )
 
 ##########################################################################
