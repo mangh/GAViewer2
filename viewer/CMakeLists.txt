@@ -28,6 +28,15 @@ message(DEBUG "gavr_POPULATED = ${gavr_POPULATED}")
 message(DEBUG "gavr_SOURCE_DIR = ${gavr_SOURCE_DIR}")
 message(DEBUG "gavr_BINARY_DIR = ${gavr_BINARY_DIR}")
 
+# ##########################################################################
+# #
+# #	  codegen
+# #
+# #
+# 
+# set(CODEGEN_DIR "${gavr_SOURCE_DIR}/src/console/codegen")
+# add_subdirectory("codegen")
+
 ##########################################################################
 #
 #	  Patching
@@ -65,6 +74,55 @@ patch(
   "${gavr_SOURCE_DIR}"          # source directory
   "src/typeset/typesetbox.cpp"  # name of the file to patch
   "^[ \t]+char str\\[2\\] = \\{\\(char\\)c, \\(char\\)0\\}\;$" # what should be in the patched (revised) file
+  "${CMAKE_CURRENT_SOURCE_DIR}" # patch directory containing finished, patched files
+)
+
+patch(
+  "${gavr_SOURCE_DIR}"          # source directory
+  "src/typeset/liststack.h"  # name of the file to patch
+  "^[ \t]+printf\\(\"tsItemList::ensureMax\\(\\): memory allocation failure for '%zu' bytes\\n\", sizeof\\(type\\)\\)\;$"
+  "${CMAKE_CURRENT_SOURCE_DIR}" # patch directory containing finished, patched files
+)
+
+patch(
+  "${gavr_SOURCE_DIR}"          # source directory
+  "src/typeset/typeset.cpp"   # name of the file to patch
+  "^[ \t]+printf\\(\"typesetState::addLine\\(\\): memory allocation failure for '%zu' bytes\\n\", sizeof\\(double\\) * 2 * nbVertices\\)\;$"
+  "${CMAKE_CURRENT_SOURCE_DIR}" # patch directory containing finished, patched files
+)
+
+patch(
+  "${gavr_SOURCE_DIR}"          # source directory
+  "src/c3ga/c3ga.cpp"   # name of the file to patch
+  "^[ \t]+printf\\(\"c3ga_ben::addName\\(\\): memory allocation failure for '%zu' bytes\\n\", sizeof\\(c3gai_be*\\) * \\(m_nbBen + 1\\)\\)\;$"
+  "${CMAKE_CURRENT_SOURCE_DIR}" # patch directory containing finished, patched files
+)
+
+patch(
+  "${gavr_SOURCE_DIR}"          # source directory
+  "src/c5ga/c5ga.cpp"   # name of the file to patch
+  "^[ \t]+printf\\(\"c5ga_ben::addName\\(\\): memory allocation failure for '%zu' bytes\\n\", sizeof\\(c5gai_be*\\) * \\(m_nbBen + 1\\)\\)\;$"
+  "${CMAKE_CURRENT_SOURCE_DIR}" # patch directory containing finished, patched files
+)
+
+patch(
+  "${gavr_SOURCE_DIR}"          # source directory
+  "src/e3ga/e3ga.cpp"   # name of the file to patch
+  "^[ \t]+printf\\(\"e3ga_ben::addName\\(\\): memory allocation failure for '%zu' bytes\\n\", sizeof\\(e3gai_be*\\) * \\(m_nbBen + 1\\)\\)\;$"
+  "${CMAKE_CURRENT_SOURCE_DIR}" # patch directory containing finished, patched files
+)
+
+patch(
+  "${gavr_SOURCE_DIR}"          # source directory
+  "src/i2ga/i2ga.cpp"   # name of the file to patch
+  "^[ \t]+printf\\(\"i2ga_ben::addName\\(\\): memory allocation failure for '%d' bytes\\n\", sizeof\\(i2gai_be*\\) * \\(m_nbBen + 1\\)\\)\;$"
+  "${CMAKE_CURRENT_SOURCE_DIR}" # patch directory containing finished, patched files
+)
+
+patch(
+  "${gavr_SOURCE_DIR}"          # source directory
+  "src/p3ga/p3ga.cpp"   # name of the file to patch
+  "^[ \t]+printf\\(\"p3ga_ben::addName\\(\\): memory allocation failure for '%d' bytes\\n\", sizeof\\(p3gai_be*\\) * \\(m_nbBen + 1\\)\\)\;$"
   "${CMAKE_CURRENT_SOURCE_DIR}" # patch directory containing finished, patched files
 )
 
@@ -171,7 +229,8 @@ set_target_properties(${target} PROPERTIES WIN32_EXECUTABLE $<$<BOOL:WIN32>:ON>)
 #
 
 target_compile_features(${target} PRIVATE cxx_std_14)
-target_compile_options(${target} PRIVATE $<IF:$<STREQUAL:${CMAKE_CXX_COMPILER_FRONTEND_VARIANT},MSVC>,/W3,-Wall>) # but not -Wextra
+# target_compile_options(${target} PRIVATE $<IF:$<STREQUAL:${CMAKE_CXX_COMPILER_FRONTEND_VARIANT},MSVC>,/W3,-Wall>) # but not -Wextra
+target_compile_options(${target} PRIVATE $<IF:$<STREQUAL:${CMAKE_CXX_COMPILER_FRONTEND_VARIANT},MSVC>,/W3,-Wno-parentheses>)
 
 if (WIN32)
   target_compile_definitions(

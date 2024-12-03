@@ -1,12 +1,11 @@
 # Code generator for the GAViewer console
 #
 
-message(STATUS "Building codegen ...")
+message(DEBUG "Entering the GAViewer codegen subdirectory ...")
 
 set(target "gencode")	# as of CMake 3.31, "codegen" is a CMake reserved target name
 
-set(CODEGEN_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../src/console/codegen")
-
+# CODEGEN_DIR set in the parent directory (GAViewer)
 add_executable(${target}
   ${CODEGEN_DIR}/codetemplate.cpp
   ${CODEGEN_DIR}/main.cpp
