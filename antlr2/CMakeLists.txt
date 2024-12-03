@@ -69,6 +69,13 @@ patch(
   "${CMAKE_CURRENT_SOURCE_DIR}"   # patch directory containing finished, patched files
 )
 
+patch(
+  "${antlr2_SOURCE_DIR}"          # source directory
+  "lib/cpp/src/String.cpp"        # name of the file to patch
+  "^[ \t]+sprintf\\(tmp,\"%zu\",rhs\\)\;$"  # what should be in the patched (revised) file
+  "${CMAKE_CURRENT_SOURCE_DIR}"   # patch directory containing finished, patched files
+)
+
 ##########################################################################
 #
 #	  ANTLR library (target to build)
