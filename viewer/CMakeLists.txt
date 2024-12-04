@@ -50,7 +50,14 @@ if (WIN32)
     "${CMAKE_CURRENT_SOURCE_DIR}" # patch dir (containing the patched file)
     "${gavr_SOURCE_DIR}"          # source dir (containing file to patch)
     "src/mainwindow.h"            # [relative path/]name of the file to patch
-    "^#include <windows.h>$"      # regex (for a string that must be in the patched file)
+    "^#include <windows\.h>$"      # regex (for a string that must be in the patched file)
+  )
+  
+  patch(
+    "${CMAKE_CURRENT_SOURCE_DIR}"
+    "${gavr_SOURCE_DIR}"
+    "src/gaviewer.rc"
+    "^#include \"windows\.h\"$"
   )
 endif()
 
@@ -79,7 +86,7 @@ patch(
   "${CMAKE_CURRENT_SOURCE_DIR}"
   "${gavr_SOURCE_DIR}"
   "src/typeset/typeset.cpp"
-  "^[ \t]+printf\\(\"typesetState::addLine\\(\\): memory allocation failure for '%zu' bytes\\\\n\", sizeof\\(double\\) * 2 * nbVertices\\)\;$"
+  "^[ \t]+printf\\(\"typesetState::addLine\\(\\): memory allocation failure for '%zu' bytes\\\\n\", sizeof\\(double\\) \\* 2 \\* nbVertices\\)\;$"
 )
 
 patch(
@@ -218,8 +225,13 @@ add_executable(
   ${target}
   ${_source_files}
 )
-# On Windows, create an executable file with a WinMain entry point:
+# On Windows, it must be an executable with a WinMain entry point:
 set_target_properties(${target} PROPERTIES WIN32_EXECUTABLE $<$<BOOL:WIN32>:ON>)
+# Add resources (icon) on Windows
+if (WIN32)
+  target_sources(${target} PRIVATE "${gavr_SOURCE_DIR}/src/gaviewer.rc")
+endif()
+
 
 ##########################################################################
 #
