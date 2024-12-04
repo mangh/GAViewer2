@@ -1,10 +1,10 @@
 ##########################################################################
 #
 #   patch(
-#     <source_dir>  # source directory containing file to patch
-#     <file_name>   # name of the file to patch
-#     <regex>       # regex for what must be in the patched (revised) file
-#     <patch_dir>   # patch directory containing previously prepared, patched file
+#     <patch_dir>   # patch dir (containing the patched file)
+#     <source_dir>  # source dir (containing file to patch)
+#     <file_name>   # [relative path/]name of the file to patch
+#     <regex>       # regex (for a string that must be in the patched file)
 #   )
 #   
 #   The function copies the original (unpatched) file:
@@ -17,7 +17,7 @@
 #
 #
 
-function(patch source_dir file_name regex patch_dir)
+function(patch patch_dir source_dir file_name regex)
 
   list(APPEND CMAKE_MESSAGE_INDENT "(patch) ")
 

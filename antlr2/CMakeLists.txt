@@ -63,17 +63,17 @@ cmake_path(SET ANTLR_SRC_DIR "${ANTLR_TOP_DIR}/src")
 
 include(Patch)
 patch(
-  "${antlr2_SOURCE_DIR}"          # source directory
-  "lib/cpp/antlr/CharScanner.hpp" # name of the file to patch
+  "${CMAKE_CURRENT_SOURCE_DIR}"   # patch dir (containing the patched file)
+  "${antlr2_SOURCE_DIR}"          # source dir (containing file to patch)
+  "lib/cpp/antlr/CharScanner.hpp" # [relative path/]name of the file to patch
   "^#include <functional>$"       # regex (for a string that must be in the patched file)
-  "${CMAKE_CURRENT_SOURCE_DIR}"   # patch directory providing patched files
 )
 
 patch(
-  "${antlr2_SOURCE_DIR}"          # source directory
-  "lib/cpp/src/String.cpp"        # name of the file to patch
-  "^[ \t]+sprintf\\(tmp,\"%zu\",rhs\\)\;$"  # regex (for a string that must be in the patched file)
-  "${CMAKE_CURRENT_SOURCE_DIR}"   # patch directory providing patched files
+  "${CMAKE_CURRENT_SOURCE_DIR}"
+  "${antlr2_SOURCE_DIR}"
+  "lib/cpp/src/String.cpp"
+  "^[ \t]+sprintf\\(tmp,\"%zu\",rhs\\)\;$"
 )
 
 ##########################################################################
