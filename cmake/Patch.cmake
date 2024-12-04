@@ -30,7 +30,7 @@ function(patch patch_dir source_dir file_name regex)
 
     # Checks whether the source file is already patched
     # (the regex variable specifies what should be in the revised file)
-    file(STRINGS "${_source_file}" _patch_applied REGEX ${regex})
+    file(STRINGS "${_source_file}" _patch_applied REGEX "${regex}" LIMIT_COUNT 1)
     if (_patch_applied)
 
       message(DEBUG "The ${_source_file} file has already been patched.")
