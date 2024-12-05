@@ -5,6 +5,31 @@ message(DEBUG "Entering the GAViewer subdirectory ...")
 
 ##########################################################################
 #
+#   Directory compile options
+#
+#   When compiling GAViewer source code (which is years old), 
+#   many deprecation warnings appear. It's worth turning them off to get
+#   a clearer picture of the compilation and spot more serious issues (if any).
+#
+
+if (CMAKE_CXX_COMPILER_FRONTEND_VARIANT MATCHES "MSVC")
+
+  add_compile_options(
+    -D_CRT_SECURE_NO_WARNINGS
+    -wd4996
+  )
+
+elseif (CMAKE_CXX_COMPILER_FRONTEND_VARIANT MATCHES "GNU")
+
+  add_compile_options(
+    -Wno-deprecated
+    -Wno-deprecated-non-prototype # GAViewer
+  )
+
+endif()
+
+##########################################################################
+#
 #	  Downloading source files
 #
 #   Name: GAViewer-0.86.tar.gz

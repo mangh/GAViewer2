@@ -44,20 +44,6 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 #   OPTIONS
 #
 
-# There are so many warnings in all the packages in use that it is
-# worth eliminating at least some of them (the least dangerous ones):
-if (CMAKE_CXX_COMPILER_FRONTEND_VARIANT MATCHES "MSVC")
-  add_compile_options(-D_CRT_SECURE_NO_WARNINGS)
-elseif (CMAKE_CXX_COMPILER_FRONTEND_VARIANT MATCHES "GNU")
-  add_compile_options(
-    -Wno-deprecated
-    # -Wno-deprecated-declarations
-    # -Wno-unused-function
-    # -Wno-unused-parameter
-    # -Wno-unused-variable
-  )
-endif()
-
 #########
 # GNU standard directories for installation
 include(GNUInstallDirs)
