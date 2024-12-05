@@ -4,7 +4,7 @@
 #     <patch_dir>   # patch dir (containing the patched file)
 #     <source_dir>  # source dir (containing file to patch)
 #     <file_name>   # [relative path/]name of the file to patch
-#     <regex>       # regex (for a string that must be in the patched file)
+#     <regex>       # regex for a string that is unique to the original file (identifies the original)
 #   )
 #   
 #   The function copies the original (unpatched) file:
@@ -24,18 +24,15 @@ function(patch patch_dir source_dir file_name regex)
   set(_source_file "${source_dir}/${file_name}")
 
   if (NOT EXISTS "${_source_file}")
-    message(WARNING "The ${_source_file} file (to be patched) does not exist.")
+    message(ERROR "The ${_source_file} file (to be patched) does not exist.")
 
   else()
 
+    set(_adverb "already")
     # Checks whether the source file is already patched
     # (the regex variable specifies what should be in the revised file)
     file(STRINGS "${_source_file}" _patch_applied REGEX "${regex}" LIMIT_COUNT 1)
-    if (_patch_applied)
-
-      message(DEBUG "The ${_source_file} file has already been patched.")
-
-    else()
+    if (NOT _patch_applied)
 
       set(_patch_file "${patch_dir}/${file_name}")
 
@@ -47,9 +44,10 @@ function(patch patch_dir source_dir file_name regex)
       # ... and put the patched file instead
       file(COPY_FILE "${_patch_file}.patched" "${_source_file}")
 
-      message(DEBUG "The ${_source_file} file has been patched.")
+      set(_adverb "just")
 
     endif()
+    message(DEBUG "The ${_source_file} file has ${_adverb} been patched.")
     
   endif()
 
