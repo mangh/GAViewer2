@@ -4,7 +4,7 @@
 #     <patch_dir>   # patch dir (containing the patched file)
 #     <source_dir>  # source dir (containing file to patch)
 #     <file_name>   # [relative path/]name of the file to patch
-#     <regex>       # regex for a string that is unique to the original file (identifies the original)
+#     <regex>       # regex for a string that is unique to the patched file (identifies the patch)
 #   )
 #   
 #   The function copies the original (unpatched) file:

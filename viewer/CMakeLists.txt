@@ -75,7 +75,7 @@ if (WIN32)
     "${CMAKE_CURRENT_SOURCE_DIR}" # patch dir (containing the patched file)
     "${gavr_SOURCE_DIR}"          # source dir (containing file to patch)
     "src/mainwindow.h"            # [relative path/]name of the file to patch
-    "^#include <windows\.h>$"      # regex (for a string that must be in the patched file)
+    "^#include <windows\.h>$"     # regex for a string that is unique to the patched file (identifies the patch)
   )
   
   patch(
