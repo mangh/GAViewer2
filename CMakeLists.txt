@@ -110,8 +110,5 @@ add_subdirectory ("fltk")
 # ANTLR v2 stable version is 2.7.7 (released November 1, 2006)
 add_subdirectory ("antlr2")
 
-# # GAViewer (multi-purpose program for geometric algebra computations and visualization)
-# add_subdirectory("GAViewer-0.86")
-
 # GAViewer (multi-purpose program for geometric algebra computations and visualization)
 add_subdirectory("viewer")

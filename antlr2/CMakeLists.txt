@@ -1,11 +1,11 @@
-# ANTLR v2 stable version is 2.7.7 (released November 1, 2006)
+# ANTLR library version 2.7.7 (November 1, 2006)
 #
 
 message(DEBUG "Entering the ANTLR2 subdirectory ...")
 
 ##########################################################################
 #
-#   Directory compile options
+#   ANTLR2 directory compile options
 #
 #   When compiling ANTLR2 source code (which is years old), 
 #   many deprecation warnings appear. It's worth turning them off to get
@@ -14,11 +14,17 @@ message(DEBUG "Entering the ANTLR2 subdirectory ...")
 
 if (CMAKE_CXX_COMPILER_FRONTEND_VARIANT MATCHES "MSVC")
 
-  add_compile_options(-D_CRT_SECURE_NO_WARNINGS)
+  add_compile_options(
+    -D_CRT_SECURE_NO_WARNINGS
+    -W3     # production quality warnings
+  )
 
 elseif (CMAKE_CXX_COMPILER_FRONTEND_VARIANT MATCHES "GNU")
 
-  add_compile_options(-Wno-deprecated)
+  add_compile_options(
+    -Wall
+    -Wno-deprecated
+  )
 
 endif()
 
@@ -27,11 +33,11 @@ endif()
 #   PROJECT
 #
 
-set(ANTLR_VERSION_MAJOR 2)
-set(ANTLR_VERSION_MINOR 7)
-set(ANTLR_VERSION_PATCH 7)
+set(ANTLR_VER_MAJOR 2)
+set(ANTLR_VER_MINOR 7)
+set(ANTLR_VER_PATCH 7)
 
-set(ANTLR_VERSION "${ANTLR_VERSION_MAJOR}.${ANTLR_VERSION_MINOR}.${ANTLR_VERSION_PATCH}")
+set(ANTLR_VERSION "${ANTLR_VER_MAJOR}.${ANTLR_VER_MINOR}.${ANTLR_VER_PATCH}")
 
 project(antlr
   VERSION "${ANTLR_VERSION}"
@@ -40,10 +46,10 @@ project(antlr
 )
 
 # Naming:
-set(ANTLR_LIB_VER "antlr${ANTLR_VERSION_MAJOR}${ANTLR_VERSION_MINOR}")
-set(ANTLR_LIB_VER_CFG "${ANTLR_LIB_VER}$<$<CONFIG:Debug>:d>")
-# Path "${CMAKE_SOURCE_DIR}/antlr2/antlr27[d]?.{lib|a}"
-set(ANTLR_LIB_PATH "${CMAKE_CURRENT_BINARY_DIR}/${ANTLR_LIB_VER}")
+set(ANTLR_FILENAME "antlr${ANTLR_VER_MAJOR}${ANTLR_VER_MINOR}")
+if (CMAKE_BUILD_TYPE MATCHES "Debug")
+  set(ANTLR_FILENAME "${ANTLR_FILENAME}d")
+endif()
 
 ##########################################################################
 #
@@ -192,8 +198,8 @@ add_library(${target}
 
 set_target_properties(${target}
     PROPERTIES 
-#  PUBLIC_HEADER "${ANTLR_PUBLIC_HEADERS}"
-  OUTPUT_NAME "${ANTLR_LIB_VER_CFG}"
+  # PUBLIC_HEADER "${ANTLR_PUBLIC_HEADERS}"
+  OUTPUT_NAME "${ANTLR_FILENAME}"
 )
 
 ##########################################################################
@@ -201,13 +207,13 @@ set_target_properties(${target}
 #   Compile & Link Options
 #
 
-target_compile_options(${target} PRIVATE $<IF:$<STREQUAL:${CMAKE_CXX_COMPILER_FRONTEND_VARIANT},MSVC>,/W3 /wd4996,-Wall>) # but not -Wextra
+target_compile_options(${target} PRIVATE $<IF:$<STREQUAL:${CMAKE_CXX_COMPILER_FRONTEND_VARIANT},MSVC>,-W3 -wd4996,-Wall>)
 target_include_directories(${target} PUBLIC "${ANTLR_TOP_DIR}")
 
 ##########################################################################
 #
-#   Antlr2 as a CMake target (to communicate
-#   the Antlr2 Usage Requirements to importers)
+#   Antlr2 as a CMake target
+#   (to communicate the Antlr2 Usage Requirements to importers)
 #
 
 if(antlr2_POPULATED)
@@ -216,9 +222,7 @@ if(antlr2_POPULATED)
     set_target_properties(antlr2::antlr2
         PROPERTIES
       INTERFACE_INCLUDE_DIRECTORIES "${ANTLR_TOP_DIR}"
-#      IMPORTED_LOCATION "c:/Users/marek/source/repos/GAViewer/out/build/x86-Debug/antlr2/antlr27d.lib"
-      IMPORTED_LOCATION "${ANTLR_LIB_PATH}${CMAKE_LINK_LIBRARY_SUFFIX}"
-      IMPORTED_LOCATION_DEBUG "${ANTLR_LIB_PATH}d${CMAKE_LINK_LIBRARY_SUFFIX}"
+      IMPORTED_LOCATION "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_STATIC_LIBRARY_PREFIX}${ANTLR_FILENAME}${CMAKE_STATIC_LIBRARY_SUFFIX}"
       IMPORTED_LINK_INTERFACE_LANGUAGES "C++"
     )
     # include(DebugTargetProperties OPTIONAL RESULT_VARIABLE DebugTargetProperties_FOUND)

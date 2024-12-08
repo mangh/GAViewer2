@@ -5,7 +5,7 @@ message(DEBUG "Entering the GAViewer subdirectory ...")
 
 ##########################################################################
 #
-#   Directory compile options
+#   GAViewer directory compile options
 #
 #   When compiling GAViewer source code (which is years old), 
 #   many deprecation warnings appear. It's worth turning them off to get
@@ -15,16 +15,23 @@ message(DEBUG "Entering the GAViewer subdirectory ...")
 if (CMAKE_CXX_COMPILER_FRONTEND_VARIANT MATCHES "MSVC")
 
   add_compile_options(
-    -D_CRT_SECURE_NO_WARNINGS
-    -wd4996
+    -D_CRT_SECURE_NO_WARNINGS   # deprecation warnings for the older, less secure functions
+    -W3                         # level 1, 2 and 3 (production quality) warnings
+    -wd4996                     # deprecated function, class member, variable, or typedef
   )
 
 elseif (CMAKE_CXX_COMPILER_FRONTEND_VARIANT MATCHES "GNU")
 
   add_compile_options(
+    -Wall
     -Wno-deprecated
-    -Wno-deprecated-non-prototype # GAViewer
+    -Wno-unused-variable
   )
+  if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+    add_compile_options(
+      -Wno-deprecated-non-prototype # function declaration without a prototype is deprecated in all versions of C
+    )
+  endif()
 
 endif()
 
@@ -250,10 +257,10 @@ add_executable(
   ${target}
   ${_source_files}
 )
-# On Windows, it must be an executable with a WinMain entry point:
-set_target_properties(${target} PROPERTIES WIN32_EXECUTABLE $<$<BOOL:WIN32>:ON>)
-# Add resources (icon) on Windows
 if (WIN32)
+  # On Windows, it must be an executable with a WinMain entry point:
+  set_target_properties(${target} PROPERTIES WIN32_EXECUTABLE $<$<BOOL:WIN32>:ON>)
+  # Add resources (icon) on Windows
   target_sources(${target} PRIVATE "${gavr_SOURCE_DIR}/src/gaviewer.rc")
 endif()
 
@@ -264,8 +271,7 @@ endif()
 #
 
 target_compile_features(${target} PRIVATE cxx_std_14)
-# target_compile_options(${target} PRIVATE $<IF:$<STREQUAL:${CMAKE_CXX_COMPILER_FRONTEND_VARIANT},MSVC>,/W3,-Wall>) # but not -Wextra
-target_compile_options(${target} PRIVATE $<IF:$<STREQUAL:${CMAKE_CXX_COMPILER_FRONTEND_VARIANT},MSVC>,/W3,-Wno-parentheses>)
+target_compile_options(${target} PRIVATE $<IF:$<STREQUAL:${CMAKE_CXX_COMPILER_FRONTEND_VARIANT},MSVC>,-W3,-Wall -Wno-parentheses>)
 
 if (WIN32)
   target_compile_definitions(
@@ -273,7 +279,6 @@ if (WIN32)
     PRIVATE WIN32             # Application being built for Windows
     PRIVATE WIN32_NO_CONSOLE  # without a console
     PRIVATE _MBCS             # for Multibyte Character Set
-    # PRIVATE _CRT_SECURE_NO_WARNINGS # already defined in the top level CMakeLists.txt
   )
 endif()
 
@@ -336,4 +341,3 @@ install(TARGETS ${target}
   RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
   ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
 )
-
