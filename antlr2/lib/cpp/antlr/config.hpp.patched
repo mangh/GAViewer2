@@ -36,7 +36,7 @@
 
 /******************************************************************************/
 /*{{{ Systems based on the Linux kernel */
-#ifdef __linux__
+#if defined(__linux__)
 // The standard C library on Linux provides the strcasecmp() function
 // for case-insensitive string comparison
 #include <strings.h>
