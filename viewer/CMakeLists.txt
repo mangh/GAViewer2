@@ -77,19 +77,25 @@ message(DEBUG "gavr_BINARY_DIR = ${gavr_BINARY_DIR}")
 
 include(Patch)
 
-if (WIN32)
+if (CMAKE_SYSTEM_NAME MATCHES "Windows")
   patch(
     "${CMAKE_CURRENT_SOURCE_DIR}" # patch dir (containing the patched file)
     "${gavr_SOURCE_DIR}"          # source dir (containing file to patch)
     "src/mainwindow.h"            # [relative path/]name of the file to patch
     "^#include <windows\.h>$"     # regex for a string that is unique to the patched file (identifies the patch)
   )
-  
   patch(
     "${CMAKE_CURRENT_SOURCE_DIR}"
     "${gavr_SOURCE_DIR}"
     "src/gaviewer.rc"
     "^#include \"windows\.h\"$"
+  )
+elseif (CMAKE_SYSTEM_NAME MATCHES "Linux")
+  patch(
+    "${CMAKE_CURRENT_SOURCE_DIR}"
+    "${gavr_SOURCE_DIR}"
+    "src/osdep.h"
+    "^#elif defined\\(__linux__\\)$"
   )
 endif()
 
