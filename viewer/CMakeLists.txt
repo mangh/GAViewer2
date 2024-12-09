@@ -263,10 +263,10 @@ add_executable(
   ${target}
   ${_source_files}
 )
-if (WIN32)
-  # On Windows, it must be an executable with a WinMain entry point:
-  set_target_properties(${target} PROPERTIES WIN32_EXECUTABLE $<$<BOOL:WIN32>:ON>)
-  # Add resources (icon) on Windows
+if (CMAKE_SYSTEM_NAME MATCHES "Windows")
+  # The executable must have a WinMain entry point
+  set_target_properties(${target} PROPERTIES WIN32_EXECUTABLE ON)
+  # Add resources (icon)
   target_sources(${target} PRIVATE "${gavr_SOURCE_DIR}/src/gaviewer.rc")
 endif()
 
@@ -279,7 +279,7 @@ endif()
 target_compile_features(${target} PRIVATE cxx_std_14)
 target_compile_options(${target} PRIVATE $<IF:$<STREQUAL:${CMAKE_CXX_COMPILER_FRONTEND_VARIANT},MSVC>,-W3,-Wall -Wno-parentheses>)
 
-if (WIN32)
+if (CMAKE_SYSTEM_NAME MATCHES "Windows")
   target_compile_definitions(
       ${target}
     PRIVATE WIN32             # Application being built for Windows
