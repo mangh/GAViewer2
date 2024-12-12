@@ -103,7 +103,7 @@ elseif (CMAKE_SYSTEM_NAME MATCHES "Linux")
 #     "${CMAKE_CURRENT_SOURCE_DIR}"
 #     "${gavr_SOURCE_DIR}"
 #     "src/state.h"
-#     "^[ \t]+std::unique_ptr<consoleStmtListStmt> m_dynStmt;$"
+#     "^[ \t]+std::unique_ptr<consoleStmtListStmt> m_dynStmt\;$"
 #   )
 endif()
 
@@ -298,7 +298,6 @@ endif()
 #
 
 target_compile_features(${target} PRIVATE cxx_std_14)
-#target_compile_options(${target} PRIVATE $<IF:$<STREQUAL:${CMAKE_CXX_COMPILER_FRONTEND_VARIANT},MSVC>,-W3,-Wall -Wno-parentheses>)
 
 if (CMAKE_SYSTEM_NAME MATCHES "Windows")
   target_compile_definitions(
