@@ -17,7 +17,7 @@ add_executable(${target}
 #
 
 target_compile_features(${target} PRIVATE cxx_std_14)
-target_compile_options(${target} PRIVATE $<IF:$<STREQUAL:${CMAKE_CXX_COMPILER_FRONTEND_VARIANT},MSVC>,/W3,-Wall -Wextra>)
+target_compile_options(${target} PRIVATE $<IF:$<STREQUAL:${CMAKE_CXX_COMPILER_FRONTEND_VARIANT},MSVC>,-W3,-Wall>)
 
 # ##########################################################################
 # #

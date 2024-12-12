@@ -28,6 +28,10 @@ elseif (CMAKE_CXX_COMPILER_FRONTEND_VARIANT MATCHES "GNU")
 
 endif()
 
+if(CMAKE_SYSTEM_NAME MATCHES "FreeBSD")
+  include_directories(SYSTEM "/usr/local/include")
+endif()
+
 ##########################################################################
 #
 #   Downloading source files
