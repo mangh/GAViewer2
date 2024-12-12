@@ -25,6 +25,7 @@ elseif (CMAKE_CXX_COMPILER_FRONTEND_VARIANT MATCHES "GNU")
   add_compile_options(
     -Wall
     -Wno-deprecated
+    -Wno-parentheses
     -Wno-unused-variable
   )
   if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
@@ -97,7 +98,27 @@ elseif (CMAKE_SYSTEM_NAME MATCHES "Linux")
     "src/osdep.h"
     "^#elif defined\\(__linux__\\)$"
   )
+# elseif (CMAKE_SYSTEM_NAME MATCHES "FreeBSD")
+#   patch(
+#     "${CMAKE_CURRENT_SOURCE_DIR}"
+#     "${gavr_SOURCE_DIR}"
+#     "src/state.h"
+#     "^[ \t]+std::unique_ptr<consoleStmtListStmt> m_dynStmt;$"
+#   )
 endif()
+
+patch(
+  "${CMAKE_CURRENT_SOURCE_DIR}"
+  "${gavr_SOURCE_DIR}"
+  "src/state.h"
+  "^[ \t]+std::unique_ptr<consoleStmtListStmt> m_dynStmt\;$"
+)
+patch(
+  "${CMAKE_CURRENT_SOURCE_DIR}"
+  "${gavr_SOURCE_DIR}"
+  "src/ui.cpp"
+  "^// #ifndef __MACH__$"
+)
 
 patch(
   "${CMAKE_CURRENT_SOURCE_DIR}"
@@ -277,7 +298,7 @@ endif()
 #
 
 target_compile_features(${target} PRIVATE cxx_std_14)
-target_compile_options(${target} PRIVATE $<IF:$<STREQUAL:${CMAKE_CXX_COMPILER_FRONTEND_VARIANT},MSVC>,-W3,-Wall -Wno-parentheses>)
+#target_compile_options(${target} PRIVATE $<IF:$<STREQUAL:${CMAKE_CXX_COMPILER_FRONTEND_VARIANT},MSVC>,-W3,-Wall -Wno-parentheses>)
 
 if (CMAKE_SYSTEM_NAME MATCHES "Windows")
   target_compile_definitions(
@@ -319,12 +340,24 @@ target_link_libraries(${target}
   fltk::gl
   fltk::png
   antlr2::antlr2
+  # png # FreeBSD requires it! Why?
 )
 
 set_target_properties(${target}
     PROPERTIES
   LINK_WHAT_YOU_USE ON
 )
+
+get_target_property(_co ${target} COMPILE_OPTIONS)
+message(DEBUG "COMPILE_OPTIONS = ${_co}")
+# COMPILE_OPTIONS = -Wall;-Wno-deprecated;-Wno-unused-variable;-Wno-deprecated-non-prototype;$<IF:$<STREQUAL:GNU,MSVC>,-W3,-Wall;-Wno-parentheses>
+
+get_target_property(_cd ${target} COMPILE_DEFINITIONS)
+message(DEBUG "COMPILE_DEFINITIONS = ${_cd}")
+
+get_target_property(_cf ${target} COMPILE_FEATURES)
+message(DEBUG "COMPILE_FEATURES = ${_cf}")
+
 
 ##########################################################################
 #

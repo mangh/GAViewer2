@@ -32,6 +32,12 @@ project(
   DESCRIPTION "Geometric Algebra Viewer"
 )
 
+# To avoid portability issues, language extensions (enabled by default)
+# are disabled before any target is created. This allows to stick to the
+# language standard such as "-std=c++17" instead of "-std=gnu++17" (which
+# is c++17 with GNU extensions):
+set(CMAKE_CXX_EXTENSIONS OFF)
+
 # Apps & libraries versioning:
 set(APP_VER "${APP_VERSION_MAJOR}${APP_VERSION_MINOR}")
 set(APP_VER_CFG "${APP_VER}$<$<CONFIG:Debug>:d>")
