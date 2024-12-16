@@ -231,13 +231,15 @@ if(antlr2_POPULATED)
     add_library(antlr2::antlr2 UNKNOWN IMPORTED GLOBAL)
     set_target_properties(antlr2::antlr2
         PROPERTIES
+      SYSTEM OFF
       INTERFACE_INCLUDE_DIRECTORIES "${ANTLR_TOP_DIR}"
       IMPORTED_LOCATION "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_STATIC_LIBRARY_PREFIX}${ANTLR_FILENAME}${CMAKE_STATIC_LIBRARY_SUFFIX}"
       IMPORTED_LINK_INTERFACE_LANGUAGES "C++"
     )
-    # include(DebugTargetProperties OPTIONAL RESULT_VARIABLE DebugTargetProperties_FOUND)
-    # if (DebugTargetProperties_FOUND)
-    #   target_properties_report("antlr2::antlr2" TARGET_IMPORTED_PROPERTIES TARGET_INTERFACE_PROPERTIES)
-    # endif()
+    include(DebugTargetProperties OPTIONAL RESULT_VARIABLE DebugTargetProperties_FOUND)
+    if (DebugTargetProperties_FOUND)
+      report_target_properties(${target})
+      report_target_properties(antlr2::antlr2)
+    endif()
   endif()
 endif()

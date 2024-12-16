@@ -67,7 +67,6 @@ message(DEBUG "gavr_BINARY_DIR = ${gavr_BINARY_DIR}")
 # #
 # #
 # 
-# set(CODEGEN_DIR "${gavr_SOURCE_DIR}/src/console/codegen")
 # add_subdirectory("codegen")
 
 ##########################################################################
@@ -103,7 +102,7 @@ elseif (CMAKE_SYSTEM_NAME MATCHES "Linux")
 #     "${CMAKE_CURRENT_SOURCE_DIR}"
 #     "${gavr_SOURCE_DIR}"
 #     "src/state.h"
-#     "^[ \t]+std::unique_ptr<consoleStmtListStmt> m_dynStmt\;$"
+#     "^[ \t]+std::unique_ptr<consoleStmtListStmt> m_dynStmt;$"
 #   )
 endif()
 
@@ -297,8 +296,6 @@ endif()
 #   COMPILE DEFINITIONS & OPTIONS
 #
 
-target_compile_features(${target} PRIVATE cxx_std_14)
-
 if (CMAKE_SYSTEM_NAME MATCHES "Windows")
   target_compile_definitions(
       ${target}
@@ -334,29 +331,19 @@ else()
 endif()
 
 target_link_libraries(${target}
-    PRIVATE
-  fltk::fltk
-  fltk::gl
-  fltk::png
-  antlr2::antlr2
-  # png # FreeBSD requires it! Why?
+  PRIVATE fltk::png
+  PRIVATE fltk::gl
+  PRIVATE fltk::fltk
+  PRIVATE antlr2::antlr2
 )
+
+target_include_directories(${target}
+  PRIVATE $<TARGET_PROPERTY:fltk::fltk,INTERFACE_INCLUDE_DIRECTORIES>)
 
 set_target_properties(${target}
     PROPERTIES
   LINK_WHAT_YOU_USE ON
 )
-
-get_target_property(_co ${target} COMPILE_OPTIONS)
-message(DEBUG "COMPILE_OPTIONS = ${_co}")
-# COMPILE_OPTIONS = -Wall;-Wno-deprecated;-Wno-unused-variable;-Wno-deprecated-non-prototype;$<IF:$<STREQUAL:GNU,MSVC>,-W3,-Wall;-Wno-parentheses>
-
-get_target_property(_cd ${target} COMPILE_DEFINITIONS)
-message(DEBUG "COMPILE_DEFINITIONS = ${_cd}")
-
-get_target_property(_cf ${target} COMPILE_FEATURES)
-message(DEBUG "COMPILE_FEATURES = ${_cf}")
-
 
 ##########################################################################
 #
@@ -379,3 +366,8 @@ install(TARGETS ${target}
   RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
   ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
 )
+
+include(DebugTargetProperties OPTIONAL RESULT_VARIABLE DebugTargetProperties_FOUND)
+if (DebugTargetProperties_FOUND)
+  report_target_properties(${target})
+endif()

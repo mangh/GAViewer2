@@ -32,6 +32,8 @@ project(
   DESCRIPTION "Geometric Algebra Viewer"
 )
 
+set(CMAKE_CXX_STANDARD 14)
+
 # To avoid portability issues, language extensions (enabled by default)
 # are disabled before any target is created. This allows to stick to the
 # language standard such as "-std=c++17" instead of "-std=gnu++17" (which
