@@ -1,54 +1,102 @@
-set(TARGET_IMPORTED_PROPERTIES
-  "IMPORTED"
-  "IMPORTED_COMMON_LANGUAGE_RUNTIME"
-  "IMPORTED_CONFIGURATIONS"
-  "IMPORTED_GLOBAL"
-  "IMPORTED_IMPLIB"
-  "IMPORTED_LIBNAME"
-  "IMPORTED_LINK_DEPENDENT_LIBRARIES"
-  "IMPORTED_LINK_INTERFACE_LANGUAGES"
-  "IMPORTED_LINK_INTERFACE_LIBRARIES"
-  "IMPORTED_LINK_INTERFACE_MULTIPLICITY"
-  "IMPORTED_LOCATION"
-  "IMPORTED_LOCATION_DEBUG"
-  "IMPORTED_LOCATION_RELEASE"
-  "IMPORTED_NO_SONAME"
-  "IMPORTED_NO_SYSTEM"
-  "IMPORTED_OBJECTS"
-  "IMPORTED_SONAME"
-  "IMPORT_PREFIX"
-  "IMPORT_SUFFIX"
-)
+function(report_target_property target property)
 
-set(TARGET_INTERFACE_PROPERTIES
-  "INTERFACE_AUTOUIC_OPTIONS"
-  "INTERFACE_COMPILE_DEFINITIONS"
-  "INTERFACE_COMPILE_FEATURES"
-  "INTERFACE_COMPILE_OPTIONS"
-  "INTERFACE_HEADER_SETS"
-  "INTERFACE_INCLUDE_DIRECTORIES"
-  "INTERFACE_LINK_DEPENDS"
-  "INTERFACE_LINK_DIRECTORIES"
-  "INTERFACE_LINK_LIBRARIES"
-  "INTERFACE_LINK_OPTIONS"
-  "INTERFACE_POSITION_INDEPENDENT_CODE"
-  "INTERFACE_PRECOMPILE_HEADERS"
-  "INTERFACE_SOURCES"
-  "INTERFACE_SYSTEM_INCLUDE_DIRECTORIES"
-)
+  get_target_property(_value ${target} ${property})
+  if (_value)
+    message(DEBUG "${property} = ${_value}")
+  endif()
 
-function(target_properties_report target)
+endfunction()
 
-  message(DEBUG "${target} target properties:")
+function(report_target_properties target)
 
-  list(APPEND CMAKE_MESSAGE_INDENT "  ")
+  list(APPEND CMAKE_MESSAGE_INDENT "${target}.")
 
-  foreach(property IN LISTS ${ARGN})
-    get_target_property(property_value ${target} ${property})
-    if(property_value)
-      message(DEBUG "${property} = ${property_value}")
-    endif()
-  endforeach()
+  report_target_property(${target} ALIAS_GLOBAL)
+  report_target_property(${target} ALIASED_TARGET)
+  report_target_property(${target} BINARY_DIR)
+  report_target_property(${target} C_EXTENSIONS)
+  report_target_property(${target} C_STANDARD)
+  report_target_property(${target} C_STANDARD_REQUIRED)
+  report_target_property(${target} COMPILE_DEFINITIONS)
+  report_target_property(${target} COMPILE_FEATURES)
+  report_target_property(${target} COMPILE_FLAGS)
+  report_target_property(${target} COMPILE_OPTIONS)
+  report_target_property(${target} CXX_EXTENSIONS)
+  report_target_property(${target} CXX_STANDARD)
+  report_target_property(${target} CXX_STANDARD_REQUIRED)
+  report_target_property(${target} DEBUG_POSTFIX)
+  report_target_property(${target} EchoString)
+  report_target_property(${target} EXPORT_NAME)
+  report_target_property(${target} EXPORT_NO_SYSTEM)
+  report_target_property(${target} EXPORT_PROPERTIES)
+  report_target_property(${target} HEADER_DIRS)
+  report_target_property(${target} HEADER_SET)
+  report_target_property(${target} HEADER_SETS)
+  report_target_property(${target} IMPORTED)
+  report_target_property(${target} IMPORTED_CONFIGURATIONS)
+  report_target_property(${target} IMPORTED_GLOBAL)
+  report_target_property(${target} IMPORTED_LIBNAME)
+  report_target_property(${target} IMPORTED_LINK_DEPENDENT_LIBRARIES)
+  report_target_property(${target} IMPORTED_LINK_INTERFACE_LANGUAGES)
+  report_target_property(${target} IMPORTED_LINK_INTERFACE_LIBRARIES)
+  report_target_property(${target} IMPORTED_LOCATION)
+  report_target_property(${target} IMPORTED_NO_SONAME)
+  report_target_property(${target} IMPORTED_OBJECTS)
+  report_target_property(${target} IMPORTED_SONAME)
+  report_target_property(${target} IMPORT_PREFIX)
+  report_target_property(${target} IMPORT_SUFFIX)
+  report_target_property(${target} INCLUDE_DIRECTORIES)
+  report_target_property(${target} INTERFACE_COMPILE_DEFINITIONS)
+  report_target_property(${target} INTERFACE_COMPILE_FEATURES)
+  report_target_property(${target} INTERFACE_COMPILE_OPTIONS)
+  report_target_property(${target} INTERFACE_HEADER_SETS)
+  report_target_property(${target} INTERFACE_HEADER_SETS_TO_VERIFY)
+  report_target_property(${target} INTERFACE_INCLUDE_DIRECTORIES)
+  report_target_property(${target} INTERFACE_LINK_DEPENDS)
+  report_target_property(${target} INTERFACE_LINK_DIRECTORIES)
+  report_target_property(${target} INTERFACE_LINK_LIBRARIES)
+  report_target_property(${target} INTERFACE_LINK_LIBRARIES_DIRECT)
+  report_target_property(${target} INTERFACE_LINK_LIBRARIES_DIRECT_EXCLUDE)
+  report_target_property(${target} INTERFACE_LINK_OPTIONS)
+  report_target_property(${target} INTERFACE_POSITION_INDEPENDENT_CODE)
+  report_target_property(${target} INTERFACE_PRECOMPILE_HEADERS)
+  report_target_property(${target} INTERFACE_SOURCES)
+  report_target_property(${target} INTERFACE_SYSTEM_INCLUDE_DIRECTORIES)
+  report_target_property(${target} INTERPROCEDURAL_OPTIMIZATION)
+  report_target_property(${target} LIBRARY_OUTPUT_DIRECTORY)
+  report_target_property(${target} LIBRARY_OUTPUT_NAME)
+  report_target_property(${target} LINK_DEPENDS)
+  report_target_property(${target} LINK_DIRECTORIES)
+  report_target_property(${target} LINK_FLAGS)
+  report_target_property(${target} LINK_INTERFACE_LIBRARIES)
+  report_target_property(${target} LINK_LIBRARIES)
+  report_target_property(${target} LINK_LIBRARIES_ONLY_TARGETS)
+  report_target_property(${target} LINK_LIBRARIES_STRATEGY)
+  report_target_property(${target} LINK_OPTIONS)
+  report_target_property(${target} LINK_WHAT_YOU_USE)
+  # report_target_property(${target} LOCATION)  # Reading LOCATION property may fail (cause CMake error) for some targets
+  report_target_property(${target} MSVC_DEBUG_INFORMATION_FORMAT)
+  report_target_property(${target} MSVC_RUNTIME_LIBRARY)
+  report_target_property(${target} NAME)
+  report_target_property(${target} OPTIMIZE_DEPENDENCIES)
+  report_target_property(${target} OUTPUT_NAME)
+  report_target_property(${target} POSITION_INDEPENDENT_CODE)
+  report_target_property(${target} PREFIX)
+  report_target_property(${target} RUNTIME_OUTPUT_DIRECTORY)
+  report_target_property(${target} RUNTIME_OUTPUT_NAME)
+  report_target_property(${target} SOURCE_DIR)
+  # report_target_property(${target} SOURCES)   # It can report very (too) lenghty string list
+  report_target_property(${target} SOVERSION)
+  report_target_property(${target} STATIC_LIBRARY_FLAGS)
+  report_target_property(${target} STATIC_LIBRARY_OPTIONS)
+  report_target_property(${target} SUFFIX)
+  report_target_property(${target} SYSTEM)
+  report_target_property(${target} TRANSITIVE_COMPILE_PROPERTIES)
+  report_target_property(${target} TRANSITIVE_LINK_PROPERTIES)
+  report_target_property(${target} TYPE)
+  report_target_property(${target} VERSION)
+  report_target_property(${target} WIN32_EXECUTABLE)
+  report_target_property(${target} WINDOWS_EXPORT_ALL_SYMBOLS)
   
   list(POP_BACK CMAKE_MESSAGE_INDENT)
 
