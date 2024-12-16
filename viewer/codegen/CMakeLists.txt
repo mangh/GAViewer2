@@ -3,79 +3,59 @@
 
 message(DEBUG "Entering the GAViewer codegen subdirectory ...")
 
-set(target "gencode")	# as of CMake 3.31, "codegen" is a CMake reserved target name
+set(generator "gencode")	# as of CMake 3.31, "codegen" is a CMake reserved target name
 
-# CODEGEN_DIR set in the parent directory (GAViewer)
-add_executable(${target}
-  ${CODEGEN_DIR}/codetemplate.cpp
-  ${CODEGEN_DIR}/main.cpp
+add_executable(${generator}
+  ${gavr_SOURCE_DIR}/src/console/codegen/codetemplate.cpp
+  ${gavr_SOURCE_DIR}/src/console/codegen/main.cpp
+)
+
+if (CMAKE_SYSTEM_NAME MATCHES "Windows")
+  # This is a WIN32 console application with the usual entry point �main� (not �WinMain�)
+  set_target_properties(${generator} PROPERTIES WIN32_EXECUTABLE OFF)
+  target_compile_definitions(${generator} PRIVATE WIN32)
+endif()
+set_target_properties(${generator} PROPERTIES OUTPUT_NAME "codegen")	# back to the original executable name
+
+##########################################################################
+#
+#   codegen command:
+#
+#   codegen ${gavr_SOURCE_DIR}/src/console/consolecodetemplates.txt ${gavr_SOURCE_DIR}/src/console/consolegeneratedfunctions.cpp
+#
+#
+
+add_custom_command(
+  OUTPUT
+    "${gavr_SOURCE_DIR}/src/console/consolegeneratedfunctions.cpp"
+  COMMAND cmake -E echo
+  COMMAND cmake -E chdir "${CMAKE_CURRENT_BINARY_DIR}" codegen "${gavr_SOURCE_DIR}/src/console/consolecodetemplates.txt" "${gavr_SOURCE_DIR}/src/console/consolegeneratedfunctions.cpp"
+  COMMAND cmake -E echo
+  DEPENDS
+    "${gavr_SOURCE_DIR}/src/console/consolecodetemplates.txt"
+    "${generator}"
+  COMMENT "${CMAKE_CURRENT_BINARY_DIR}/codegen ${gavr_SOURCE_DIR}/src/console/consolecodetemplates.txt ${gavr_SOURCE_DIR}/src/console/consolegeneratedfunctions.cpp"
+  USES_TERMINAL
 )
 
 ##########################################################################
 #
-#   COMPILE DEFINITIONS & OPTIONS
+#   consolegeneratedfunctions target
+#
+#   Custom target that triggers the REBUILD COMMAND
 #
 
-target_compile_features(${target} PRIVATE cxx_std_14)
-target_compile_options(${target} PRIVATE $<IF:$<STREQUAL:${CMAKE_CXX_COMPILER_FRONTEND_VARIANT},MSVC>,-W3,-Wall>)
+add_custom_target(CONSOLEGENERATEDFUNCTIONS DEPENDS "${gavr_SOURCE_DIR}/src/console/consolegeneratedfunctions.cpp")
 
-# ##########################################################################
-# #
-# #   ADDRESS SANITIZER
-# #
-# 
-# if(USE_ASAN)
-#   # The following is required to avoid: lld-link: error: /INFERASANLIBS is not allowed in .drectve
-#   target_compile_definitions(${target} PRIVATE _DISABLE_STRING_ANNOTATION _DISABLE_VECTOR_ANNOTATION)
-#   target_compile_options(${target} PRIVATE -fsanitize=address)
-#   target_link_options(${target} PRIVATE -fsanitize=address)
-# endif()
+##########################################################################
+#
+#   METROLOGY_LIBRARY target
+#
+#   METROLOGY_LIBRARY (as an INTERFACE library) does not build itself
+#   but target(s) it depends on (such as METROLOGY_HEADERS) are followed
+#   (transitively) in its place and trigger a rebuild when needed.
+#
 
-# ##########################################################################
-# #
-# #   LINK OPTIONS & LIBRARIES
-# #
-# 
-# # IPO/LTO optimization makes the application just as efficient
-# # whether it uses units of measure or simple numbers.
-# if(LTO_OPTIMIZATION_SUPPORTED)
-#   set_property(TARGET ${target} PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
-# else()
-#   message(WARNING "IPO/LTO is not supported: ${LTO_OPTIMIZATION_ERROR}")
-# endif()
-# 
-# # target_link_libraries() command below imports the so called Usage Requirements of
-# # the METROLOGY_LIBRARY, which include (among other things) its include directories
-# # (so there is no need to use the target_include_directories() command):
-# target_link_libraries(${target}
-#     PRIVATE
-#   METROLOGY_LIBRARY
-# )
-# 
-# set_target_properties(${target}
-#     PROPERTIES
-#   LINK_WHAT_YOU_USE ON
-# )
-# 
-# ##########################################################################
-# #
-# #   INSTALL
-# #
-# #   Use the following command (in the project's root directory) to
-# #   run the application:
-# #
-# #       ./build/${testApp} /path/to/input_data.txt
-# #
-# #   For example:
-# #
-# #       ./build/${testApp} ./CALINE3.EXP
-# #
-# 
-# set(testApp "${target}v${APP_VER_CFG}")
-set_target_properties(${target} PROPERTIES OUTPUT_NAME "codegen")	# back to the original executable name
-# 
-# install(TARGETS ${target}
-#   RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-#   ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-# )
-
+#add_library(${target} INTERFACE)
+#target_include_directories(${target} INTERFACE Units)
+#add_dependencies(${target} METROLOGY_HEADERS)
