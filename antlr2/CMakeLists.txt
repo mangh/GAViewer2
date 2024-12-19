@@ -72,9 +72,9 @@ FetchContent_MakeAvailable(antlr2)
 
 FetchContent_GetProperties(antlr2)
 
-message(DEBUG "antlr2_POPULATED = ${antlr2_POPULATED}")
-message(DEBUG "antlr2_SOURCE_DIR = ${antlr2_SOURCE_DIR}")
-message(DEBUG "antlr2_BINARY_DIR = ${antlr2_BINARY_DIR}")
+# message(DEBUG "antlr2_POPULATED = ${antlr2_POPULATED}")
+# message(DEBUG "antlr2_SOURCE_DIR = ${antlr2_SOURCE_DIR}")
+# message(DEBUG "antlr2_BINARY_DIR = ${antlr2_BINARY_DIR}")
 
 cmake_path(SET ANTLR_TOP_DIR "${antlr2_SOURCE_DIR}/lib/cpp")
 cmake_path(SET ANTLR_INC_DIR "${ANTLR_TOP_DIR}/antlr")
@@ -236,10 +236,10 @@ if(antlr2_POPULATED)
       IMPORTED_LOCATION "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_STATIC_LIBRARY_PREFIX}${ANTLR_FILENAME}${CMAKE_STATIC_LIBRARY_SUFFIX}"
       IMPORTED_LINK_INTERFACE_LANGUAGES "C++"
     )
-    include(DebugTargetProperties OPTIONAL RESULT_VARIABLE DebugTargetProperties_FOUND)
-    if (DebugTargetProperties_FOUND)
-      report_target_properties(${target})
-      report_target_properties(antlr2::antlr2)
-    endif()
+    # include(DebugTargetProperties OPTIONAL RESULT_VARIABLE DebugTargetProperties_FOUND)
+    # if (DebugTargetProperties_FOUND)
+    #   report_target_properties(${target})
+    #   report_target_properties(antlr2::antlr2)
+    # endif()
   endif()
 endif()

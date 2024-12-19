@@ -57,9 +57,9 @@ FetchContent_MakeAvailable(gavr)
 
 FetchContent_GetProperties(gavr)
 
-message(DEBUG "gavr_POPULATED = ${gavr_POPULATED}")
-message(DEBUG "gavr_SOURCE_DIR = ${gavr_SOURCE_DIR}")
-message(DEBUG "gavr_BINARY_DIR = ${gavr_BINARY_DIR}")
+# message(DEBUG "gavr_POPULATED = ${gavr_POPULATED}")
+# message(DEBUG "gavr_SOURCE_DIR = ${gavr_SOURCE_DIR}")
+# message(DEBUG "gavr_BINARY_DIR = ${gavr_BINARY_DIR}")
 
 # ##########################################################################
 # #
@@ -90,20 +90,13 @@ if (CMAKE_SYSTEM_NAME MATCHES "Windows")
     "src/gaviewer.rc"
     "^#include \"windows\.h\"$"
   )
-elseif (CMAKE_SYSTEM_NAME MATCHES "Linux")
+elseif (CMAKE_SYSTEM_NAME MATCHES "Linux|FreeBSD")
   patch(
     "${CMAKE_CURRENT_SOURCE_DIR}"
     "${gavr_SOURCE_DIR}"
     "src/osdep.h"
-    "^#elif defined\\(__linux__\\)$"
+    "^#elif defined\\(__linux__\\) \\|\\| defined\\(__FreeBSD__\\)$"
   )
-# elseif (CMAKE_SYSTEM_NAME MATCHES "FreeBSD")
-#   patch(
-#     "${CMAKE_CURRENT_SOURCE_DIR}"
-#     "${gavr_SOURCE_DIR}"
-#     "src/state.h"
-#     "^[ \t]+std::unique_ptr<consoleStmtListStmt> m_dynStmt;$"
-#   )
 endif()
 
 patch(
@@ -367,7 +360,7 @@ install(TARGETS ${target}
   ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
 )
 
-include(DebugTargetProperties OPTIONAL RESULT_VARIABLE DebugTargetProperties_FOUND)
-if (DebugTargetProperties_FOUND)
-  report_target_properties(${target})
-endif()
+# include(DebugTargetProperties OPTIONAL RESULT_VARIABLE DebugTargetProperties_FOUND)
+# if (DebugTargetProperties_FOUND)
+#   report_target_properties(${target})
+# endif()

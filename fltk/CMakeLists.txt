@@ -39,7 +39,7 @@ Include(FetchContent)
 FetchContent_Declare(
   fltk
   GIT_REPOSITORY https://github.com/fltk/fltk
-  GIT_TAG        d547e1956778ed584248179d9141843b86101a0a # release-1.4.0-1	# November 18, 2024
+  GIT_TAG        b080424a2358ae805702f39646a424e5a71eb883 # FLTK 1.4.1 released on Dec. 12, 2024
   GIT_SHALLOW    TRUE
 )
 
@@ -50,22 +50,26 @@ FetchContent_Declare(
 set(FLTK_OPTION_STD         ON)   # default OFF
 
 # Use STATIC libraries regardless of whether they are built for
-# Windows (static is the default) or another OS (dynamic may be available).
+# Windows (static is the default) or another OS (dynamic may be available):
 set(FLTK_USE_SYSTEM_LIBJPEG OFF)  # default ON (macOS and Windows: OFF)
 set(FLTK_USE_SYSTEM_LIBPNG  OFF)  # default ON (macOS and Windows: OFF)
 set(FLTK_USE_SYSTEM_ZLIB    OFF)  # default ON (macOS and Windows: OFF)
 
-# Disable the Wayland backend (default ON)
-set(FLTK_BACKEND_WAYLAND    OFF)  # default ON
-
-# Compiling a FLUID application requires X11 header files.
-# However (unlike other FLTK components) its CMake script
-# does not try to find them; they must be supplied “manually” in
-# the INCLUDE_DIRECTORIES property of the application's source folder.
-if (CMAKE_SYSTEM_NAME MATCHES "FreeBSD|Linux")
+# When the X11 backend is selected on BSD systems, compilation of
+# the FLUID application may fail (unlike other FLTK components).
+# This is because the default (system) include paths do not contain
+# the X11 directories required by the application, and its CMake script
+# does not try to find them. Here is a workaround for this problem
+# (a better solution would be to implement this workaround directly
+# in the FLUID CMake script - or, as a last resort, to abandon/disable
+# the FLUID application altogether)
+if(BSD)
   find_package(X11)
   if (X11_FOUND)
     set(FLTK_BUILD_FLUID ON)
+    # The following command does what we need (although
+    # additional include dirs may interfere with compilation
+    # of other FLTK components)
     include_directories(AFTER SYSTEM "${X11_INCLUDE_DIR}")
   else()
     set(FLTK_BUILD_FLUID OFF)
