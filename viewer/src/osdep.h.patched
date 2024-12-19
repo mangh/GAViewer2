@@ -19,8 +19,10 @@
 
 #ifdef WIN32
 #define strcmpnc stricmp
-#elif defined(__linux__)
+#elif defined(__linux__) || defined(__FreeBSD__)
 #include <strings.h>
+#define strcmpnc strcasecmp
+#else
 #define strcmpnc strcasecmp
 #endif
 
@@ -87,7 +89,9 @@ Platform independant directory reading
 
 #ifdef WIN32
 #include <windows.h>
-#else /* assume UNIX */
+#elif defined(__linux__) || defined(__FreeBSD__)
+#include <dirent.h>
+#else /* assume other UNIX */
 #include <sys/types.h>
 #include <sys/stat.h>
 #ifdef SUN
@@ -110,7 +114,7 @@ typedef struct u_dirEnt_s {
 	int next;
 #else /* assume UNIX */
 	DIR *dir;
-#ifdef SUN
+#if defined(__linux__) || defined(__FreeBSD__) || defined(SUN)
 	struct dirent *dp;
 #else
 	struct direct *dp;
