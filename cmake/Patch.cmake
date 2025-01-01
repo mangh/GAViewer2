@@ -24,7 +24,7 @@ function(patch patch_dir source_dir file_name regex)
   set(_source_file "${source_dir}/${file_name}")
 
   if (NOT EXISTS "${_source_file}")
-    message(ERROR "The ${_source_file} file (to be patched) does not exist.")
+    message(FATAL_ERROR "The ${_source_file} file (to be patched) does not exist.")
 
   else()
 

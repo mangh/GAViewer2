@@ -1,0 +1,13 @@
+diff --git a/./src/gaviewer.rc b/../build/_deps/gavr-src/src/gaviewer.rc
+index cc24b53..fefc93f 100644
+--- a/./src/gaviewer.rc
++++ b/../build/_deps/gavr-src/src/gaviewer.rc
+@@ -7,7 +7,7 @@
+ //
+ // Generated from the TEXTINCLUDE 2 resource.
+ //
+-#include "afxres.h"
++#include "windows.h"
+ 
+ /////////////////////////////////////////////////////////////////////////////
+ #undef APSTUDIO_READONLY_SYMBOLS

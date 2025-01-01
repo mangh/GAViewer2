@@ -85,6 +85,13 @@ if(USE_ASAN)
   )
 endif()
 
+# Git is required to download and patch repositories.
+# Check its availability and get GIT_EXECUTABLE path:
+find_package(Git)
+if(NOT Git_FOUND)
+  message(FATAL_ERROR "Git NOT available.")
+endif()
+
 ##########################################################################
 #
 #   TESTS

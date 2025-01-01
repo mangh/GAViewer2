@@ -1,0 +1,13 @@
+diff --git a/./src/state.h b/../build/_deps/gavr-src/src/state.h
+index 2a598ef..468b973 100644
+--- a/./src/state.h
++++ b/../build/_deps/gavr-src/src/state.h
+@@ -232,7 +232,7 @@ public:
+ 		void ds(consoleStmtListStmt *stmt);
+ 
+ 	private:
+-		std::auto_ptr<consoleStmtListStmt> m_dynStmt;
++		std::unique_ptr<consoleStmtListStmt> m_dynStmt;
+ 		std::string m_name; // "" if anonymous (size = 0)
+ 		std::string m_workingDirectory; // "" if anonymous (size = 0)
+ 	};

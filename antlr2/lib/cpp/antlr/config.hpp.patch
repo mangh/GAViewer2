@@ -1,0 +1,19 @@
+diff --git a/./lib/cpp/antlr/config.hpp b/../build/_deps/antlr2-src/lib/cpp/antlr/config.hpp
+index e336950..ec59f65 100644
+--- a/./lib/cpp/antlr/config.hpp
++++ b/../build/_deps/antlr2-src/lib/cpp/antlr/config.hpp
+@@ -34,6 +34,14 @@
+ 
+ #define ANTLR_ATOI_IN_STD
+ 
++/******************************************************************************/
++/*{{{ Systems based on the Linux kernel */
++#if defined(__linux__)
++// The standard C library on Linux provides the strcasecmp() function
++// for case-insensitive string comparison
++#include <strings.h>
++#endif
++/*}}}*/
+ /******************************************************************************/
+ /*{{{ Microsoft Visual C++ */
+ // NOTE: If you provide patches for a specific MSVC version guard them for

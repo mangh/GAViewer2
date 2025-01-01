@@ -1,0 +1,22 @@
+diff --git a/./src/typeset/typeset.cpp b/../build/_deps/gavr-src/src/typeset/typeset.cpp
+index b7dcfc9..c9ad4a7 100644
+--- a/./src/typeset/typeset.cpp
++++ b/../build/_deps/gavr-src/src/typeset/typeset.cpp
+@@ -377,7 +377,7 @@ int typesetState::addLine(int nbVertices, int type, double *x, double *y, float
+ 
+ 	if (nbVertices <= 1) return 0;
+ 	if ( (d.xy = (double*)malloc(sizeof(double) * 2 * nbVertices)) == NULL) {
+-		printf("typesetState::addLine(): memory allocation failure for '%d' bytes\n", sizeof(double) * 2 * nbVertices);
++		printf("typesetState::addLine(): memory allocation failure for '%zu' bytes\n", sizeof(double) * 2 * nbVertices);
+ 		return -1;
+ 	}
+ 	d.nbVertices = nbVertices;
+@@ -399,7 +399,7 @@ int typesetState::addPolygon(int nbVertices, int type, double *x, double *y, int
+ 
+ 	if (nbVertices <= 2) return 0;
+ 	if ( (d.xy = (double*)malloc(sizeof(double) * 2 * nbVertices)) == NULL) {
+-		printf("typesetState::addPolygon(): memory allocation failure for '%d' bytes\n", sizeof(double) * 2 * nbVertices);
++		printf("typesetState::addPolygon(): memory allocation failure for '%zu' bytes\n", sizeof(double) * 2 * nbVertices);
+ 		return -1;
+ 	}
+ 	d.nbVertices = nbVertices;

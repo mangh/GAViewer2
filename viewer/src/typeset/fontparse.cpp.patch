@@ -1,0 +1,13 @@
+diff --git a/./src/typeset/fontparse.cpp b/../build/_deps/gavr-src/src/typeset/fontparse.cpp
+index ce66426..1378fff 100644
+--- a/./src/typeset/fontparse.cpp
++++ b/../build/_deps/gavr-src/src/typeset/fontparse.cpp
+@@ -78,7 +78,7 @@ int fpSetNbChildren(fpNode *node, int nbChildren) {
+ int fpSetChild(fpNode *parent, fpNode *child, int idx) {
+ //	printf("Set child %08p->%d to %08p\n", parent, idx, child);
+ 	if ((parent == NULL) || (child == NULL) || (idx < 0) || (idx >= parent->nbChildren)) {
+-		printf("fpSetChild(): invalid input %08p %08p %d\n", parent, child, idx);
++		printf("fpSetChild(): invalid input %p %p %d\n", parent, child, idx);
+ 		return -1;
+ 	}
+ 	parent->child[idx] = child;

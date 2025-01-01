@@ -1,0 +1,13 @@
+diff --git a/./src/typeset/liststack.h b/../build/_deps/gavr-src/src/typeset/liststack.h
+index deb10be..e47c47c 100644
+--- a/./src/typeset/liststack.h
++++ b/../build/_deps/gavr-src/src/typeset/liststack.h
+@@ -141,7 +141,7 @@ template <class type>int tsItemList<type>::ensureMax(int nb) {
+ 
+ 	m_max = (m_max) ? m_max * 2 : 2;
+ 	if ( (m_item = (type*)realloc(m_item, m_max * sizeof(type))) == NULL) {
+-		printf("tsItemList::ensureMax(): memory allocation failure for '%d' bytes\n", sizeof(type));
++		printf("tsItemList::ensureMax(): memory allocation failure for '%zu' bytes\n", sizeof(type));
+ 		return -1;
+ 	}
+ 
