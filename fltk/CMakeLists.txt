@@ -45,13 +45,19 @@ FetchContent_Declare(
 
 ##########################################################################
 #
-#	  Patching
+#	  Patching FLTK 1.4.1 (b080424a2358ae805702f39646a424e5a71eb883)
 #
 #
 
-include(PatchFiles)
-set(files_to_patch "fluid/CMakeLists.txt")
-patch_files("${CMAKE_CURRENT_SOURCE_DIR}" "${files_to_patch}")
+# On BSD systems, compilation of the FLUID application (unlike other
+# FLTK components) fails for the X11 backend. This happens because
+# the X11 directories required by the application are not in the include
+# paths, and the FLUID/CMake script does not attempt to fix this.
+if(BSD)
+  include(PatchFiles)
+  set(files_to_patch "fluid/CMakeLists.txt")
+  patch_files("${CMAKE_CURRENT_SOURCE_DIR}" "${files_to_patch}")
+endif()
 
 ##########################################################################
 #
@@ -70,27 +76,6 @@ set(FLTK_OPTION_STD         ON)   # default OFF
 set(FLTK_USE_SYSTEM_LIBJPEG OFF)  # default ON (macOS and Windows: OFF)
 set(FLTK_USE_SYSTEM_LIBPNG  OFF)  # default ON (macOS and Windows: OFF)
 set(FLTK_USE_SYSTEM_ZLIB    OFF)  # default ON (macOS and Windows: OFF)
-
-# # When the X11 backend is selected on BSD systems, compilation of
-# # the FLUID application may fail (unlike other FLTK components).
-# # This is because the default (system) include paths do not contain
-# # the X11 directories required by the application, and its CMake script
-# # does not try to find them. Here is a workaround for this problem
-# # (a better solution would be to implement this workaround directly
-# # in the FLUID CMake script - or, as a last resort, to abandon/disable
-# # the FLUID application altogether)
-# if(BSD)
-#   find_package(X11)
-#   if (X11_FOUND)
-#     set(FLTK_BUILD_FLUID ON)
-#     # The following command does what we need (although
-#     # additional include dirs may interfere with compilation
-#     # of other FLTK components)
-#     include_directories(AFTER SYSTEM "${X11_INCLUDE_DIR}")
-#   else()
-#     set(FLTK_BUILD_FLUID OFF)
-#   endif()
-# endif()
 
 FetchContent_MakeAvailable(fltk)
 
