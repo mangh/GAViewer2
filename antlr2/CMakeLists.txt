@@ -86,30 +86,18 @@ cmake_path(SET ANTLR_SRC_DIR "${ANTLR_TOP_DIR}/src")
 #
 #
 
-include(Patch)
+include(PatchFiles)
 
+set(files_to_patch
+  "lib/cpp/antlr/CharScanner.hpp"
+  "lib/cpp/src/String.cpp"
+)
 if(CMAKE_SYSTEM_NAME MATCHES "Linux")
-  patch(
-    "${CMAKE_CURRENT_SOURCE_DIR}"
-    "${antlr2_SOURCE_DIR}"
-    "lib/cpp/antlr/config.hpp"
-    "^// The standard C library on Linux provides the strcasecmp\\(\\) function$"
-  )
+  list(APPEND files_to_patch "lib/cpp/antlr/config.hpp")
 endif()
 
-patch(
-  "${CMAKE_CURRENT_SOURCE_DIR}"   # patch dir (containing the patched file)
-  "${antlr2_SOURCE_DIR}"          # source dir (containing file to patch)
-  "lib/cpp/antlr/CharScanner.hpp" # [relative path/]name of the file to patch
-  "^#include <functional>$"       # regex for a string that is unique to the patched file (identifies the patch)
-)
+patch_files("${CMAKE_CURRENT_SOURCE_DIR}" "${files_to_patch}")
 
-patch(
-  "${CMAKE_CURRENT_SOURCE_DIR}"
-  "${antlr2_SOURCE_DIR}"
-  "lib/cpp/src/String.cpp"
-  "^[ \t]+sprintf\\(tmp,\"%zu\",rhs\\)\;$"
-)
 
 ##########################################################################
 #

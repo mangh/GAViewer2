@@ -75,112 +75,37 @@ FetchContent_GetProperties(gavr)
 #
 #
 
-include(Patch)
+include(PatchFiles)
+
+set(files_to_patch "")
 
 if (CMAKE_SYSTEM_NAME MATCHES "Windows")
-  patch(
-    "${CMAKE_CURRENT_SOURCE_DIR}" # patch dir (containing the patched file)
-    "${gavr_SOURCE_DIR}"          # source dir (containing file to patch)
-    "src/mainwindow.h"            # [relative path/]name of the file to patch
-    "^#include <windows\.h>$"     # regex for a string that is unique to the patched file (identifies the patch)
-  )
-  patch(
-    "${CMAKE_CURRENT_SOURCE_DIR}"
-    "${gavr_SOURCE_DIR}"
+  list(APPEND files_to_patch
+    "src/mainwindow.h"
     "src/gaviewer.rc"
-    "^#include \"windows\.h\"$"
   )
 elseif (CMAKE_SYSTEM_NAME MATCHES "Linux|FreeBSD")
-  patch(
-    "${CMAKE_CURRENT_SOURCE_DIR}"
-    "${gavr_SOURCE_DIR}"
+  list(APPEND files_to_patch
     "src/osdep.h"
-    "^#elif defined\\(__linux__\\) \\|\\| defined\\(__FreeBSD__\\)$"
   )
 endif()
 
-patch(
-  "${CMAKE_CURRENT_SOURCE_DIR}"
-  "${gavr_SOURCE_DIR}"
+list(APPEND files_to_patch
   "src/state.h"
-  "^[ \t]+std::unique_ptr<consoleStmtListStmt> m_dynStmt\;$"
-)
-patch(
-  "${CMAKE_CURRENT_SOURCE_DIR}"
-  "${gavr_SOURCE_DIR}"
   "src/ui.cpp"
-  "^// #ifndef __MACH__$"
-)
-
-patch(
-  "${CMAKE_CURRENT_SOURCE_DIR}"
-  "${gavr_SOURCE_DIR}"
   "src/typeset/fontparse.cpp"
-  "^[ \t]+printf\\(\"fpSetChild\\(\\): invalid input %p %p %d\\\\n\", parent, child, idx\\)\;$"
-)
-
-patch(
-  "${CMAKE_CURRENT_SOURCE_DIR}"
-  "${gavr_SOURCE_DIR}"
   "src/typeset/fontyacc.c"
-  "^void static yyerror\\(const char \\*msg\\) \\{$"
-)
-
-patch(
-  "${CMAKE_CURRENT_SOURCE_DIR}"
-  "${gavr_SOURCE_DIR}"
   "src/typeset/liststack.h"
-  "^[ \t]+printf\\(\"tsItemList::ensureMax\\(\\): memory allocation failure for '%zu' bytes\\\\n\", sizeof\\(type\\)\\)\;$"
-)
-
-patch(
-  "${CMAKE_CURRENT_SOURCE_DIR}"
-  "${gavr_SOURCE_DIR}"
   "src/typeset/typeset.cpp"
-  "^[ \t]+printf\\(\"typesetState::addLine\\(\\): memory allocation failure for '%zu' bytes\\\\n\", sizeof\\(double\\) \\* 2 \\* nbVertices\\)\;$"
-)
-
-patch(
-  "${CMAKE_CURRENT_SOURCE_DIR}"
-  "${gavr_SOURCE_DIR}"
   "src/typeset/typesetbox.cpp"
-  "^[ \t]+char str\\[2\\] = \\{\\(char\\)c, \\(char\\)0\\}\;$"
-)
-
-patch(
-  "${CMAKE_CURRENT_SOURCE_DIR}"
-  "${gavr_SOURCE_DIR}"
   "src/c3ga/c3ga.cpp"
-  "^[ \t]+printf\\(\"c3ga_ben::addName\\(\\): memory allocation failure for '%zu' bytes\\\\n\", sizeof\\(c3gai_be\\*\\) \\* \\(m_nbBen \\+ 1\\)\\)\;$"
-)
-
-patch(
-  "${CMAKE_CURRENT_SOURCE_DIR}"
-  "${gavr_SOURCE_DIR}"
   "src/c5ga/c5ga.cpp"
-  "^[ \t]+printf\\(\"c5ga_ben::addName\\(\\): memory allocation failure for '%zu' bytes\\\\n\", sizeof\\(c5gai_be\\*\\) \\* \\(m_nbBen \\+ 1\\)\\)\;$"
-)
-
-patch(
-  "${CMAKE_CURRENT_SOURCE_DIR}"
-  "${gavr_SOURCE_DIR}"
   "src/e3ga/e3ga.cpp"
-  "^[ \t]+printf\\(\"e3ga_ben::addName\\(\\): memory allocation failure for '%zu' bytes\\\\n\", sizeof\\(e3gai_be\\*\\) \\* \\(m_nbBen \\+ 1\\)\\)\;$"
-)
-
-patch(
-  "${CMAKE_CURRENT_SOURCE_DIR}"
-  "${gavr_SOURCE_DIR}"
   "src/i2ga/i2ga.cpp"
-  "^[ \t]+printf\\(\"i2ga_ben::addName\\(\\): memory allocation failure for '%zu' bytes\\\\n\", sizeof\\(i2gai_be\\*\\) \\* \\(m_nbBen \\+ 1\\)\\)\;$"
+  "src/p3ga/p3ga.cpp"
 )
 
-patch(
-  "${CMAKE_CURRENT_SOURCE_DIR}"
-  "${gavr_SOURCE_DIR}"
-  "src/p3ga/p3ga.cpp"
-  "^[ \t]+printf\\(\"p3ga_ben::addName\\(\\): memory allocation failure for '%zu' bytes\\\\n\", sizeof\\(p3gai_be\\*\\) \\* \\(m_nbBen \\+ 1\\)\\)\;$"
-)
+patch_files("${CMAKE_CURRENT_SOURCE_DIR}" "${files_to_patch}")
 
 ##########################################################################
 #

@@ -1,0 +1,14 @@
+diff --git a/./fluid/CMakeLists.txt b/../build/_deps/fltk-src/fluid/CMakeLists.txt
+index b906561..1cbafa7 100644
+--- a/./fluid/CMakeLists.txt
++++ b/../build/_deps/fltk-src/fluid/CMakeLists.txt
+@@ -109,6 +109,9 @@ source_group("Header Files" FILES ${HEADERFILES})
+ add_library(fluid-lib OBJECT EXCLUDE_FROM_ALL)
+ target_sources(fluid-lib PRIVATE ${CPPFILES} ${HEADERFILES})
+ target_link_libraries(fluid-lib PUBLIC fltk::images)
++if(FLTK_BACKEND_X11)
++  target_include_directories(fluid-lib PRIVATE ${X11_INCLUDE_DIR})
++endif()
+ 
+ # Build targets
+ 
