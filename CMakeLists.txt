@@ -8,22 +8,11 @@ cmake_minimum_required (VERSION 3.24)
 #   PROJECT
 #
 
-# VERSION default "0.86":
-if(NOT DEFINED APP_VERSION)
-
-  if(NOT DEFINED APP_VERSION_MAJOR)
-    set(APP_VERSION_MAJOR 0)
-  endif()
-  if(NOT DEFINED APP_VERSION_MINOR)
-    set(APP_VERSION_MINOR 86)
-  endif()
-  if(NOT DEFINED APP_VERSION_PATCH)
-    set(APP_VERSION_PATCH 0)
-  endif()
-
-  set(APP_VERSION "${APP_VERSION_MAJOR}.${APP_VERSION_MINOR}.${APP_VERSION_PATCH}")
-
-endif()
+# VERSION default "0.86.0":
+set(APP_VERSION_MAJOR 0)
+set(APP_VERSION_MINOR 86)
+set(APP_VERSION_PATCH 0)
+set(APP_VERSION "${APP_VERSION_MAJOR}.${APP_VERSION_MINOR}.${APP_VERSION_PATCH}")
 
 project(
     GAViewer
@@ -32,6 +21,7 @@ project(
   DESCRIPTION "Geometric Algebra Viewer"
 )
 
+# C++ language standard to compile for
 set(CMAKE_CXX_STANDARD 14)
 
 # To avoid portability issues, language extensions (enabled by default)
@@ -44,17 +34,25 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 set(APP_VER "${APP_VERSION_MAJOR}${APP_VERSION_MINOR}")
 set(APP_VER_CFG "${APP_VER}$<$<CONFIG:Debug>:d>")
 
-# Auxiliary modules in a separate cmake folder:
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
-
 ##########################################################################
 #
-#   OPTIONS
+#   GLOBAL CONFIGURATION
 #
+
+#########
+# CMake helper modules folder:
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 
 #########
 # GNU standard directories for installation
 include(GNUInstallDirs)
+
+# Check Git availability and get GIT_EXECUTABLE path
+# (Git is required to download and patch repositories):
+find_package(Git)
+if(NOT Git_FOUND)
+  message(FATAL_ERROR "Git NOT available.")
+endif()
 
 #########
 # Check whether the compiler supports IPO/LTO (interprocedural optimization):
@@ -83,13 +81,6 @@ if(USE_ASAN)
     CACHE STRING "MSVC Runtime Library for compilers targeting the MSVC ABI"
     FORCE
   )
-endif()
-
-# Git is required to download and patch repositories.
-# Check its availability and get GIT_EXECUTABLE path:
-find_package(Git)
-if(NOT Git_FOUND)
-  message(FATAL_ERROR "Git NOT available.")
 endif()
 
 ##########################################################################
