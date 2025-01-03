@@ -1,7 +1,7 @@
-diff --git a/./fluid/CMakeLists.txt b/../build/_deps/fltk-src/fluid/CMakeLists.txt
+diff --git a/fluid/CMakeLists.txt b/fluid/CMakeLists.txt
 index b906561..1cbafa7 100644
---- a/./fluid/CMakeLists.txt
-+++ b/../build/_deps/fltk-src/fluid/CMakeLists.txt
+--- a/fluid/CMakeLists.txt
++++ b/fluid/CMakeLists.txt
 @@ -109,6 +109,9 @@ source_group("Header Files" FILES ${HEADERFILES})
  add_library(fluid-lib OBJECT EXCLUDE_FROM_ALL)
  target_sources(fluid-lib PRIVATE ${CPPFILES} ${HEADERFILES})
