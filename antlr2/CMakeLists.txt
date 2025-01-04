@@ -33,11 +33,11 @@ endif()
 #   PROJECT
 #
 
-set(ANTLR_VER_MAJOR 2)
-set(ANTLR_VER_MINOR 7)
-set(ANTLR_VER_PATCH 7)
+set(ANTLR_VERSION_MAJOR 2)
+set(ANTLR_VERSION_MINOR 7)
+set(ANTLR_VERSION_PATCH 7)
 
-set(ANTLR_VERSION "${ANTLR_VER_MAJOR}.${ANTLR_VER_MINOR}.${ANTLR_VER_PATCH}")
+set(ANTLR_VERSION "${ANTLR_VERSION_MAJOR}.${ANTLR_VERSION_MINOR}.${ANTLR_VERSION_PATCH}")
 
 project(antlr
   VERSION "${ANTLR_VERSION}"
@@ -46,9 +46,9 @@ project(antlr
 )
 
 # Naming:
-set(ANTLR_FILENAME "antlr${ANTLR_VER_MAJOR}${ANTLR_VER_MINOR}")
+set(ANTLR_LIB_NAME "antlr${ANTLR_VERSION_MAJOR}${ANTLR_VERSION_MINOR}")
 if (CMAKE_BUILD_TYPE MATCHES "Debug")
-  set(ANTLR_FILENAME "${ANTLR_FILENAME}d")
+  set(ANTLR_LIB_NAME "${ANTLR_LIB_NAME}d")
 endif()
 
 ##########################################################################
@@ -69,16 +69,15 @@ FetchContent_Declare(
 )
 
 FetchContent_MakeAvailable(antlr2)
-
 FetchContent_GetProperties(antlr2)
 
 # message(DEBUG "antlr2_POPULATED = ${antlr2_POPULATED}")
 # message(DEBUG "antlr2_SOURCE_DIR = ${antlr2_SOURCE_DIR}")
 # message(DEBUG "antlr2_BINARY_DIR = ${antlr2_BINARY_DIR}")
 
-cmake_path(SET ANTLR_TOP_DIR "${antlr2_SOURCE_DIR}/lib/cpp")
-cmake_path(SET ANTLR_INC_DIR "${ANTLR_TOP_DIR}/antlr")
-cmake_path(SET ANTLR_SRC_DIR "${ANTLR_TOP_DIR}/src")
+cmake_path(SET ANTLR_LIB_PATH "${antlr2_SOURCE_DIR}/lib/cpp")
+cmake_path(SET ANTLR_LIB_INCLUDE_PATH "${ANTLR_LIB_PATH}/antlr")
+cmake_path(SET ANTLR_LIB_SOURCE_PATH "${ANTLR_LIB_PATH}/src")
 
 ##########################################################################
 #
@@ -86,18 +85,24 @@ cmake_path(SET ANTLR_SRC_DIR "${ANTLR_TOP_DIR}/src")
 #
 #
 
-include(PatchFiles)
+# Get value of the "--directory" option to be used in the "git apply" command:
+cmake_path(GET CMAKE_CURRENT_SOURCE_DIR PARENT_PATH _parent_dir)
+string(REPLACE "${_parent_dir}" "" _slash_subdir ${CMAKE_CURRENT_SOURCE_DIR})
+string(REPLACE "/" "" _subdir ${_slash_subdir})
 
-set(files_to_patch
-  "lib/cpp/antlr/CharScanner.hpp"
-  "lib/cpp/src/String.cpp"
+add_custom_command(
+  OUTPUT
+    "${ANTLR_LIB_INCLUDE_PATH}/CharScanner.hpp"
+    "${ANTLR_LIB_INCLUDE_PATH}/config.hpp"
+    "${ANTLR_LIB_SOURCE_PATH}/String.cpp"
+  COMMAND
+    ${GIT_EXECUTABLE} apply --unsafe-paths --directory=${_subdir} "${CMAKE_CURRENT_SOURCE_DIR}/antlr2.patch"
+  DEPENDS
+    "${CMAKE_CURRENT_SOURCE_DIR}/antlr2.patch"
+  WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
+  COMMENT "Patch the source files in the ${ANTLR_LIB_PATH} folder."
+  USES_TERMINAL
 )
-if(CMAKE_SYSTEM_NAME MATCHES "Linux")
-  list(APPEND files_to_patch "lib/cpp/antlr/config.hpp")
-endif()
-
-patch_files("${CMAKE_CURRENT_SOURCE_DIR}" "${files_to_patch}")
-
 
 ##########################################################################
 #
@@ -106,98 +111,98 @@ patch_files("${CMAKE_CURRENT_SOURCE_DIR}" "${files_to_patch}")
 
 set(target ANTLR_LIB)
 
-# # antlr headers: ls ${ANTLR_INC_DIR}/*.hpp
-# set(ANTLR_PUBLIC_HEADERS
-#   ${ANTLR_INC_DIR}/ANTLRException.hpp
-#   ${ANTLR_INC_DIR}/ANTLRUtil.hpp
-#   ${ANTLR_INC_DIR}/AST.hpp
-#   ${ANTLR_INC_DIR}/ASTArray.hpp
-#   ${ANTLR_INC_DIR}/ASTFactory.hpp
-#   ${ANTLR_INC_DIR}/ASTNULLType.hpp
-#   ${ANTLR_INC_DIR}/ASTPair.hpp
-#   ${ANTLR_INC_DIR}/ASTRefCount.hpp
-#   ${ANTLR_INC_DIR}/BaseAST.hpp
-#   ${ANTLR_INC_DIR}/BitSet.hpp
-#   ${ANTLR_INC_DIR}/CharBuffer.hpp
-#   ${ANTLR_INC_DIR}/CharInputBuffer.hpp
-#   ${ANTLR_INC_DIR}/CharScanner.hpp
-#   ${ANTLR_INC_DIR}/CharStreamException.hpp
-#   ${ANTLR_INC_DIR}/CharStreamIOException.hpp
-#   ${ANTLR_INC_DIR}/CircularQueue.hpp
-#   ${ANTLR_INC_DIR}/CommonAST.hpp
-#   ${ANTLR_INC_DIR}/CommonASTWithHiddenTokens.hpp
-#   ${ANTLR_INC_DIR}/CommonHiddenStreamToken.hpp
-#   ${ANTLR_INC_DIR}/CommonToken.hpp
-#   ${ANTLR_INC_DIR}/config.hpp
-#   ${ANTLR_INC_DIR}/InputBuffer.hpp
-#   ${ANTLR_INC_DIR}/IOException.hpp
-#   ${ANTLR_INC_DIR}/LexerSharedInputState.hpp
-#   ${ANTLR_INC_DIR}/LLkParser.hpp
-#   ${ANTLR_INC_DIR}/MismatchedCharException.hpp
-#   ${ANTLR_INC_DIR}/MismatchedTokenException.hpp
-#   ${ANTLR_INC_DIR}/NoViableAltException.hpp
-#   ${ANTLR_INC_DIR}/NoViableAltForCharException.hpp
-#   ${ANTLR_INC_DIR}/Parser.hpp
-#   ${ANTLR_INC_DIR}/ParserSharedInputState.hpp
-#   ${ANTLR_INC_DIR}/RecognitionException.hpp
-#   ${ANTLR_INC_DIR}/RefCount.hpp
-#   ${ANTLR_INC_DIR}/SemanticException.hpp
-#   ${ANTLR_INC_DIR}/String.hpp
-#   ${ANTLR_INC_DIR}/Token.hpp
-#   ${ANTLR_INC_DIR}/TokenBuffer.hpp
-#   ${ANTLR_INC_DIR}/TokenRefCount.hpp
-#   ${ANTLR_INC_DIR}/TokenStream.hpp
-#   ${ANTLR_INC_DIR}/TokenStreamBasicFilter.hpp
-#   ${ANTLR_INC_DIR}/TokenStreamException.hpp
-#   ${ANTLR_INC_DIR}/TokenStreamHiddenTokenFilter.hpp
-#   ${ANTLR_INC_DIR}/TokenStreamIOException.hpp
-#   ${ANTLR_INC_DIR}/TokenStreamRecognitionException.hpp
-#   ${ANTLR_INC_DIR}/TokenStreamRetryException.hpp
-#   ${ANTLR_INC_DIR}/TokenStreamRewriteEngine.hpp
-#   ${ANTLR_INC_DIR}/TokenStreamSelector.hpp
-#   ${ANTLR_INC_DIR}/TokenWithIndex.hpp
-#   ${ANTLR_INC_DIR}/TreeParser.hpp
-#   ${ANTLR_INC_DIR}/TreeParserSharedInputState.hpp
-# )
+# antlr headers: ls ${ANTLR_LIB_INCLUDE_PATH}/*.hpp
+set(ANTLR_PUBLIC_HEADERS
+  ${ANTLR_LIB_INCLUDE_PATH}/ANTLRException.hpp
+  ${ANTLR_LIB_INCLUDE_PATH}/ANTLRUtil.hpp
+  ${ANTLR_LIB_INCLUDE_PATH}/AST.hpp
+  ${ANTLR_LIB_INCLUDE_PATH}/ASTArray.hpp
+  ${ANTLR_LIB_INCLUDE_PATH}/ASTFactory.hpp
+  ${ANTLR_LIB_INCLUDE_PATH}/ASTNULLType.hpp
+  ${ANTLR_LIB_INCLUDE_PATH}/ASTPair.hpp
+  ${ANTLR_LIB_INCLUDE_PATH}/ASTRefCount.hpp
+  ${ANTLR_LIB_INCLUDE_PATH}/BaseAST.hpp
+  ${ANTLR_LIB_INCLUDE_PATH}/BitSet.hpp
+  ${ANTLR_LIB_INCLUDE_PATH}/CharBuffer.hpp
+  ${ANTLR_LIB_INCLUDE_PATH}/CharInputBuffer.hpp
+  ${ANTLR_LIB_INCLUDE_PATH}/CharScanner.hpp
+  ${ANTLR_LIB_INCLUDE_PATH}/CharStreamException.hpp
+  ${ANTLR_LIB_INCLUDE_PATH}/CharStreamIOException.hpp
+  ${ANTLR_LIB_INCLUDE_PATH}/CircularQueue.hpp
+  ${ANTLR_LIB_INCLUDE_PATH}/CommonAST.hpp
+  ${ANTLR_LIB_INCLUDE_PATH}/CommonASTWithHiddenTokens.hpp
+  ${ANTLR_LIB_INCLUDE_PATH}/CommonHiddenStreamToken.hpp
+  ${ANTLR_LIB_INCLUDE_PATH}/CommonToken.hpp
+  ${ANTLR_LIB_INCLUDE_PATH}/config.hpp
+  ${ANTLR_LIB_INCLUDE_PATH}/InputBuffer.hpp
+  ${ANTLR_LIB_INCLUDE_PATH}/IOException.hpp
+  ${ANTLR_LIB_INCLUDE_PATH}/LexerSharedInputState.hpp
+  ${ANTLR_LIB_INCLUDE_PATH}/LLkParser.hpp
+  ${ANTLR_LIB_INCLUDE_PATH}/MismatchedCharException.hpp
+  ${ANTLR_LIB_INCLUDE_PATH}/MismatchedTokenException.hpp
+  ${ANTLR_LIB_INCLUDE_PATH}/NoViableAltException.hpp
+  ${ANTLR_LIB_INCLUDE_PATH}/NoViableAltForCharException.hpp
+  ${ANTLR_LIB_INCLUDE_PATH}/Parser.hpp
+  ${ANTLR_LIB_INCLUDE_PATH}/ParserSharedInputState.hpp
+  ${ANTLR_LIB_INCLUDE_PATH}/RecognitionException.hpp
+  ${ANTLR_LIB_INCLUDE_PATH}/RefCount.hpp
+  ${ANTLR_LIB_INCLUDE_PATH}/SemanticException.hpp
+  ${ANTLR_LIB_INCLUDE_PATH}/String.hpp
+  ${ANTLR_LIB_INCLUDE_PATH}/Token.hpp
+  ${ANTLR_LIB_INCLUDE_PATH}/TokenBuffer.hpp
+  ${ANTLR_LIB_INCLUDE_PATH}/TokenRefCount.hpp
+  ${ANTLR_LIB_INCLUDE_PATH}/TokenStream.hpp
+  ${ANTLR_LIB_INCLUDE_PATH}/TokenStreamBasicFilter.hpp
+  ${ANTLR_LIB_INCLUDE_PATH}/TokenStreamException.hpp
+  ${ANTLR_LIB_INCLUDE_PATH}/TokenStreamHiddenTokenFilter.hpp
+  ${ANTLR_LIB_INCLUDE_PATH}/TokenStreamIOException.hpp
+  ${ANTLR_LIB_INCLUDE_PATH}/TokenStreamRecognitionException.hpp
+  ${ANTLR_LIB_INCLUDE_PATH}/TokenStreamRetryException.hpp
+  ${ANTLR_LIB_INCLUDE_PATH}/TokenStreamRewriteEngine.hpp
+  ${ANTLR_LIB_INCLUDE_PATH}/TokenStreamSelector.hpp
+  ${ANTLR_LIB_INCLUDE_PATH}/TokenWithIndex.hpp
+  ${ANTLR_LIB_INCLUDE_PATH}/TreeParser.hpp
+  ${ANTLR_LIB_INCLUDE_PATH}/TreeParserSharedInputState.hpp
+)
 
-# antlr library source: ls ${ANTLR_SRC_DIR}/*.cpp (exclude: dll.cpp)
+# antlr library source: ls ${ANTLR_LIB_SOURCE_PATH}/*.cpp (exclude: dll.cpp)
 add_library(${target}
-  ${ANTLR_SRC_DIR}/ANTLRUtil.cpp
-  ${ANTLR_SRC_DIR}/ASTFactory.cpp
-  ${ANTLR_SRC_DIR}/ASTNULLType.cpp
-  ${ANTLR_SRC_DIR}/ASTRefCount.cpp
-  ${ANTLR_SRC_DIR}/BaseAST.cpp
-  ${ANTLR_SRC_DIR}/BitSet.cpp
-  ${ANTLR_SRC_DIR}/CharBuffer.cpp
-  ${ANTLR_SRC_DIR}/CharScanner.cpp
-  ${ANTLR_SRC_DIR}/CommonAST.cpp
-  ${ANTLR_SRC_DIR}/CommonASTWithHiddenTokens.cpp
-  ${ANTLR_SRC_DIR}/CommonHiddenStreamToken.cpp
-  ${ANTLR_SRC_DIR}/CommonToken.cpp
-#  ${ANTLR_SRC_DIR}/dll.cpp
-  ${ANTLR_SRC_DIR}/InputBuffer.cpp
-  ${ANTLR_SRC_DIR}/LLkParser.cpp
-  ${ANTLR_SRC_DIR}/MismatchedCharException.cpp
-  ${ANTLR_SRC_DIR}/MismatchedTokenException.cpp
-  ${ANTLR_SRC_DIR}/NoViableAltException.cpp
-  ${ANTLR_SRC_DIR}/NoViableAltForCharException.cpp
-  ${ANTLR_SRC_DIR}/Parser.cpp
-  ${ANTLR_SRC_DIR}/RecognitionException.cpp
-  ${ANTLR_SRC_DIR}/String.cpp
-  ${ANTLR_SRC_DIR}/Token.cpp
-  ${ANTLR_SRC_DIR}/TokenBuffer.cpp
-  ${ANTLR_SRC_DIR}/TokenRefCount.cpp
-  ${ANTLR_SRC_DIR}/TokenStreamBasicFilter.cpp
-  ${ANTLR_SRC_DIR}/TokenStreamHiddenTokenFilter.cpp
-  ${ANTLR_SRC_DIR}/TokenStreamRewriteEngine.cpp
-  ${ANTLR_SRC_DIR}/TokenStreamSelector.cpp
-  ${ANTLR_SRC_DIR}/TreeParser.cpp
+  ${ANTLR_LIB_SOURCE_PATH}/ANTLRUtil.cpp
+  ${ANTLR_LIB_SOURCE_PATH}/ASTFactory.cpp
+  ${ANTLR_LIB_SOURCE_PATH}/ASTNULLType.cpp
+  ${ANTLR_LIB_SOURCE_PATH}/ASTRefCount.cpp
+  ${ANTLR_LIB_SOURCE_PATH}/BaseAST.cpp
+  ${ANTLR_LIB_SOURCE_PATH}/BitSet.cpp
+  ${ANTLR_LIB_SOURCE_PATH}/CharBuffer.cpp
+  ${ANTLR_LIB_SOURCE_PATH}/CharScanner.cpp
+  ${ANTLR_LIB_SOURCE_PATH}/CommonAST.cpp
+  ${ANTLR_LIB_SOURCE_PATH}/CommonASTWithHiddenTokens.cpp
+  ${ANTLR_LIB_SOURCE_PATH}/CommonHiddenStreamToken.cpp
+  ${ANTLR_LIB_SOURCE_PATH}/CommonToken.cpp
+#  ${ANTLR_LIB_SOURCE_PATH}/dll.cpp
+  ${ANTLR_LIB_SOURCE_PATH}/InputBuffer.cpp
+  ${ANTLR_LIB_SOURCE_PATH}/LLkParser.cpp
+  ${ANTLR_LIB_SOURCE_PATH}/MismatchedCharException.cpp
+  ${ANTLR_LIB_SOURCE_PATH}/MismatchedTokenException.cpp
+  ${ANTLR_LIB_SOURCE_PATH}/NoViableAltException.cpp
+  ${ANTLR_LIB_SOURCE_PATH}/NoViableAltForCharException.cpp
+  ${ANTLR_LIB_SOURCE_PATH}/Parser.cpp
+  ${ANTLR_LIB_SOURCE_PATH}/RecognitionException.cpp
+  ${ANTLR_LIB_SOURCE_PATH}/String.cpp
+  ${ANTLR_LIB_SOURCE_PATH}/Token.cpp
+  ${ANTLR_LIB_SOURCE_PATH}/TokenBuffer.cpp
+  ${ANTLR_LIB_SOURCE_PATH}/TokenRefCount.cpp
+  ${ANTLR_LIB_SOURCE_PATH}/TokenStreamBasicFilter.cpp
+  ${ANTLR_LIB_SOURCE_PATH}/TokenStreamHiddenTokenFilter.cpp
+  ${ANTLR_LIB_SOURCE_PATH}/TokenStreamRewriteEngine.cpp
+  ${ANTLR_LIB_SOURCE_PATH}/TokenStreamSelector.cpp
+  ${ANTLR_LIB_SOURCE_PATH}/TreeParser.cpp
 )
 
 set_target_properties(${target}
     PROPERTIES 
-  # PUBLIC_HEADER "${ANTLR_PUBLIC_HEADERS}"
-  OUTPUT_NAME "${ANTLR_FILENAME}"
+  PUBLIC_HEADER "${ANTLR_PUBLIC_HEADERS}"
+  OUTPUT_NAME "${ANTLR_LIB_NAME}"
 )
 
 ##########################################################################
@@ -206,7 +211,7 @@ set_target_properties(${target}
 #
 
 target_compile_options(${target} PRIVATE $<IF:$<STREQUAL:${CMAKE_CXX_COMPILER_FRONTEND_VARIANT},MSVC>,-W3 -wd4996,-Wall>)
-target_include_directories(${target} PUBLIC "${ANTLR_TOP_DIR}")
+target_include_directories(${target} PUBLIC "${ANTLR_LIB_PATH}")
 
 ##########################################################################
 #
@@ -220,8 +225,8 @@ if(antlr2_POPULATED)
     set_target_properties(antlr2::antlr2
         PROPERTIES
       SYSTEM OFF
-      INTERFACE_INCLUDE_DIRECTORIES "${ANTLR_TOP_DIR}"
-      IMPORTED_LOCATION "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_STATIC_LIBRARY_PREFIX}${ANTLR_FILENAME}${CMAKE_STATIC_LIBRARY_SUFFIX}"
+      INTERFACE_INCLUDE_DIRECTORIES "${ANTLR_LIB_PATH}"
+      IMPORTED_LOCATION "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_STATIC_LIBRARY_PREFIX}${ANTLR_LIB_NAME}${CMAKE_STATIC_LIBRARY_SUFFIX}"
       IMPORTED_LINK_INTERFACE_LANGUAGES "C++"
     )
     # include(DebugTargetProperties OPTIONAL RESULT_VARIABLE DebugTargetProperties_FOUND)
