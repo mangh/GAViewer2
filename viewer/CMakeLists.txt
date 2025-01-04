@@ -54,7 +54,6 @@ FetchContent_Declare(
 )
 
 FetchContent_MakeAvailable(gavr)
-
 FetchContent_GetProperties(gavr)
 
 # message(DEBUG "gavr_POPULATED = ${gavr_POPULATED}")
@@ -75,37 +74,38 @@ FetchContent_GetProperties(gavr)
 #
 #
 
-include(PatchFiles)
+# Get value of the "--directory" option to be used in the "git apply" command:
+cmake_path(GET CMAKE_CURRENT_SOURCE_DIR PARENT_PATH _parent_dir)
+string(REPLACE "${_parent_dir}" "" _slash_subdir ${CMAKE_CURRENT_SOURCE_DIR})
+string(REPLACE "/" "" _subdir ${_slash_subdir})
 
-set(files_to_patch "")
-
-if (CMAKE_SYSTEM_NAME MATCHES "Windows")
-  list(APPEND files_to_patch
-    "src/mainwindow.h"
-    "src/gaviewer.rc"
-  )
-elseif (CMAKE_SYSTEM_NAME MATCHES "Linux|FreeBSD")
-  list(APPEND files_to_patch
-    "src/osdep.h"
-  )
-endif()
-
-list(APPEND files_to_patch
-  "src/state.h"
-  "src/ui.cpp"
-  "src/typeset/fontparse.cpp"
-  "src/typeset/fontyacc.c"
-  "src/typeset/liststack.h"
-  "src/typeset/typeset.cpp"
-  "src/typeset/typesetbox.cpp"
-  "src/c3ga/c3ga.cpp"
-  "src/c5ga/c5ga.cpp"
-  "src/e3ga/e3ga.cpp"
-  "src/i2ga/i2ga.cpp"
-  "src/p3ga/p3ga.cpp"
+add_custom_command(
+  OUTPUT
+    "${gavr_SOURCE_DIR}/src/gaviewer.rc"
+    "${gavr_SOURCE_DIR}/src/mainwindow.h"
+    "${gavr_SOURCE_DIR}/src/osdep.h"
+    "${gavr_SOURCE_DIR}/src/state.h"
+    "${gavr_SOURCE_DIR}/src/ui.cpp"
+    "${gavr_SOURCE_DIR}/src/c3ga/c3ga.cpp"
+    "${gavr_SOURCE_DIR}/src/c5ga/c5ga.cpp"
+    "${gavr_SOURCE_DIR}/src/e3ga/e3ga.cpp"
+    "${gavr_SOURCE_DIR}/src/i2ga/i2ga.cpp"
+    "${gavr_SOURCE_DIR}/src/p3ga/p3ga.cpp"
+    "${gavr_SOURCE_DIR}/src/typeset/fontparse.cpp"
+    "${gavr_SOURCE_DIR}/src/typeset/fontyacc.c"
+    "${gavr_SOURCE_DIR}/src/typeset/liststack.h"
+    "${gavr_SOURCE_DIR}/src/typeset/typeset.cpp"
+    "${gavr_SOURCE_DIR}/src/typeset/typesetbox.cpp"
+  COMMAND
+    ${GIT_EXECUTABLE} apply --unsafe-paths --directory=${_subdir} "${CMAKE_CURRENT_SOURCE_DIR}/viewer.patch"
+  DEPENDS
+    "${CMAKE_CURRENT_SOURCE_DIR}/viewer.patch"
+  WORKING_DIRECTORY
+    "${CMAKE_CURRENT_SOURCE_DIR}"
+  COMMENT
+    "Patch the source files in the ${gavr_SOURCE_DIR}/src folder."
+  USES_TERMINAL
 )
-
-patch_files("${CMAKE_CURRENT_SOURCE_DIR}" "${files_to_patch}")
 
 ##########################################################################
 #

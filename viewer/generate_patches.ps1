@@ -1,3 +1,8 @@
+cd C:\Users\marek\source\repos\GAViewer\antlr2
+git diff --no-index --diff-filter=M ./src ../build/_deps/gavr-src/src > ./viewer.patch
+
+git apply --unsafe-paths --directory=viewer ./viewer.patch
+
 Set-Location C:\Users\marek\source\repos\GAViewer\viewer
 
 ##############################################################
