@@ -5,31 +5,6 @@ message(DEBUG "Entering the ANTLR2 subdirectory ...")
 
 ##########################################################################
 #
-#   ANTLR2 directory compile options
-#
-#   When compiling ANTLR2 source code (which is years old), 
-#   many deprecation warnings appear. It's worth turning them off to get
-#   a clearer picture of the compilation and spot more serious issues (if any).
-#
-
-if (CMAKE_CXX_COMPILER_FRONTEND_VARIANT MATCHES "MSVC")
-
-  add_compile_options(
-    -D_CRT_SECURE_NO_WARNINGS
-    -W3     # production quality warnings
-  )
-
-elseif (CMAKE_CXX_COMPILER_FRONTEND_VARIANT MATCHES "GNU")
-
-  add_compile_options(
-    -Wall
-    -Wno-deprecated
-  )
-
-endif()
-
-##########################################################################
-#
 #   PROJECT
 #
 
@@ -85,10 +60,17 @@ cmake_path(SET ANTLR_LIB_SOURCE_PATH "${ANTLR_LIB_PATH}/src")
 #
 #
 
-# Get value of the "--directory" option to be used in the "git apply" command:
-cmake_path(GET CMAKE_CURRENT_SOURCE_DIR PARENT_PATH _parent_dir)
-string(REPLACE "${_parent_dir}" "" _slash_subdir ${CMAKE_CURRENT_SOURCE_DIR})
-string(REPLACE "/" "" _subdir ${_slash_subdir})
+# Source and target file directories (required for the configure_file() call below):
+set(PATCH_SOURCE_DIR "${CMAKE_CURRENT_BINARY_DIR}")
+set(PATCH_TARGET_DIR "${antlr2_SOURCE_DIR}")
+
+# Patch file name and (working) path:
+set(PATCH_FILE_NAME "antlr2.patch")
+set(PATCH_FILE_PATH "${CMAKE_CURRENT_BINARY_DIR}/${PATCH_FILE_NAME}")
+
+# Configure the patch file for the CMAKE_BINARY_DIR (working) folder
+# that is currently in use (“build” or whatever):
+configure_file("${PATCH_FILE_NAME}.in" "${PATCH_FILE_NAME}" @ONLY)
 
 add_custom_command(
   OUTPUT
@@ -96,11 +78,17 @@ add_custom_command(
     "${ANTLR_LIB_INCLUDE_PATH}/config.hpp"
     "${ANTLR_LIB_SOURCE_PATH}/String.cpp"
   COMMAND
-    ${GIT_EXECUTABLE} apply --unsafe-paths --directory=${_subdir} "${CMAKE_CURRENT_SOURCE_DIR}/antlr2.patch"
+    # Original files are required to apply the patch (but are deleted after the patch is applied)
+    cmake -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/lib" "${CMAKE_CURRENT_BINARY_DIR}/lib"
+  COMMAND
+    ${GIT_EXECUTABLE} apply --unsafe-paths "${PATCH_FILE_PATH}"
   DEPENDS
-    "${CMAKE_CURRENT_SOURCE_DIR}/antlr2.patch"
-  WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
-  COMMENT "Patch the source files in the ${ANTLR_LIB_PATH} folder."
+    "${PATCH_FILE_PATH}"
+  WORKING_DIRECTORY
+    # NOTE: the command must be run in the CMAKE_SOURCE_DIR directory; otherwise it will not work!
+    "${CMAKE_SOURCE_DIR}"
+  COMMENT
+    "Patch file ${PATCH_FILE_PATH} applied to the ${ANTLR_LIB_PATH} folder."
   USES_TERMINAL
 )
 
@@ -112,7 +100,7 @@ add_custom_command(
 set(target ANTLR_LIB)
 
 # antlr headers: ls ${ANTLR_LIB_INCLUDE_PATH}/*.hpp
-set(ANTLR_PUBLIC_HEADERS
+set(ANTLR_LIB_HEADERS
   ${ANTLR_LIB_INCLUDE_PATH}/ANTLRException.hpp
   ${ANTLR_LIB_INCLUDE_PATH}/ANTLRUtil.hpp
   ${ANTLR_LIB_INCLUDE_PATH}/AST.hpp
@@ -201,7 +189,7 @@ add_library(${target}
 
 set_target_properties(${target}
     PROPERTIES 
-  PUBLIC_HEADER "${ANTLR_PUBLIC_HEADERS}"
+  PUBLIC_HEADER "${ANTLR_LIB_HEADERS}"
   OUTPUT_NAME "${ANTLR_LIB_NAME}"
 )
 
@@ -209,8 +197,17 @@ set_target_properties(${target}
 #
 #   Compile & Link Options
 #
+#   When compiling ANTLR2 source code (which is years old), many
+#   deprecation warnings appear. It's worth turning them off to
+#   get a clearer picture of the compilation and spot more serious
+#   issues (if any).
+#
+#
 
-target_compile_options(${target} PRIVATE $<IF:$<STREQUAL:${CMAKE_CXX_COMPILER_FRONTEND_VARIANT},MSVC>,-W3 -wd4996,-Wall>)
+target_compile_options(${target}
+  PRIVATE $<IF:$<STREQUAL:${CMAKE_CXX_COMPILER_FRONTEND_VARIANT},MSVC>,-D_CRT_SECURE_NO_WARNINGS -W3 -wd4996,-Wall -Wno-deprecated>
+)
+
 target_include_directories(${target} PUBLIC "${ANTLR_LIB_PATH}")
 
 ##########################################################################
