@@ -206,11 +206,11 @@ endif()
 
 if (CMAKE_CXX_COMPILER_FRONTEND_VARIANT MATCHES "MSVC")
 
-  target_compile_definitions(${target}
+  target_compile_definitions(${target} PRIVATE
     # deprecation warnings for the older, less secure functions
     _CRT_SECURE_NO_WARNINGS   
   )
-  target_compile_options(${target}
+  target_compile_options(${target} PRIVATE
     -W3       # production quality warnings
     -wd4996   # deprecated function, class member, variable, or typedef
   )
