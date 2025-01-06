@@ -5,39 +5,6 @@ message(DEBUG "Entering the GAViewer subdirectory ...")
 
 ##########################################################################
 #
-#   GAViewer directory compile options
-#
-#   When compiling GAViewer source code (which is years old), 
-#   many deprecation warnings appear. It's worth turning them off to get
-#   a clearer picture of the compilation and spot more serious issues (if any).
-#
-
-if (CMAKE_CXX_COMPILER_FRONTEND_VARIANT MATCHES "MSVC")
-
-  add_compile_options(
-    -D_CRT_SECURE_NO_WARNINGS   # deprecation warnings for the older, less secure functions
-    -W3                         # level 1, 2 and 3 (production quality) warnings
-    -wd4996                     # deprecated function, class member, variable, or typedef
-  )
-
-elseif (CMAKE_CXX_COMPILER_FRONTEND_VARIANT MATCHES "GNU")
-
-  add_compile_options(
-    -Wall
-    -Wno-deprecated
-    -Wno-parentheses
-    -Wno-unused-variable
-  )
-  if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-    add_compile_options(
-      -Wno-deprecated-non-prototype # function declaration without a prototype is deprecated in all versions of C
-    )
-  endif()
-
-endif()
-
-##########################################################################
-#
 #	  Downloading source files
 #
 #   Name: GAViewer-0.86.tar.gz
@@ -60,9 +27,11 @@ FetchContent_GetProperties(gavr)
 # message(DEBUG "gavr_SOURCE_DIR = ${gavr_SOURCE_DIR}")
 # message(DEBUG "gavr_BINARY_DIR = ${gavr_BINARY_DIR}")
 
+set(gavr_SRC_PATH "${gavr_SOURCE_DIR}/src")
+
 # ##########################################################################
 # #
-# #	  codegen
+# #	  codegen - useless
 # #
 # #
 # 
@@ -74,36 +43,47 @@ FetchContent_GetProperties(gavr)
 #
 #
 
-# Get value of the "--directory" option to be used in the "git apply" command:
-cmake_path(GET CMAKE_CURRENT_SOURCE_DIR PARENT_PATH _parent_dir)
-string(REPLACE "${_parent_dir}" "" _slash_subdir ${CMAKE_CURRENT_SOURCE_DIR})
-string(REPLACE "/" "" _subdir ${_slash_subdir})
+# Source and target file directories (required for the configure_file() call below):
+set(PATCH_SOURCE_DIR "${CMAKE_CURRENT_BINARY_DIR}")
+set(PATCH_TARGET_DIR "${gavr_SOURCE_DIR}")
+
+# Patch file name and (working) path:
+set(PATCH_FILE_NAME "viewer.patch")
+set(PATCH_FILE_PATH "${CMAKE_CURRENT_BINARY_DIR}/${PATCH_FILE_NAME}")
+
+# Configure the patch file for the CMAKE_BINARY_DIR (working) folder
+# that is currently in use (“build” or whatever):
+configure_file("${PATCH_FILE_NAME}.in" "${PATCH_FILE_NAME}" @ONLY)
 
 add_custom_command(
   OUTPUT
-    "${gavr_SOURCE_DIR}/src/gaviewer.rc"
-    "${gavr_SOURCE_DIR}/src/mainwindow.h"
-    "${gavr_SOURCE_DIR}/src/osdep.h"
-    "${gavr_SOURCE_DIR}/src/state.h"
-    "${gavr_SOURCE_DIR}/src/ui.cpp"
-    "${gavr_SOURCE_DIR}/src/c3ga/c3ga.cpp"
-    "${gavr_SOURCE_DIR}/src/c5ga/c5ga.cpp"
-    "${gavr_SOURCE_DIR}/src/e3ga/e3ga.cpp"
-    "${gavr_SOURCE_DIR}/src/i2ga/i2ga.cpp"
-    "${gavr_SOURCE_DIR}/src/p3ga/p3ga.cpp"
-    "${gavr_SOURCE_DIR}/src/typeset/fontparse.cpp"
-    "${gavr_SOURCE_DIR}/src/typeset/fontyacc.c"
-    "${gavr_SOURCE_DIR}/src/typeset/liststack.h"
-    "${gavr_SOURCE_DIR}/src/typeset/typeset.cpp"
-    "${gavr_SOURCE_DIR}/src/typeset/typesetbox.cpp"
+    "${gavr_SRC_PATH}/gaviewer.rc"
+    "${gavr_SRC_PATH}/mainwindow.h"
+    "${gavr_SRC_PATH}/osdep.h"
+    "${gavr_SRC_PATH}/state.h"
+    "${gavr_SRC_PATH}/ui.cpp"
+    "${gavr_SRC_PATH}/c3ga/c3ga.cpp"
+    "${gavr_SRC_PATH}/c5ga/c5ga.cpp"
+    "${gavr_SRC_PATH}/e3ga/e3ga.cpp"
+    "${gavr_SRC_PATH}/i2ga/i2ga.cpp"
+    "${gavr_SRC_PATH}/p3ga/p3ga.cpp"
+    "${gavr_SRC_PATH}/typeset/fontparse.cpp"
+    "${gavr_SRC_PATH}/typeset/fontyacc.c"
+    "${gavr_SRC_PATH}/typeset/liststack.h"
+    "${gavr_SRC_PATH}/typeset/typeset.cpp"
+    "${gavr_SRC_PATH}/typeset/typesetbox.cpp"
   COMMAND
-    ${GIT_EXECUTABLE} apply --unsafe-paths --directory=${_subdir} "${CMAKE_CURRENT_SOURCE_DIR}/viewer.patch"
+    # Original files are required to apply the patch (but are deleted after the patch is applied)
+    cmake -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/src" "${CMAKE_CURRENT_BINARY_DIR}/src"
+  COMMAND
+    ${GIT_EXECUTABLE} apply --unsafe-paths "${PATCH_FILE_PATH}"
   DEPENDS
-    "${CMAKE_CURRENT_SOURCE_DIR}/viewer.patch"
+    "${PATCH_FILE_PATH}"
   WORKING_DIRECTORY
-    "${CMAKE_CURRENT_SOURCE_DIR}"
+    # NOTE: the command must be run in the CMAKE_SOURCE_DIR directory; otherwise it will not work!
+    "${CMAKE_SOURCE_DIR}"
   COMMENT
-    "Patch the source files in the ${gavr_SOURCE_DIR}/src folder."
+    "Patch file ${PATCH_FILE_PATH} applied to the ${gavr_SRC_PATH} folder."
   USES_TERMINAL
 )
 
@@ -115,85 +95,77 @@ add_custom_command(
 set(target "GAViewer")
 
 set(_source_files
-    "${gavr_SOURCE_DIR}/src/c3gaobject.cpp"
-    "${gavr_SOURCE_DIR}/src/c3ga/c3ga.cpp"
-    "${gavr_SOURCE_DIR}/src/c3ga/c3ga_optc.cpp"
-    "${gavr_SOURCE_DIR}/src/c5gaobject.cpp"
-    "${gavr_SOURCE_DIR}/src/c5ga/c5ga.cpp"
-    "${gavr_SOURCE_DIR}/src/c5ga/c5ga_optc.cpp"
-    "${gavr_SOURCE_DIR}/src/conformalobject.cpp"
-    "${gavr_SOURCE_DIR}/src/console/console.cpp"
-    "${gavr_SOURCE_DIR}/src/console/consoleautocolor.cpp"
-    "${gavr_SOURCE_DIR}/src/console/consolecontrol.cpp"
-    "${gavr_SOURCE_DIR}/src/console/consoledynstmt.cpp"
-    "${gavr_SOURCE_DIR}/src/console/consolefunctions.cpp"
-    "${gavr_SOURCE_DIR}/src/console/consolegafile.cpp"
-    "${gavr_SOURCE_DIR}/src/console/consolegeneratedfunctions.cpp"
-    "${gavr_SOURCE_DIR}/src/console/ConsoleLexer.cpp"
-    "${gavr_SOURCE_DIR}/src/console/consoleoperators.cpp"
-    "${gavr_SOURCE_DIR}/src/console/ConsoleParser.cpp"
-    "${gavr_SOURCE_DIR}/src/console/consolescope.cpp"
-    "${gavr_SOURCE_DIR}/src/console/consolesourcefileread.cpp"
-    "${gavr_SOURCE_DIR}/src/console/consolestatement.cpp"
-    "${gavr_SOURCE_DIR}/src/console/consoletest.cpp"
-    "${gavr_SOURCE_DIR}/src/console/consolevariable.cpp"
-    "${gavr_SOURCE_DIR}/src/console/consolewindow.cpp"
-    "${gavr_SOURCE_DIR}/src/console/fl_console.cpp"
-    "${gavr_SOURCE_DIR}/src/draw.cpp"
-    "${gavr_SOURCE_DIR}/src/dynamicstatementwindow.cpp"
-    "${gavr_SOURCE_DIR}/src/e3gaobject.cpp"
-    "${gavr_SOURCE_DIR}/src/e3ga/e3ga.cpp"
-    "${gavr_SOURCE_DIR}/src/e3ga/e3ga_optc.cpp"
-    "${gavr_SOURCE_DIR}/src/gafile.cpp"
-    "${gavr_SOURCE_DIR}/src/geosphere.cpp"
-    "${gavr_SOURCE_DIR}/src/glwindow.cpp"
-    "${gavr_SOURCE_DIR}/src/i2gaobject.cpp"
-    "${gavr_SOURCE_DIR}/src/i2ga/i2ga.cpp"
-    "${gavr_SOURCE_DIR}/src/i2ga/i2ga_optc2.cpp"
-    "${gavr_SOURCE_DIR}/src/main.cpp"
-    "${gavr_SOURCE_DIR}/src/mainwindow.cpp"
-    "${gavr_SOURCE_DIR}/src/meshobject.cpp"
-    "${gavr_SOURCE_DIR}/src/mt19937-2.cpp"
-    "${gavr_SOURCE_DIR}/src/mvint.cpp"
-    "${gavr_SOURCE_DIR}/src/mvintc3ga.cpp"
-    "${gavr_SOURCE_DIR}/src/mvintc5ga.cpp"
-    "${gavr_SOURCE_DIR}/src/mvinte3ga.cpp"
-    "${gavr_SOURCE_DIR}/src/mvinti2ga.cpp"
-    "${gavr_SOURCE_DIR}/src/mvintp3ga.cpp"
-    "${gavr_SOURCE_DIR}/src/netclient.cpp"
-    "${gavr_SOURCE_DIR}/src/netserver.cpp"
-    "${gavr_SOURCE_DIR}/src/object.cpp"
-    "${gavr_SOURCE_DIR}/src/osdep.cpp"
-    "${gavr_SOURCE_DIR}/src/p3gaobject.cpp"
-    "${gavr_SOURCE_DIR}/src/p3ga/p3ga.cpp"
-    "${gavr_SOURCE_DIR}/src/p3ga/p3ga_optc.cpp"
-    "${gavr_SOURCE_DIR}/src/pngwrapper.cpp"
-    "${gavr_SOURCE_DIR}/src/polygonobject.cpp"
-    "${gavr_SOURCE_DIR}/src/screenshot.cpp"
-    "${gavr_SOURCE_DIR}/src/screenshotdialog.cpp"
-    "${gavr_SOURCE_DIR}/src/selectwindow.cpp"
-    "${gavr_SOURCE_DIR}/src/softpic.cpp"
-    "${gavr_SOURCE_DIR}/src/state.cpp"
-    "${gavr_SOURCE_DIR}/src/textobject.cpp"
-    "${gavr_SOURCE_DIR}/src/tubedraw.cpp"
-    "${gavr_SOURCE_DIR}/src/typeset/fontdata.cpp"
-    "${gavr_SOURCE_DIR}/src/typeset/fontlex.c"
-    "${gavr_SOURCE_DIR}/src/typeset/fontparse.cpp"
-    "${gavr_SOURCE_DIR}/src/typeset/fontyacc.c"
-    "${gavr_SOURCE_DIR}/src/typeset/openglfont.cpp"
-#      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
-#      <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)%(Filename)1.xdc</XMLDocumentationFileName>
-#      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)%(Filename)1.obj</ObjectFileName>
-#      <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)%(Filename)1.xdc</XMLDocumentationFileName>
-#      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
-#      <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)%(Filename)1.xdc</XMLDocumentationFileName>
-#      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)%(Filename)1.obj</ObjectFileName>
-#      <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)%(Filename)1.xdc</XMLDocumentationFileName>
-    "${gavr_SOURCE_DIR}/src/typeset/typeset.cpp"
-    "${gavr_SOURCE_DIR}/src/typeset/typesetbox.cpp"
-    "${gavr_SOURCE_DIR}/src/ui.cpp"
-    "${gavr_SOURCE_DIR}/src/util.cpp"
-    "${gavr_SOURCE_DIR}/src/writestate.cpp"
+    "${gavr_SRC_PATH}/c3gaobject.cpp"
+    "${gavr_SRC_PATH}/c3ga/c3ga.cpp"
+    "${gavr_SRC_PATH}/c3ga/c3ga_optc.cpp"
+    "${gavr_SRC_PATH}/c5gaobject.cpp"
+    "${gavr_SRC_PATH}/c5ga/c5ga.cpp"
+    "${gavr_SRC_PATH}/c5ga/c5ga_optc.cpp"
+    "${gavr_SRC_PATH}/conformalobject.cpp"
+    "${gavr_SRC_PATH}/console/console.cpp"
+    "${gavr_SRC_PATH}/console/consoleautocolor.cpp"
+    "${gavr_SRC_PATH}/console/consolecontrol.cpp"
+    "${gavr_SRC_PATH}/console/consoledynstmt.cpp"
+    "${gavr_SRC_PATH}/console/consolefunctions.cpp"
+    "${gavr_SRC_PATH}/console/consolegafile.cpp"
+    "${gavr_SRC_PATH}/console/consolegeneratedfunctions.cpp"
+    "${gavr_SRC_PATH}/console/ConsoleLexer.cpp"
+    "${gavr_SRC_PATH}/console/consoleoperators.cpp"
+    "${gavr_SRC_PATH}/console/ConsoleParser.cpp"
+    "${gavr_SRC_PATH}/console/consolescope.cpp"
+    "${gavr_SRC_PATH}/console/consolesourcefileread.cpp"
+    "${gavr_SRC_PATH}/console/consolestatement.cpp"
+    "${gavr_SRC_PATH}/console/consoletest.cpp"
+    "${gavr_SRC_PATH}/console/consolevariable.cpp"
+    "${gavr_SRC_PATH}/console/consolewindow.cpp"
+    "${gavr_SRC_PATH}/console/fl_console.cpp"
+    "${gavr_SRC_PATH}/draw.cpp"
+    "${gavr_SRC_PATH}/dynamicstatementwindow.cpp"
+    "${gavr_SRC_PATH}/e3gaobject.cpp"
+    "${gavr_SRC_PATH}/e3ga/e3ga.cpp"
+    "${gavr_SRC_PATH}/e3ga/e3ga_optc.cpp"
+    "${gavr_SRC_PATH}/gafile.cpp"
+    "${gavr_SRC_PATH}/geosphere.cpp"
+    "${gavr_SRC_PATH}/glwindow.cpp"
+    "${gavr_SRC_PATH}/i2gaobject.cpp"
+    "${gavr_SRC_PATH}/i2ga/i2ga.cpp"
+    "${gavr_SRC_PATH}/i2ga/i2ga_optc2.cpp"
+    "${gavr_SRC_PATH}/main.cpp"
+    "${gavr_SRC_PATH}/mainwindow.cpp"
+    "${gavr_SRC_PATH}/meshobject.cpp"
+    "${gavr_SRC_PATH}/mt19937-2.cpp"
+    "${gavr_SRC_PATH}/mvint.cpp"
+    "${gavr_SRC_PATH}/mvintc3ga.cpp"
+    "${gavr_SRC_PATH}/mvintc5ga.cpp"
+    "${gavr_SRC_PATH}/mvinte3ga.cpp"
+    "${gavr_SRC_PATH}/mvinti2ga.cpp"
+    "${gavr_SRC_PATH}/mvintp3ga.cpp"
+    "${gavr_SRC_PATH}/netclient.cpp"
+    "${gavr_SRC_PATH}/netserver.cpp"
+    "${gavr_SRC_PATH}/object.cpp"
+    "${gavr_SRC_PATH}/osdep.cpp"
+    "${gavr_SRC_PATH}/p3gaobject.cpp"
+    "${gavr_SRC_PATH}/p3ga/p3ga.cpp"
+    "${gavr_SRC_PATH}/p3ga/p3ga_optc.cpp"
+    "${gavr_SRC_PATH}/pngwrapper.cpp"
+    "${gavr_SRC_PATH}/polygonobject.cpp"
+    "${gavr_SRC_PATH}/screenshot.cpp"
+    "${gavr_SRC_PATH}/screenshotdialog.cpp"
+    "${gavr_SRC_PATH}/selectwindow.cpp"
+    "${gavr_SRC_PATH}/softpic.cpp"
+    "${gavr_SRC_PATH}/state.cpp"
+    "${gavr_SRC_PATH}/textobject.cpp"
+    "${gavr_SRC_PATH}/tubedraw.cpp"
+    "${gavr_SRC_PATH}/typeset/fontdata.cpp"
+    "${gavr_SRC_PATH}/typeset/fontlex.c"
+    "${gavr_SRC_PATH}/typeset/fontparse.cpp"
+    "${gavr_SRC_PATH}/typeset/fontyacc.c"
+    "${gavr_SRC_PATH}/typeset/openglfont.cpp"
+    "${gavr_SRC_PATH}/typeset/typeset.cpp"
+    "${gavr_SRC_PATH}/typeset/typesetbox.cpp"
+    "${gavr_SRC_PATH}/ui.cpp"
+    "${gavr_SRC_PATH}/util.cpp"
+    "${gavr_SRC_PATH}/writestate.cpp"
 )
 
 # Add executable target to the project using the specified source files:
@@ -201,13 +173,11 @@ add_executable(
   ${target}
   ${_source_files}
 )
-if (CMAKE_SYSTEM_NAME MATCHES "Windows")
-  # The executable must have a WinMain entry point
-  set_target_properties(${target} PROPERTIES WIN32_EXECUTABLE ON)
-  # Add resources (icon)
-  target_sources(${target} PRIVATE "${gavr_SOURCE_DIR}/src/gaviewer.rc")
-endif()
 
+# Add resources (icon)
+if (CMAKE_SYSTEM_NAME MATCHES "Windows")
+  target_sources(${target} PRIVATE "${gavr_SRC_PATH}/gaviewer.rc")
+endif()
 
 ##########################################################################
 #
@@ -215,12 +185,52 @@ endif()
 #
 
 if (CMAKE_SYSTEM_NAME MATCHES "Windows")
-  target_compile_definitions(
-      ${target}
-    PRIVATE WIN32             # Application being built for Windows
+  
+  target_compile_definitions(${target}
+    PRIVATE WIN32             # application being built for Windows
     PRIVATE WIN32_NO_CONSOLE  # without a console
     PRIVATE _MBCS             # for Multibyte Character Set
   )
+
+  set_target_properties(${target} PROPERTIES
+    WIN32_EXECUTABLE ON       # the executable must have a WinMain entry point
+  )
+
+endif()
+
+# When compiling GAViewer source code (which is years old), many
+# deprecation warnings appear. It's worth turning them off to
+# get a clearer picture of the compilation and spot more serious
+# issues (if any).
+
+if (CMAKE_CXX_COMPILER_FRONTEND_VARIANT MATCHES "MSVC")
+
+  target_compile_definitions(${target}
+    # deprecation warnings for the older, less secure functions
+    _CRT_SECURE_NO_WARNINGS   
+  )
+  target_compile_options(${target}
+    -W3       # production quality warnings
+    -wd4996   # deprecated function, class member, variable, or typedef
+  )
+
+elseif (CMAKE_CXX_COMPILER_FRONTEND_VARIANT MATCHES "GNU")
+
+  target_compile_options(${target}
+    PRIVATE
+    -Wall
+    -Wno-deprecated
+    -Wno-parentheses
+    -Wno-unused-variable
+  )
+  if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+    target_compile_options(${target}
+      PRIVATE
+      # function declaration without a prototype is deprecated in all versions of C
+      -Wno-deprecated-non-prototype
+    )
+  endif()
+
 endif()
 
 ##########################################################################
