@@ -43,13 +43,14 @@ set(gavr_SRC_PATH "${gavr_SOURCE_DIR}/src")
 #
 #
 
-# Source and target file directories (required for the configure_file() call below):
-set(PATCH_SOURCE_DIR "${CMAKE_CURRENT_BINARY_DIR}")
-set(PATCH_TARGET_DIR "${gavr_SOURCE_DIR}")
-
 # Patch file name and (working) path:
 set(PATCH_FILE_NAME "viewer.patch")
 set(PATCH_FILE_PATH "${CMAKE_CURRENT_BINARY_DIR}/${PATCH_FILE_NAME}")
+
+# Paths to the SOURCE and TARGET folders (relative to the CMAKE_SOURCE_DIR folder)
+# required by the following call to configure_file(), which creates the patch file:
+string(REPLACE "${CMAKE_SOURCE_DIR}" "." PATCH_SOURCE_DIR "${CMAKE_CURRENT_BINARY_DIR}")
+string(REPLACE "${CMAKE_SOURCE_DIR}" "." PATCH_TARGET_DIR "${gavr_SOURCE_DIR}")
 
 # Configure the patch file for the CMAKE_BINARY_DIR (working) folder
 # that is currently in use (“build” or whatever):
