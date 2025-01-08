@@ -278,25 +278,16 @@ set_target_properties(${target}
 #
 #   INSTALL
 #
-#   Use the following command (in the project's root directory) to
-#   run the application:
-#
-#       ./build/${testApp} /path/to/input_data.txt
-#
-#   For example:
-#
-#       ./build/${testApp} ./CALINE3.EXP
-#
-
-# set(testApp "${target}v${APP_VER_CFG}")
-# set_target_properties(${target} PROPERTIES OUTPUT_NAME "${testApp}")
 
 install(TARGETS ${target}
   RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-  ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
 )
 
-# include(DebugTargetProperties OPTIONAL RESULT_VARIABLE DebugTargetProperties_FOUND)
-# if (DebugTargetProperties_FOUND)
-#   report_target_properties(${target})
-# endif()
+#   After compilation, the application can be installed using a command similar to the following:
+#
+#     cmake --install ~/GAViewer/build --prefix /my/install/prefix
+#
+#   For example, on Windows, you can use:
+#
+#     cmake --install %USERPROFILE\source\repos\GAViewer\build --prefix %LOCALAPPDATA%\Programs\GAViewer
+#
