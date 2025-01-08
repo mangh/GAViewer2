@@ -248,7 +248,7 @@ index da55c87..3dd0f08 100644
  }
  
 diff --git a/./src/ui.cpp b/../build/_deps/gavr-src/src/ui.cpp
-index 7bf257e..a4b2341 100644
+index 7bf257e..db92837 100644
 --- a/./src/ui.cpp
 +++ b/../build/_deps/gavr-src/src/ui.cpp
 @@ -265,15 +265,14 @@ UIstate::UIstate(int argc, char *argv[]) {
@@ -265,11 +265,11 @@ index 7bf257e..a4b2341 100644
 -#endif
 -	
 +// #else
-+// 
++//
 +// #ifndef __MACH__
 +// 	Pixmap p = XCreateBitmapFromData(fl_display, DefaultRootWindow(fl_display),
 +//                                  (const char *)gaviewer_bits, gaviewer_width, gaviewer_height);
-+// 
++//
 +// 	m_mainWindow->icon((char *)p);
 +// #endif
  #endif
