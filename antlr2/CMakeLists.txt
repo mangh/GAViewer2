@@ -60,8 +60,14 @@ cmake_path(SET ANTLR_LIB_SOURCE_PATH "${ANTLR_LIB_PATH}/src")
 #
 #
 
+set(files_to_patch
+  "${ANTLR_LIB_INCLUDE_PATH}/CharScanner.hpp"
+  "${ANTLR_LIB_INCLUDE_PATH}/config.hpp"
+  "${ANTLR_LIB_SOURCE_PATH}/String.cpp"
+)
+
 # Patch file name and (working) path:
-set(PATCH_FILE_NAME "antlr2.patch")
+set(PATCH_FILE_NAME "lib.patch")
 set(PATCH_FILE_PATH "${CMAKE_CURRENT_BINARY_DIR}/${PATCH_FILE_NAME}")
 
 # Paths to the SOURCE and TARGET folders (relative to the CMAKE_SOURCE_DIR folder)
@@ -69,18 +75,16 @@ set(PATCH_FILE_PATH "${CMAKE_CURRENT_BINARY_DIR}/${PATCH_FILE_NAME}")
 string(REPLACE "${CMAKE_SOURCE_DIR}" "." PATCH_SOURCE_DIR "${CMAKE_CURRENT_BINARY_DIR}")
 string(REPLACE "${CMAKE_SOURCE_DIR}" "." PATCH_TARGET_DIR "${antlr2_SOURCE_DIR}")
 
-# Configure the patch file for the CMAKE_BINARY_DIR (working) folder
-# that is currently in use (“build” or whatever):
+# Configure the patch file for the currently used CMAKE_BINARY_DIR folder
+# (so that it works whether it is “${CMAKE_SOURCE_DIR}/build” or something else):
 configure_file("${PATCH_FILE_NAME}.in" "${PATCH_FILE_NAME}" @ONLY)
 
 add_custom_command(
   OUTPUT
-    "${ANTLR_LIB_INCLUDE_PATH}/CharScanner.hpp"
-    "${ANTLR_LIB_INCLUDE_PATH}/config.hpp"
-    "${ANTLR_LIB_SOURCE_PATH}/String.cpp"
+    ${files_to_patch}
   COMMAND
     # Original files are required to apply the patch (but are deleted after the patch is applied)
-    cmake -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/lib" "${CMAKE_CURRENT_BINARY_DIR}/lib"
+    ${CMAKE_COMMAND} -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/lib" "${CMAKE_CURRENT_BINARY_DIR}/lib"
   COMMAND
     ${GIT_EXECUTABLE} apply --unsafe-paths "${PATCH_FILE_PATH}"
   DEPENDS
@@ -91,6 +95,7 @@ add_custom_command(
   COMMENT
     "Patch file ${PATCH_FILE_PATH} applied to the ${ANTLR_LIB_PATH} folder."
   USES_TERMINAL
+  VERBATIM
 )
 
 ##########################################################################

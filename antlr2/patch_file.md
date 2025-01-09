@@ -18,9 +18,9 @@
   ```
 - [ ] Generate a patch file for all the above changes:
   ```sh
-  git diff --no-index --diff-filter=M ./lib/cpp ../build/_deps/antlr2-src/lib/cpp > ./antlr2.patch
+  git diff --no-index --diff-filter=M ./lib/cpp ../build/_deps/antlr2-src/lib/cpp > ./lib.patch
   ```
-  This creates the follwing `antlr2.patch` file:
+  This creates the follwing `lib.patch` file:
   ```diff
   diff --git a/./lib/cpp/antlr/CharScanner.hpp b/../build/_deps/antlr2-src/lib/cpp/antlr/CharScanner.hpp
   index 8a97e97..49c3d82 100644
@@ -80,7 +80,7 @@
   - all occurrences of `a/./` by `a/@PATCH_SOURCE_DIR@/` and
   - all occurrences of `b/../build/_deps/antlr2-src/` with `b/@PATCH_TARGET_DIR@/`.
 
-  and save the changes to the `antlr2.patch.in` file:
+  and save the changes to the `lib.patch.in` file:
   ```diff
   diff --git a/@PATCH_SOURCE_DIR@/lib/cpp/antlr/CharScanner.hpp b/@PATCH_TARGET_DIR@/lib/cpp/antlr/CharScanner.hpp
   index 8a97e97..49c3d82 100644

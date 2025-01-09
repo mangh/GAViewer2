@@ -42,13 +42,13 @@
   ```
 - [ ] Generate a patch file for all the above changes:
   ```sh
-  git diff --no-index --diff-filter=M ./src ../build/_deps/gavr-src/src > ./viewer.patch
+  git diff --no-index --diff-filter=M ./src ../build/_deps/gavr-src/src > ./src.patch
   ```
-- [ ] The `viewer.patch` file (created in previous step) would be sufficient as long as `CMAKE_BINARY_DIR == “build”`, but this does not have to be the case. In order to become independent of the current value of the `CMAKE_BINARY_DIR` variable, we need to take one more step, and that is to replace:
+- [ ] The `src.patch` file (created in previous step) would be sufficient as long as `CMAKE_BINARY_DIR == “build”`, but this does not have to be the case. In order to become independent of the current value of the `CMAKE_BINARY_DIR` variable, we need to take one more step, and that is to replace:
   - all occurrences of `a/./` by `a/@PATCH_SOURCE_DIR@/` and
   - all occurrences of `b/../build/_deps/gavr-src/` with `b/@PATCH_TARGET_DIR@/`.
 
-  and save the changes to the `viewer.patch.in` file:
+  and save the changes to the `src.patch.in` file:
 
 - [ ] :x: DO NOT REMOVE `./viewer/src` FOLDER WITH THE ORIGINAL FILES :heavy_exclamation_mark: They are still required as a baseline for the `git apply` command that will be called from the `viewer/CMakeLists.txt` script.
 

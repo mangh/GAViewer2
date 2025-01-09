@@ -30,45 +30,25 @@ set(CMAKE_CXX_STANDARD 14)
 # is c++17 with GNU extensions):
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-# Apps & libraries versioning:
-set(APP_VER "${APP_VERSION_MAJOR}${APP_VERSION_MINOR}")
-set(APP_VER_CFG "${APP_VER}$<$<CONFIG:Debug>:d>")
-
 ##########################################################################
 #
 #   GLOBAL CONFIGURATION
 #
 
-#########
+####
 # CMake helper modules folder:
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 
-#########
+####
 # GNU standard directories for installation
 include(GNUInstallDirs)
 
+####
 # Check Git availability and get GIT_EXECUTABLE path
-# (Git is required to download and patch repositories):
-find_package(Git)
-if(NOT Git_FOUND)
-  message(FATAL_ERROR "Git NOT available.")
-endif()
+# (Git is required not only for downloading but also for patching repositories):
+find_package(Git REQUIRED)
 
-#########
-# Check whether the compiler supports IPO/LTO (interprocedural optimization):
-include(CheckIPOSupported OPTIONAL RESULT_VARIABLE check_ipo_module_found)
-if(check_ipo_module_found)
-  check_ipo_supported(
-    RESULT LTO_OPTIMIZATION_SUPPORTED
-    OUTPUT LTO_OPTIMIZATION_ERROR
-    LANGUAGES C CXX
-  )
-else()
-  set(LTO_OPTIMIZATION_SUPPORTED NO)
-  set(LTO_OPTIMIZATION_ERROR "CheckIPOSupported module not found.")
-endif()
-
-#########
+####
 # USE_ASAN option:
 option(USE_ASAN "Use Address Sanitizer: OFF/ON" OFF)
 message(DEBUG "Use Address Sanitizer: ${USE_ASAN}")

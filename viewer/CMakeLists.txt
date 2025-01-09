@@ -43,8 +43,26 @@ set(gavr_SRC_PATH "${gavr_SOURCE_DIR}/src")
 #
 #
 
+set(files_to_patch
+  "${gavr_SRC_PATH}/gaviewer.rc"
+  "${gavr_SRC_PATH}/mainwindow.h"
+  "${gavr_SRC_PATH}/osdep.h"
+  "${gavr_SRC_PATH}/state.h"
+  "${gavr_SRC_PATH}/ui.cpp"
+  "${gavr_SRC_PATH}/c3ga/c3ga.cpp"
+  "${gavr_SRC_PATH}/c5ga/c5ga.cpp"
+  "${gavr_SRC_PATH}/e3ga/e3ga.cpp"
+  "${gavr_SRC_PATH}/i2ga/i2ga.cpp"
+  "${gavr_SRC_PATH}/p3ga/p3ga.cpp"
+  "${gavr_SRC_PATH}/typeset/fontparse.cpp"
+  "${gavr_SRC_PATH}/typeset/fontyacc.c"
+  "${gavr_SRC_PATH}/typeset/liststack.h"
+  "${gavr_SRC_PATH}/typeset/typeset.cpp"
+  "${gavr_SRC_PATH}/typeset/typesetbox.cpp"
+)
+
 # Patch file name and (working) path:
-set(PATCH_FILE_NAME "viewer.patch")
+set(PATCH_FILE_NAME "src.patch")
 set(PATCH_FILE_PATH "${CMAKE_CURRENT_BINARY_DIR}/${PATCH_FILE_NAME}")
 
 # Paths to the SOURCE and TARGET folders (relative to the CMAKE_SOURCE_DIR folder)
@@ -52,30 +70,16 @@ set(PATCH_FILE_PATH "${CMAKE_CURRENT_BINARY_DIR}/${PATCH_FILE_NAME}")
 string(REPLACE "${CMAKE_SOURCE_DIR}" "." PATCH_SOURCE_DIR "${CMAKE_CURRENT_BINARY_DIR}")
 string(REPLACE "${CMAKE_SOURCE_DIR}" "." PATCH_TARGET_DIR "${gavr_SOURCE_DIR}")
 
-# Configure the patch file for the CMAKE_BINARY_DIR (working) folder
-# that is currently in use (“build” or whatever):
+# Configure the patch file for the currently used CMAKE_BINARY_DIR folder
+# (so that it works whether it is “${CMAKE_SOURCE_DIR}/build” or something else):
 configure_file("${PATCH_FILE_NAME}.in" "${PATCH_FILE_NAME}" @ONLY)
 
 add_custom_command(
   OUTPUT
-    "${gavr_SRC_PATH}/gaviewer.rc"
-    "${gavr_SRC_PATH}/mainwindow.h"
-    "${gavr_SRC_PATH}/osdep.h"
-    "${gavr_SRC_PATH}/state.h"
-    "${gavr_SRC_PATH}/ui.cpp"
-    "${gavr_SRC_PATH}/c3ga/c3ga.cpp"
-    "${gavr_SRC_PATH}/c5ga/c5ga.cpp"
-    "${gavr_SRC_PATH}/e3ga/e3ga.cpp"
-    "${gavr_SRC_PATH}/i2ga/i2ga.cpp"
-    "${gavr_SRC_PATH}/p3ga/p3ga.cpp"
-    "${gavr_SRC_PATH}/typeset/fontparse.cpp"
-    "${gavr_SRC_PATH}/typeset/fontyacc.c"
-    "${gavr_SRC_PATH}/typeset/liststack.h"
-    "${gavr_SRC_PATH}/typeset/typeset.cpp"
-    "${gavr_SRC_PATH}/typeset/typesetbox.cpp"
+    ${files_to_patch}
   COMMAND
     # Original files are required to apply the patch (but are deleted after the patch is applied)
-    cmake -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/src" "${CMAKE_CURRENT_BINARY_DIR}/src"
+    ${CMAKE_COMMAND} -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/src" "${CMAKE_CURRENT_BINARY_DIR}/src"
   COMMAND
     ${GIT_EXECUTABLE} apply --unsafe-paths "${PATCH_FILE_PATH}"
   DEPENDS
@@ -85,94 +89,90 @@ add_custom_command(
     "${CMAKE_SOURCE_DIR}"
   COMMENT
     "Patch file ${PATCH_FILE_PATH} applied to the ${gavr_SRC_PATH} folder."
+  VERBATIM
   USES_TERMINAL
 )
 
 ##########################################################################
 #
-#	GAViewer executable target to build
+#   GAViewer executable target to build
 #
 
 set(target "GAViewer")
 
-set(_source_files
-    "${gavr_SRC_PATH}/c3gaobject.cpp"
-    "${gavr_SRC_PATH}/c3ga/c3ga.cpp"
-    "${gavr_SRC_PATH}/c3ga/c3ga_optc.cpp"
-    "${gavr_SRC_PATH}/c5gaobject.cpp"
-    "${gavr_SRC_PATH}/c5ga/c5ga.cpp"
-    "${gavr_SRC_PATH}/c5ga/c5ga_optc.cpp"
-    "${gavr_SRC_PATH}/conformalobject.cpp"
-    "${gavr_SRC_PATH}/console/console.cpp"
-    "${gavr_SRC_PATH}/console/consoleautocolor.cpp"
-    "${gavr_SRC_PATH}/console/consolecontrol.cpp"
-    "${gavr_SRC_PATH}/console/consoledynstmt.cpp"
-    "${gavr_SRC_PATH}/console/consolefunctions.cpp"
-    "${gavr_SRC_PATH}/console/consolegafile.cpp"
-    "${gavr_SRC_PATH}/console/consolegeneratedfunctions.cpp"
-    "${gavr_SRC_PATH}/console/ConsoleLexer.cpp"
-    "${gavr_SRC_PATH}/console/consoleoperators.cpp"
-    "${gavr_SRC_PATH}/console/ConsoleParser.cpp"
-    "${gavr_SRC_PATH}/console/consolescope.cpp"
-    "${gavr_SRC_PATH}/console/consolesourcefileread.cpp"
-    "${gavr_SRC_PATH}/console/consolestatement.cpp"
-    "${gavr_SRC_PATH}/console/consoletest.cpp"
-    "${gavr_SRC_PATH}/console/consolevariable.cpp"
-    "${gavr_SRC_PATH}/console/consolewindow.cpp"
-    "${gavr_SRC_PATH}/console/fl_console.cpp"
-    "${gavr_SRC_PATH}/draw.cpp"
-    "${gavr_SRC_PATH}/dynamicstatementwindow.cpp"
-    "${gavr_SRC_PATH}/e3gaobject.cpp"
-    "${gavr_SRC_PATH}/e3ga/e3ga.cpp"
-    "${gavr_SRC_PATH}/e3ga/e3ga_optc.cpp"
-    "${gavr_SRC_PATH}/gafile.cpp"
-    "${gavr_SRC_PATH}/geosphere.cpp"
-    "${gavr_SRC_PATH}/glwindow.cpp"
-    "${gavr_SRC_PATH}/i2gaobject.cpp"
-    "${gavr_SRC_PATH}/i2ga/i2ga.cpp"
-    "${gavr_SRC_PATH}/i2ga/i2ga_optc2.cpp"
-    "${gavr_SRC_PATH}/main.cpp"
-    "${gavr_SRC_PATH}/mainwindow.cpp"
-    "${gavr_SRC_PATH}/meshobject.cpp"
-    "${gavr_SRC_PATH}/mt19937-2.cpp"
-    "${gavr_SRC_PATH}/mvint.cpp"
-    "${gavr_SRC_PATH}/mvintc3ga.cpp"
-    "${gavr_SRC_PATH}/mvintc5ga.cpp"
-    "${gavr_SRC_PATH}/mvinte3ga.cpp"
-    "${gavr_SRC_PATH}/mvinti2ga.cpp"
-    "${gavr_SRC_PATH}/mvintp3ga.cpp"
-    "${gavr_SRC_PATH}/netclient.cpp"
-    "${gavr_SRC_PATH}/netserver.cpp"
-    "${gavr_SRC_PATH}/object.cpp"
-    "${gavr_SRC_PATH}/osdep.cpp"
-    "${gavr_SRC_PATH}/p3gaobject.cpp"
-    "${gavr_SRC_PATH}/p3ga/p3ga.cpp"
-    "${gavr_SRC_PATH}/p3ga/p3ga_optc.cpp"
-    "${gavr_SRC_PATH}/pngwrapper.cpp"
-    "${gavr_SRC_PATH}/polygonobject.cpp"
-    "${gavr_SRC_PATH}/screenshot.cpp"
-    "${gavr_SRC_PATH}/screenshotdialog.cpp"
-    "${gavr_SRC_PATH}/selectwindow.cpp"
-    "${gavr_SRC_PATH}/softpic.cpp"
-    "${gavr_SRC_PATH}/state.cpp"
-    "${gavr_SRC_PATH}/textobject.cpp"
-    "${gavr_SRC_PATH}/tubedraw.cpp"
-    "${gavr_SRC_PATH}/typeset/fontdata.cpp"
-    "${gavr_SRC_PATH}/typeset/fontlex.c"
-    "${gavr_SRC_PATH}/typeset/fontparse.cpp"
-    "${gavr_SRC_PATH}/typeset/fontyacc.c"
-    "${gavr_SRC_PATH}/typeset/openglfont.cpp"
-    "${gavr_SRC_PATH}/typeset/typeset.cpp"
-    "${gavr_SRC_PATH}/typeset/typesetbox.cpp"
-    "${gavr_SRC_PATH}/ui.cpp"
-    "${gavr_SRC_PATH}/util.cpp"
-    "${gavr_SRC_PATH}/writestate.cpp"
-)
-
 # Add executable target to the project using the specified source files:
-add_executable(
-  ${target}
-  ${_source_files}
+add_executable(${target}
+  "${gavr_SRC_PATH}/c3gaobject.cpp"
+  "${gavr_SRC_PATH}/c3ga/c3ga.cpp"
+  "${gavr_SRC_PATH}/c3ga/c3ga_optc.cpp"
+  "${gavr_SRC_PATH}/c5gaobject.cpp"
+  "${gavr_SRC_PATH}/c5ga/c5ga.cpp"
+  "${gavr_SRC_PATH}/c5ga/c5ga_optc.cpp"
+  "${gavr_SRC_PATH}/conformalobject.cpp"
+  "${gavr_SRC_PATH}/console/console.cpp"
+  "${gavr_SRC_PATH}/console/consoleautocolor.cpp"
+  "${gavr_SRC_PATH}/console/consolecontrol.cpp"
+  "${gavr_SRC_PATH}/console/consoledynstmt.cpp"
+  "${gavr_SRC_PATH}/console/consolefunctions.cpp"
+  "${gavr_SRC_PATH}/console/consolegafile.cpp"
+  "${gavr_SRC_PATH}/console/consolegeneratedfunctions.cpp"
+  "${gavr_SRC_PATH}/console/ConsoleLexer.cpp"
+  "${gavr_SRC_PATH}/console/consoleoperators.cpp"
+  "${gavr_SRC_PATH}/console/ConsoleParser.cpp"
+  "${gavr_SRC_PATH}/console/consolescope.cpp"
+  "${gavr_SRC_PATH}/console/consolesourcefileread.cpp"
+  "${gavr_SRC_PATH}/console/consolestatement.cpp"
+  "${gavr_SRC_PATH}/console/consoletest.cpp"
+  "${gavr_SRC_PATH}/console/consolevariable.cpp"
+  "${gavr_SRC_PATH}/console/consolewindow.cpp"
+  "${gavr_SRC_PATH}/console/fl_console.cpp"
+  "${gavr_SRC_PATH}/draw.cpp"
+  "${gavr_SRC_PATH}/dynamicstatementwindow.cpp"
+  "${gavr_SRC_PATH}/e3gaobject.cpp"
+  "${gavr_SRC_PATH}/e3ga/e3ga.cpp"
+  "${gavr_SRC_PATH}/e3ga/e3ga_optc.cpp"
+  "${gavr_SRC_PATH}/gafile.cpp"
+  "${gavr_SRC_PATH}/geosphere.cpp"
+  "${gavr_SRC_PATH}/glwindow.cpp"
+  "${gavr_SRC_PATH}/i2gaobject.cpp"
+  "${gavr_SRC_PATH}/i2ga/i2ga.cpp"
+  "${gavr_SRC_PATH}/i2ga/i2ga_optc2.cpp"
+  "${gavr_SRC_PATH}/main.cpp"
+  "${gavr_SRC_PATH}/mainwindow.cpp"
+  "${gavr_SRC_PATH}/meshobject.cpp"
+  "${gavr_SRC_PATH}/mt19937-2.cpp"
+  "${gavr_SRC_PATH}/mvint.cpp"
+  "${gavr_SRC_PATH}/mvintc3ga.cpp"
+  "${gavr_SRC_PATH}/mvintc5ga.cpp"
+  "${gavr_SRC_PATH}/mvinte3ga.cpp"
+  "${gavr_SRC_PATH}/mvinti2ga.cpp"
+  "${gavr_SRC_PATH}/mvintp3ga.cpp"
+  "${gavr_SRC_PATH}/netclient.cpp"
+  "${gavr_SRC_PATH}/netserver.cpp"
+  "${gavr_SRC_PATH}/object.cpp"
+  "${gavr_SRC_PATH}/osdep.cpp"
+  "${gavr_SRC_PATH}/p3gaobject.cpp"
+  "${gavr_SRC_PATH}/p3ga/p3ga.cpp"
+  "${gavr_SRC_PATH}/p3ga/p3ga_optc.cpp"
+  "${gavr_SRC_PATH}/pngwrapper.cpp"
+  "${gavr_SRC_PATH}/polygonobject.cpp"
+  "${gavr_SRC_PATH}/screenshot.cpp"
+  "${gavr_SRC_PATH}/screenshotdialog.cpp"
+  "${gavr_SRC_PATH}/selectwindow.cpp"
+  "${gavr_SRC_PATH}/softpic.cpp"
+  "${gavr_SRC_PATH}/state.cpp"
+  "${gavr_SRC_PATH}/textobject.cpp"
+  "${gavr_SRC_PATH}/tubedraw.cpp"
+  "${gavr_SRC_PATH}/typeset/fontdata.cpp"
+  "${gavr_SRC_PATH}/typeset/fontlex.c"
+  "${gavr_SRC_PATH}/typeset/fontparse.cpp"
+  "${gavr_SRC_PATH}/typeset/fontyacc.c"
+  "${gavr_SRC_PATH}/typeset/openglfont.cpp"
+  "${gavr_SRC_PATH}/typeset/typeset.cpp"
+  "${gavr_SRC_PATH}/typeset/typesetbox.cpp"
+  "${gavr_SRC_PATH}/ui.cpp"
+  "${gavr_SRC_PATH}/util.cpp"
+  "${gavr_SRC_PATH}/writestate.cpp"
 )
 
 # Add resources (icon)
@@ -251,14 +251,6 @@ endif()
 #   LINK OPTIONS & LIBRARIES
 #
 
-# IPO/LTO optimization makes the application just as efficient
-# whether it uses units of measure or simple numbers.
-if(LTO_OPTIMIZATION_SUPPORTED)
-  set_property(TARGET ${target} PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
-else()
-  message(WARNING "IPO/LTO is not supported: ${LTO_OPTIMIZATION_ERROR}")
-endif()
-
 target_link_libraries(${target}
   PRIVATE fltk::png
   PRIVATE fltk::gl
@@ -266,28 +258,42 @@ target_link_libraries(${target}
   PRIVATE antlr2::antlr2
 )
 
-target_include_directories(${target}
-  PRIVATE $<TARGET_PROPERTY:fltk::fltk,INTERFACE_INCLUDE_DIRECTORIES>)
+# Take advantage of interprocedural optimization (IPO/LTO), if available:
+include(CheckIPOSupported OPTIONAL RESULT_VARIABLE check_ipo_module_found)
+if(check_ipo_module_found)
+  check_ipo_supported(
+    RESULT LTO_OPTIMIZATION_SUPPORTED
+    OUTPUT LTO_OPTIMIZATION_ERROR
+    LANGUAGES C CXX
+  )
+  if(LTO_OPTIMIZATION_SUPPORTED)
+    set_property(TARGET ${target} PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
+  else()
+    message(DEBUG "Interprocedural optimization (IPO/LTO) is not supported: ${LTO_OPTIMIZATION_ERROR}")
+  endif()
+endif()
 
-set_target_properties(${target}
-    PROPERTIES
-  LINK_WHAT_YOU_USE ON
-)
+# Check libraries usage:
+set_target_properties(${target} PROPERTIES LINK_WHAT_YOU_USE ON)
 
 ##########################################################################
 #
 #   INSTALL
 #
 
-install(TARGETS ${target}
-  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+install(
+  TARGETS ${target} 
+  DESTINATION ${CMAKE_INSTALL_BINDIR}
+  COMPONENT GAViewer
 )
 
 #   After compilation, the application can be installed using a command similar to the following:
 #
-#     cmake --install ~/GAViewer/build --prefix /my/install/prefix
+#     cmake --install ~/GAViewer/build [--component GAViewer] --prefix /my/install/prefix
 #
-#   For example, on Windows, you can use:
+#   For example, on Windows, it could be:
 #
-#     cmake --install %USERPROFILE\source\repos\GAViewer\build --prefix %LOCALAPPDATA%\Programs\GAViewer
+#     cmake --install %USERPROFILE%\source\repos\GAViewer\build [--component GAViewer] --prefix %LOCALAPPDATA%\Programs\GAViewer
+#
+#   If you omit the “--component” parameter, then CMake will also install FLTK (static libraries and headers).
 #
