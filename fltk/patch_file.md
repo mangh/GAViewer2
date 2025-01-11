@@ -1,6 +1,10 @@
-## Create patch file for FLTK version 1.4.1 released on December  12, 2024
+# Patch for FLTK
 
-:bulb: This patch enables compilation of `FLTK/FLUID` application for the `X11 backend` on `BSD` systems (without it, compilation ends with an error).
+## Purpose
+
+This patch is for `FLTK version 1.4.1` (released on December 12, 2024). It enables successful compilation of the `FLUID` application for the `X11` backend on `BSD` systems (without it, a FLUID compilation error occurs, which will consequently abort FLTK compilation). Subsequent versions of FLTK may not need the patch.
+
+## How to create a patch?
 
 - [ ] Go to `fltk-src` subdirectory in the `GAViewer/build/_deps` repository:
   ```sh

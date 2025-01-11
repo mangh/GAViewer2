@@ -1,4 +1,12 @@
-## Create patch file for GAViewer application source files (`viewer` subdirectory)
+# Patch for GAViewer
+
+## Purpose
+
+The source code of ANTLR2 and GAViewer is already years old. Today's C/C++ compilers reject some code fragments as `obsolete expressions`; they also warn of the advent of `64-bit expressions`, which are still handled as if they were 32-bit. Some problems are related to the `OS platform`: some platforms were supported before, but in a different way (e.g., Linux), some were not used at all before (e.g., FreeBSD).
+
+The purpose of the patch is to fix these errors and allow the code to compile successfully (many warnings are still displayed during compilation; some - those that seem obvious - have been disabled in the CMake script so that the more serious ones can be focused on).
+
+## How to create a patch?
 
 - [ ] Go to `viewer` subdirectory in the `GAViewer` repository:
   ```sh

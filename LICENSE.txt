@@ -1,6 +1,6 @@
 MIT License
 
-Copyright (c) [year] [fullname]
+Copyright (c) 2025 mangh
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -19,3 +19,12 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+N O T E :
+
+PAY ATTENTION TO THE LICENSING RESTRICTIONS IMPOSED BY THE EXTERNAL COMPONENTS
+USED TO BUILD THE APPLICATION, NAMELY:
+
+* ANTLR (see ./build/_deps/antlr2-src/LICENSE.txt),
+* FLTK (see ./build/_deps/fltk-src/README.txt),
+* GAViewer (see ./build/_deps/gavr-src/COPYING).
