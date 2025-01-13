@@ -8,7 +8,13 @@
 CompileFlags:
   Add: 
   - -std=c++14
+  - -DWIN32
   - -I C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.42.34433/include
+#  - -I C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/cppwinrt/winrt
+#  - -I C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/shared
+  - -I C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/ucrt
+  - -I C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/um
+#  - -I C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/winrt
   - -I C:/Users/marek/source/repos/GAViewer/build/_deps/antlr2-src/lib/cpp/antlr
   - -I C:/Users/marek/source/repos/GAViewer/build/_deps/fltk-src
   - -I C:/Users/marek/source/repos/GAViewer/build/_deps/fltk-src/FL
