@@ -88,7 +88,7 @@ add_custom_command(
     # NOTE: the command must be run in the CMAKE_SOURCE_DIR directory; otherwise it will not work!
     "${CMAKE_SOURCE_DIR}"
   COMMENT
-    "Patch file ${PATCH_FILE_PATH} applied to the ${gavr_SRC_PATH} folder."
+    "The ${PATCH_FILE_PATH} file applied to the ${gavr_SRC_PATH} folder."
   VERBATIM
   USES_TERMINAL
 )

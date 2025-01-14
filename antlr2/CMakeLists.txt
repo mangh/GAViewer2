@@ -93,7 +93,7 @@ add_custom_command(
     # NOTE: the command must be run in the CMAKE_SOURCE_DIR directory; otherwise it will not work!
     "${CMAKE_SOURCE_DIR}"
   COMMENT
-    "Patch file ${PATCH_FILE_PATH} applied to the ${ANTLR_LIB_PATH} folder."
+    "The ${PATCH_FILE_PATH} file applied to the ${ANTLR_LIB_PATH} folder."
   USES_TERMINAL
   VERBATIM
 )
