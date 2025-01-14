@@ -98,3 +98,6 @@ add_subdirectory ("antlr2")
 
 # GAViewer (multi-purpose program for geometric algebra computations and visualization)
 add_subdirectory("viewer")
+
+# Interactive Book Figures for GAViewer
+add_subdirectory("figures")

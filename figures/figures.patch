@@ -1,0 +1,13 @@
+diff --git a/./original/FIG_2_2.g b/../build/_deps/figures-src/FIG_2_2.g
+index c7388e9..6797896 100644
+--- a/./original/FIG_2_2.g
++++ b/../build/_deps/figures-src/FIG_2_2.g
+@@ -33,7 +33,7 @@ batch FIG_2_2()
+ 	dynamic{scene:
+ 		ab = a+b, 
+ 		label(ab,"\eqn{\bold{a+b}}");
+-		Bol1 = tr+ -e1/5-e2/3; label(Bol,"O");
++		Bol1 = tr+ -e1/5-e2/3; label(Bol1,"O");
+ 		biv1 = color(dm3(factored_bivector(a,b)),1,0.2,0.2,0.2), 
+ 	};
+ 
