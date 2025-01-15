@@ -190,7 +190,7 @@ add_custom_target(${target} ALL DEPENDS ${figures_list})
 install(
   FILES ${figures_list}
   # TYPE DATA
-  DESTINATION ${CMAKE_INSTALL_DATADIR}/figures
+  DESTINATION figures
   COMPONENT Figures
 )
 
@@ -202,5 +202,6 @@ install(
 #
 #     cmake --install %USERPROFILE%\source\repos\GAViewer\build [--component Figures] --prefix %LOCALAPPDATA%\Programs\GAViewer
 #
-#   If you omit the “--component” parameter, then CMake will also install FLTK (static libraries and headers).
+#   If you omit the '--component' parameter, CMake will install everything i.e.
+#   the GAViewer executable, sample figures, but also FLTK (libraries and headers).
 #
