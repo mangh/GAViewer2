@@ -14,39 +14,43 @@ The purpose of the patch is to fix these errors and allow the code to compile su
   ```
 - [ ] Save the original files you want to patch (save each file to a subdirectory with the same relative path as the original):
   ```sh
-  cp ../build/_deps/gavr-src/src/gaviewer.rc ./src
-  cp ../build/_deps/gavr-src/src/mainwindow.h ./src
-  cp ../build/_deps/gavr-src/src/osdep.h ./src
-  cp ../build/_deps/gavr-src/src/state.h ./src
-  cp ../build/_deps/gavr-src/src/ui.cpp ./src
   cp ../build/_deps/gavr-src/src/c3ga/c3ga.cpp ./src/c3ga
   cp ../build/_deps/gavr-src/src/c5ga/c5ga.cpp ./src/c5ga
+  cp ../build/_deps/gavr-src/src/console/console.cpp ./src/console
   cp ../build/_deps/gavr-src/src/e3ga/e3ga.cpp ./src/e3ga
+  cp ../build/_deps/gavr-src/src/gaviewer.rc ./src
   cp ../build/_deps/gavr-src/src/i2ga/i2ga.cpp ./src/i2ga
+  cp ../build/_deps/gavr-src/src/mainwindow.h ./src
+  cp ../build/_deps/gavr-src/src/osdep.h ./src
   cp ../build/_deps/gavr-src/src/p3ga/p3ga.cpp ./src/p3ga
+  cp ../build/_deps/gavr-src/src/state.h ./src
+  cp ../build/_deps/gavr-src/src/textobject.cpp ./src
   cp ../build/_deps/gavr-src/src/typeset/fontparse.cpp ./src/typeset
   cp ../build/_deps/gavr-src/src/typeset/fontyacc.c ./src/typeset
   cp ../build/_deps/gavr-src/src/typeset/liststack.h ./src/typeset
   cp ../build/_deps/gavr-src/src/typeset/typeset.cpp ./src/typeset
   cp ../build/_deps/gavr-src/src/typeset/typesetbox.cpp ./src/typeset
+  cp ../build/_deps/gavr-src/src/ui.cpp ./src
   ```
 - [ ] Make (manual) corrections to the above-mentioned files (in the `../build/_deps/gavr-src/lib/cpp/*` folders).
   ```sh
-  vim ../build/_deps/gavr-src/src/gaviewer.rc
-  vim ../build/_deps/gavr-src/src/mainwindow.h
-  vim ../build/_deps/gavr-src/src/osdep.h
-  vim ../build/_deps/gavr-src/src/state.h
-  vim ../build/_deps/gavr-src/src/ui.cpp
   vim ../build/_deps/gavr-src/src/c3ga/c3ga.cpp
   vim ../build/_deps/gavr-src/src/c5ga/c5ga.cpp
+  vim ../build/_deps/gavr-src/src/console/console.cpp
   vim ../build/_deps/gavr-src/src/e3ga/e3ga.cpp
+  vim ../build/_deps/gavr-src/src/gaviewer.rc
   vim ../build/_deps/gavr-src/src/i2ga/i2ga.cpp
+  vim ../build/_deps/gavr-src/src/mainwindow.h
+  vim ../build/_deps/gavr-src/src/osdep.h
   vim ../build/_deps/gavr-src/src/p3ga/p3ga.cpp
+  vim ../build/_deps/gavr-src/src/state.h
+  vim ../build/_deps/gavr-src/src/textobject.cpp
   vim ../build/_deps/gavr-src/src/typeset/fontparse.cpp
   vim ../build/_deps/gavr-src/src/typeset/fontyacc.c
   vim ../build/_deps/gavr-src/src/typeset/liststack.h
   vim ../build/_deps/gavr-src/src/typeset/typeset.cpp
   vim ../build/_deps/gavr-src/src/typeset/typesetbox.cpp
+  vim ../build/_deps/gavr-src/src/ui.cpp
   ```
 - [ ] Generate a patch file for all the above changes:
   ```sh

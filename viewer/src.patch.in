@@ -36,6 +36,58 @@ index 3df09d7..a58e2b2 100644
  		return -1;
  	}
  
+diff --git a/@PATCH_SOURCE_DIR@/src/console/console.cpp b/@PATCH_TARGET_DIR@/src/console/console.cpp
+index 93f1cd3..788e8da 100644
+--- a/@PATCH_SOURCE_DIR@/src/console/console.cpp
++++ b/@PATCH_TARGET_DIR@/src/console/console.cpp
+@@ -37,21 +37,32 @@ using namespace std;
+ #include "ConsoleLexer.hpp"
+ #include "consoleparserwrapper.h"
+ 
+-void g_consoleCommandCallback(const char *cmd, void *cbArg) {
+-	if (cbArg == NULL) return;
+-
+-	int l = (int)strlen(cmd), i;
+-	char *buf = (char*)malloc(l + 4);
+-	strcpy(buf, cmd);
+-	
+-	// check if last character is a ',' or ';', if not, then append ','
+-	for (i = l-1; (i>0) && (buf[i] < ' '); i--);
+-	if ((buf[i] != ',') && (buf[i] != ';')) {
+-		strcpy(buf + i + 1, "\n,");
+-	}
+-
+-	((state*)cbArg)->consoleCommandCallback(buf);
+-	free(buf);
++void g_consoleCommandCallback(const char* cmd, void* cbArg)
++{
++    if ((cbArg == NULL) || (cmd == NULL)) return;
++
++    size_t l = strlen(cmd);
++    char* buf = (char*)malloc(l + 4);
++    if (buf == NULL) return; // Check if malloc failed
++
++    strcpy(buf, cmd);
++
++    // trim right
++    size_t i = l - 1;
++    for (; i >= 0 && isspace(buf[i]); i--)
++        ;
++
++    if (i >= 0)
++    {
++        // check if last character is a ',' or ';', if not, then append ','
++        if ((buf[i] != ',') && (buf[i] != ';'))
++        {
++            strcpy(buf + i + 1, "\n,");
++        }
++        ((state*)cbArg)->consoleCommandCallback(buf);
++    }
++
++    free(buf);
+ }
+ 
+ consoleStmtListStmt *consoleParse(const char *cmd, const char *wd /* = NULL */) {
 diff --git a/@PATCH_SOURCE_DIR@/src/e3ga/e3ga.cpp b/@PATCH_TARGET_DIR@/src/e3ga/e3ga.cpp
 index 5a3dae2..6baad08 100644
 --- a/@PATCH_SOURCE_DIR@/src/e3ga/e3ga.cpp
@@ -168,6 +220,20 @@ index 2a598ef..468b973 100644
  		std::string m_name; // "" if anonymous (size = 0)
  		std::string m_workingDirectory; // "" if anonymous (size = 0)
  	};
+diff --git a/@PATCH_SOURCE_DIR@/src/textobject.cpp b/@PATCH_TARGET_DIR@/src/textobject.cpp
+index 60bf285..0f9b30c 100644
+--- a/@PATCH_SOURCE_DIR@/src/textobject.cpp
++++ b/@PATCH_TARGET_DIR@/src/textobject.cpp
+@@ -322,7 +322,8 @@ int textObject::draw(glwindow *window) {
+ 
+ 	if (m_flags & LABEL_DYNAMIC)  {
+ 		object *o = g_state->getObjectPtrByName(m_pointName);
+-		const GAIM_FLOAT *pos = o->getPoint(0), null[3] = {0.0, 0.0, 0.0};
++		const GAIM_FLOAT null[3] = {0.0, 0.0, 0.0};
++		const GAIM_FLOAT *pos = (o == NULL) ? NULL : o->getPoint(0);
+ 		m_pos.setVector((pos) ? pos : null);
+ 	}
+ 
 diff --git a/@PATCH_SOURCE_DIR@/src/typeset/fontparse.cpp b/@PATCH_TARGET_DIR@/src/typeset/fontparse.cpp
 index ce66426..1378fff 100644
 --- a/@PATCH_SOURCE_DIR@/src/typeset/fontparse.cpp
@@ -248,7 +314,7 @@ index da55c87..3dd0f08 100644
  }
  
 diff --git a/@PATCH_SOURCE_DIR@/src/ui.cpp b/@PATCH_TARGET_DIR@/src/ui.cpp
-index 7bf257e..a4b2341 100644
+index 7bf257e..db92837 100644
 --- a/@PATCH_SOURCE_DIR@/src/ui.cpp
 +++ b/@PATCH_TARGET_DIR@/src/ui.cpp
 @@ -265,15 +265,14 @@ UIstate::UIstate(int argc, char *argv[]) {
