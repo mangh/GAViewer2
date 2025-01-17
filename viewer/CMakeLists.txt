@@ -240,10 +240,32 @@ endif()
 #
 
 if(USE_ASAN)
-  # The following is required to avoid: lld-link: error: /INFERASANLIBS is not allowed in .drectve
-  target_compile_definitions(${target} PRIVATE _DISABLE_STRING_ANNOTATION _DISABLE_VECTOR_ANNOTATION)
-  target_compile_options(${target} PRIVATE -fsanitize=address)
-  target_link_options(${target} PRIVATE -fsanitize=address)
+  # _DISABLE_*_ANNOTATION definitions are (were?) required to avoid error:
+  #
+  #    lld-link: error: /INFERASANLIBS is not allowed in .drectve
+  #
+  target_compile_definitions(${target} PRIVATE
+    _DISABLE_STRING_ANNOTATION
+    _DISABLE_VECTOR_ANNOTATION
+  )
+  message(DEBUG "CMAKE_CXX_COMPILER_FRONTEND_VARIANT = ${CMAKE_CXX_COMPILER_FRONTEND_VARIANT}")
+  if (CMAKE_CXX_COMPILER_FRONTEND_VARIANT MATCHES "MSVC")
+    target_compile_options(${target} PRIVATE /fsanitize=address)
+    target_link_options(${target} PRIVATE /fsanitize=address)
+  else()
+    target_compile_options(${target} PRIVATE -fsanitize=address)
+    target_link_options(${target} PRIVATE -fsanitize=address)
+    # # DEFAULT standard linking
+    # # SYSTEM  the linker provided by the platform or toolchain
+    # # LLD     the LLVM linker
+    # # BFD     the GNU linker
+    # # GOLD    Supported on Linux platform with GNU, Clang, LLVMFlang, NVIDIA, and Swift compilers.
+    # # MOLD    Use the mold linker
+    # # SOLD    the sold linker (only supported on Apple platforms)
+    # # APPLE_CLASSIC   the Apple linker
+    # # MSVC    the Microsoft linker
+    # set_target_properties(${target} PROPERTIES LINKER_TYPE LLD)
+  endif()
 endif()
 
 ##########################################################################

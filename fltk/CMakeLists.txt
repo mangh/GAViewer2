@@ -76,6 +76,11 @@ set(FLTK_USE_SYSTEM_LIBJPEG OFF)  # default ON (macOS and Windows: OFF)
 set(FLTK_USE_SYSTEM_LIBPNG  OFF)  # default ON (macOS and Windows: OFF)
 set(FLTK_USE_SYSTEM_ZLIB    OFF)  # default ON (macOS and Windows: OFF)
 
+# On Windows, MSVC's dynamic runtime library is the default, but Address Sanitizer requires a static library:
+if (USE_ASAN)
+  set(FLTK_MSVC_RUNTIME_DLL OFF)
+endif()  
+
 FetchContent_MakeAvailable(fltk)
 
 # The previous command provides the following STATIC libraries (targets to IMPORT):
