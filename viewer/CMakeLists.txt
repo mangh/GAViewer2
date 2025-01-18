@@ -44,21 +44,23 @@ set(gavr_SRC_PATH "${gavr_SOURCE_DIR}/src")
 #
 
 set(files_to_patch
-  "${gavr_SRC_PATH}/gaviewer.rc"
-  "${gavr_SRC_PATH}/mainwindow.h"
-  "${gavr_SRC_PATH}/osdep.h"
-  "${gavr_SRC_PATH}/state.h"
-  "${gavr_SRC_PATH}/ui.cpp"
   "${gavr_SRC_PATH}/c3ga/c3ga.cpp"
   "${gavr_SRC_PATH}/c5ga/c5ga.cpp"
+  "${gavr_SRC_PATH}/console/console.cpp"
   "${gavr_SRC_PATH}/e3ga/e3ga.cpp"
+  "${gavr_SRC_PATH}/gaviewer.rc"
   "${gavr_SRC_PATH}/i2ga/i2ga.cpp"
+  "${gavr_SRC_PATH}/mainwindow.h"
+  "${gavr_SRC_PATH}/osdep.h"
   "${gavr_SRC_PATH}/p3ga/p3ga.cpp"
+  "${gavr_SRC_PATH}/state.h"
+  "${gavr_SRC_PATH}/textobject.cpp"
   "${gavr_SRC_PATH}/typeset/fontparse.cpp"
   "${gavr_SRC_PATH}/typeset/fontyacc.c"
   "${gavr_SRC_PATH}/typeset/liststack.h"
   "${gavr_SRC_PATH}/typeset/typeset.cpp"
   "${gavr_SRC_PATH}/typeset/typesetbox.cpp"
+  "${gavr_SRC_PATH}/ui.cpp"
 )
 
 # Patch file name and (working) path:
@@ -238,34 +240,24 @@ endif()
 #
 #   ADDRESS SANITIZER
 #
+#   NOTE: I have not been able to get Address Sanitizer to work on Windows
+#        (regardless of the compiler used)!
+#
 
 if(USE_ASAN)
-  # _DISABLE_*_ANNOTATION definitions are (were?) required to avoid error:
-  #
-  #    lld-link: error: /INFERASANLIBS is not allowed in .drectve
-  #
-  target_compile_definitions(${target} PRIVATE
-    _DISABLE_STRING_ANNOTATION
-    _DISABLE_VECTOR_ANNOTATION
-  )
-  message(DEBUG "CMAKE_CXX_COMPILER_FRONTEND_VARIANT = ${CMAKE_CXX_COMPILER_FRONTEND_VARIANT}")
-  if (CMAKE_CXX_COMPILER_FRONTEND_VARIANT MATCHES "MSVC")
-    target_compile_options(${target} PRIVATE /fsanitize=address)
-    target_link_options(${target} PRIVATE /fsanitize=address)
-  else()
-    target_compile_options(${target} PRIVATE -fsanitize=address)
-    target_link_options(${target} PRIVATE -fsanitize=address)
-    # # DEFAULT standard linking
-    # # SYSTEM  the linker provided by the platform or toolchain
-    # # LLD     the LLVM linker
-    # # BFD     the GNU linker
-    # # GOLD    Supported on Linux platform with GNU, Clang, LLVMFlang, NVIDIA, and Swift compilers.
-    # # MOLD    Use the mold linker
-    # # SOLD    the sold linker (only supported on Apple platforms)
-    # # APPLE_CLASSIC   the Apple linker
-    # # MSVC    the Microsoft linker
-    # set_target_properties(${target} PROPERTIES LINKER_TYPE LLD)
-  endif()
+  # if (CMAKE_CXX_COMPILER_FRONTEND_VARIANT MATCHES "MSVC")
+  #   # _DISABLE_*_ANNOTATION definitions are (were?) required to avoid error:
+  #   #
+  #   #    lld-link: error: /INFERASANLIBS is not allowed in .drectve
+  #   #
+  #   target_compile_definitions(${target} PRIVATE
+  #     _DISABLE_STRING_ANNOTATION
+  #     _DISABLE_VECTOR_ANNOTATION
+  #   )
+  # endif()
+  # Note: MSVC accepts both slash (/) and dash (-) options
+  target_compile_options(${target} PRIVATE -fsanitize=address)
+  # target_link_options(${target} PRIVATE -fsanitize=address)
 endif()
 
 ##########################################################################

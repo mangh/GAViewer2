@@ -61,6 +61,10 @@ if(USE_ASAN)
     CACHE STRING "MSVC Runtime Library for compilers targeting the MSVC ABI"
     FORCE
   )
+  #
+  # NOTE: I have not been able to get Address Sanitizer to work on Windows
+  # (regardless of the compiler used)!!!
+  #
 endif()
 
 ##########################################################################
