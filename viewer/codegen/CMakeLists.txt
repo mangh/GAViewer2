@@ -4,6 +4,7 @@
 message(DEBUG "Entering the GAViewer/codegen subdirectory ...")
 
 set(generator "gencode")	# as of CMake 3.31, "codegen" is a CMake reserved target name
+set(generator_output_name "codegen")
 
 add_executable(${generator}
   ${gavr_SOURCE_DIR}/src/console/codegen/codetemplate.cpp
@@ -17,26 +18,28 @@ if (CMAKE_SYSTEM_NAME MATCHES "Windows")
 endif()
 
 # back to the original executable name
-set_target_properties(${generator} PROPERTIES OUTPUT_NAME "codegen")
-set(codegen_exe "${CMAKE_CURRENT_BINARY_DIR}/codegen")
+set_target_properties(${generator} PROPERTIES OUTPUT_NAME "${generator_output_name}")
 
 ##########################################################################
 #
-#   codegen command:
+#   codegen command
 #
+
+set(console_src_dir "${gavr_SOURCE_DIR}/src/console")
+set(codegen_cmd "${CMAKE_CURRENT_BINARY_DIR}/${generator_output_name}")
 
 add_custom_command(
   OUTPUT
-    "${gavr_SOURCE_DIR}/src/console/consolegeneratedfunctions.cpp"
+    "${console_src_dir}/consolegeneratedfunctions.cpp"
   COMMAND
-    ${codegen_exe} "${gavr_SOURCE_DIR}/src/console/consolecodetemplates.txt" "${gavr_SOURCE_DIR}/src/console/consolegeneratedfunctions.cpp"
+    ${codegen_cmd} "${console_src_dir}/consolecodetemplates.txt" "${console_src_dir}/consolegeneratedfunctions.cpp"
   DEPENDS
-    "${gavr_SOURCE_DIR}/src/console/consolecodetemplates.txt"
+    "${console_src_dir}/consolecodetemplates.txt"
     "${generator}"
   # WORKING_DIRECTORY
-  #   "${CMAKE_CURRENT_BINARY_DIR}"
+  #   "${console_src_dir}"
   COMMENT
-    "${codegen_exe} ${gavr_SOURCE_DIR}/src/console/consolecodetemplates.txt ${gavr_SOURCE_DIR}/src/console/consolegeneratedfunctions.cpp"
+    "${codegen_cmd} ${console_src_dir}/consolecodetemplates.txt ${console_src_dir}/consolegeneratedfunctions.cpp"
   USES_TERMINAL
 )
 
