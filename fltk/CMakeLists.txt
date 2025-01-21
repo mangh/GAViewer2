@@ -36,26 +36,34 @@ endif()
 
 Include(FetchContent)
 
-# On BSD systems, compilation of the FLUID application (unlike other
-# FLTK components) fails for the X11 backend. This happens because
-# the X11 directories required by the application are not in the include
-# paths, and the FLUID/CMake script does not attempt to fix this.
+# # On BSD systems, compilation of the FLUID application (unlike other
+# # FLTK components) fails for the X11 backend. This happens because
+# # the X11 directories required by the application are not in the include
+# # paths, and the FLUID/CMake script does not attempt to fix this.
+# 
+# set(fltk_patch_command)
+# set(fltk_update_step_disabled_doc "FetchContent option to enable/disable the FLTK update step")
+# set(fltk_update_step_disabled OFF CACHE BOOL "${fltk_update_step_disabled_doc}")
+# if(BSD)
+#   set(fltk_patch_command git apply "${CMAKE_CURRENT_SOURCE_DIR}/fltk.patch")
+#   set(fltk_update_step_disabled ON CACHE BOOL "${fltk_update_step_disabled_doc}")
+# endif()
+# 
+# FetchContent_Declare(
+#   fltk
+#   GIT_REPOSITORY https://github.com/fltk/fltk
+#   GIT_TAG        b080424a2358ae805702f39646a424e5a71eb883 # FLTK 1.4.1 released on Dec. 12, 2024
+#   GIT_SHALLOW    TRUE
+#   PATCH_COMMAND  ${fltk_patch_command}
+#   UPDATE_DISCONNECTED ${fltk_update_step_disabled}
+# )
 
-set(fltk_patch_command)
-set(fltk_update_step_disabled_doc "FetchContent option to enable/disable the FLTK update step")
-set(fltk_update_step_disabled OFF CACHE BOOL "${fltk_update_step_disabled_doc}")
-if(BSD)
-  set(fltk_patch_command git apply "${CMAKE_CURRENT_SOURCE_DIR}/fltk.patch")
-  set(fltk_update_step_disabled ON CACHE BOOL "${fltk_update_step_disabled_doc}")
-endif()
-
+# FLTK 1.4.1 (released on Dec. 12, 2024) + 2dd4bde commit (patch for BSD)
 FetchContent_Declare(
   fltk
   GIT_REPOSITORY https://github.com/fltk/fltk
-  GIT_TAG        b080424a2358ae805702f39646a424e5a71eb883 # FLTK 1.4.1 released on Dec. 12, 2024
+  GIT_TAG        2dd4bdeef74d9110ef1effeb9ee45a46072d4f5b
   GIT_SHALLOW    TRUE
-  PATCH_COMMAND  ${fltk_patch_command}
-  UPDATE_DISCONNECTED ${fltk_update_step_disabled}
 )
 
 ##########################################################################
