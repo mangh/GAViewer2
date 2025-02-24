@@ -58,11 +58,10 @@ Include(FetchContent)
 #   UPDATE_DISCONNECTED ${fltk_update_step_disabled}
 # )
 
-# FLTK 1.4.1 (released on Dec. 12, 2024) + 2dd4bde commit (patch for BSD)
 FetchContent_Declare(
   fltk
   GIT_REPOSITORY https://github.com/fltk/fltk
-  GIT_TAG        2dd4bdeef74d9110ef1effeb9ee45a46072d4f5b
+  GIT_TAG        a206a778b415e5f21d3c1d86a1d509aca0265648 # FLTK 1.4.2 released on Feb. 23, 2025
   GIT_SHALLOW    TRUE
 )
 
