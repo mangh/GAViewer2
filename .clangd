@@ -1,20 +1,29 @@
-# VCIDEInstallDir=C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\VC\
-# VCINSTALLDIR=C:\Program Files\Microsoft Visual Studio\2022\Community\VC\
-# VCToolsInstallDir=C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\
-# VCToolsRedistDir=C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Redist\MSVC\14.42.34433\
-# VCToolsVersion=14.42.34433
-# VisualStudioVersion=17.0
-# VS170COMNTOOLS=C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\Tools\
+# VisualStudioVersion=18.0
+# VCToolsVersion=14.51.36231
+# VCIDEInstallDir=C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\VC\
+# VCINSTALLDIR=C:\Program Files\Microsoft Visual Studio\18\Community\VC\
+# VCToolsInstallDir=C:\Program Files\Microsoft Visual Studio\18\Community\VC\Tools\MSVC\14.51.36231\
+# VCToolsRedistDir=C:\Program Files\Microsoft Visual Studio\18\Community\VC\Redist\MSVC\14.51.36231\
+# INCLUDE=
+#   C:\Program Files\Microsoft Visual Studio\18\Community\VC\Tools\MSVC\14.51.36231\include
+#   C:\Program Files\Microsoft Visual Studio\18\Community\VC\Tools\MSVC\14.51.36231\ATLMFC\include
+#   C:\Program Files\Microsoft Visual Studio\18\Community\VC\Auxiliary\VS\include
+#   C:\Program Files (x86)\Windows Kits\10\include\10.0.26100.0\ucrt
+#   C:\Program Files (x86)\Windows Kits\10\\include\10.0.26100.0\\um
+#   C:\Program Files (x86)\Windows Kits\10\\include\10.0.26100.0\\shared
+#   C:\Program Files (x86)\Windows Kits\10\\include\10.0.26100.0\\winrt
+#   C:\Program Files (x86)\Windows Kits\10\\include\10.0.26100.0\\cppwinrt
+#   C:\Program Files (x86)\Windows Kits\NETFXSDK\4.8\include\um
 CompileFlags:
   Add: 
   - -std=c++14
   - -DWIN32
-  - -I C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.42.34433/include
-#  - -I C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/cppwinrt/winrt
-#  - -I C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/shared
-  - -I C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/ucrt
-  - -I C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/um
-#  - -I C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/winrt
+  - -I C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.51.36231/include
+#  - -I C:/Program Files (x86)/Windows Kits/10/Include/10.0.26100.0/cppwinrt/winrt
+#  - -I C:/Program Files (x86)/Windows Kits/10/Include/10.0.26100.0/shared
+  - -I C:/Program Files (x86)/Windows Kits/10/Include/10.0.26100.0/ucrt
+  - -I C:/Program Files (x86)/Windows Kits/10/Include/10.0.26100.0/um
+#  - -I C:/Program Files (x86)/Windows Kits/10/Include/10.0.26100.0/winrt
   - -I C:/Users/marek/source/repos/GAViewer/build/_deps/antlr2-src/lib/cpp/antlr
   - -I C:/Users/marek/source/repos/GAViewer/build/_deps/fltk-src
   - -I C:/Users/marek/source/repos/GAViewer/build/_deps/fltk-src/FL
