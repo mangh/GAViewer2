@@ -77,6 +77,9 @@ FetchContent_Declare(
 # and methods that return std::string or use std::string as input parameters.
 set(FLTK_OPTION_STD         ON)   # default OFF
 
+# # Build the example programs in the 'examples' directory
+# set(FLTK_BUILD_EXAMPLES     ON)   # default OFF
+  
 # Use STATIC libraries regardless of whether they are built for
 # Windows (static is the default) or another OS (dynamic may be available):
 set(FLTK_USE_SYSTEM_LIBJPEG OFF)  # default ON (macOS and Windows: OFF)
