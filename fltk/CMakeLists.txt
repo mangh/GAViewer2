@@ -61,7 +61,7 @@ Include(FetchContent)
 FetchContent_Declare(
   fltk
   GIT_REPOSITORY https://github.com/fltk/fltk
-  GIT_TAG        a206a778b415e5f21d3c1d86a1d509aca0265648 # FLTK 1.4.2 released on Feb. 23, 2025
+  GIT_TAG        a9b1113516ffd15fc7602a6d425a317df30f4720   # FLTK 1.4.5 released on Apr. 25, 2026
   GIT_SHALLOW    TRUE
 )
 
