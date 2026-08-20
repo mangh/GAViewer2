@@ -105,3 +105,6 @@ add_subdirectory("viewer")
 
 # Interactive Book Figures for GAViewer
 add_subdirectory("figures")
+
+# FLTK Editor
+add_subdirectory("editor")
