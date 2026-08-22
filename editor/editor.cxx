@@ -17,12 +17,7 @@
 //     https://www.fltk.org/bugs.php
 //
 
-// Enable tutorial code for each chapter by adjusting this macro to match
-// the chapter number.
-#define TUTORIAL_CHAPTER 10
-
 // ---- Tutorial Chapter 1 -----------------------------------------------------
-#if TUTORIAL_CHAPTER >= 1
 
 #include <FL/Fl.H>
 #include <FL/Fl_Double_Window.H>
@@ -35,20 +30,7 @@ void tut1_build_app_window()
     app_window->xclass("fl_editor");
 }
 
-#endif
-#if TUTORIAL_CHAPTER == 1
-
-int main(int argc, char **argv)
-{
-    tut1_build_app_window();
-    app_window->show(argc, argv);
-    return Fl::run();
-}
-
-#endif
 // ---- Tutorial Chapter 2 -----------------------------------------------------
-#if TUTORIAL_CHAPTER >= 2
-
 #include <FL/Fl_Menu_Bar.H>
 #include <FL/filename.H>
 #include <FL/fl_ask.H>
@@ -105,22 +87,7 @@ void set_filename(const char *new_filename)
     update_title();
 }
 
-#if TUTORIAL_CHAPTER < 4
-void menu_quit_callback(Fl_Widget *, void *)
-{
-    if (text_changed)
-    {
-        int c = fl_choice("Changes in your text have not been saved.\n"
-                          "Do you want to quit the editor anyway?",
-                          "Quit", "Cancel", NULL);
-        if (c == 1)
-            return;
-    }
-    Fl::hide_all_windows();
-}
-#else
 void menu_quit_callback(Fl_Widget *, void *);
-#endif
 
 void tut2_build_app_menu_bar()
 {
@@ -131,21 +98,7 @@ void tut2_build_app_menu_bar()
     app_window->end();
 }
 
-#endif
-#if TUTORIAL_CHAPTER == 2
-
-int main(int argc, char **argv)
-{
-    tut1_build_app_window();
-    tut2_build_app_menu_bar();
-    app_window->show(argc, argv);
-    return Fl::run();
-}
-
-#endif
 // ---- Tutorial Chapter 3 -----------------------------------------------------
-#if TUTORIAL_CHAPTER >= 3
-
 #include <FL/Fl_Text_Buffer.H>
 #include <FL/Fl_Text_Editor.H>
 
@@ -189,22 +142,7 @@ void tut3_build_main_editor()
     app_menu_bar->insert(ix, "New", FL_COMMAND + 'n', menu_new_callback);
 }
 
-#endif
-#if TUTORIAL_CHAPTER == 3
-
-int main(int argc, char **argv)
-{
-    tut1_build_app_window();
-    tut2_build_app_menu_bar();
-    tut3_build_main_editor();
-    app_window->show(argc, argv);
-    return Fl::run();
-}
-
-#endif
 // ---- Tutorial Chapter 4 -----------------------------------------------------
-#if TUTORIAL_CHAPTER >= 4
-
 #include <FL/Fl_Native_File_Chooser.H>
 #include <FL/platform.H>
 #include <errno.h>
@@ -350,22 +288,7 @@ int tut4_handle_commandline_and_run(int &argc, char **argv)
     return Fl::run();
 }
 
-#endif
-#if TUTORIAL_CHAPTER == 4
-
-int main(int argc, char **argv)
-{
-    tut1_build_app_window();
-    tut2_build_app_menu_bar();
-    tut3_build_main_editor();
-    tut4_add_file_support();
-    return tut4_handle_commandline_and_run(argc, argv);
-}
-
-#endif
 // ---- Tutorial Chapter 5 -----------------------------------------------------
-#if TUTORIAL_CHAPTER >= 5
-
 void menu_undo_callback(Fl_Widget *, void *v)
 {
     Fl_Widget *e = Fl::focus();
@@ -418,23 +341,7 @@ void tut5_cut_copy_paste()
     app_menu_bar->add("Edit/Delete", 0, menu_delete_callback);
 }
 
-#endif
-#if TUTORIAL_CHAPTER == 5
-
-int main(int argc, char **argv)
-{
-    tut1_build_app_window();
-    tut2_build_app_menu_bar();
-    tut3_build_main_editor();
-    tut4_add_file_support();
-    tut5_cut_copy_paste();
-    return tut4_handle_commandline_and_run(argc, argv);
-}
-
-#endif
 // ---- Tutorial Chapter 6 -----------------------------------------------------
-#if TUTORIAL_CHAPTER >= 6
-
 char last_find_text[1024] = "";
 
 bool find_next(const char *needle)
@@ -487,24 +394,7 @@ void tut6_implement_find()
     app_menu_bar->add("Find/Find Next", FL_COMMAND + 'g', menu_find_next_callback, NULL, FL_MENU_DIVIDER);
 }
 
-#endif
-#if TUTORIAL_CHAPTER == 6
-
-int main(int argc, char **argv)
-{
-    tut1_build_app_window();
-    tut2_build_app_menu_bar();
-    tut3_build_main_editor();
-    tut4_add_file_support();
-    tut5_cut_copy_paste();
-    tut6_implement_find();
-    return tut4_handle_commandline_and_run(argc, argv);
-}
-
-#endif
 // ---- Tutorial Chapter 7 -----------------------------------------------------
-#if TUTORIAL_CHAPTER >= 7
-
 #include <FL/Fl_Flex.H>
 
 char last_replace_text[1024] = "";
@@ -619,25 +509,7 @@ void tut7_implement_replace()
     app_menu_bar->add("Find/Replace Next", FL_COMMAND + 't', menu_replace_next_callback);
 }
 
-#endif
-#if TUTORIAL_CHAPTER == 7
-
-int main(int argc, char **argv)
-{
-    tut1_build_app_window();
-    tut2_build_app_menu_bar();
-    tut3_build_main_editor();
-    tut4_add_file_support();
-    tut5_cut_copy_paste();
-    tut6_implement_find();
-    tut7_implement_replace();
-    return tut4_handle_commandline_and_run(argc, argv);
-}
-
-#endif
 // ---- Tutorial Chapter 8 -----------------------------------------------------
-#if TUTORIAL_CHAPTER >= 8
-
 #include <FL/Fl_Menu_Item.H>
 
 void menu_linenumbers_callback(Fl_Widget *w, void *)
@@ -700,26 +572,7 @@ void tut8_editor_features()
     app_menu_bar->add("Window/Word Wrap", 0, menu_wordwrap_callback, NULL, FL_MENU_TOGGLE);
 }
 
-#endif
-#if TUTORIAL_CHAPTER == 8
-
-int main(int argc, char **argv)
-{
-    tut1_build_app_window();
-    tut2_build_app_menu_bar();
-    tut3_build_main_editor();
-    tut4_add_file_support();
-    tut5_cut_copy_paste();
-    tut6_implement_find();
-    tut7_implement_replace();
-    tut8_editor_features();
-    return tut4_handle_commandline_and_run(argc, argv);
-}
-
-#endif
 // ---- Tutorial Chapter 9 -----------------------------------------------------
-#if TUTORIAL_CHAPTER >= 9
-
 #include <FL/Fl_Tile.H>
 
 Fl_Tile *app_tile = NULL;
@@ -766,27 +619,7 @@ void tut9_split_editor()
     app_menu_bar->add("Window/Split", FL_COMMAND + 'i', menu_split_callback, NULL, FL_MENU_TOGGLE);
 }
 
-#endif
-#if TUTORIAL_CHAPTER == 9
-
-int main(int argc, char **argv)
-{
-    tut1_build_app_window();
-    tut2_build_app_menu_bar();
-    tut3_build_main_editor();
-    tut4_add_file_support();
-    tut5_cut_copy_paste();
-    tut6_implement_find();
-    tut7_implement_replace();
-    tut8_editor_features();
-    tut9_split_editor();
-    return tut4_handle_commandline_and_run(argc, argv);
-}
-
-#endif
 // ---- Tutorial Chapter 10 ----------------------------------------------------
-#if TUTORIAL_CHAPTER >= 10
-
 #include <ctype.h>
 #include <stdlib.h>
 
@@ -1161,9 +994,6 @@ void tut10_syntax_highlighting()
     app_menu_bar->add("Window/Syntax Highlighting", 0, menu_syntaxhighlight_callback, NULL, FL_MENU_TOGGLE);
 }
 
-#endif
-#if TUTORIAL_CHAPTER == 10
-
 int main(int argc, char **argv)
 {
     tut1_build_app_window();
@@ -1178,5 +1008,3 @@ int main(int argc, char **argv)
     tut10_syntax_highlighting();
     return tut4_handle_commandline_and_run(argc, argv);
 }
-
-#endif
