@@ -3,12 +3,20 @@
 
 message(DEBUG "Entering the FLTK Editor subdirectory ...")
 
+# Add executable target to the project using the specified source files:
 set(target "FLTKEditor")
 
-# Add executable target to the project using the specified source files:
-add_executable(${target}
+list(APPEND _source_files
   "editor.cxx"
 )
+
+if (CMAKE_SYSTEM_NAME MATCHES "Windows")
+  list(APPEND _source_files
+    "fl_call_main.cxx"  # WinMain entry point (Windows specific)
+  )
+endif()
+
+add_executable(${target} ${_source_files})
 
 # # Add resources (icon)
 # if (CMAKE_SYSTEM_NAME MATCHES "Windows")
@@ -24,7 +32,6 @@ if (CMAKE_SYSTEM_NAME MATCHES "Windows")
   
   target_compile_definitions(${target}
     PRIVATE WIN32             # application being built for Windows
-    PRIVATE WIN32_NO_CONSOLE  # without a console
     PRIVATE _MBCS             # for Multibyte Character Set
   )
 
