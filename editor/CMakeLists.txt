@@ -8,6 +8,12 @@ set(target "FLTKEditor")
 
 list(APPEND _source_files
   "editor.cxx"
+  "editor_features.cxx"
+  "file_handling.cxx"
+  "find_replace.cxx"
+  "main_window.cxx"
+  "menu.cxx"
+  "text_editor.cxx"
 )
 
 if (CMAKE_SYSTEM_NAME MATCHES "Windows")
