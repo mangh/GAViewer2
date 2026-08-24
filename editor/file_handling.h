@@ -12,13 +12,13 @@ extern char app_filename[FL_PATH_MAX];
 
 void set_changed(bool v);
 void set_filename(const char *new_filename);
-void load(const char *filename);
+void file_load(const char *filename);
 
-void menu_new_callback(Fl_Widget *, void *);
-void menu_open_callback(Fl_Widget *, void *);
-void menu_save_callback(Fl_Widget *, void *);
-void menu_save_as_callback(Fl_Widget *, void *);
-void menu_quit_callback(Fl_Widget *, void *);
+void file_new_callback(Fl_Widget *, void *);
+void file_open_callback(Fl_Widget *, void *);
+void file_save_callback(Fl_Widget *, void *);
+void file_save_as_callback(Fl_Widget *, void *);
+void file_quit_callback(Fl_Widget *, void *);
 
 int handle_commandline_and_run(int &argc, char **argv);
 

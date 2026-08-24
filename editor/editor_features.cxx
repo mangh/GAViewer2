@@ -11,7 +11,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-void menu_linenumbers_callback(Fl_Widget *w, void *)
+void view_linenumbers_callback(Fl_Widget *w, void *)
 {
     Fl_Menu_Bar *menu = static_cast<Fl_Menu_Bar *>(w);
     const Fl_Menu_Item *linenumber_item = menu->mvalue();
@@ -38,7 +38,7 @@ void menu_linenumbers_callback(Fl_Widget *w, void *)
     }
 }
 
-void menu_wordwrap_callback(Fl_Widget *w, void *)
+void view_wordwrap_callback(Fl_Widget *w, void *)
 {
     Fl_Menu_Bar *menu = static_cast<Fl_Menu_Bar *>(w);
     const Fl_Menu_Item *wordwrap_item = menu->mvalue();
@@ -401,7 +401,7 @@ static void style_update(int pos,                      // I - Position of update
     free(style);
 }
 
-void menu_syntaxhighlight_callback(Fl_Widget *w, void *)
+void view_syntaxhighlight_callback(Fl_Widget *w, void *)
 {
     Fl_Menu_Bar *menu = static_cast<Fl_Menu_Bar *>(w);
     const Fl_Menu_Item *syntaxt_item = menu->mvalue();

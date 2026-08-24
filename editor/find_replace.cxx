@@ -56,7 +56,7 @@ void replace_selection(const char *new_text)
     }
 }
 
-void menu_find_callback(Fl_Widget *, void *)
+void find_callback(Fl_Widget *, void *)
 {
     const char *find_text = fl_input("Find in text:", last_find_text);
     if (find_text)
@@ -66,7 +66,7 @@ void menu_find_callback(Fl_Widget *, void *)
     }
 }
 
-void menu_find_next_callback(Fl_Widget *, void *)
+void find_next_callback(Fl_Widget *, void *)
 {
     if (last_find_text[0])
     {
@@ -74,7 +74,7 @@ void menu_find_next_callback(Fl_Widget *, void *)
     }
     else
     {
-        menu_find_callback(NULL, NULL);
+        find_callback(NULL, NULL);
     }
 }
 
@@ -145,18 +145,18 @@ void Replace_Dialog::close_callback(Fl_Widget *, void *my_dialog)
     dlg->hide();
 }
 
-void menu_replace_callback(Fl_Widget *, void *)
+void replace_callback(Fl_Widget *, void *)
 {
     if (!replace_dialog)
         replace_dialog = new Replace_Dialog("Find and Replace");
     replace_dialog->show();
 }
 
-void menu_replace_next_callback(Fl_Widget *, void *)
+void replace_next_callback(Fl_Widget *, void *)
 {
     if (!last_find_text[0])
     {
-        menu_replace_callback(NULL, NULL);
+        replace_callback(NULL, NULL);
     }
     else
     {

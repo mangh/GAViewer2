@@ -50,49 +50,49 @@ void build_split_editor()
     app_tile->resizable(app_editor);
 }
 
-void menu_undo_callback(Fl_Widget *, void *)
+void edit_undo_callback(Fl_Widget *, void *)
 {
     Fl_Widget *e = Fl::focus();
     if (e && (e == app_editor || e == app_split_editor))
         Fl_Text_Editor::kf_undo(0, (Fl_Text_Editor *)e);
 }
 
-void menu_redo_callback(Fl_Widget *, void *)
+void edit_redo_callback(Fl_Widget *, void *)
 {
     Fl_Widget *e = Fl::focus();
     if (e && (e == app_editor || e == app_split_editor))
         Fl_Text_Editor::kf_redo(0, (Fl_Text_Editor *)e);
 }
 
-void menu_cut_callback(Fl_Widget *, void *)
+void edit_cut_callback(Fl_Widget *, void *)
 {
     Fl_Widget *e = Fl::focus();
     if (e && (e == app_editor || e == app_split_editor))
         Fl_Text_Editor::kf_cut(0, (Fl_Text_Editor *)e);
 }
 
-void menu_copy_callback(Fl_Widget *, void *)
+void edit_copy_callback(Fl_Widget *, void *)
 {
     Fl_Widget *e = Fl::focus();
     if (e && (e == app_editor || e == app_split_editor))
         Fl_Text_Editor::kf_copy(0, (Fl_Text_Editor *)e);
 }
 
-void menu_paste_callback(Fl_Widget *, void *)
+void edit_paste_callback(Fl_Widget *, void *)
 {
     Fl_Widget *e = Fl::focus();
     if (e && (e == app_editor || e == app_split_editor))
         Fl_Text_Editor::kf_paste(0, (Fl_Text_Editor *)e);
 }
 
-void menu_delete_callback(Fl_Widget *, void *)
+void edit_delete_callback(Fl_Widget *, void *)
 {
     Fl_Widget *e = Fl::focus();
     if (e && (e == app_editor || e == app_split_editor))
         Fl_Text_Editor::kf_delete(0, (Fl_Text_Editor *)e);
 }
 
-void menu_split_callback(Fl_Widget *w, void *)
+void view_split_callback(Fl_Widget *w, void *)
 {
     Fl_Menu_Bar *menu = static_cast<Fl_Menu_Bar *>(w);
     const Fl_Menu_Item *splitview_item = menu->mvalue();

@@ -6,8 +6,8 @@
 
 #include <FL/Fl_Widget.H>
 
-void menu_linenumbers_callback(Fl_Widget *, void *);
-void menu_wordwrap_callback(Fl_Widget *, void *);
-void menu_syntaxhighlight_callback(Fl_Widget *, void *);
+void view_linenumbers_callback(Fl_Widget *, void *);
+void view_wordwrap_callback(Fl_Widget *, void *);
+void view_syntaxhighlight_callback(Fl_Widget *, void *);
 
 #endif // EDITOR_FEATURES_H

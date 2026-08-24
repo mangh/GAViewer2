@@ -39,7 +39,7 @@ void set_filename(const char *new_filename)
     update_title();
 }
 
-void load(const char *filename)
+void file_load(const char *filename)
 {
     if (app_text_buffer->loadfile(filename) == 0)
     {
@@ -48,11 +48,11 @@ void load(const char *filename)
     }
     else
     {
-        fl_alert("Failed to load file\n%s\n%s", filename, strerror(errno));
+        fl_alert("Failed to file_load file\n%s\n%s", filename, strerror(errno));
     }
 }
 
-void menu_new_callback(Fl_Widget *, void *)
+void file_new_callback(Fl_Widget *, void *)
 {
     if (text_changed)
     {
@@ -67,7 +67,7 @@ void menu_new_callback(Fl_Widget *, void *)
     set_changed(false);
 }
 
-void menu_save_as_callback(Fl_Widget *, void *)
+void file_save_as_callback(Fl_Widget *, void *)
 {
     Fl_Native_File_Chooser file_chooser;
     file_chooser.title("Save File As...");
@@ -98,11 +98,11 @@ void menu_save_as_callback(Fl_Widget *, void *)
     }
 }
 
-void menu_save_callback(Fl_Widget *, void *)
+void file_save_callback(Fl_Widget *, void *)
 {
     if (!app_filename[0])
     {
-        menu_save_as_callback(NULL, NULL);
+        file_save_as_callback(NULL, NULL);
     }
     else
     {
@@ -117,7 +117,7 @@ void menu_save_callback(Fl_Widget *, void *)
     }
 }
 
-void menu_quit_callback(Fl_Widget *, void *)
+void file_quit_callback(Fl_Widget *, void *)
 {
     if (text_changed)
     {
@@ -128,14 +128,14 @@ void menu_quit_callback(Fl_Widget *, void *)
             return;
         if (r == 1)
         { // save
-            menu_save_callback(NULL, NULL);
+            file_save_callback(NULL, NULL);
             return;
         }
     }
     Fl::hide_all_windows();
 }
 
-void menu_open_callback(Fl_Widget *, void *)
+void file_open_callback(Fl_Widget *, void *)
 {
     if (text_changed)
     {
@@ -145,7 +145,7 @@ void menu_open_callback(Fl_Widget *, void *)
         if (r == 0) // cancel
             return;
         if (r == 1) // save
-            menu_save_callback(NULL, NULL);
+            file_save_callback(NULL, NULL);
     }
     Fl_Native_File_Chooser file_chooser;
     file_chooser.title("Open File...");
@@ -163,14 +163,14 @@ void menu_open_callback(Fl_Widget *, void *)
         }
     }
     if (file_chooser.show() == 0)
-        load(file_chooser.filename());
+        file_load(file_chooser.filename());
 }
 
 static int args_handler(int argc, char **argv, int &i)
 {
     if (argv && argv[i] && argv[i][0] != '-')
     {
-        load(argv[i]);
+        file_load(argv[i]);
         i++;
         return 1;
     }
@@ -182,7 +182,7 @@ int handle_commandline_and_run(int &argc, char **argv)
     int i = 0;
     Fl::args_to_utf8(argc, argv);
     Fl::args(argc, argv, i, args_handler);
-    fl_open_callback(load);
+    fl_open_callback(file_load);
     app_window->show(argc, argv);
     return Fl::run();
 }

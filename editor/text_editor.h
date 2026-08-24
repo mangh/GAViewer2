@@ -15,12 +15,12 @@ extern Fl_Tile *app_tile;
 void build_main_editor();
 void build_split_editor();
 
-void menu_undo_callback(Fl_Widget *, void *);
-void menu_redo_callback(Fl_Widget *, void *);
-void menu_cut_callback(Fl_Widget *, void *);
-void menu_copy_callback(Fl_Widget *, void *);
-void menu_paste_callback(Fl_Widget *, void *);
-void menu_delete_callback(Fl_Widget *, void *);
-void menu_split_callback(Fl_Widget *, void *);
+void edit_undo_callback(Fl_Widget *, void *);
+void edit_redo_callback(Fl_Widget *, void *);
+void edit_cut_callback(Fl_Widget *, void *);
+void edit_copy_callback(Fl_Widget *, void *);
+void edit_paste_callback(Fl_Widget *, void *);
+void edit_delete_callback(Fl_Widget *, void *);
+void view_split_callback(Fl_Widget *, void *);
 
 #endif // TEXT_EDITOR_H
