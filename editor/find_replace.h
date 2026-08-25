@@ -6,9 +6,6 @@
 
 #include <FL/Fl_Widget.H>
 
-extern char last_find_text[1024];
-extern char last_replace_text[1024];
-
 bool find_next(const char *needle);
 void replace_selection(const char *new_text);
 

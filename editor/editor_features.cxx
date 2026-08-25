@@ -17,24 +17,24 @@ void view_linenumbers_callback(Fl_Widget *w, void *)
     const Fl_Menu_Item *linenumber_item = menu->mvalue();
     if (linenumber_item->value())
     {
-        app_editor->linenumber_width(40);
+        _editor->linenumber_width(40);
     }
     else
     {
-        app_editor->linenumber_width(0);
+        _editor->linenumber_width(0);
     }
-    app_editor->redraw();
-    if (app_split_editor)
+    _editor->redraw();
+    if (_split_editor)
     {
         if (linenumber_item->value())
         {
-            app_split_editor->linenumber_width(40);
+            _split_editor->linenumber_width(40);
         }
         else
         {
-            app_split_editor->linenumber_width(0);
+            _split_editor->linenumber_width(0);
         }
-        app_split_editor->redraw();
+        _split_editor->redraw();
     }
 }
 
@@ -44,28 +44,28 @@ void view_wordwrap_callback(Fl_Widget *w, void *)
     const Fl_Menu_Item *wordwrap_item = menu->mvalue();
     if (wordwrap_item->value())
     {
-        app_editor->wrap_mode(Fl_Text_Display::WRAP_AT_BOUNDS, 0);
+        _editor->wrap_mode(Fl_Text_Display::WRAP_AT_BOUNDS, 0);
     }
     else
     {
-        app_editor->wrap_mode(Fl_Text_Display::WRAP_NONE, 0);
+        _editor->wrap_mode(Fl_Text_Display::WRAP_NONE, 0);
     }
-    app_editor->redraw();
-    if (app_split_editor)
+    _editor->redraw();
+    if (_split_editor)
     {
         if (wordwrap_item->value())
         {
-            app_split_editor->wrap_mode(Fl_Text_Display::WRAP_AT_BOUNDS, 0);
+            _split_editor->wrap_mode(Fl_Text_Display::WRAP_AT_BOUNDS, 0);
         }
         else
         {
-            app_split_editor->wrap_mode(Fl_Text_Display::WRAP_NONE, 0);
+            _split_editor->wrap_mode(Fl_Text_Display::WRAP_NONE, 0);
         }
-        app_split_editor->redraw();
+        _split_editor->redraw();
     }
 }
 
-static Fl_Text_Buffer *app_style_buffer = NULL;
+Fl_Text_Buffer *_style_buffer = NULL;
 
 // Syntax highlighting stuff...
 
@@ -285,18 +285,18 @@ static void style_parse(const char *text, char *style, int length)
 //
 static void style_init(void)
 {
-    char *style = new char[app_text_buffer->length() + 1];
-    char *text = app_text_buffer->text();
+    char *style = new char[_text_buffer->length() + 1];
+    char *text = _text_buffer->text();
 
-    memset(style, 'A', app_text_buffer->length());
-    style[app_text_buffer->length()] = '\0';
+    memset(style, 'A', _text_buffer->length());
+    style[_text_buffer->length()] = '\0';
 
-    if (!app_style_buffer)
-        app_style_buffer = new Fl_Text_Buffer(app_text_buffer->length());
+    if (!_style_buffer)
+        _style_buffer = new Fl_Text_Buffer(_text_buffer->length());
 
-    style_parse(text, style, app_text_buffer->length());
+    style_parse(text, style, _text_buffer->length());
 
-    app_style_buffer->text(style);
+    _style_buffer->text(style);
     delete[] style;
     free(text);
 }
@@ -327,7 +327,7 @@ static void style_update(int pos,                      // I - Position of update
     // If this is just a selection change, just unselect the style buffer...
     if (nInserted == 0 && nDeleted == 0)
     {
-        app_style_buffer->unselect();
+        _style_buffer->unselect();
         return;
     }
 
@@ -339,29 +339,29 @@ static void style_update(int pos,                      // I - Position of update
         memset(style, 'A', nInserted);
         style[nInserted] = '\0';
 
-        app_style_buffer->replace(pos, pos + nDeleted, style);
+        _style_buffer->replace(pos, pos + nDeleted, style);
         delete[] style;
     }
     else
     {
         // Just delete characters in the style buffer...
-        app_style_buffer->remove(pos, pos + nDeleted);
+        _style_buffer->remove(pos, pos + nDeleted);
     }
 
     // Select the area that was just updated to avoid unnecessary
     // callbacks...
-    app_style_buffer->select(pos, pos + nInserted - nDeleted);
+    _style_buffer->select(pos, pos + nInserted - nDeleted);
 
     // Re-parse the changed region; we do this by parsing from the
     // beginning of the previous line of the changed region to the end of
     // the line of the changed region...  Then we check the last
     // style character and keep updating if we have a multi-line
     // comment character...
-    start = app_text_buffer->line_start(pos);
-    //  if (start > 0) start = app_text_buffer->line_start(start - 1);
-    end = app_text_buffer->line_end(pos + nInserted);
-    text = app_text_buffer->text_range(start, end);
-    style = app_style_buffer->text_range(start, end);
+    start = _text_buffer->line_start(pos);
+    //  if (start > 0) start = _text_buffer->line_start(start - 1);
+    end = _text_buffer->line_end(pos + nInserted);
+    text = _text_buffer->text_range(start, end);
+    style = _style_buffer->text_range(start, end);
     if (start == end)
         last = 0;
     else
@@ -375,7 +375,7 @@ static void style_update(int pos,                      // I - Position of update
     //  printf("new style = \"%s\", new last='%c'...\n",
     //         style, style[end - start - 1]);
 
-    app_style_buffer->replace(start, end, style);
+    _style_buffer->replace(start, end, style);
     ((Fl_Text_Editor *)cbArg)->redisplay_range(start, end);
 
     if (start == end || last != style[end - start - 1])
@@ -387,13 +387,13 @@ static void style_update(int pos,                      // I - Position of update
         free(text);
         free(style);
 
-        end = app_text_buffer->length();
-        text = app_text_buffer->text_range(start, end);
-        style = app_style_buffer->text_range(start, end);
+        end = _text_buffer->length();
+        text = _text_buffer->text_range(start, end);
+        style = _style_buffer->text_range(start, end);
 
         style_parse(text, style, end - start);
 
-        app_style_buffer->replace(start, end, style);
+        _style_buffer->replace(start, end, style);
         ((Fl_Text_Editor *)cbArg)->redisplay_range(start, end);
     }
 
@@ -408,27 +408,27 @@ void view_syntaxhighlight_callback(Fl_Widget *w, void *)
     if (syntaxt_item->value())
     {
         style_init();
-        app_editor->highlight_data(app_style_buffer, styletable, sizeof(styletable) / sizeof(styletable[0]), 'A',
+        _editor->highlight_data(_style_buffer, styletable, sizeof(styletable) / sizeof(styletable[0]), 'A',
                                    style_unfinished_cb, 0);
-        app_text_buffer->add_modify_callback(style_update, app_editor);
+        _text_buffer->add_modify_callback(style_update, _editor);
     }
     else
     {
-        app_text_buffer->remove_modify_callback(style_update, app_editor);
-        app_editor->highlight_data(NULL, NULL, 0, 'A', NULL, 0);
+        _text_buffer->remove_modify_callback(style_update, _editor);
+        _editor->highlight_data(NULL, NULL, 0, 'A', NULL, 0);
     }
-    app_editor->redraw();
-    if (app_split_editor)
+    _editor->redraw();
+    if (_split_editor)
     {
         if (syntaxt_item->value())
         {
-            app_split_editor->highlight_data(app_style_buffer, styletable, sizeof(styletable) / sizeof(styletable[0]),
+            _split_editor->highlight_data(_style_buffer, styletable, sizeof(styletable) / sizeof(styletable[0]),
                                              'A', style_unfinished_cb, 0);
         }
         else
         {
-            app_split_editor->highlight_data(NULL, NULL, 0, 'A', NULL, 0);
+            _split_editor->highlight_data(NULL, NULL, 0, 'A', NULL, 0);
         }
-        app_split_editor->redraw();
+        _split_editor->redraw();
     }
 }

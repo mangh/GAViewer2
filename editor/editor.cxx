@@ -17,7 +17,6 @@
 //     https://www.fltk.org/bugs.php
 //
 
-#include "file_handling.h"
 #include "main_window.h"
 #include "menu.h"
 #include "text_editor.h"
@@ -28,5 +27,6 @@ int main(int argc, char **argv)
     build_app_menu_bar();
     build_main_editor();
     build_split_editor();
-    return handle_commandline_and_run(argc, argv);
+    // handle command line arguments and run the application
+    return app_run(argc, argv);
 }

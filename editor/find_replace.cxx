@@ -14,20 +14,23 @@
 
 #include <string.h>
 
-char last_find_text[1024] = "";
-char last_replace_text[1024] = "";
+// last find text
+char _find_text[1024] = "";
+
+// last replace text
+char _replace_text[1024] = "";
 
 bool find_next(const char *needle)
 {
-    Fl_Text_Editor *editor = app_editor;
+    Fl_Text_Editor *editor = _editor;
     Fl_Widget *e = Fl::focus();
-    if (e && e == app_split_editor)
-        editor = app_split_editor;
+    if (e && e == _split_editor)
+        editor = _split_editor;
     int pos = editor->insert_position();
-    int found = app_text_buffer->search_forward(pos, needle, &pos);
+    int found = _text_buffer->search_forward(pos, needle, &pos);
     if (found)
     {
-        app_text_buffer->select(pos, pos + (int)strlen(needle));
+        _text_buffer->select(pos, pos + (int)strlen(needle));
         editor->insert_position(pos + (int)strlen(needle));
         editor->show_insert_position();
         return true;
@@ -41,16 +44,16 @@ bool find_next(const char *needle)
 
 void replace_selection(const char *new_text)
 {
-    Fl_Text_Editor *editor = app_editor;
+    Fl_Text_Editor *editor = _editor;
     Fl_Widget *e = Fl::focus();
-    if (e && e == app_split_editor)
-        editor = app_split_editor;
+    if (e && e == _split_editor)
+        editor = _split_editor;
     int start, end;
-    if (app_text_buffer->selection_position(&start, &end))
+    if (_text_buffer->selection_position(&start, &end))
     {
-        app_text_buffer->remove_selection();
-        app_text_buffer->insert(start, new_text);
-        app_text_buffer->select(start, start + (int)strlen(new_text));
+        _text_buffer->remove_selection();
+        _text_buffer->insert(start, new_text);
+        _text_buffer->select(start, start + (int)strlen(new_text));
         editor->insert_position(start + (int)strlen(new_text));
         editor->show_insert_position();
     }
@@ -58,19 +61,19 @@ void replace_selection(const char *new_text)
 
 void find_callback(Fl_Widget *, void *)
 {
-    const char *find_text = fl_input("Find in text:", last_find_text);
+    const char *find_text = fl_input("Find in text:", _find_text);
     if (find_text)
     {
-        fl_strlcpy(last_find_text, find_text, sizeof(last_find_text));
+        fl_strlcpy(_find_text, find_text, sizeof(_find_text));
         find_next(find_text);
     }
 }
 
 void find_next_callback(Fl_Widget *, void *)
 {
-    if (last_find_text[0])
+    if (_find_text[0])
     {
-        find_next(last_find_text);
+        find_next(_find_text);
     }
     else
     {
@@ -118,18 +121,18 @@ Replace_Dialog::Replace_Dialog(const char *label) : Fl_Double_Window(430, 110, l
 
 void Replace_Dialog::show()
 {
-    find_text_input->value(last_find_text);
-    replace_text_input->value(last_replace_text);
+    find_text_input->value(_find_text);
+    replace_text_input->value(_replace_text);
     Fl_Double_Window::show();
 }
 
 void Replace_Dialog::find_next_callback(Fl_Widget *, void *my_dialog)
 {
     Replace_Dialog *dlg = static_cast<Replace_Dialog *>(my_dialog);
-    fl_strlcpy(last_find_text, dlg->find_text_input->value(), sizeof(last_find_text));
-    fl_strlcpy(last_replace_text, dlg->replace_text_input->value(), sizeof(last_replace_text));
-    if (last_find_text[0])
-        find_next(last_find_text);
+    fl_strlcpy(_find_text, dlg->find_text_input->value(), sizeof(_find_text));
+    fl_strlcpy(_replace_text, dlg->replace_text_input->value(), sizeof(_replace_text));
+    if (_find_text[0])
+        find_next(_find_text);
 }
 
 void Replace_Dialog::replace_and_find_callback(Fl_Widget *, void *my_dialog)
@@ -154,13 +157,13 @@ void replace_callback(Fl_Widget *, void *)
 
 void replace_next_callback(Fl_Widget *, void *)
 {
-    if (!last_find_text[0])
+    if (!_find_text[0])
     {
         replace_callback(NULL, NULL);
     }
     else
     {
-        replace_selection(last_replace_text);
-        find_next(last_find_text);
+        replace_selection(_replace_text);
+        find_next(_find_text);
     }
 }

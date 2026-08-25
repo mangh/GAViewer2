@@ -7,10 +7,10 @@
 #include <FL/Fl_Text_Editor.H>
 #include <FL/Fl_Tile.H>
 
-extern Fl_Text_Editor *app_editor;
-extern Fl_Text_Editor *app_split_editor;
-extern Fl_Text_Buffer *app_text_buffer;
-extern Fl_Tile *app_tile;
+extern Fl_Text_Editor *_editor;
+extern Fl_Text_Editor *_split_editor;
+extern Fl_Text_Buffer *_text_buffer;
+extern Fl_Tile *_tile;
 
 void build_main_editor();
 void build_split_editor();

@@ -6,9 +6,10 @@
 
 #include <FL/Fl_Double_Window.H>
 
-extern Fl_Double_Window *app_window;
+extern Fl_Double_Window *_app_window;
 
 void build_app_window();
-void update_title();
+void update_app_title(const char *info);
+int app_run(int &argc, char **argv);
 
 #endif // MAIN_WINDOW_H

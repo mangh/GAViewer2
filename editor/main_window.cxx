@@ -5,38 +5,43 @@
 #include "file_handling.h"
 
 #include <FL/filename.H>
+#include <FL/platform.H>
 
 #include <stdio.h>
 
-Fl_Double_Window *app_window = NULL;
+Fl_Double_Window *_app_window = NULL;
 
 void build_app_window()
 {
-    app_window = new Fl_Double_Window(640, 480, "FLTK Editor");
-    app_window->xclass("fl_editor");
+    _app_window = new Fl_Double_Window(640, 480, "FLTK Editor");
+    _app_window->xclass("fl_editor");
 }
 
-void update_title()
+void update_app_title(const char *info)
 {
-    const char *fname = NULL;
-    if (app_filename[0])
-        fname = fl_filename_name(app_filename);
-    if (fname)
+    _app_window->label(info ? info : "FLTK Editor");
+}
+
+static int args_handler(int argc, char **argv, int &i)
+{
+    if (argv && argv[i] && argv[i][0] != '-')
     {
-        char buf[FL_PATH_MAX + 3];
-        buf[FL_PATH_MAX + 2] = '\0'; // ensure that the buffer is always terminated
-        if (text_changed)
-        {
-            snprintf(buf, FL_PATH_MAX + 2, "%s *", fname);
-        }
-        else
-        {
-            snprintf(buf, FL_PATH_MAX + 2, "%s", fname);
-        }
-        app_window->copy_label(buf);
+        file_load(argv[i]);
+        i++;
+        return 1;
     }
-    else
-    {
-        app_window->label("FLTK Editor");
-    }
+    return 0;
+}
+
+int app_run(int &argc, char **argv)
+{
+    // On Windows, command line arguments are already converted to UTF-8 (WinMain function).
+    // On other platforms, the Fl::args_to_utf8 function doesn’t do anything:
+    // Fl::args_to_utf8(argc, argv);
+
+    int i = 0;
+    Fl::args(argc, argv, i, args_handler);
+    fl_open_callback(file_load);
+    _app_window->show(argc, argv);
+    return Fl::run();
 }

@@ -14,47 +14,62 @@
 #include <errno.h>
 #include <string.h>
 
-bool text_changed = false;
-char app_filename[FL_PATH_MAX] = "";
+bool _changed = false;
+char _path[FL_PATH_MAX] = "";
+char _precis[FL_PATH_MAX + 3];
 
-void set_changed(bool v)
+const char *file_precis()
 {
-    if (v != text_changed)
+    if (_path[0])
     {
-        text_changed = v;
-        update_title();
-    }
-}
-
-void set_filename(const char *new_filename)
-{
-    if (new_filename)
-    {
-        fl_strlcpy(app_filename, new_filename, FL_PATH_MAX);
+        _precis[FL_PATH_MAX + 2] = '\0'; // ensure that the buffer is always terminated
+        snprintf(_precis, FL_PATH_MAX + 2, _changed ? "%s *" : "%s", fl_filename_name(_path));
+        return _precis;
     }
     else
     {
-        app_filename[0] = 0;
+        return NULL;
     }
-    update_title();
+}
+
+void file_changed(bool v)
+{
+    if (v != _changed)
+    {
+        _changed = v;
+        update_app_title(file_precis());
+    }
+}
+
+void file_path(const char *new_path)
+{
+    if (new_path)
+    {
+        fl_strlcpy(_path, new_path, FL_PATH_MAX);
+    }
+    else
+    {
+        _path[0] = 0;
+    }
 }
 
 void file_load(const char *filename)
 {
-    if (app_text_buffer->loadfile(filename) == 0)
+    if (_text_buffer->loadfile(filename) == 0)
     {
-        set_filename(filename);
-        set_changed(false);
+        file_path(filename);
+        file_changed(false);
     }
     else
     {
+        update_app_title(NULL);
         fl_alert("Failed to file_load file\n%s\n%s", filename, strerror(errno));
     }
 }
 
 void file_new_callback(Fl_Widget *, void *)
 {
-    if (text_changed)
+    if (_changed)
     {
         int c = fl_choice("Changes in your text have not been saved.\n"
                           "Do you want to start a new text anyway?",
@@ -62,9 +77,9 @@ void file_new_callback(Fl_Widget *, void *)
         if (c == 1)
             return;
     }
-    app_text_buffer->text("");
-    set_filename(NULL);
-    set_changed(false);
+    _text_buffer->text("");
+    file_path(NULL);
+    file_changed(false);
 }
 
 void file_save_as_callback(Fl_Widget *, void *)
@@ -72,24 +87,24 @@ void file_save_as_callback(Fl_Widget *, void *)
     Fl_Native_File_Chooser file_chooser;
     file_chooser.title("Save File As...");
     file_chooser.type(Fl_Native_File_Chooser::BROWSE_SAVE_FILE);
-    if (app_filename[0])
+    if (_path[0])
     {
-        char temp_filename[FL_PATH_MAX];
-        fl_strlcpy(temp_filename, app_filename, FL_PATH_MAX);
-        const char *name = fl_filename_name(temp_filename);
+        char temp_path[FL_PATH_MAX];
+        fl_strlcpy(temp_path, _path, FL_PATH_MAX);
+        const char *name = fl_filename_name(temp_path);
         if (name)
         {
             file_chooser.preset_file(name);
-            temp_filename[name - temp_filename] = 0;
-            file_chooser.directory(temp_filename);
+            temp_path[name - temp_path] = 0;
+            file_chooser.directory(temp_path);
         }
     }
     if (file_chooser.show() == 0)
     {
-        if (app_text_buffer->savefile(file_chooser.filename()) == 0)
+        if (_text_buffer->savefile(file_chooser.filename()) == 0)
         {
-            set_filename(file_chooser.filename());
-            set_changed(false);
+            file_path(file_chooser.filename());
+            file_changed(false);
         }
         else
         {
@@ -100,26 +115,26 @@ void file_save_as_callback(Fl_Widget *, void *)
 
 void file_save_callback(Fl_Widget *, void *)
 {
-    if (!app_filename[0])
+    if (!_path[0])
     {
         file_save_as_callback(NULL, NULL);
     }
     else
     {
-        if (app_text_buffer->savefile(app_filename) == 0)
+        if (_text_buffer->savefile(_path) == 0)
         {
-            set_changed(false);
+            file_changed(false);
         }
         else
         {
-            fl_alert("Failed to save file\n%s\n%s", app_filename, strerror(errno));
+            fl_alert("Failed to save file\n%s\n%s", _path, strerror(errno));
         }
     }
 }
 
 void file_quit_callback(Fl_Widget *, void *)
 {
-    if (text_changed)
+    if (_changed)
     {
         int r = fl_choice("The current file has not been saved.\n"
                           "Would you like to save it now?",
@@ -137,7 +152,7 @@ void file_quit_callback(Fl_Widget *, void *)
 
 void file_open_callback(Fl_Widget *, void *)
 {
-    if (text_changed)
+    if (_changed)
     {
         int r = fl_choice("The current file has not been saved.\n"
                           "Would you like to save it now?",
@@ -150,39 +165,18 @@ void file_open_callback(Fl_Widget *, void *)
     Fl_Native_File_Chooser file_chooser;
     file_chooser.title("Open File...");
     file_chooser.type(Fl_Native_File_Chooser::BROWSE_FILE);
-    if (app_filename[0])
+    if (_path[0])
     {
-        char temp_filename[FL_PATH_MAX];
-        fl_strlcpy(temp_filename, app_filename, FL_PATH_MAX);
-        const char *name = fl_filename_name(temp_filename);
+        char temp_path[FL_PATH_MAX];
+        fl_strlcpy(temp_path, _path, FL_PATH_MAX);
+        const char *name = fl_filename_name(temp_path);
         if (name)
         {
             file_chooser.preset_file(name);
-            temp_filename[name - temp_filename] = 0;
-            file_chooser.directory(temp_filename);
+            temp_path[name - temp_path] = 0;
+            file_chooser.directory(temp_path);
         }
     }
     if (file_chooser.show() == 0)
         file_load(file_chooser.filename());
-}
-
-static int args_handler(int argc, char **argv, int &i)
-{
-    if (argv && argv[i] && argv[i][0] != '-')
-    {
-        file_load(argv[i]);
-        i++;
-        return 1;
-    }
-    return 0;
-}
-
-int handle_commandline_and_run(int &argc, char **argv)
-{
-    int i = 0;
-    Fl::args_to_utf8(argc, argv);
-    Fl::args(argc, argv, i, args_handler);
-    fl_open_callback(file_load);
-    app_window->show(argc, argv);
-    return Fl::run();
 }
