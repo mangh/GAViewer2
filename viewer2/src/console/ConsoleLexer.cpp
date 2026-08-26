@@ -236,7 +236,7 @@ tryAgain:;
 void ConsoleLexer::mWS_(bool _createToken) {
 	int _ttype; ANTLR_USE_NAMESPACE(antlr)RefToken _token; ANTLR_USE_NAMESPACE(std)string::size_type _begin = text.length();
 	_ttype = WS_;
-	ANTLR_USE_NAMESPACE(std)string::size_type _saveIndex;
+	// ANTLR_USE_NAMESPACE(std)string::size_type _saveIndex;
 	
 	{
 	switch ( LA(1)) {
@@ -273,13 +273,13 @@ void ConsoleLexer::mWS_(bool _createToken) {
 	   _token->setText(text.substr(_begin, text.length()-_begin));
 	}
 	_returnToken = _token;
-	_saveIndex=0;
+	// _saveIndex=0;
 }
 
 void ConsoleLexer::mOPERATOR(bool _createToken) {
 	int _ttype; ANTLR_USE_NAMESPACE(antlr)RefToken _token; ANTLR_USE_NAMESPACE(std)string::size_type _begin = text.length();
 	_ttype = OPERATOR;
-	ANTLR_USE_NAMESPACE(std)string::size_type _saveIndex;
+	// ANTLR_USE_NAMESPACE(std)string::size_type _saveIndex;
 	
 	{ // ( ... )+
 	int _cnt5=0;
@@ -357,9 +357,17 @@ void ConsoleLexer::mOPERATOR(bool _createToken) {
 			if (((LA(1) == 0x2f /* '/' */ ))&&(((LA(2) != '*') && (LA(2) != '/')))) {
 				match('/' /* charlit */ );
 			}
-		else {
-			if ( _cnt5>=1 ) { goto _loop5; } else {throw ANTLR_USE_NAMESPACE(antlr)NoViableAltForCharException(LA(1), getFilename(), getLine(), getColumn());}
-		}
+			else
+			{
+				if ( _cnt5>=1 )
+				{
+					goto _loop5;
+				}
+				else
+				{
+					throw ANTLR_USE_NAMESPACE(antlr)NoViableAltForCharException(LA(1), getFilename(), getLine(), getColumn());
+				}
+			}
 		}
 		_cnt5++;
 	}
@@ -370,13 +378,13 @@ void ConsoleLexer::mOPERATOR(bool _createToken) {
 	   _token->setText(text.substr(_begin, text.length()-_begin));
 	}
 	_returnToken = _token;
-	_saveIndex=0;
+	// _saveIndex=0;
 }
 
 void ConsoleLexer::mML_COMMENT(bool _createToken) {
 	int _ttype; ANTLR_USE_NAMESPACE(antlr)RefToken _token; ANTLR_USE_NAMESPACE(std)string::size_type _begin = text.length();
 	_ttype = ML_COMMENT;
-	ANTLR_USE_NAMESPACE(std)string::size_type _saveIndex;
+	// ANTLR_USE_NAMESPACE(std)string::size_type _saveIndex;
 	
 	match("/*");
 	{ // ( ... )*
@@ -407,13 +415,13 @@ void ConsoleLexer::mML_COMMENT(bool _createToken) {
 	   _token->setText(text.substr(_begin, text.length()-_begin));
 	}
 	_returnToken = _token;
-	_saveIndex=0;
+	// _saveIndex=0;
 }
 
 void ConsoleLexer::mSL_COMMENT(bool _createToken) {
 	int _ttype; ANTLR_USE_NAMESPACE(antlr)RefToken _token; ANTLR_USE_NAMESPACE(std)string::size_type _begin = text.length();
 	_ttype = SL_COMMENT;
-	ANTLR_USE_NAMESPACE(std)string::size_type _saveIndex;
+	// ANTLR_USE_NAMESPACE(std)string::size_type _saveIndex;
 	
 	match("//");
 	{ // ( ... )*
@@ -434,13 +442,13 @@ void ConsoleLexer::mSL_COMMENT(bool _createToken) {
 	   _token->setText(text.substr(_begin, text.length()-_begin));
 	}
 	_returnToken = _token;
-	_saveIndex=0;
+	// _saveIndex=0;
 }
 
 void ConsoleLexer::mCOLON(bool _createToken) {
 	int _ttype; ANTLR_USE_NAMESPACE(antlr)RefToken _token; ANTLR_USE_NAMESPACE(std)string::size_type _begin = text.length();
 	_ttype = COLON;
-	ANTLR_USE_NAMESPACE(std)string::size_type _saveIndex;
+	// ANTLR_USE_NAMESPACE(std)string::size_type _saveIndex;
 	
 	if (!((LA(2) != ':')))
 		throw ANTLR_USE_NAMESPACE(antlr)SemanticException("(LA(2) != \':\')");
@@ -450,13 +458,13 @@ void ConsoleLexer::mCOLON(bool _createToken) {
 	   _token->setText(text.substr(_begin, text.length()-_begin));
 	}
 	_returnToken = _token;
-	_saveIndex=0;
+	// _saveIndex=0;
 }
 
 void ConsoleLexer::mSEMICOLON(bool _createToken) {
 	int _ttype; ANTLR_USE_NAMESPACE(antlr)RefToken _token; ANTLR_USE_NAMESPACE(std)string::size_type _begin = text.length();
 	_ttype = SEMICOLON;
-	ANTLR_USE_NAMESPACE(std)string::size_type _saveIndex;
+	// ANTLR_USE_NAMESPACE(std)string::size_type _saveIndex;
 	
 	match(';' /* charlit */ );
 	if ( _createToken && _token==ANTLR_USE_NAMESPACE(antlr)nullToken && _ttype!=ANTLR_USE_NAMESPACE(antlr)Token::SKIP ) {
@@ -464,13 +472,13 @@ void ConsoleLexer::mSEMICOLON(bool _createToken) {
 	   _token->setText(text.substr(_begin, text.length()-_begin));
 	}
 	_returnToken = _token;
-	_saveIndex=0;
+	// _saveIndex=0;
 }
 
 void ConsoleLexer::mCOMMA(bool _createToken) {
 	int _ttype; ANTLR_USE_NAMESPACE(antlr)RefToken _token; ANTLR_USE_NAMESPACE(std)string::size_type _begin = text.length();
 	_ttype = COMMA;
-	ANTLR_USE_NAMESPACE(std)string::size_type _saveIndex;
+	// ANTLR_USE_NAMESPACE(std)string::size_type _saveIndex;
 	
 	match(',' /* charlit */ );
 	if ( _createToken && _token==ANTLR_USE_NAMESPACE(antlr)nullToken && _ttype!=ANTLR_USE_NAMESPACE(antlr)Token::SKIP ) {
@@ -478,13 +486,13 @@ void ConsoleLexer::mCOMMA(bool _createToken) {
 	   _token->setText(text.substr(_begin, text.length()-_begin));
 	}
 	_returnToken = _token;
-	_saveIndex=0;
+	// _saveIndex=0;
 }
 
 void ConsoleLexer::mPAROPEN(bool _createToken) {
 	int _ttype; ANTLR_USE_NAMESPACE(antlr)RefToken _token; ANTLR_USE_NAMESPACE(std)string::size_type _begin = text.length();
 	_ttype = PAROPEN;
-	ANTLR_USE_NAMESPACE(std)string::size_type _saveIndex;
+	// ANTLR_USE_NAMESPACE(std)string::size_type _saveIndex;
 	
 	match('(' /* charlit */ );
 	if ( _createToken && _token==ANTLR_USE_NAMESPACE(antlr)nullToken && _ttype!=ANTLR_USE_NAMESPACE(antlr)Token::SKIP ) {
@@ -492,13 +500,13 @@ void ConsoleLexer::mPAROPEN(bool _createToken) {
 	   _token->setText(text.substr(_begin, text.length()-_begin));
 	}
 	_returnToken = _token;
-	_saveIndex=0;
+	// _saveIndex=0;
 }
 
 void ConsoleLexer::mPARCLOSE(bool _createToken) {
 	int _ttype; ANTLR_USE_NAMESPACE(antlr)RefToken _token; ANTLR_USE_NAMESPACE(std)string::size_type _begin = text.length();
 	_ttype = PARCLOSE;
-	ANTLR_USE_NAMESPACE(std)string::size_type _saveIndex;
+	// ANTLR_USE_NAMESPACE(std)string::size_type _saveIndex;
 	
 	match(')' /* charlit */ );
 	if ( _createToken && _token==ANTLR_USE_NAMESPACE(antlr)nullToken && _ttype!=ANTLR_USE_NAMESPACE(antlr)Token::SKIP ) {
@@ -506,13 +514,13 @@ void ConsoleLexer::mPARCLOSE(bool _createToken) {
 	   _token->setText(text.substr(_begin, text.length()-_begin));
 	}
 	_returnToken = _token;
-	_saveIndex=0;
+	// _saveIndex=0;
 }
 
 void ConsoleLexer::mSQUAREOPEN(bool _createToken) {
 	int _ttype; ANTLR_USE_NAMESPACE(antlr)RefToken _token; ANTLR_USE_NAMESPACE(std)string::size_type _begin = text.length();
 	_ttype = SQUAREOPEN;
-	ANTLR_USE_NAMESPACE(std)string::size_type _saveIndex;
+	// ANTLR_USE_NAMESPACE(std)string::size_type _saveIndex;
 	
 	match('[' /* charlit */ );
 	if ( _createToken && _token==ANTLR_USE_NAMESPACE(antlr)nullToken && _ttype!=ANTLR_USE_NAMESPACE(antlr)Token::SKIP ) {
@@ -520,13 +528,13 @@ void ConsoleLexer::mSQUAREOPEN(bool _createToken) {
 	   _token->setText(text.substr(_begin, text.length()-_begin));
 	}
 	_returnToken = _token;
-	_saveIndex=0;
+	// _saveIndex=0;
 }
 
 void ConsoleLexer::mSQUARECLOSE(bool _createToken) {
 	int _ttype; ANTLR_USE_NAMESPACE(antlr)RefToken _token; ANTLR_USE_NAMESPACE(std)string::size_type _begin = text.length();
 	_ttype = SQUARECLOSE;
-	ANTLR_USE_NAMESPACE(std)string::size_type _saveIndex;
+	// ANTLR_USE_NAMESPACE(std)string::size_type _saveIndex;
 	
 	match(']' /* charlit */ );
 	if ( _createToken && _token==ANTLR_USE_NAMESPACE(antlr)nullToken && _ttype!=ANTLR_USE_NAMESPACE(antlr)Token::SKIP ) {
@@ -534,13 +542,13 @@ void ConsoleLexer::mSQUARECLOSE(bool _createToken) {
 	   _token->setText(text.substr(_begin, text.length()-_begin));
 	}
 	_returnToken = _token;
-	_saveIndex=0;
+	// _saveIndex=0;
 }
 
 void ConsoleLexer::mCURLYOPEN(bool _createToken) {
 	int _ttype; ANTLR_USE_NAMESPACE(antlr)RefToken _token; ANTLR_USE_NAMESPACE(std)string::size_type _begin = text.length();
 	_ttype = CURLYOPEN;
-	ANTLR_USE_NAMESPACE(std)string::size_type _saveIndex;
+	// ANTLR_USE_NAMESPACE(std)string::size_type _saveIndex;
 	
 	match('{' /* charlit */ );
 	if ( _createToken && _token==ANTLR_USE_NAMESPACE(antlr)nullToken && _ttype!=ANTLR_USE_NAMESPACE(antlr)Token::SKIP ) {
@@ -548,13 +556,13 @@ void ConsoleLexer::mCURLYOPEN(bool _createToken) {
 	   _token->setText(text.substr(_begin, text.length()-_begin));
 	}
 	_returnToken = _token;
-	_saveIndex=0;
+	// _saveIndex=0;
 }
 
 void ConsoleLexer::mCURLYCLOSE(bool _createToken) {
 	int _ttype; ANTLR_USE_NAMESPACE(antlr)RefToken _token; ANTLR_USE_NAMESPACE(std)string::size_type _begin = text.length();
 	_ttype = CURLYCLOSE;
-	ANTLR_USE_NAMESPACE(std)string::size_type _saveIndex;
+	// ANTLR_USE_NAMESPACE(std)string::size_type _saveIndex;
 	
 	match('}' /* charlit */ );
 	if ( _createToken && _token==ANTLR_USE_NAMESPACE(antlr)nullToken && _ttype!=ANTLR_USE_NAMESPACE(antlr)Token::SKIP ) {
@@ -562,13 +570,13 @@ void ConsoleLexer::mCURLYCLOSE(bool _createToken) {
 	   _token->setText(text.substr(_begin, text.length()-_begin));
 	}
 	_returnToken = _token;
-	_saveIndex=0;
+	// _saveIndex=0;
 }
 
 void ConsoleLexer::mGLOBAL(bool _createToken) {
 	int _ttype; ANTLR_USE_NAMESPACE(antlr)RefToken _token; ANTLR_USE_NAMESPACE(std)string::size_type _begin = text.length();
 	_ttype = GLOBAL;
-	ANTLR_USE_NAMESPACE(std)string::size_type _saveIndex;
+	// ANTLR_USE_NAMESPACE(std)string::size_type _saveIndex;
 	
 	match("::");
 	
@@ -579,13 +587,13 @@ void ConsoleLexer::mGLOBAL(bool _createToken) {
 	   _token->setText(text.substr(_begin, text.length()-_begin));
 	}
 	_returnToken = _token;
-	_saveIndex=0;
+	// _saveIndex=0;
 }
 
 void ConsoleLexer::mQUOTED_STR_ESC(bool _createToken) {
 	int _ttype; ANTLR_USE_NAMESPACE(antlr)RefToken _token; ANTLR_USE_NAMESPACE(std)string::size_type _begin = text.length();
 	_ttype = QUOTED_STR_ESC;
-	ANTLR_USE_NAMESPACE(std)string::size_type _saveIndex;
+	// ANTLR_USE_NAMESPACE(std)string::size_type _saveIndex;
 	
 	match('\\' /* charlit */ );
 	match('\"' /* charlit */ );
@@ -597,13 +605,13 @@ void ConsoleLexer::mQUOTED_STR_ESC(bool _createToken) {
 	   _token->setText(text.substr(_begin, text.length()-_begin));
 	}
 	_returnToken = _token;
-	_saveIndex=0;
+	// _saveIndex=0;
 }
 
 void ConsoleLexer::mID(bool _createToken) {
 	int _ttype; ANTLR_USE_NAMESPACE(antlr)RefToken _token; ANTLR_USE_NAMESPACE(std)string::size_type _begin = text.length();
 	_ttype = ID;
-	ANTLR_USE_NAMESPACE(std)string::size_type _saveIndex;
+	// ANTLR_USE_NAMESPACE(std)string::size_type _saveIndex;
 	
 	{
 	switch ( LA(1)) {
@@ -902,13 +910,13 @@ void ConsoleLexer::mID(bool _createToken) {
 	   _token->setText(text.substr(_begin, text.length()-_begin));
 	}
 	_returnToken = _token;
-	_saveIndex=0;
+	// _saveIndex=0;
 }
 
 void ConsoleLexer::mINT(bool _createToken) {
 	int _ttype; ANTLR_USE_NAMESPACE(antlr)RefToken _token; ANTLR_USE_NAMESPACE(std)string::size_type _begin = text.length();
 	_ttype = INT;
-	ANTLR_USE_NAMESPACE(std)string::size_type _saveIndex;
+	// ANTLR_USE_NAMESPACE(std)string::size_type _saveIndex;
 	
 	{ // ( ... )+
 	int _cnt35=0;
@@ -929,13 +937,13 @@ void ConsoleLexer::mINT(bool _createToken) {
 	   _token->setText(text.substr(_begin, text.length()-_begin));
 	}
 	_returnToken = _token;
-	_saveIndex=0;
+	// _saveIndex=0;
 }
 
 void ConsoleLexer::mCONSTANT(bool _createToken) {
 	int _ttype; ANTLR_USE_NAMESPACE(antlr)RefToken _token; ANTLR_USE_NAMESPACE(std)string::size_type _begin = text.length();
 	_ttype = CONSTANT;
-	ANTLR_USE_NAMESPACE(std)string::size_type _saveIndex;
+	// ANTLR_USE_NAMESPACE(std)string::size_type _saveIndex;
 	
 	{
 	switch ( LA(1)) {
@@ -1036,7 +1044,7 @@ void ConsoleLexer::mCONSTANT(bool _createToken) {
 	   _token->setText(text.substr(_begin, text.length()-_begin));
 	}
 	_returnToken = _token;
-	_saveIndex=0;
+	// _saveIndex=0;
 }
 
 

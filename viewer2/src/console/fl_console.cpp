@@ -415,7 +415,7 @@ int Fl_Console::kf_Up(int key, Fl_Text_Editor* e) {
 	// is this code still OK?:
 	if ((con->m_commandHistoryPos > 0)) {// &&
 	//	((con->m_commandHistoryPos != con->m_commandHistoryLength))) {
-		/*(con->m_promptPos == (con->buffer()->length()))))/* ||
+		/*(con->m_promptPos == (con->buffer()->length())))) ||
 		(str && (!strcmp(str, con->m_commandHistory[con->m_commandHistoryPos])))))*/
 		con->m_commandHistoryPos--;
 //		printf("Setting command '%s'\n", con->m_commandHistory[con->m_commandHistoryPos]);

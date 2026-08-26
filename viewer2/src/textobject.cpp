@@ -277,7 +277,7 @@ int textObject::draw(glwindow *window) {
 		}
 		else if (m_flags & LABEL_WIDTH) {
 			m_width = m_userWidth;
-			m_height = m_userWidth * m_imageHeight / m_imageWidth;
+			m_height = (double)m_userWidth * m_imageHeight / m_imageWidth;
 		}
 		else {
 			m_width = m_imageWidth * m_fontSize;

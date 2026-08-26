@@ -1830,7 +1830,7 @@ int c5gai::parseString(const char *str, const c5ga_ben *ben /*= NULL*/) {
 	int idx = 0, pmCnt, beCnt = 0;
 	const int strLength = 256;
 	double scalar;
-	int floatStart, floatEnd, bvStart, bvEnd, i;
+	int floatStart, floatEnd, bvStart, bvEnd;
 	c5gai blade, bv, BE, tmp;
 	int stage = 0;
 	char floatStr[strLength], bvStr[strLength];
@@ -1859,7 +1859,6 @@ int c5gai::parseString(const char *str, const c5ga_ben *ben /*= NULL*/) {
 			idx ++;
 		}
 
-		i = idx;
 		pmCnt = 0; // plus minus count
 		for (;;) { // parse [+|-]+
 			if (str[idx] == '+') {scalar *= (double)+1; pmCnt++;}

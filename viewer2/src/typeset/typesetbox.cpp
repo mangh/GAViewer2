@@ -310,7 +310,7 @@ int tsVBox::typeset(typesetState *state, double maxWidth /*= -1.0*/) {
 	state->pushTrans(m_x, m_y);
 
 	// make this next stuff a function for typesetBox class???
-	double x, y, h;
+	double x, y/* , h */;
 	if (maxWidth > 0.0) { // If there is a maximum width, spread long HBoxes over multiple HBoxes
 //		maxWidth = 0.0;
 		for (i = 0; i < m_nbChildren; i++) {
@@ -350,7 +350,7 @@ int tsVBox::typeset(typesetState *state, double maxWidth /*= -1.0*/) {
 //	printf("maxWidth: %f\n", maxWidth);
 
 	// typeset all HBoxes
-	h = 0.0;
+	// h = 0.0;
 	y = m_ascent;
 	for (i = 0; i < m_nbChildren; i++) {
 		HBox = (tsHBox*)m_child[i];

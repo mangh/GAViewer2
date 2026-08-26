@@ -27,11 +27,7 @@ mainWindow::~mainWindow() {
 
 void mainWindow::resize(int xPos, int yPos, int width, int height) {
 	// Fl_Window::resize() behaves weird sometimes (calls back to this function)
-	static int running = 0;
-//	if (running) {printf("Yop!\n"); return;}
-	running = 1;
 	Fl_Window::resize(xPos, yPos, width, height);
-	running = 0;
 
 //	size_range(c_controlWidth + 200, 200); // this prevents some weird bug in FLTK (due to my own abuse?): window can not be resized any more
 //	printf("Resized to %d\n", h());

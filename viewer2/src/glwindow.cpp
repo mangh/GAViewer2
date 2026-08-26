@@ -510,7 +510,7 @@ int glwindow::handle(int event) {
 		if (!m_mousePickMode) {
 			firstx = Fl::event_x();
 			firsty = Fl::event_y();
-			if ( sqrt((double)((w()/2-firstx)*(w()/2-firstx)+
+			if ( sqrt(((w()/2-firstx)*(w()/2-firstx)+
 				 (h()/2-firsty)*(h()/2-firsty))) < 0.375*h() ) {
 			  inside = 1;
 			} else {
@@ -758,17 +758,17 @@ void glwindow::setup2DOrtho() {
 		gluPickMatrix(m_pick[0], m_pick[1], m_pick[2] * 2 + 1, m_pick[3] * 2 + 1, viewport);
 	}
 
-	GLsizei width, height, vpw, vph;
+	GLsizei width, height/* , vpw, vph */;
 
 	if (m_screenShotActive) {
 		width = gui_state->m_ssWidth;
 		height = gui_state->m_ssHeight;
-		vpw = m_ssViewportWidth;
-		vph = m_ssViewportHeight;
+		// vpw = m_ssViewportWidth;
+		// vph = m_ssViewportHeight;
 	}
 	else {
-		vpw = width = w();
-		vph = height = h();
+		/* vpw =  */width = w();
+		/* vph =  */height = h();
 		m_ssStartX = m_ssStartY = 0.0;
 		m_ssEndX = m_ssEndY = 1.0;
 

@@ -41,7 +41,7 @@ object::object(int type, const std::string &name /*= std::string("")*/,  int dra
 
 	// set name (or default name)
 	if ((name == "") || (name == "untitled"))
-		m_name = "object_" + m_objectCount;
+		m_name = "object_" + std::to_string(m_objectCount);
 	else m_name = name;
 	m_objectCount++;
 }

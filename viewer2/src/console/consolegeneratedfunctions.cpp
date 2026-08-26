@@ -4650,5 +4650,5 @@ Or after multiple algebra use????
 
 	{"cast_i2ga", NULL, cf_i2ga_to_i2ga, 1, {CVF_RHS | MVI_I2GA}},
 
-	{NULL, NULL, NULL, 0, NULL}
+	{NULL, NULL, NULL, 0, {}}
 };

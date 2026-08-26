@@ -968,7 +968,7 @@ int i2gai::versorInverse(const i2gai &a) {
 	i2gai reverse, scalar;
 	reverse.reverse(a);
 	scalar.scp(a, reverse);
-	if ((scalar.c == NULL) || (scalar.c[0] == 0.0f)) {null(); return -1;}
+	if (/* (scalar.c == NULL) ||  */(scalar.c[0] == 0.0f)) {null(); return -1;}
 	scalar.c[0] = 1.0f / scalar.c[0];
 	op(scalar, reverse);
 	return 0;
@@ -1516,7 +1516,7 @@ int i2gai::mvType(int *grade /*= NULL*/, double epsilon /* = 1e-14 */) const {
 	i2gai reverse, scalar, ai;
 	reverse.reverse(*this);
 	scalar.scpem(*this, reverse); 
-	if ((scalar.c == NULL) || (scalar.c[0] == 0.0f)) return GA_MULTIVECTOR;
+	if (/* (scalar.c == NULL) ||  */(scalar.c[0] == 0.0f)) return GA_MULTIVECTOR;
 	scalar.c[0] = 1.0f / scalar.c[0];
 	ai.op(scalar, reverse);
 
@@ -1574,7 +1574,7 @@ int i2gai::parseString(const char *str, const i2ga_ben *ben /*= NULL*/) {
 	int idx = 0, pmCnt, beCnt = 0;
 	const int strLength = 256;
 	double scalar;
-	int floatStart, floatEnd, bvStart, bvEnd, i;
+	int floatStart, floatEnd, bvStart, bvEnd;
 	i2gai blade, bv, BE, tmp;
 	int stage = 0;
 	char floatStr[strLength], bvStr[strLength];
@@ -1603,7 +1603,6 @@ int i2gai::parseString(const char *str, const i2ga_ben *ben /*= NULL*/) {
 			idx ++;
 		}
 
-		i = idx;
 		pmCnt = 0; // plus minus count
 		for (;;) { // parse [+|-]+
 			if (str[idx] == '+') {scalar *= (double)+1; pmCnt++;}

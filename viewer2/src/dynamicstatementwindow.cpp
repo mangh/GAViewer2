@@ -109,7 +109,7 @@ static void ui_dynStmtCallback(Fl_Widget *W, void *Data) {
 			if (fl_choice("Update modified dynamic statements?", "No", "Yes", NULL)) {
 				for (i = 0; i < s_nbDynStmtWidgets; i++)
 					if (s_dynStmtWidgets[i].update->active())
-						ui_dynStmtCallback(s_dynStmtWidgets[i].update, (void*)i);
+						ui_dynStmtCallback(s_dynStmtWidgets[i].update, &i);
 			}
 		}
 			
@@ -185,11 +185,11 @@ int dynStmtWindow::setupWidgets() {
 
 			// create remove button
 			Fl_Button *b = s_dynStmtWidgets[i].remove = new Fl_Button(cx, cy + nameOutputHeight + 5, removeButtonWidth, removeButtonHeight, "remove");
-			b->callback(ui_dynStmtCallback, (void*)i);
+			b->callback(ui_dynStmtCallback, &i);
 
 			// create update button
 			b = s_dynStmtWidgets[i].update = new Fl_Button(cx, cy + nameOutputHeight + 5 + removeButtonHeight + 5, updateButtonWidth, updateButtonHeight, "update");
-			b->callback(ui_dynStmtCallback, (void*)i);
+			b->callback(ui_dynStmtCallback, &i);
 			b->deactivate();
 
 			// create text editor
@@ -199,7 +199,7 @@ int dynStmtWindow::setupWidgets() {
 			Fl_Text_Buffer *tb = new Fl_Text_Buffer();
 			tb->text(str);
 			te->buffer(tb);
-			tb->add_modify_callback(modifyCallback, (void*)i);
+			tb->add_modify_callback(modifyCallback, &i);
 
 			// string returned form stmt->string must be released
 			free(str);
