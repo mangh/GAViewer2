@@ -15,8 +15,7 @@
 #   C:\Program Files (x86)\Windows Kits\10\\include\10.0.26100.0\\cppwinrt
 #   C:\Program Files (x86)\Windows Kits\NETFXSDK\4.8\include\um
 CompileFlags:
-  Add: 
-  - -std=c++14
+  Add:
   - -DWIN32
   - -I C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.51.36231/include
 #  - -I C:/Program Files (x86)/Windows Kits/10/Include/10.0.26100.0/cppwinrt/winrt
@@ -32,7 +31,14 @@ CompileFlags:
   - -I C:/Users/marek/source/repos/GAViewer/build/_deps/fltk-src/jpeg
   - -I C:/Users/marek/source/repos/GAViewer/build/_deps/fltk-src/png
   - -I C:/Users/marek/source/repos/GAViewer/build/_deps/fltk-src/src
-  - -I C:/Users/marek/source/repos/GAViewer/build/_deps/gavr-src/src
+  - -I C:/Users/marek/source/repos/GAViewer/viewer2/src
 Diagnostics:
   UnusedIncludes: Strict
 #  ClangTidy: modernize-*
+
+---
+# -std=c++14 must not be passed to C translation units (e.g. fontyacc.c, fontlex.c)
+If:
+  PathExclude: .*\.c
+CompileFlags:
+  Add: [-std=c++14]
