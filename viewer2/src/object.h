@@ -307,6 +307,7 @@ public:
 	virtual int draw(glwindow *window);
 
 	/// shared description between c3ga and c5ga
+	using object::description;
 	int description(const c3ga &mv, int dim, char *buf, int bufLen, int sl);
 
 	mvInt m_int;
@@ -396,7 +397,7 @@ protected:
 	// Return '1' if the text is not clipped. Window coordinates are returned in 'x' and 'y'
 	// 'z' is the depth value
 //	int windowCoordinates(double &x, double &y, double &z);
-	int windowCoordinates(const double ptWorld[3], double ptWindow[3]);
+	int windowCoordinates(const double ptWorld[3], double ptWindow[2]);
 
 	// returns the length of a unit vector in the x and y direction in window coordinates
 	int wcUnitXY(double &ux, double &uy);

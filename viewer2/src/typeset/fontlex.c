@@ -445,6 +445,9 @@ flex -PfontParse -L -B -ofontlex.c  fontparse.l
 #include <string.h>
 #define yylval fontparselval
 #include "fontyacc.h"
+/* yyunput() and input() are never used by this scanner */
+#define YY_NO_UNPUT
+#define YY_NO_INPUT
 #define FPM_TXT 1
 
 #define FPM_EQN 2
@@ -1400,6 +1403,7 @@ register char *yy_bp;
 #endif	/* ifndef YY_NO_UNPUT */
 
 
+#ifndef YY_NO_INPUT
 #ifdef __cplusplus
 static int yyinput()
 #else
@@ -1471,6 +1475,7 @@ static int input()
 
 	return c;
 	}
+#endif	/* ifndef YY_NO_INPUT */
 
 
 #ifdef YY_USE_PROTOS

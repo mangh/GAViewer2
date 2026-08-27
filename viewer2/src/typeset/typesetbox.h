@@ -116,6 +116,7 @@ public:
 	void initToNothing();
 
 	int setup(typesetState *state, struct fpNode_s *node);
+	using typesetBox::typeset;
 	int typeset(typesetState *state, double maxWidth = -1.0);
 
 };

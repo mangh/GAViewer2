@@ -87,7 +87,7 @@ as operators like translation, rotation and inversion.
 #define MVI_ODD_3D_VERSOR (MVI_VERSOR + 1)
 
 // internal constants:
-#define MVINT_NB_POINTS 2
+#define MVINT_NB_POINTS 3
 #define MVINT_NB_VECTORS 4
 #define MVINT_NB_SCALAR 2
 

@@ -294,7 +294,7 @@ fpNode *fontParse(const char *str, const char *mode) {
 }
 #define YYABORT goto yyabort
 #define YYACCEPT goto yyaccept
-#define YYERROR goto yyerrlab
+// #define YYERROR goto yyerrlab
 
 #if YYDEBUG
 #ifdef __cplusplus
@@ -400,15 +400,15 @@ yyloop:
         goto yyreduce;
     }
     if (yyerrflag) goto yyinrecovery;
-#ifdef lint
-    goto yynewerror;
-#endif
-yynewerror:
+// #ifdef lint
+//     goto yynewerror;
+// #endif
+// yynewerror:
     yyerror("syntax error");
-#ifdef lint
-    goto yyerrlab;
-#endif
-yyerrlab:
+// #ifdef lint
+//     goto yyerrlab;
+// #endif
+// yyerrlab:
     ++yynerrs;
 yyinrecovery:
     if (yyerrflag < 3)
@@ -674,7 +674,7 @@ break;
         goto yyloop;
     }
     yyn = yygindex[yym];
-	 if (yyn != 0
+    if (yyn != 0
         && ((yyn += yystate), ((unsigned)yyn <= (unsigned)YYTABLESIZE))
         && yycheck[yyn] == yystate)
         yystate = yytable[yyn];

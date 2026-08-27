@@ -14,7 +14,7 @@
 
 // Copyright 2002-2009, Daniel Fontijne, University of Amsterdam -- fontijne@science.uva.nl
 
-#include <stdio.h>
+// #include <stdio.h>
 #include <math.h>
 
 #include "object.h"
@@ -384,7 +384,6 @@ int mvInt::c3gaRound(const c3ga &X, int grade, const c3ga &attitude, const c3ga 
 		point 0: center point
 		point 1: point 1
 		point 2: point 2
-		vector 0: ???
 		vector 1: attitude
 		*/
 
@@ -456,8 +455,9 @@ int mvInt::c3gaFactorBivector(const c3ga &B, GAIM_FLOAT *normal, GAIM_FLOAT *fac
 
 	// get normal
 	c = nl[GRADE1];
-	if (normal)
-		normal[0] = c[C3GA_E1];	normal[1] = c[C3GA_E2];	normal[2] = c[C3GA_E3];
+	if (normal) {
+		normal[0] = c[C3GA_E1]; normal[1] = c[C3GA_E2]; normal[2] = c[C3GA_E3];
+	}
 
 	// set factor 1 and 2 (orthogonal to normal)
 	if ((g_state->m_c3gaFactor[0].norm_a() > 0.0) && // user factorization

@@ -1143,7 +1143,7 @@ int tsHBox::spaceEqnOperators(typesetState *state) {
 			if ((i + 1) < m_nbChildren) {
 				if (!(m_child[i+1]->eqnOperator() || m_child[i+1]->whiteSpace())) {
 					if (err = insertChild(i+1, new tsWhiteSpaceBox(state, 0.1))) return err;
-					i += 2.0; // if this 2.0 is changed to '2', this function does not work correctly with visual C++ 6.0 release build. Is something wrong with the stack?
+					i += 2; // was 'i += 2.0' as a workaround for a Visual C++ 6.0 release-build codegen bug
 				}
 			}
 		}
@@ -2334,8 +2334,8 @@ tsTabularBox::tsTabularBox(typesetState *state, struct fpNode_s *node) : typeset
 	// which are setup by individual VBoxes, 
 	// which all are all set to the right alignment
 	for (i = 1; i < nbOptions; i++) {
-		tsTabularRow*row = new tsTabularRow;
-		memset(row, 0, sizeof(tsTabularRow));
+		tsTabularRow * row = new tsTabularRow;
+		memset((void *)row, 0, sizeof(tsTabularRow));
 		if (err = setupRow(state, row, option[i])) {
 			printf("tsTabularBox::tsTabularBox(): error adding row '%d' to tabular\n", i);
 			fontParsePrintInput(option[i]->inputIdx, 16, 16);

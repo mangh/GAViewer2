@@ -8,6 +8,12 @@ flex -PfontParse -L -B -ofontlex.c  fontparse.l
 #include <string.h>
 #define yylval fontparselval
 #include "fontyacc.h"
+/* yyunput() and input() are never used by this scanner.
+   Note: after regenerating fontlex.c, the input() definition must be
+   wrapped in #ifndef YY_NO_INPUT by hand (this flex only guards its
+   prototype). */
+#define YY_NO_UNPUT
+#define YY_NO_INPUT
 %}
 
 %s FPM_TXT

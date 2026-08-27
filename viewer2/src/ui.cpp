@@ -114,6 +114,11 @@ UIstate::UIstate(int argc, char *argv[]) {
 	m_controlGroup = new Fl_Window(w - c_controlWidth, mh, c_controlWidth, m_glWindow->h());
 	m_controlGroup->box(FL_ENGRAVED_BOX);
 
+	// scroll container, so controls that do not fit the panel stay reachable
+	m_controlGroupScroll = new Fl_Scroll(2, 2, c_controlWidth - 4, m_controlGroup->h() - 4);
+	m_controlGroupScroll->type(Fl_Scroll::VERTICAL);
+	m_controlGroupScroll->box(FL_NO_BOX);
+
 	int x = 5, y = 5;
 
 	// name 
@@ -239,11 +244,13 @@ UIstate::UIstate(int argc, char *argv[]) {
 	m_descriptionLabel->color(FL_GRAY);
 	m_descriptionLabel->box(FL_FLAT_BOX);
 	y += 25;
-	m_descriptionOutput = new Fl_Multiline_Output(x, y, 290, 95);
+	m_descriptionOutput = new Fl_Multiline_Output(x, y, 290, 135);
 	m_descriptionOutput->color(FL_WHITE);
 	m_descriptionOutput->box(FL_ENGRAVED_BOX);
-	y += 100;
+	y += 140;
 
+	m_controlGroupScroll->end();
+	m_controlGroup->resizable(m_controlGroupScroll);
 	m_controlGroup->end();
 
 	
@@ -292,6 +299,7 @@ UIstate::~UIstate() {
 void UIstate::initToNothing() {
 	m_mainWindow = NULL;
 	m_controlGroup = NULL;
+	m_controlGroupScroll = NULL;
 	m_menubar = NULL;
 	m_glWindow = NULL;
 
@@ -1359,12 +1367,14 @@ int UIstate::setCurrentObject(object *o) {
 			repositionY(m_descriptionLabel, y);
 			y += 25;
 			repositionY(m_descriptionOutput, y);
-			y += 100;
+			y += 140;
 		}
 		else {
 			m_descriptionLabel->hide();
 			m_descriptionOutput->hide();
 		}
+
+		m_controlGroupScroll->scroll_to(0, 0);
 	}
 
 	updateControls(0xFFFFFFFF);

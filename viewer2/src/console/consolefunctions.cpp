@@ -18,13 +18,13 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <iostream>
+// #include <iostream>
 
 #include "../state.h"
-#include "../mvint.h"
+// #include "../mvint.h"
 #include "console.h"
 #include "consolefunction.h"
-#include "consoleoperators.h"
+// #include "consoleoperators.h"
 //#include "consoleparse.h"
 #include "consolescope.h"
 #include "consolestatement.h"
@@ -37,14 +37,14 @@ static inline int model(int v) {
 	return v & (MVI_E3GA | MVI_P3GA | MVI_C3GA | MVI_C5GA | MVI_I2GA | CVF_ANY_MODEL);
 }
 
-static inline int compareModel(int m1, int m2) {
-	if ((m1 & CVF_ANY_MODEL) || (m2 & CVF_ANY_MODEL)) return 1;
-	else return (m1 == m2);
-}
+// static inline int compareModel(int m1, int m2) {
+// 	if ((m1 & CVF_ANY_MODEL) || (m2 & CVF_ANY_MODEL)) return 1;
+// 	else return (m1 == m2);
+// }
 
-static inline int side(int v) {
-	return v & (CVF_RHS | CVF_LHS);
-}
+// static inline int side(int v) {
+// 	return v & (CVF_RHS | CVF_LHS);
+// }
 
 consoleVariable *consoleExecUnaryFunc(consoleScope *s, const std::string &name, consoleVariable*cv) {
 	// temporarily cut the list at 'cv'

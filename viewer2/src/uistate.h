@@ -216,6 +216,7 @@ public:
 	// controll stuff
 	int m_controlGroupVisible;
 	Fl_Window *m_controlGroup;
+	Fl_Scroll *m_controlGroupScroll;
 
 	// control widgets
 	// name 

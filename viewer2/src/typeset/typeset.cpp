@@ -148,7 +148,7 @@ int typesetState::typeset(const char *str, double maxWidth /*= -1.0*/) {
 }
 
 int typesetState::GLdraw() {
-	int i, j, t;
+	int i, j/* , t */;
 	float w = -1.0f;
 	tsColorData *color;
 
@@ -163,7 +163,7 @@ int typesetState::GLdraw() {
 	oglfPrintCharRawEnd();
 
     // draw lines
-	t = -1;
+	//int t = -1;
 	for (i = 0; i < m_tsLine.m_nb; i++) {
 		color = &(m_colorList[m_tsLine[i].color]);
 		glColor4f(color->r, color->g, color->b, m_alpha);

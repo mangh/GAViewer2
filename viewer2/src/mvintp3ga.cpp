@@ -219,8 +219,9 @@ int mvInt::p3gaFactorBivector(const p3ga &B, GAIM_FLOAT *normal, GAIM_FLOAT *fac
 
 	// get normal
 	c = nl[GRADE1];
-	if (normal)
-		normal[0] = c[P3GA_E1];	normal[1] = c[P3GA_E2];	normal[2] = c[P3GA_E3];
+	if (normal) {
+		normal[0] = c[P3GA_E1]; normal[1] = c[P3GA_E2]; normal[2] = c[P3GA_E3];
+	}
 
 	// set factor 1 and 2 (orthogonal to normal)
 	if ((g_state->m_p3gaFactor[0].norm_a() > 0.0) && // user factorization
