@@ -105,7 +105,7 @@ add_subdirectory ("antlr2")
 add_subdirectory("viewer2")
 
 # Interactive Book Figures for GAViewer
-add_subdirectory("figures")
+#add_subdirectory("figures")
 
 # FLTK Editor
-add_subdirectory("editor")
+#add_subdirectory("editor")
