@@ -17,22 +17,22 @@
 #ifndef _NET_CLIENT_
 #define _NET_CLIENT_
 
-#include <string.h>
-class netClient {
-public:
-	netClient();
-	netClient(int socket);
-	netClient(int socket, std::string name);
-	netClient(const netClient&);
-	~netClient();
+#include <string>
+class netClient
+{
+  public:
+    netClient();
+    netClient(int socket);
+    netClient(int socket, std::string name);
+    netClient(const netClient &);
+    ~netClient();
 
-	netClient &operator=(const netClient&);
+    netClient &operator=(const netClient &);
 
-	int m_socket;
-	std::string m_readBuffer;
-	std::string m_sendBuffer;
-	std::string m_name;
-
+    int m_socket;
+    std::string m_readBuffer;
+    std::string m_sendBuffer;
+    std::string m_name;
 };
 
 #endif /* _NET_CLIENT_ */

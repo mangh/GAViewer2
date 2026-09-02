@@ -14,22 +14,23 @@
 
 // Copyright 2002-2009, Daniel Fontijne, University of Amsterdam -- fontijne@science.uva.nl
 
-#include <stdio.h>
 #include <math.h>
+#include <stdio.h>
 
-#include "object.h"
 #include "mvint.h"
-#include "util.h"
+#include "object.h"
 #include "state.h"
+#include "util.h"
 
-int mvInt::interpret(const i2ga &X, int creationFlags /* = 0*/) {
-	m_type = MVI_I2GA;
-	// no interpretation yet
-	if (1) { // if (type == GA_MULTIVECTOR) {
-		m_type |= MVI_UNKNOWN;
-		m_valid = 1;
-		return 0;
-	}
-	return 0;
+int mvInt::interpret(const i2ga &X, int creationFlags /* = 0*/)
+{
+    m_type = MVI_I2GA;
+    // no interpretation yet
+    if (1)
+    { // if (type == GA_MULTIVECTOR) {
+        m_type |= MVI_UNKNOWN;
+        m_valid = 1;
+        return 0;
+    }
+    return 0;
 }
-

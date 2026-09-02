@@ -17,62 +17,66 @@
 #ifndef _NET_SERVER_H_
 #define _NET_SERVER_H_
 
-#include <vector>
 #include <string>
+#include <vector>
 
 #ifdef WIN32
 #include <winsock2.h>
 #else // assume UNIX
-#include <errno.h>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <unistd.h>
-#include <netdb.h>
-#include <sys/time.h>
 #include <arpa/inet.h>
+#include <errno.h>
+#include <fcntl.h>
+#include <netdb.h>
 #include <netinet/in.h>
 #include <netinet/tcp.h>
-#include <fcntl.h>
-#endif 
+#include <sys/socket.h>
+#include <sys/time.h>
+#include <sys/types.h>
+#include <unistd.h>
+#endif
 
 #include "netclient.h"
 
-namespace net {
-	void closeSocket(int *sock);
-	int setSocketNonBlocking(int sock);
-	int disableSocketNagle(int sock);
-	bool socketWouldBlock();
+namespace net
+{
+void closeSocket(int *sock);
+int setSocketNonBlocking(int sock);
+int disableSocketNagle(int sock);
+bool socketWouldBlock();
 
-	int netInit(); // must be executed once before using network code on Win32
-}
+int netInit(); // must be executed once before using network code on Win32
+} // namespace net
 
-class netServer {
-public:
-	// can throw -1 on failure!
-	netServer(const char *port = "6860"); // 6860 = 0x1acc = Jack
-	~netServer();
+class netServer
+{
+  public:
+    // can throw -1 on failure!
+    netServer(const char *port = "6860"); // 6860 = 0x1acc = Jack
+    ~netServer();
 
-	int poll();
-	inline int getListenPort() {return m_listenPort;}
+    int poll();
+    inline int getListenPort()
+    {
+        return m_listenPort;
+    }
 
-	void displayNetStatus();
+    void displayNetStatus();
 
-	void sendMessage(const std::string &msg); // sends message to all clients
+    void sendMessage(const std::string &msg); // sends message to all clients
 
-protected:
-	std::vector<netClient> m_clients;
+  protected:
+    std::vector<netClient> m_clients;
 
-	int m_listenPort; // tcp port we are listening on
-	int m_listenSocket; // tcp socket we are listening on
+    int m_listenPort;   // tcp port we are listening on
+    int m_listenSocket; // tcp socket we are listening on
 
-	int acceptClient();
-	int pollClient(int idx); // idx points into m_clientSockets / m_clientReadBuffers
-	int recvClient(int idx);
-	int sendClient(int idx);
-	int processClientCommands(int idx);
+    int acceptClient();
+    int pollClient(int idx); // idx points into m_clientSockets / m_clientReadBuffers
+    int recvClient(int idx);
+    int sendClient(int idx);
+    int processClientCommands(int idx);
 
-private:
+  private:
 };
-
 
 #endif /* _NET_SERVER_H_ */

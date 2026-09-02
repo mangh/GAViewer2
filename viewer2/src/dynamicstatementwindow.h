@@ -20,16 +20,15 @@
 #include <FL/Fl.H>
 #include <FL/Fl_Window.H>
 
-class dynStmtWindow : public Fl_Window {
-public:
-	dynStmtWindow(int w, int h, const char* label=0);// : Fl_Window(w, h, label) {};
-	dynStmtWindow(int x, int y, int w, int h, const char* label=0);// : Fl_Window(x, y, w, h, label) {};
-	virtual ~dynStmtWindow();
+class dynStmtWindow : public Fl_Window
+{
+  public:
+    dynStmtWindow(int w, int h, const char *label = 0);               // : Fl_Window(w, h, label) {};
+    dynStmtWindow(int x, int y, int w, int h, const char *label = 0); // : Fl_Window(x, y, w, h, label) {};
+    virtual ~dynStmtWindow();
 
-	void initToNothing();
-	int setupWidgets();
+    void initToNothing();
+    int setupWidgets();
 };
 
-
 #endif /* _SELECT_WINDOW_H_ */
-

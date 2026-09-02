@@ -19,30 +19,31 @@
 
 #include "gaincludes.h"
 
-typedef struct geosphereFace_s {
-	int v[3];
-	int child[4];
+typedef struct geosphereFace_s
+{
+    int v[3];
+    int child[4];
 
-	e3ga plane;
-	GAIM_FLOAT d;
-	int depth;
+    e3ga plane;
+    GAIM_FLOAT d;
+    int depth;
 
-	int neighbour[3];	// the neighbours of each edge
+    int neighbour[3]; // the neighbours of each edge
 
-	int contourIntersect[3];
-	int contourVisited;
+    int contourIntersect[3];
+    int contourVisited;
 } geosphereFace;
 
+typedef struct geosphere_s
+{
+    int nbVertices, maxVertices;
+    e3ga *vertex;
 
-typedef struct geosphere_s {
-	int nbVertices, maxVertices;
-	e3ga *vertex;
+    int nbFaces, maxFaces;
+    geosphereFace *face;
 
-	int nbFaces, maxFaces;
-	geosphereFace *face;
-
-	int nbPrimitives;
-	int depth;
+    int nbPrimitives;
+    int depth;
 } geosphere;
 
 // sphere used for drawing points (low sub division)
@@ -54,6 +55,6 @@ int gsCompute(geosphere **sPtr, int depth);
 int gsFree(geosphere **sPtr);
 
 // normal: draw (scaled) normal (> 0.0) or not
-void gsDraw(geosphere * sphere, GAIM_FLOAT normal = 0.0);
+void gsDraw(geosphere *sphere, GAIM_FLOAT normal = 0.0);
 
 #endif // _GEOSPHERE_H_

@@ -1,7 +1,7 @@
 /*
 Gaigen, Copyright (c) 2001-2002, University of Amsterdam
 
-Copying, use and development for education and research purposes 
+Copying, use and development for education and research purposes
 permitted as long as this license is not removed from the files.
 
 All rights for commercial use reserved; for more information
@@ -14,11 +14,12 @@ This software is unsupported.
 #define _SOFT_PIC_H_
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
 #define SP_COLOR 0x01
-#define SP_ALPHA  0x02
+#define SP_ALPHA 0x02
 #define SP_DONT_ALLOC 0x04
 
 #define SP_UNCOMPRESSED 0x00
@@ -44,36 +45,37 @@ extern "C" {
 
 #define SP_MAGIC 0x5380f634
 
-#define SP_MAGIC_OFFSET 0 
+#define SP_MAGIC_OFFSET 0
 #define SP_VERSION_OFFSET 4
 #define SP_COMMENT_OFFSET 8
 #define SP_ID_OFFSET 88
 #define SP_WIDTH_OFFSET 92
 #define SP_HEIGHT_OFFSET 94
 #define SP_RATIO_OFFSET 96
-#define SP_FIELDS_OFFSET 100 
+#define SP_FIELDS_OFFSET 100
 #define SP_PAD_OFFSET 102
 
+    typedef struct SoftPICInfo_s
+    {
+        char comment[81];
+        float version;
+        float ratio;
+        int fields;
+        int channels;
+    } SoftPICInfo;
 
-typedef struct SoftPICInfo_s {
-	char comment[81];
-	float version;
-	float ratio;
-	int fields;
-	int channels;
-} SoftPICInfo;
+    /*
+    Returns 0 on success, negative on failed
+    */
+    int loadSoftPIC(const char *filename, unsigned char **pixels, int *width, int *height, int flags = SP_COLOR,
+                    SoftPICInfo *info = NULL);
+    int loadSoftPICEx(unsigned char *data, int dataLength, unsigned char **pixels, int *width, int *height,
+                      int flags /* = SP_COLOR */, SoftPICInfo *info /* = NULL */);
 
-/*
-Returns 0 on success, negative on failed
-*/
-int loadSoftPIC(const char *filename, unsigned char **pixels, int *width, int *height, int flags = SP_COLOR, SoftPICInfo *info = NULL);
-int loadSoftPICEx(unsigned char *data, int dataLength, unsigned char **pixels, int *width, int *height, int flags /* = SP_COLOR */, SoftPICInfo *info /* = NULL */);
-
-
-/*
-Returns 0 on success, negative on failure
-*/
-int saveSoftPIC(const char *filename, unsigned char *pixels, int width, int height);
+    /*
+    Returns 0 on success, negative on failure
+    */
+    int saveSoftPIC(const char *filename, unsigned char *pixels, int width, int height);
 
 #ifdef __cplusplus
 }

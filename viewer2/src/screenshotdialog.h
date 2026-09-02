@@ -19,38 +19,40 @@
 
 #include <FL/Fl.H>
 #include <FL/Fl_Window.H>
+#include <FL/Fl_Check_Button.H>
 
 class Fl_Button;
 class Fl_Output;
 class Fl_Input;
 class Fl_Int_Input;
 
-class screenShotDialog : public Fl_Window {
-public:
-	screenShotDialog(int w, int h, const char* label=0);
-	screenShotDialog(int x, int y, int w, int h, const char* label=0);
-	virtual ~screenShotDialog();
+class screenShotDialog : public Fl_Window
+{
+  public:
+    screenShotDialog(int w, int h, const char *label = 0);
+    screenShotDialog(int x, int y, int w, int h, const char *label = 0);
+    virtual ~screenShotDialog();
 
-	void callback(Fl_Widget *W, void *Data);
+    void callback(Fl_Widget *W, void *Data);
 
-private:
-	void initToNothing();
-	int setupWidgets();
-	int browse();
+  private:
+    void initToNothing();
+    int setupWidgets();
+    int browse();
 
-	Fl_Output *m_storeLabel;
-	Fl_Button *m_browseButton;
-	Fl_Input *m_filenameInput;
+    Fl_Output *m_storeLabel;
+    Fl_Button *m_browseButton;
+    Fl_Input *m_filenameInput;
 
-	Fl_Output *m_widthLabel;
-	Fl_Int_Input *m_widthInput;
+    Fl_Output *m_widthLabel;
+    Fl_Int_Input *m_widthInput;
 
-	Fl_Check_Button *m_noLabelsCheckButton;
+    Fl_Check_Button *m_noLabelsCheckButton;
 
-	Fl_Output *m_heightLabel;
-	Fl_Int_Input *m_heightInput;
+    Fl_Output *m_heightLabel;
+    Fl_Int_Input *m_heightInput;
 
-	Fl_Button *m_OKButton, *m_cancelButton;
+    Fl_Button *m_OKButton, *m_cancelButton;
 };
 
 #endif /* _SCREEN_SHOT_DIALOG_H_ */

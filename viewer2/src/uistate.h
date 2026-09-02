@@ -19,37 +19,36 @@
 
 #ifdef WIN32
 // disable some annoying warnings in VC++ due to FLTK (1.1.6)
-#pragma warning( disable : 4311 4312 4244 )
+#pragma warning(disable : 4311 4312 4244)
 #endif
 
 #include <FL/Fl.H>
-#include <FL/Fl_Window.H>
+#include <FL/Fl_Button.H>
+#include <FL/Fl_Check_Button.H>
+#include <FL/Fl_Color_Chooser.H>
 #include <FL/Fl_Double_Window.H>
+#include <FL/Fl_File_Chooser.H>
+#include <FL/Fl_Float_Input.H>
 #include <FL/Fl_Group.H>
-#include <FL/Fl_Tabs.H>
+#include <FL/Fl_Image.H>
+#include <FL/Fl_Input.H>
 #include <FL/Fl_Menu_Bar.H>
 #include <FL/Fl_Menu_Button.H>
 #include <FL/Fl_Menu_Item.H>
-#include <FL/Fl_Output.H>
 #include <FL/Fl_Multiline_Output.H>
-#include <FL/Fl_Button.H>
-#include <FL/Fl_Input.H>
-#include <FL/Fl_Float_Input.H>
-#include <FL/Fl_Check_Button.H>
+#include <FL/Fl_Output.H>
 #include <FL/Fl_Round_Button.H>
-#include <FL/Fl_Value_Slider.H>
 #include <FL/Fl_Scroll.H>
-#include <FL/Fl_Image.H>
+#include <FL/Fl_Tabs.H>
 #include <FL/Fl_Tile.H>
-#include <FL/Fl_File_Chooser.H>
-#include <FL/fl_message.H>
+#include <FL/Fl_Value_Slider.H>
+#include <FL/Fl_Window.H>
 #include <FL/fl_ask.H>
-#include <FL/Fl_Color_Chooser.H>
+#include <FL/fl_message.H>
 
-#include <vector>
-#include <utility>
 #include <string>
-
+#include <utility>
+#include <vector>
 
 #include "console/fl_console.h"
 #include "tubedraw.h"
@@ -67,7 +66,7 @@ class consoleWindow;
 #define MI_ABOUT 3
 #define MI_HIDE_CONTROLS 4
 #define MI_LABELSALWAYSONTOP 5
-//#define MI_CLIPPINGPLANES 6
+// #define MI_CLIPPINGPLANES 6
 #define MI_UNHIDEALL 7
 #define MI_LISTHIDDENOBJECTS 8
 #define MI_SHOWHIDDENOBJECTS 9
@@ -79,7 +78,7 @@ class consoleWindow;
 #define MI_SLEEP_x2 16
 #define MI_SLEEP_x1 17
 #define MI_SLEEP_d2 18
-#define MI_SLEEP_d4	19
+#define MI_SLEEP_d4 19
 #define MI_SPEED_d10 20
 #define MI_SPEED_x0 21
 #define MI_REPLAY 22
@@ -140,162 +139,168 @@ class consoleWindow;
 
 void ui_menuCallback(Fl_Widget *W, void *Data);
 
-class UIstate {
-public:
-	UIstate(int argc, char *argv[]);
-	~UIstate();
-	void initToNothing();
+class UIstate
+{
+  public:
+    UIstate(int argc, char *argv[]);
+    ~UIstate();
+    void initToNothing();
 
-	int timerCallback();
-	void ui_controlCallback(Fl_Widget *W, void *Data);
-	void ui_consoleCallback(Fl_Widget *W, void *Data);
-	int toggleHideControls(int mi);
-	int toggleHideScalarControls(int mi);
-	int toggleHideConsole(int mi);
-	int toggleFullscreen(int mi);
+    int timerCallback();
+    void ui_controlCallback(Fl_Widget *W, void *Data);
+    void ui_consoleCallback(Fl_Widget *W, void *Data);
+    int toggleHideControls(int mi);
+    int toggleHideScalarControls(int mi);
+    int toggleHideConsole(int mi);
+    int toggleFullscreen(int mi);
 
-	std::string m_prevGeoFile;
-	std::string m_prevGPLFile;
-	std::string m_prevGFile;
-	std::string m_prevAnyFile;
+    std::string m_prevGeoFile;
+    std::string m_prevGPLFile;
+    std::string m_prevGFile;
+    std::string m_prevAnyFile;
 
-	inline void setPrevGeoFile(const std::string &f) {m_prevGeoFile = m_prevAnyFile = f;}
-	inline void setPrevGPLFile(const std::string &f) {m_prevGPLFile = m_prevAnyFile = f;}
-	inline void setPrevGFile(const std::string &f) {m_prevGFile = m_prevAnyFile = f;}
+    inline void setPrevGeoFile(const std::string &f)
+    {
+        m_prevGeoFile = m_prevAnyFile = f;
+    }
+    inline void setPrevGPLFile(const std::string &f)
+    {
+        m_prevGPLFile = m_prevAnyFile = f;
+    }
+    inline void setPrevGFile(const std::string &f)
+    {
+        m_prevGFile = m_prevAnyFile = f;
+    }
 
-	const char *genericOpenFile(const std::string &dialogMsg, 
-		std::vector<std::pair<const char *, const char *> >filterDesc, const std::string &defFileName);
-	int openAnyFile(); // displays dialog, redirects to Open
-	int openGeoFile(const char *filename = NULL);
-	int openPlayList(const char *filename = NULL);
-	int loadGFile(const char *filename = NULL);
-	int loadGDir();
+    const char *genericOpenFile(const std::string &dialogMsg,
+                                std::vector<std::pair<const char *, const char *>> filterDesc,
+                                const std::string &defFileName);
+    int openAnyFile(); // displays dialog, redirects to Open
+    int openGeoFile(const char *filename = NULL);
+    int openPlayList(const char *filename = NULL);
+    int loadGFile(const char *filename = NULL);
+    int loadGDir();
 
-	int saveState();
+    int saveState();
 
-	void saveDiary(const char *filename);
+    void saveDiary(const char *filename);
 
+    mainWindow *m_mainWindow;
+    Fl_Menu_Bar *m_menubar;
 
-	mainWindow *m_mainWindow;
-	Fl_Menu_Bar *m_menubar;
+    // Fl_Tile *m_centerTile; // the tile that contains the glwindow and the console group
+    glwindow *m_glWindow;
 
-	//Fl_Tile *m_centerTile; // the tile that contains the glwindow and the console group
-	glwindow *m_glWindow;
+    // point size stuff
+    void setPointSize(double size);
+    void setPointSizeFromMenu(int menuItem); // size = MI_POINT_SIZE_XX
+    double m_pointSize;
 
-	// point size stuff
-	void setPointSize(double size);
-	void setPointSizeFromMenu(int menuItem); // size = MI_POINT_SIZE_XX
-	double m_pointSize;
+    // text scaling stuff
+    void setTextScale(double scale);
+    double m_textScale;
 
-	// text scaling stuff
-	void setTextScale(double scale);
-	double m_textScale;
+    // line width stuff
+    void setLineWidth(double width);
+    void setLineWidthFromMenu(int menuItem); // size = MI_LINE_WIDTH_XX
+                                             //	double m_lineWidth;
 
-	// line width stuff
-	void setLineWidth(double width);
-	void setLineWidthFromMenu(int menuItem); // size = MI_LINE_WIDTH_XX
-//	double m_lineWidth;
-	
-	// vector head stuff
-	void setVectorHeadSize(double size);
-	double m_vectorHeadSize;
+    // vector head stuff
+    void setVectorHeadSize(double size);
+    double m_vectorHeadSize;
 
+    // console stuff
+    int m_consoleVisible;
+    consoleWindow *m_consoleGroup;
+    Fl_Console *m_console;
+    int setConsoleFontSize(int size);             // size = size in pixels
+    int setConsoleFontSizeFromMenu(int menuItem); // size = MI_FONT_SIZE_XXX
 
-	// console stuff
-	int m_consoleVisible;
-	consoleWindow *m_consoleGroup;
-	Fl_Console *m_console;
-	int setConsoleFontSize(int size);  // size = size in pixels
-	int setConsoleFontSizeFromMenu(int menuItem); // size = MI_FONT_SIZE_XXX
+    // control scalars stuff:
+    int m_scalarGroupVisible;
+    Fl_Window *m_scalarGroup;
+    Fl_Scroll *m_scalarGroupScroll;
 
-	// control scalars stuff:
-	int m_scalarGroupVisible;
-	Fl_Window *m_scalarGroup;
-	Fl_Scroll *m_scalarGroupScroll;
+    // controll stuff
+    int m_controlGroupVisible;
+    Fl_Window *m_controlGroup;
+    Fl_Scroll *m_controlGroupScroll;
 
-	// controll stuff
-	int m_controlGroupVisible;
-	Fl_Window *m_controlGroup;
-	Fl_Scroll *m_controlGroupScroll;
+    // control widgets
+    // name
+    Fl_Output *m_nameLabel;
+    Fl_Output *m_nameOutput;
+    Fl_Button *m_removeButton, *m_hideButton;
+    Fl_Button *m_fgColorButton;
+    Fl_Output *m_fgAlphaLabel;
+    Fl_Value_Slider *m_fgAlphaSlider;
+    Fl_Button *m_bgColorButton;
+    Fl_Output *m_bgAlphaLabel;
+    Fl_Value_Slider *m_bgAlphaSlider;
+    Fl_Button *m_olColorButton;
+    Fl_Output *m_olAlphaLabel;
+    Fl_Value_Slider *m_olAlphaSlider;
+    Fl_Output *m_fontSizeLabel;
+    Fl_Value_Slider *m_fontSizeSlider;
+    Fl_Output *m_descriptionLabel;
+    Fl_Multiline_Output *m_descriptionOutput;
+    Fl_Output *m_drawMethodLabel;
+    Fl_Menu_Button *m_drawMethodMenu;
 
-	// control widgets
-	// name 
-	Fl_Output *m_nameLabel;
-	Fl_Output *m_nameOutput;
-	Fl_Button *m_removeButton, *m_hideButton;
-	Fl_Button *m_fgColorButton;
-	Fl_Output *m_fgAlphaLabel;
-	Fl_Value_Slider *m_fgAlphaSlider;
-	Fl_Button *m_bgColorButton;
-	Fl_Output *m_bgAlphaLabel;
-	Fl_Value_Slider *m_bgAlphaSlider;
-	Fl_Button *m_olColorButton;
-	Fl_Output *m_olAlphaLabel;
-	Fl_Value_Slider *m_olAlphaSlider;
-	Fl_Output *m_fontSizeLabel;
-	Fl_Value_Slider *m_fontSizeSlider;
-	Fl_Output *m_descriptionLabel;
-	Fl_Multiline_Output *m_descriptionOutput;
-	Fl_Output *m_drawMethodLabel;
-	Fl_Menu_Button *m_drawMethodMenu;
+    Fl_Check_Button *m_dmStippleButton;
+    Fl_Check_Button *m_dmOriButton;
+    Fl_Check_Button *m_dmWireframeButton;
+    Fl_Check_Button *m_dmShadeButton;
+    Fl_Check_Button *m_dmMagnitudeButton;
 
-	Fl_Check_Button *m_dmStippleButton;
-	Fl_Check_Button *m_dmOriButton;
-	Fl_Check_Button *m_dmWireframeButton;
-	Fl_Check_Button *m_dmShadeButton;
-	Fl_Check_Button *m_dmMagnitudeButton;
+    // fullscreen stuff
+    int mouseMove();
+    double m_fsLastMouseActionTime;
+    int m_fullscreen;
+    int m_cursor;
 
-	// fullscreen stuff
-	int mouseMove();
-	double m_fsLastMouseActionTime;
-	int m_fullscreen;
-	int m_cursor;
+    // draw method menu
+    int setDrawMethodMenu(Fl_Menu_Item *menu, int idx);
 
+    inline void setInteractiveMouse(bool val)
+    {
+        m_interactiveMouse = val;
+    }
 
-	// draw method menu
-	int setDrawMethodMenu(Fl_Menu_Item *menu, int idx);
+    // status bar widgets
+    bool m_alwaysObjectDescriptionInStatusBar;
+    Fl_Output *m_statusOutput;
+    Fl_Button *m_waitButton;
+    int setStatus(const char *str);
 
-	inline void setInteractiveMouse(bool val) {
-		m_interactiveMouse = val;
-	}
+    int updateControls(int properties);
+    int setCurrentObject(object *o);
+    int setCurrentObjectByName(const std::string &name);
+    object *m_currentObject;
 
-	// status bar widgets
-	bool m_alwaysObjectDescriptionInStatusBar;
-	Fl_Output *m_statusOutput;
-	Fl_Button *m_waitButton;
-	int setStatus(const char *str);
+    int createSelectWindow(int mode); // mode = SWM_XXX
+    selectWindow *m_selectWindow;
 
-	int updateControls(int properties);
-	int setCurrentObject(object *o);
-	int setCurrentObjectByName(const std::string &name);
-	object *m_currentObject;
+    int createDynStmtWindow();
+    dynStmtWindow *m_dynStmtWindow;
 
-	int createSelectWindow(int mode); // mode = SWM_XXX
-	selectWindow *m_selectWindow;
+    // screenshot:
+    int createScreenshotDialog();
+    screenShotDialog *m_screenShotDialog;
+    int setupScreenshot(const std::string &filename, int width, int height, bool alsoWithoutLabels);
+    int m_screenShotOnNextRedraw;
+    std::string m_ssFilename;
+    int m_ssWidth, m_ssHeight;
+    bool m_ssAlsoNoLabels;
 
-	int createDynStmtWindow();
-	dynStmtWindow *m_dynStmtWindow;
+    // tube draw:
+    TubeDraw m_tubeDraw;
 
-	// screenshot:
-	int createScreenshotDialog();
-	screenShotDialog *m_screenShotDialog;
-	int setupScreenshot(const std::string &filename, int width, int height, bool alsoWithoutLabels);
-	int m_screenShotOnNextRedraw;
-	std::string m_ssFilename;
-	int m_ssWidth, m_ssHeight;
-	bool m_ssAlsoNoLabels;
-
-	// tube draw:
-	TubeDraw m_tubeDraw;
-
-	// enable mouse interaction
-	bool m_interactiveMouse;
-
-
+    // enable mouse interaction
+    bool m_interactiveMouse;
 };
 
 extern UIstate *gui_state;
 extern Fl_Menu_Item gui_menuTable[];
 
 #endif /* _UI_STATE_H_ */
-

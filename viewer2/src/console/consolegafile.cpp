@@ -22,42 +22,49 @@
 
 #include "consolegafile.h"
 
-consoleGAfile::consoleGAfile(state *s) : GAfile(s) {
-	initToNothing();
+consoleGAfile::consoleGAfile(state *s) : GAfile(s)
+{
+    initToNothing();
 
-	m_filename = strdup("virtual console file.geo");
-	m_directFileOpen = 1;
+    m_filename = strdup("virtual console file.geo");
+    m_directFileOpen = 1;
 }
 
-consoleGAfile::~consoleGAfile() {
-	initToNothing();
+consoleGAfile::~consoleGAfile()
+{
+    initToNothing();
 }
 
-void consoleGAfile::initToNothing() {
+void consoleGAfile::initToNothing()
+{
 }
 
-int consoleGAfile::read(state *s) {
-	cprintf("consoleGAfile::read() was called, which should never happen!\n");
-	return 0;
+int consoleGAfile::read(state *s)
+{
+    cprintf("consoleGAfile::read() was called, which should never happen!\n");
+    return 0;
 }
 
-int consoleGAfile::reset(state *s) {
-	cprintf("consoleGAfile::reset() was called, which should never happen!\n");
-	m_lineNb = 1;
-	return 0;
+int consoleGAfile::reset(state *s)
+{
+    cprintf("consoleGAfile::reset() was called, which should never happen!\n");
+    m_lineNb = 1;
+    return 0;
 }
 
-int consoleGAfile::read(state *s, const char *cmd) {
-	int l = strlen(cmd) + 1;
-	ensureBufLen(l);
-	memcpy(m_buf, cmd, l);
-	m_bufLen = l-1;
-	substituteArguments(s);
-	parseLine(s);
-	return 0;
+int consoleGAfile::read(state *s, const char *cmd)
+{
+    int l = strlen(cmd) + 1;
+    ensureBufLen(l);
+    memcpy(m_buf, cmd, l);
+    m_bufLen = l - 1;
+    substituteArguments(s);
+    parseLine(s);
+    return 0;
 }
 
-int consoleGAfile::handleDelete() {
-	cprintf("consoleGAfile::handleDelete() was called, which should never happen!\n");
-	return 0;
+int consoleGAfile::handleDelete()
+{
+    cprintf("consoleGAfile::handleDelete() was called, which should never happen!\n");
+    return 0;
 }

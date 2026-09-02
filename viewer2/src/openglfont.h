@@ -15,7 +15,7 @@ Depends on "png.cpp", "mypng.h" and libpng for loading .png files
 
 #include "gl_includes.h"
 
-/* 
+/*
 sets 'fontName' as the current font for this thread / process.
 Loads font from 'fontName.fnt'.
 */
@@ -34,7 +34,7 @@ Returns length of string in pixels when drawn in the current font
 float oglfprintfpixlen(const char *fmt, ...);
 
 /*
-Draws _one_ character 'c' at position [x, y] 
+Draws _one_ character 'c' at position [x, y]
 VERY inefficient...
 */
 int oglfchar(int c, float x, float y);
@@ -44,6 +44,5 @@ int oglfchar(int c, float x, float y);
 int oglfinit(void *Heap);
 void oglfquit();
 #endif /* _CAVE_ */
-
 
 #endif /* _OPENGL_FONT_*/

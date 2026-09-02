@@ -37,4 +37,3 @@ double genrand();
 double gaussNoise(double mean, double variance);
 
 #endif /* _MT19937_2_H_ */
-

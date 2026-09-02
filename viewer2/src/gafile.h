@@ -21,61 +21,64 @@
 
 class state;
 
-class GAfile {
-public:
-	GAfile(state *s);
-	GAfile(state *s, const char *filename, int level, const char *deleteQuestion = NULL, int nbArg = 0, char *arg[] = NULL);
-	virtual ~GAfile();
-	void initToNothing();
+class GAfile
+{
+  public:
+    GAfile(state *s);
+    GAfile(state *s, const char *filename, int level, const char *deleteQuestion = NULL, int nbArg = 0,
+           char *arg[] = NULL);
+    virtual ~GAfile();
+    void initToNothing();
 
-	virtual int reset(state *s);
-	virtual int read(state *s);
+    virtual int reset(state *s);
+    virtual int read(state *s);
 
-	inline const char *filename() {return m_filename;}
+    inline const char *filename()
+    {
+        return m_filename;
+    }
 
-	virtual int handleDelete();
-	int m_deleteFile; // -1 = no, 0: ask 1: yes
-	char *m_deleteFileQuestion; // question that will be asked if m_deleteFile == 0
+    virtual int handleDelete();
+    int m_deleteFile;           // -1 = no, 0: ask 1: yes
+    char *m_deleteFileQuestion; // question that will be asked if m_deleteFile == 0
 
-	int m_closeAtEOF;
+    int m_closeAtEOF;
 
-	int m_nbArg;
-	char **m_arg;
+    int m_nbArg;
+    char **m_arg;
 
-protected:
-	/*
-	level -1: top level; delete the entire stack (cause: UI open, or next/prev in play list)
-	level 0: replace current file in stack (cause: 'open' command
-	level 1: add new file to the stack (cause: import command)
-	*/
-	int m_level; 
+  protected:
+    /*
+    level -1: top level; delete the entire stack (cause: UI open, or next/prev in play list)
+    level 0: replace current file in stack (cause: 'open' command
+    level 1: add new file to the stack (cause: import command)
+    */
+    int m_level;
 
-	int m_directFileOpen; // open .geo files directly? or wait until timer does it
+    int m_directFileOpen; // open .geo files directly? or wait until timer does it
 
-	char *m_filename;
-	int m_pos; // position in the file; the file is fopen-ed and fseek-ed on every call to read()
-	int m_lineNb;
-	int m_lastChar;
+    char *m_filename;
+    int m_pos; // position in the file; the file is fopen-ed and fseek-ed on every call to read()
+    int m_lineNb;
+    int m_lastChar;
 
-	int ensureBufLen(int l);
-	int m_bufLen, m_bufMaxLen;
-	char *m_buf;
+    int ensureBufLen(int l);
+    int m_bufLen, m_bufMaxLen;
+    char *m_buf;
 
-	int truncated(state *s);
-	int parseLine(state *s);
+    int truncated(state *s);
+    int parseLine(state *s);
 
-	// returns -1 if no string found (first char found is a member of 'noStrStart', or no char found at all)
-	// returns the 'endIdx' plus string in 'str' 
-	int readString(const char *buf, int startIdx, char *str, const char *noStrStart = "[]+-1234567890");
-	int memberOf(char c, const char *set);
-	int parseFlags(const char *line, int &drawMode, int &creationFlags);
-	int parseLabelFlags(const char *line, int &labelMode, int &width);
+    // returns -1 if no string found (first char found is a member of 'noStrStart', or no char found at all)
+    // returns the 'endIdx' plus string in 'str'
+    int readString(const char *buf, int startIdx, char *str, const char *noStrStart = "[]+-1234567890");
+    int memberOf(char c, const char *set);
+    int parseFlags(const char *line, int &drawMode, int &creationFlags);
+    int parseLabelFlags(const char *line, int &labelMode, int &width);
 
-	int substituteArguments(state *s);
-	int setArg(int nbArg, char *arg[]);
-	int freeArg();
-
+    int substituteArguments(state *s);
+    int setArg(int nbArg, char *arg[]);
+    int freeArg();
 };
-
 
 #endif /* _GA_FILE_H_ */

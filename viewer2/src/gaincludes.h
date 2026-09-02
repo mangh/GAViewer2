@@ -24,4 +24,3 @@
 #include "i2ga/i2ga.h"
 
 #endif /* _GA_INCLUDES_H_ */
-

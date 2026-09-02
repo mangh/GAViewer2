@@ -25,19 +25,17 @@
 #define SWM_SELECT 2
 #define SWM_SHOW 3
 
-class selectWindow : public Fl_Window {
-public:
-	selectWindow(int mode, int w, int h, const char* label=0);// : Fl_Window(w, h, label) {};
-	selectWindow(int mode, int x, int y, int w, int h, const char* label=0);// : Fl_Window(x, y, w, h, label) {};
-	virtual ~selectWindow();
+class selectWindow : public Fl_Window
+{
+  public:
+    selectWindow(int mode, int w, int h, const char *label = 0);               // : Fl_Window(w, h, label) {};
+    selectWindow(int mode, int x, int y, int w, int h, const char *label = 0); // : Fl_Window(x, y, w, h, label) {};
+    virtual ~selectWindow();
 
-	void initToNothing();
-	int setupWidgets();
+    void initToNothing();
+    int setupWidgets();
 
-	int m_mode;
-
+    int m_mode;
 };
 
-
 #endif /* _SELECT_WINDOW_H_ */
-

@@ -25,22 +25,23 @@ input is actual coming from cmd("xyz"); console commands
 
 #include "../gafile.h"
 
-class consoleGAfile : public GAfile {
-public:
-	consoleGAfile(state *s);
-	virtual ~consoleGAfile();
-	void initToNothing();
+class consoleGAfile : public GAfile
+{
+  public:
+    consoleGAfile(state *s);
+    virtual ~consoleGAfile();
+    void initToNothing();
 
-	virtual int read(state *s);
+    virtual int read(state *s);
 
-	inline const char *filename() {return m_filename;}
+    inline const char *filename()
+    {
+        return m_filename;
+    }
 
-	virtual int reset(state *s);
-	int read(state *s, const char *cmd);
-	virtual int handleDelete();
-
+    virtual int reset(state *s);
+    int read(state *s, const char *cmd);
+    virtual int handleDelete();
 };
-
-
 
 #endif /* _CONSOLE_GA_FILE_H_ */

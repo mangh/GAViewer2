@@ -14,40 +14,47 @@
 
 // Copyright 2002-2009, Daniel Fontijne, University of Amsterdam -- fontijne@science.uva.nl
 
-#include "netserver.h"
 #include "netclient.h"
+#include "netserver.h"
 
-netClient::netClient() {
-	m_socket = -1;
-	m_name = "unknown ip";
+netClient::netClient()
+{
+    m_socket = -1;
+    m_name = "unknown ip";
 }
 
-netClient::netClient(int socket) {
-	m_socket = socket;
-	m_name = "unknown ip";
+netClient::netClient(int socket)
+{
+    m_socket = socket;
+    m_name = "unknown ip";
 }
 
-netClient::netClient(int socket, std::string name) {
-	m_socket = socket;
-	m_name = name;
+netClient::netClient(int socket, std::string name)
+{
+    m_socket = socket;
+    m_name = name;
 }
 
-netClient::~netClient() {
+netClient::~netClient()
+{
 }
 
-netClient::netClient(const netClient& C) {
-	m_socket = C.m_socket;
-	m_readBuffer = C.m_readBuffer;
-	m_sendBuffer = C.m_sendBuffer;
-	m_name = C.m_name;
+netClient::netClient(const netClient &C)
+{
+    m_socket = C.m_socket;
+    m_readBuffer = C.m_readBuffer;
+    m_sendBuffer = C.m_sendBuffer;
+    m_name = C.m_name;
 }
 
-netClient &netClient::operator=(const netClient&C) {
-	if (this != &C) {
-		m_socket = C.m_socket;
-		m_readBuffer = C.m_readBuffer;
-		m_sendBuffer = C.m_sendBuffer;
-		m_name = C.m_name;
-	}
-	return *this;
+netClient &netClient::operator=(const netClient &C)
+{
+    if (this != &C)
+    {
+        m_socket = C.m_socket;
+        m_readBuffer = C.m_readBuffer;
+        m_sendBuffer = C.m_sendBuffer;
+        m_name = C.m_name;
+    }
+    return *this;
 }

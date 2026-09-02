@@ -17,55 +17,55 @@
 #ifndef _TUBE_DRAW_H_
 #define _TUBE_DRAW_H_
 
-#include <vector>
 #include "e3ga/e3ga.h"
+#include <vector>
 
 /// substitute to draw OpenGL lines as '3D tubes'
-class TubeDraw {
-public:
-	TubeDraw();
+class TubeDraw
+{
+  public:
+    TubeDraw();
 
-	// what = GL_LINES, GL_LINE_STRIP or GL_LINE_LOOP
-	void begin(int what);
-	void end();
+    // what = GL_LINES, GL_LINE_STRIP or GL_LINE_LOOP
+    void begin(int what);
+    void end();
 
-	void vertex2d(double x, double y);
-	void vertex3d(double x, double y, double z);
-	void vertex2dv(const double *c);
-	void vertex3dv(const double *c);
+    void vertex2d(double x, double y);
+    void vertex3d(double x, double y, double z);
+    void vertex2dv(const double *c);
+    void vertex3dv(const double *c);
 
-	/// sets line width to 'w'
-	void setLineWidth(double w);
-	double getLineWidth();
+    /// sets line width to 'w'
+    void setLineWidth(double w);
+    double getLineWidth();
 
-	/// enables / disables forwarding to OpenGL
-	void setUseOpenGL(bool v);
-	bool getUseOpenGL();
+    /// enables / disables forwarding to OpenGL
+    void setUseOpenGL(bool v);
+    bool getUseOpenGL();
 
-	/// set number of segments used to draw the tube
-	void setNbSegments(int nb);
+    /// set number of segments used to draw the tube
+    void setNbSegments(int nb);
 
-protected:
-	/// vertices are collected here (they are not drawn until 'end()' is called)
-	std::vector<e3ga> m_vertices;
+  protected:
+    /// vertices are collected here (they are not drawn until 'end()' is called)
+    std::vector<e3ga> m_vertices;
 
-	/// what to draw (argument to begin(...), GL_LINES, GL_LINE_STRIP or GL_LINE_LOOP)
-	int m_what;
+    /// what to draw (argument to begin(...), GL_LINES, GL_LINE_STRIP or GL_LINE_LOOP)
+    int m_what;
 
-	/// either passed to glwidth, or used directly as the radius of the tube
-	double m_lineWidth;
+    /// either passed to glwidth, or used directly as the radius of the tube
+    double m_lineWidth;
 
-	/// How many segments to draw (min = 3)
-	int m_nbSegments;
+    /// How many segments to draw (min = 3)
+    int m_nbSegments;
 
-	/** when true, forwards all calls to regular OpenGL . . .
-	Otherwise, draws as 3D tubes
-	*/
-	bool m_useOpenGL;
+    /** when true, forwards all calls to regular OpenGL . . .
+    Otherwise, draws as 3D tubes
+    */
+    bool m_useOpenGL;
 
-	void drawTubeSegment(int i, const std::vector<e3ga> &vertices);
-	void drawTubeCap(int vIdx, const std::vector<e3ga> &vertices, bool endCap);
-
+    void drawTubeSegment(int i, const std::vector<e3ga> &vertices);
+    void drawTubeCap(int vIdx, const std::vector<e3ga> &vertices, bool endCap);
 };
 
 #endif /* _TUBE_DRAW_H_ */

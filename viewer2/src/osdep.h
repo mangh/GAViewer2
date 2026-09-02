@@ -17,6 +17,8 @@
 #ifndef _OSDEP_H_
 #define _OSDEP_H_
 
+#include <stdio.h>
+
 #ifdef WIN32
 #define strcmpnc stricmp
 #elif defined(__linux__) || defined(__FreeBSD__)
@@ -27,10 +29,10 @@
 #endif
 
 #ifndef M_PI
-#define M_PI 3.14159265358979323846 
+#define M_PI 3.14159265358979323846
 #endif
-#define U_RAD2DEG( x ) ( (x) * (float)180.0 / (float)M_PI)
-#define U_DEG2RAD( x ) ( (x) * (float)M_PI / (float)180.0)
+#define U_RAD2DEG(x) ((x) * (float)180.0 / (float)M_PI)
+#define U_DEG2RAD(x) ((x) * (float)M_PI / (float)180.0)
 
 int fileLength(FILE *F);
 
@@ -46,42 +48,39 @@ returns -1.0 on error
 */
 double u_timeElapsed();
 
-
 // deletes 'fullname'
 int deleteFile(const char *fullname);
 
 /*
 This function will try to determine if 'filename' is an absolute filename
-or a relative filename. 
+or a relative filename.
 
 If it finds it is an absoluate filename, it will simply copy 'filename' to 'dst'.
 
-Otherwise, it will try search for the last (back-)slash in 'base'. If that 
+Otherwise, it will try search for the last (back-)slash in 'base'. If that
 (back-)slash is not present, 'filename' will be copied 'dst'. Othersize,
-'dst' will be set to 'base' + 
+'dst' will be set to 'base' +
 
 
 dst: destionation string
-base: filename (if is is a path, it must end with a '/' or '\') that is used as 
+base: filename (if is is a path, it must end with a '/' or '\') that is used as
 a reference relative to which 'filename' may or may not be specified
 filename: the absolute or relative filename
 */
 // (obsolete, replaced by state->fullFilename())
-//int fullFilename(char *dst, const char *base, const char *filename);
+// int fullFilename(char *dst, const char *base, const char *filename);
 
 #ifdef WIN32
 /*
 Puts the current working directory in front of the filename
 */
-//int fullFilenameCWD(char *filename);
+// int fullFilenameCWD(char *filename);
 #endif /* WIN32 */
 
-
-#define U_MIN(x, y) ( ((x) < (y)) ? (x) : (y))
-#define U_MAX(x, y) ( ((x) > (y)) ? (x) : (y))
-#define U_ABS(x) ( ((x) >= (0)) ? (x) : -(x))
-#define U_SIGN(x) ( ((x) >= (0)) ? (1) : -(1))
-
+#define U_MIN(x, y) (((x) < (y)) ? (x) : (y))
+#define U_MAX(x, y) (((x) > (y)) ? (x) : (y))
+#define U_ABS(x) (((x) >= (0)) ? (x) : -(x))
+#define U_SIGN(x) (((x) >= (0)) ? (1) : -(1))
 
 /*
 Platform independant directory reading
@@ -92,8 +91,8 @@ Platform independant directory reading
 #elif defined(__linux__) || defined(__FreeBSD__)
 #include <dirent.h>
 #else /* assume other UNIX */
-#include <sys/types.h>
 #include <sys/stat.h>
+#include <sys/types.h>
 #ifdef SUN
 #include <dirent.h>
 #else
@@ -102,32 +101,33 @@ Platform independant directory reading
 #endif /* WIN32 */
 
 // error codes return by functions returning an int
-#define U_DIR_OK 0				// all ok
-#define U_DIR_ERROR -1		// a error occured
-#define U_DIR_END  -2			  // end of directory reached
+#define U_DIR_OK 0     // all ok
+#define U_DIR_ERROR -1 // a error occured
+#define U_DIR_END -2   // end of directory reached
 
-typedef struct u_dirEnt_s {
-	char *dirName;
+typedef struct u_dirEnt_s
+{
+    char *dirName;
 #ifdef WIN32
-	WIN32_FIND_DATA FD;
-	HANDLE hFile;
-	int next;
+    WIN32_FIND_DATA FD;
+    HANDLE hFile;
+    int next;
 #else /* assume UNIX */
-	DIR *dir;
+    DIR *dir;
 #if defined(__linux__) || defined(__FreeBSD__) || defined(SUN)
-	struct dirent *dp;
+    struct dirent *dp;
 #else
-	struct direct *dp;
+    struct direct *dp;
 #endif /* SUN */
 #endif /* WIN32 */
 } u_dirEnt;
 
 // flags returned by u_dirNext()
-#define U_DIR_FILE 0x01		// file is a 'real' file
-#define U_DIR_DIR  0x02		// file is a directory
+#define U_DIR_FILE 0x01 // file is a 'real' file
+#define U_DIR_DIR 0x02  // file is a directory
 
 /*
-get and set the current working directory 
+get and set the current working directory
 */
 int u_dirSetCwd(const char *dirname);
 int u_dirGetCwd(char *dirname, int maxlen);
@@ -171,9 +171,8 @@ If already exist: only opens the directory
 */
 u_dirEnt *u_dirOpenOrCreate(const char *dirname, const char *ext);
 
-
 /*
-Delete a file 
+Delete a file
 */
 int u_dirFileDelete(const char *fullname);
 
@@ -184,6 +183,5 @@ int u_dirDirDelete(const char *fullname);
 
 /* returns the length of the file F */
 int fileLengthByName(const char *name);
-
 
 #endif /* _OSDEP_H_ */

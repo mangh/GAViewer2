@@ -28,41 +28,41 @@ class consoleScope;
 /*
 class consoleFunc {
 public:
-	consoleFunc();
-	consoleFunc(const char *name, consoleFuncStmt *m_funcStmt, consoleVariable *(*m_funcPtr)(consoleScope *s, consoleVariable *arg[]), int m_nbArg, int m_arg[maxConsoleFuncArg]);
+    consoleFunc();
+    consoleFunc(const char *name, consoleFuncStmt *m_funcStmt, consoleVariable *(*m_funcPtr)(consoleScope *s,
+consoleVariable *arg[]), int m_nbArg, int m_arg[maxConsoleFuncArg]);
 //	consoleFunc(const consoleFunc *f);
-	~consoleFunc();
+    ~consoleFunc();
 
-	int set(const consoleFunc *f);
+    int set(const consoleFunc *f);
 
-	const char *m_name;
-	consoleFuncStmt *m_funcStmt; // either funcStmt or funcPtr must be NULL (depending on whether this function is user declared)
-	consoleVariable *(*m_funcPtr)(consoleScope *s, consoleVariable *arg[]);
-	int m_nbArg;
-	int m_arg[maxConsoleFuncArg];
+    const char *m_name;
+    consoleFuncStmt *m_funcStmt; // either funcStmt or funcPtr must be NULL (depending on whether this function is user
+declared) consoleVariable *(*m_funcPtr)(consoleScope *s, consoleVariable *arg[]); int m_nbArg; int
+m_arg[maxConsoleFuncArg];
 };*/
 
 // todo: turn consoleFunc into class
-typedef struct consoleFunc_s {
-	const char *name;
-	consoleFuncStmt *funcStmt; // either funcStmt or funcPtr must be NULL (depending on whether this function is user declared)
-	consoleVariable *(*funcPtr)(consoleScope *s, consoleVariable *arg[]);
-	int nbArg;
-	int arg[maxConsoleFuncArg];
+typedef struct consoleFunc_s
+{
+    const char *name;
+    consoleFuncStmt
+        *funcStmt; // either funcStmt or funcPtr must be NULL (depending on whether this function is user declared)
+    consoleVariable *(*funcPtr)(consoleScope *s, consoleVariable *arg[]);
+    int nbArg;
+    int arg[maxConsoleFuncArg];
 } consoleFunc;
-
 
 extern const consoleFunc c_consoleFunc[];
 
 // executes function with name 'name'
 // frees all resources in 'cv'
 // returns new consoleVariable
-consoleVariable *consoleExecFunc(consoleScope *s, const std::string &name, consoleVariable*cv);
+consoleVariable *consoleExecFunc(consoleScope *s, const std::string &name, consoleVariable *cv);
 
 // as consoleExecFunc(), but cut the list at 'cv', to enforce unary argument
-consoleVariable *consoleExecUnaryFunc(consoleScope *s, const std::string &name, consoleVariable*cv);
+consoleVariable *consoleExecUnaryFunc(consoleScope *s, const std::string &name, consoleVariable *cv);
 
 std::string getFuncStringNameWithArguments(const consoleFunc *f, int argNames);
-
 
 #endif /* _CONSOLE_FUNCTION_H_ */

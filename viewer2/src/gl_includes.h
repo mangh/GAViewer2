@@ -18,5 +18,4 @@
 
 // IWYU pragma: end_exports
 
-
 #endif /* _GAVIEWER_GL_INCLUDES_H_ */

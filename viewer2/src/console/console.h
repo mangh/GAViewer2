@@ -32,7 +32,7 @@ consoleVariable *consoleEvalExprList(consoleScope *s, consoleVariable *cv);
 
 int stateExistConsoleFunction(const char *name);
 void *consoleVariableScalar(const char *name, double val);
-//void *consoleVariableName(const char *name); // returns the variable with name 'name', if any
+// void *consoleVariableName(const char *name); // returns the variable with name 'name', if any
 int consoleVariableSetOperator(void *cv, int op);
 void consoleVariableFree(void *cv);
 

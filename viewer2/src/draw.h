@@ -21,8 +21,6 @@
 
 class object;
 
-
-
 // some drawing functions
 
 /*
@@ -45,10 +43,10 @@ int drawVector(const GAIM_FLOAT tail[3], const GAIM_FLOAT dir[3], GAIM_FLOAT sca
 #define DRAW_BV_SWIRL 5
 
 /*
-Draws a bivector at 'base'. 
+Draws a bivector at 'base'.
 'base' can be NULL if you want to draw at the origin.
 
-The bivector is specified by its 'normal', 
+The bivector is specified by its 'normal',
 and two factors ('factor1' and 'factor2').
 
 The entire bivector will be scaled according to 'scale'
@@ -63,8 +61,9 @@ the appropriate colors (i.e. foreground, outline)
 Currently:
 0x01: draw something related to the orientation (if possible)
 */
-int drawBivector(const GAIM_FLOAT base[3], const GAIM_FLOAT normal[3], const GAIM_FLOAT factor1[3], const GAIM_FLOAT factor2[3], 
-				 GAIM_FLOAT scale, int method = DRAW_BV_CIRCLE, int flags = 0, object *o = NULL);
+int drawBivector(const GAIM_FLOAT base[3], const GAIM_FLOAT normal[3], const GAIM_FLOAT factor1[3],
+                 const GAIM_FLOAT factor2[3], GAIM_FLOAT scale, int method = DRAW_BV_CIRCLE, int flags = 0,
+                 object *o = NULL);
 
 #define DRAW_TV_SPHERE 0
 #define DRAW_TV_CROSS 1
@@ -72,7 +71,7 @@ int drawBivector(const GAIM_FLOAT base[3], const GAIM_FLOAT normal[3], const GAI
 #define DRAW_TV_PARALLELEPIPED 3
 #define DRAW_TV_PARALLELEPIPED_NO_VECTORS 4
 /*
-Draws a trivector at 'base'. 
+Draws a trivector at 'base'.
 'base' can be NULL if you want to draw at the origin.
 
 The entire trivector will be scaled according to 'scale'
@@ -87,7 +86,9 @@ the appropriate colors (i.e. foreground, outline)
 Currently:
 0x01: draw something related to the orientation (if possible)
 */
-//int drawTriVector(const GAIM_FLOAT base[3], GAIM_FLOAT scale, int method = DRAW_TV_SPHERE, int flags = 0, object *o = NULL);
-int drawTriVector(const GAIM_FLOAT base[3], GAIM_FLOAT scale, GAIM_FLOAT vector[][3], int method = DRAW_TV_SPHERE, int flags = 0, object *o = NULL);
+// int drawTriVector(const GAIM_FLOAT base[3], GAIM_FLOAT scale, int method = DRAW_TV_SPHERE, int flags = 0, object *o =
+// NULL);
+int drawTriVector(const GAIM_FLOAT base[3], GAIM_FLOAT scale, GAIM_FLOAT vector[][3], int method = DRAW_TV_SPHERE,
+                  int flags = 0, object *o = NULL);
 
 #endif /* _DRAW_FUNCTIONS_H_ */

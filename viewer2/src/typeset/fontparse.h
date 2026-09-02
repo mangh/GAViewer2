@@ -17,83 +17,85 @@
 #ifndef _FONTPARSE_H_
 #define _FONTPARSE_H_
 
-
 // the #ifndef WIN32 is a quick fix for some windows compile probs...
-//#ifndef WIN32
+// #ifndef WIN32
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif /* __cplusplus */
-//#endif /* WIN32 */
+    // #endif /* WIN32 */
 
-extern int fontParseParse();
-extern int fontParseSetInputBuf(const char*buf, int l);
-extern struct fpNode_s *fontParse(const char *str, const char *mode);
-extern int fontParsePrintInput(int inputIdx, int chrBefore, int chrAfter);
+    extern int fontParseParse();
+    extern int fontParseSetInputBuf(const char *buf, int l);
+    extern struct fpNode_s *fontParse(const char *str, const char *mode);
+    extern int fontParsePrintInput(int inputIdx, int chrBefore, int chrAfter);
 
-enum {
-	fpnSentence, 
-	fpnOption,
-	fpnOptionList,
-	fpnWordWord,
-	fpnWordWhiteSpace,
-	fpnWordNumber,
-	fpnWordCommand,
-	fpnWordCommandNoOption, 
-	fpnWordCommandArg, 
-	fpnWordSpecialChar,
-	fpnWordSuperscript,
-	fpnWordSubscript
-};
+    enum
+    {
+        fpnSentence,
+        fpnOption,
+        fpnOptionList,
+        fpnWordWord,
+        fpnWordWhiteSpace,
+        fpnWordNumber,
+        fpnWordCommand,
+        fpnWordCommandNoOption,
+        fpnWordCommandArg,
+        fpnWordSpecialChar,
+        fpnWordSuperscript,
+        fpnWordSubscript
+    };
 
-enum {
-	fpfPopFont = 1, // when this node has been processed, pop font from state
-	fpfPopMode = 2, // when this node has been processed, pop mode from state
-	fpfPopAlign = 4, // when this node has been processed, pop alignment from state
-	fpfPopSize = 8, // when this node has been processed, pop font size from state
-	fpfPopColor = 16, // when this node has been processed, pop font size from state
-	fpfSubscript = 256, // subscript is present (is this constant used?)
-	fpfSuperscript = 512 // subsuperscript is present (is this constant used?)
-};
+    enum
+    {
+        fpfPopFont = 1,      // when this node has been processed, pop font from state
+        fpfPopMode = 2,      // when this node has been processed, pop mode from state
+        fpfPopAlign = 4,     // when this node has been processed, pop alignment from state
+        fpfPopSize = 8,      // when this node has been processed, pop font size from state
+        fpfPopColor = 16,    // when this node has been processed, pop font size from state
+        fpfSubscript = 256,  // subscript is present (is this constant used?)
+        fpfSuperscript = 512 // subsuperscript is present (is this constant used?)
+    };
 
-typedef struct fpNode_s {
-	int type; // fpnXXX
-	struct fpNode_s *parent;
-	struct fpNode_s **child;
-	int nbChildren;
-//	YYSTYPE yAttribute; // yacc attribbyte
-	char *str;
-	int nb;
-	int flags; //fpfXXX
-	// other attributes
-	int inputIdx; // index in input string
-} fpNode;
+    typedef struct fpNode_s
+    {
+        int type; // fpnXXX
+        struct fpNode_s *parent;
+        struct fpNode_s **child;
+        int nbChildren;
+        //	YYSTYPE yAttribute; // yacc attribbyte
+        char *str;
+        int nb;
+        int flags; // fpfXXX
+        // other attributes
+        int inputIdx; // index in input string
+    } fpNode;
 
-fpNode *fpNodeAlloc(int type, int nbChildren);
-void fpNodeFree(fpNode *node);
-int fpSetNbChildren(fpNode *node, int nbChildren);
-int fpSetChild(fpNode *parent, fpNode *child, int idx);
-fpNode *fpNodeDuplicate(const fpNode *node); // returns an exact duplicate of 'node' (all memory allocated); used for implementing user commands
-int fpNodeSetInputIdx(fpNode *node, int idx); // set the input idx of node & children to 'idx' (used for command substitution)
+    fpNode *fpNodeAlloc(int type, int nbChildren);
+    void fpNodeFree(fpNode *node);
+    int fpSetNbChildren(fpNode *node, int nbChildren);
+    int fpSetChild(fpNode *parent, fpNode *child, int idx);
+    fpNode *fpNodeDuplicate(const fpNode *node); // returns an exact duplicate of 'node' (all memory allocated); used
+                                                 // for implementing user commands
+    int fpNodeSetInputIdx(fpNode *node,
+                          int idx); // set the input idx of node & children to 'idx' (used for command substitution)
 
-// returns the left-most (grand) child of node
-struct fpNode_s *fpDescentLeft(struct fpNode_s *node); 
+    // returns the left-most (grand) child of node
+    struct fpNode_s *fpDescentLeft(struct fpNode_s *node);
 
-// substitutes all \1, \2 ... \9's with the 'option[]' supplied
-int fpNodeSubstituteCustomCommandArguments(
-		struct fpNode_s *node, int nbOptions, struct fpNode_s *option[],
-		const char *cmdStr);
+    // substitutes all \1, \2 ... \9's with the 'option[]' supplied
+    int fpNodeSubstituteCustomCommandArguments(struct fpNode_s *node, int nbOptions, struct fpNode_s *option[],
+                                               const char *cmdStr);
 
+    int fpNodePrint(const fpNode *node);
 
+    // returns true if a node is found in the tree that has type 'type' and whose string is 'str'
+    int fpNodeFindTypeStr(const fpNode *node, int type, const char *str);
 
-int fpNodePrint(const fpNode *node);
-
-// returns true if a node is found in the tree that has type 'type' and whose string is 'str'
-int fpNodeFindTypeStr(const fpNode *node, int type, const char *str);
-	
-//#ifndef WIN32
+// #ifndef WIN32
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */
-//#endif /* WIN32 */
+// #endif /* WIN32 */
 
 #endif /* _FONTPARSE_H_ */

@@ -24,4 +24,3 @@ extern const unsigned char fontImage[];
 extern const int fontImageLength;
 
 #endif /* _FONTIMAGE_H_ */
-

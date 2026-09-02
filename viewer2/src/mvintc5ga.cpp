@@ -14,20 +14,21 @@
 
 // Copyright 2002-2009, Daniel Fontijne, University of Amsterdam -- fontijne@science.uva.nl
 
-#include <stdio.h>
 #include <math.h>
+#include <stdio.h>
 
-#include "object.h"
-#include "mvint.h"
-#include "util.h"
-#include "state.h"
 #include "console/consolevariable.h"
+#include "mvint.h"
+#include "object.h"
+#include "state.h"
+#include "util.h"
 
-int mvInt::interpret(const c5ga &X, int creationFlags /* = 0*/) {
-	// use c3ga to interpret
-	c3ga X3ga;
-	consoleVariable::castC5gaToC3ga(X, X3ga);
-	m_type = (m_type ^ MVI_C3GA) | MVI_C5GA;
+int mvInt::interpret(const c5ga &X, int creationFlags /* = 0*/)
+{
+    // use c3ga to interpret
+    c3ga X3ga;
+    consoleVariable::castC5gaToC3ga(X, X3ga);
+    m_type = (m_type ^ MVI_C3GA) | MVI_C5GA;
 
-	return interpret(X3ga, creationFlags);
+    return interpret(X3ga, creationFlags);
 }

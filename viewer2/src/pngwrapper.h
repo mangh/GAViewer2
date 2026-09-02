@@ -18,7 +18,8 @@
 #define _PNG_H_
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
 /*
@@ -28,33 +29,32 @@ This header provides simple ways to load and save .png files.
 /*
 Possible flags for loadPNG()
 */
-#define PNG_NO_ALLOC 0x01		// don't allocate memory for pixels; application will do that
+#define PNG_NO_ALLOC 0x01 // don't allocate memory for pixels; application will do that
 
+    void pngConvertFilename(char *filename);
 
-void pngConvertFilename(char *filename);
+    /*
+    savePNG():
+    filename: name of the file where the data should be written to
+    pixels:	array of pixels (format: RGBRGB etc etc, topdown, left-to-right, width x height)
 
-/*
-savePNG():
-filename: name of the file where the data should be written to
-pixels:	array of pixels (format: RGBRGB etc etc, topdown, left-to-right, width x height)
+    returns 0 on success, -1 on failure
+    */
+    int savePNG(const char *filename, const unsigned char *pixels, int width, int height);
 
-returns 0 on success, -1 on failure
-*/
-int savePNG(const char *filename, const unsigned char *pixels, int width, int height);
+    /*
+    loadPNG():
+    filename: name of the file where the data should be written to
+    pixels:	array of pixels (format: RGBRGB etc etc, topdown, left-to-right, width x height)
+    flags: can be 0 or PNG_NO_ALLOC. If 0, the function will allocate memory to store the
+    pixels in.
 
-/*
-loadPNG():
-filename: name of the file where the data should be written to
-pixels:	array of pixels (format: RGBRGB etc etc, topdown, left-to-right, width x height)
-flags: can be 0 or PNG_NO_ALLOC. If 0, the function will allocate memory to store the
-pixels in.
+    returns 0 on success, -1 on failure
+    */
+    int loadPNG(const char *filename, unsigned char **pixels, int *width, int *height, int flags);
 
-returns 0 on success, -1 on failure
-*/
-int loadPNG(const char *filename, unsigned char **pixels, int *width, int *height, int flags);
-
-// does the same as loadPNG, but reads from memory instead of file
-int loadPNGEx(const unsigned char *buf, int bufLength, unsigned char **pixels, int *width, int *height, int flags);
+    // does the same as loadPNG, but reads from memory instead of file
+    int loadPNGEx(const unsigned char *buf, int bufLength, unsigned char **pixels, int *width, int *height, int flags);
 
 #ifdef __cplusplus
 }

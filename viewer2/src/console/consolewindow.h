@@ -20,21 +20,26 @@
 #include <FL/Fl.H>
 #include <FL/Fl_Double_Window.H>
 
-class consoleWindow : public Fl_Double_Window {
-public:
-	consoleWindow(int w, int h, const char* label=0) : Fl_Double_Window(w, h, label) {initToNothing();};
-	consoleWindow(int x, int y, int w, int h, const char* label=0) : Fl_Double_Window(x, y, w, h, label) {initToNothing();};
-	virtual ~consoleWindow() {};
+class consoleWindow : public Fl_Double_Window
+{
+  public:
+    consoleWindow(int w, int h, const char *label = 0) : Fl_Double_Window(w, h, label)
+    {
+        initToNothing();
+    };
+    consoleWindow(int x, int y, int w, int h, const char *label = 0) : Fl_Double_Window(x, y, w, h, label)
+    {
+        initToNothing();
+    };
+    virtual ~consoleWindow() {};
 
-	void initToNothing();
+    void initToNothing();
 
-	virtual int handle(int event);
+    virtual int handle(int event);
 
-	int m_currentCursor;
-	int m_dragging;
-//	int m_prevY;
-
+    int m_currentCursor;
+    int m_dragging;
+    //	int m_prevY;
 };
-
 
 #endif /* _MAIN_WINDOW_H_ */

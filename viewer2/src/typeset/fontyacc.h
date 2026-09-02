@@ -11,21 +11,25 @@
 #define SUBSCRIPT 267
 #define ENDOFFILE 268
 typedef union {
-	struct {
-		char *str;
-		int inputIdx;
-	} str;
-	struct {
-		int cnt;
-		int inputIdx;
-	} cnt;
-	struct {
-		int chr;
-		int inputIdx;
-	} chr;
-	struct {
-		struct fpNode_s *node;
-		int inputIdx;
-	} node;
+    struct
+    {
+        char *str;
+        int inputIdx;
+    } str;
+    struct
+    {
+        int cnt;
+        int inputIdx;
+    } cnt;
+    struct
+    {
+        int chr;
+        int inputIdx;
+    } chr;
+    struct
+    {
+        struct fpNode_s *node;
+        int inputIdx;
+    } node;
 } YYSTYPE;
 extern YYSTYPE yylval;

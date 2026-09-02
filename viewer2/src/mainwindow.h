@@ -28,31 +28,37 @@
 This custom window handles the custom resizing and win32 fullscreen issues
   */
 
-class mainWindow : public Fl_Window {
-public:
-	mainWindow(int w, int h, const char* label=0) : Fl_Window(w, h, label) {initToNothing();};
-	mainWindow(int x, int y, int w, int h, const char* label=0) : Fl_Window(x, y, w, h, label) {initToNothing();};
-	virtual ~mainWindow();
+class mainWindow : public Fl_Window
+{
+  public:
+    mainWindow(int w, int h, const char *label = 0) : Fl_Window(w, h, label)
+    {
+        initToNothing();
+    };
+    mainWindow(int x, int y, int w, int h, const char *label = 0) : Fl_Window(x, y, w, h, label)
+    {
+        initToNothing();
+    };
+    virtual ~mainWindow();
 
-	void initToNothing();
+    void initToNothing();
 
-	virtual void resize(int x, int y, int w, int h);
-	virtual int handle(int event);
+    virtual void resize(int x, int y, int w, int h);
+    virtual int handle(int event);
 
-	int setTitle(const char *title);
+    int setTitle(const char *title);
 
-	int setSizeRange(); // sets the default size range
+    int setSizeRange(); // sets the default size range
 
-	void fullscreen();
-	void fullscreen_off();
+    void fullscreen();
+    void fullscreen_off();
 
-protected:
-	int m_fsoX, m_fsoY, m_fsoW, m_fsoH; // fullscreen off x, y, w, h
+  protected:
+    int m_fsoX, m_fsoY, m_fsoW, m_fsoH; // fullscreen off x, y, w, h
 #ifdef WIN32
-	// these are used to remember the style of the window in fullscreen off mode
-	LONG m_fsoStyle, m_fsoExStyle;
+    // these are used to remember the style of the window in fullscreen off mode
+    LONG m_fsoStyle, m_fsoExStyle;
 #endif
 };
-
 
 #endif /* _MAIN_WINDOW_H_ */

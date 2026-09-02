@@ -18,29 +18,29 @@
 #define _CONSOLE_OPERATORS_H_
 
 // console binary operators
-#define CBO_GP 0 // 'space' (implicit, doesn't exist)
-#define CBO_ASSIGNMENT 1 // '='
-#define CBO_IGP 2 // '/'
-#define CBO_OP 3 // '^'
-#define CBO_IP 4 // '.'
-#define CBO_SCP 5 // '*'
-#define CBO_ADDITION 6 // '+'
+#define CBO_GP 0          // 'space' (implicit, doesn't exist)
+#define CBO_ASSIGNMENT 1  // '='
+#define CBO_IGP 2         // '/'
+#define CBO_OP 3          // '^'
+#define CBO_IP 4          // '.'
+#define CBO_SCP 5         // '*'
+#define CBO_ADDITION 6    // '+'
 #define CBO_SUBTRACTION 7 // '-'
-#define CBO_MEET 8 // '&'
-#define CBO_JOIN 9 // '|'
-#define CBO_EQUAL 10 // '=='
-#define CBO_LESS 11 // '<'
-#define CBO_GREATER 12 // '>'
-#define CBO_LE 13 // '<='
-#define CBO_GE 14 // '>='
-#define CBO_AND 15 // '&&'
-#define CBO_OR 16 // '||'
-#define CBO_NE 17 // '!='
+#define CBO_MEET 8        // '&'
+#define CBO_JOIN 9        // '|'
+#define CBO_EQUAL 10      // '=='
+#define CBO_LESS 11       // '<'
+#define CBO_GREATER 12    // '>'
+#define CBO_LE 13         // '<='
+#define CBO_GE 14         // '>='
+#define CBO_AND 15        // '&&'
+#define CBO_OR 16         // '||'
+#define CBO_NE 17         // '!='
 #define CBO_NB_OPS 18
 #define CBO_MASK 0xFF
 
 // console unary operators (masks)
-#define CUO_NEGATION (1 << 8) // '-'
+#define CUO_NEGATION (1 << 8)  // '-'
 #define CUO_INVERSION (2 << 8) // '!'
 #define CUO_REVERSION (4 << 8) // '~'
 #define CUO_MASK (0xFF << 8)
