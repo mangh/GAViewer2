@@ -14,9 +14,9 @@
 
 // Copyright 2002-2009, Daniel Fontijne, University of Amsterdam -- fontijne@science.uva.nl
 
-#include <stddef.h>
-#include <stdio.h>
-#include <string.h>
+#include <cstddef>
+#include <cstdio>
+#include <cstring>
 
 #include <FL/Enumerations.H>
 #include <FL/Fl.H>

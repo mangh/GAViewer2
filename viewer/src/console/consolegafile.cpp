@@ -14,7 +14,7 @@
 
 // Copyright 2002-2009, Daniel Fontijne, University of Amsterdam -- fontijne@science.uva.nl
 
-#include <string.h>
+#include <string.h> // NOLINT(modernize-deprecated-headers): strdup() is POSIX, not in <cstring>
 
 #include "../state.h"
 

@@ -17,7 +17,7 @@
 #ifndef _FL_CONSOLE_H_
 #define _FL_CONSOLE_H_
 
-#include <stdarg.h>
+#include <cstdarg>
 
 #include <FL/Fl_Text_Buffer.H>
 #include <FL/Fl_Text_Editor.H>

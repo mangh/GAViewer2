@@ -27,7 +27,7 @@
 /* Vol. 8, No. 1, January 1998, pp 3--30.                          */
 
 #include "mt19937-2.h"
-#include <math.h>
+#include <cmath>
 
 /* Period parameters */
 #define N 624

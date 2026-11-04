@@ -24,7 +24,7 @@
 #include <winsock2.h>
 #else // assume UNIX
 #include <arpa/inet.h>
-#include <errno.h>
+#include <cerrno>
 #include <fcntl.h>
 #include <netdb.h>
 #include <netinet/in.h>

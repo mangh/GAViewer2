@@ -17,8 +17,8 @@
 #ifndef _CONSOLE_SCOPE_H_
 #define _CONSOLE_SCOPE_H_
 
-#include <stddef.h>
-#include <stdio.h>
+#include <cstddef>
+#include <cstdio>
 
 #include <map>
 #include <set>

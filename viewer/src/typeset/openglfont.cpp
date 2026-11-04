@@ -27,14 +27,10 @@ using bin2c. (see fontdata.cpp and fontdata.h)
 They are then linked into the executable
 */
 
-#include <stdarg.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
-#ifndef WIN32
-#include <stdarg.h>
-#endif /*WIN32*/
+#include <cstdarg>
+#include <cstdlib>
+#include <cstring>
+#include <stdio.h> // NOLINT(modernize-deprecated-headers): _vsnprintf() is MSVC, not in <cstdio>
 
 #include "openglfont.h"
 // #include "mypng.h"

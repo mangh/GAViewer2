@@ -17,7 +17,7 @@
 #ifndef _OSDEP_H_
 #define _OSDEP_H_
 
-#include <stdio.h>
+#include <cstdio>
 
 #ifdef WIN32
 #define strcmpnc stricmp

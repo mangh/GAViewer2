@@ -10,9 +10,9 @@ contact Daniel Fontijne (fontijne@science.uva.nl)
 This software is unsupported.
 */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 
 #include "osdep.h"
 #include "softpic.h"

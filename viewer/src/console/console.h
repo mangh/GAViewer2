@@ -17,7 +17,7 @@
 #ifndef _CONSOLE_H_
 #define _CONSOLE_H_
 
-#include <stddef.h>
+#include <cstddef>
 
 class consoleScope;
 class consoleVariable;

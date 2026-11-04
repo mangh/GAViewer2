@@ -20,7 +20,7 @@
 #include <set>
 #include <string>
 
-#include <stdlib.h>
+#include <cstdlib>
 // #include "consolefunction.h"
 //  remove this once consolefunction is included again:
 #define maxConsoleFuncArg 8

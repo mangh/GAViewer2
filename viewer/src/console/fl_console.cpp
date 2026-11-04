@@ -14,10 +14,10 @@
 
 // Copyright 2002-2009, Daniel Fontijne, University of Amsterdam -- fontijne@science.uva.nl
 
-#include <stdarg.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <cstdarg>
+#include <cstdlib>
+#include <cstring>
+#include <stdio.h> // NOLINT(modernize-deprecated-headers): _vsnprintf() is MSVC, not in <cstdio>
 
 #include <FL/Enumerations.H>
 #include <FL/Fl_Text_Buffer.H>

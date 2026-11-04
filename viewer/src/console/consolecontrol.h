@@ -17,7 +17,7 @@
 #ifndef _CONSOLE_CONTROL_H_
 #define _CONSOLE_CONTROL_H_
 
-#include <stdio.h>
+#include <cstdio>
 
 #include <string>
 #include <utility>

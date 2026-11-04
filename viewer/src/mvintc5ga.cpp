@@ -14,8 +14,6 @@
 
 // Copyright 2002-2009, Daniel Fontijne, University of Amsterdam -- fontijne@science.uva.nl
 
-#include <math.h>
-
 #include "console/consolevariable.h"
 #include "gaincludes.h"
 #include "models.h"

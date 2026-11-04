@@ -14,9 +14,9 @@
 
 // Copyright 2002-2009, Daniel Fontijne, University of Amsterdam -- fontijne@science.uva.nl
 
-#include <stddef.h>
-#include <stdlib.h>
-#include <string.h>
+#include <cstddef>
+#include <cstdlib>
+#include <string.h> // NOLINT(modernize-deprecated-headers): strdup() is POSIX, not in <cstring>
 
 #include <set>
 #include <string>

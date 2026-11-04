@@ -17,8 +17,8 @@
 #ifndef _STATE_H_
 #define _STATE_H_
 
-#include <stddef.h>
-#include <stdio.h>
+#include <cstddef>
+#include <cstdio>
 
 #include <map>
 #include <memory>

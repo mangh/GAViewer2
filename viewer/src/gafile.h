@@ -17,7 +17,7 @@
 #ifndef _GA_FILE_H_
 #define _GA_FILE_H_
 
-#include <stdlib.h>
+#include <cstdlib>
 
 class state;
 

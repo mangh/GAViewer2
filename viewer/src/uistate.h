@@ -22,7 +22,7 @@
 #pragma warning(disable : 4311 4312 4244)
 #endif
 
-#include <stddef.h>
+#include <cstddef>
 
 #include <FL/Fl.H>
 #include <FL/Fl_Button.H>

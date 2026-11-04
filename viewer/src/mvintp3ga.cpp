@@ -14,7 +14,7 @@
 
 // Copyright 2002-2009, Daniel Fontijne, University of Amsterdam -- fontijne@science.uva.nl
 
-#include <math.h>
+#include <cmath>
 
 #include "gaincludes.h"
 #include "models.h"

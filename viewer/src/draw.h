@@ -17,7 +17,7 @@
 #ifndef _DRAW_FUNCTIONS_H_
 #define _DRAW_FUNCTIONS_H_
 
-#include <stddef.h>
+#include <cstddef>
 
 #include "gaincludes.h"
 

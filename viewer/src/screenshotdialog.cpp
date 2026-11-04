@@ -20,9 +20,9 @@
 #include <windows.h>
 #endif /* WIN32 */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 
 #include <string>
 
@@ -40,7 +40,6 @@
 #include <FL/Fl_Window.H>
 
 #include "screenshotdialog.h"
-#include "uistate.h"
 
 screenShotDialog::screenShotDialog(int w, int h, const char *label) : Fl_Window(w, h, label)
 {

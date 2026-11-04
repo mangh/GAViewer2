@@ -17,7 +17,7 @@
 #ifndef _LIST_STACK_H_
 #define _LIST_STACK_H_
 
-#include <stddef.h>
+#include <cstddef>
 
 // trivial stack template
 template <class type> class tsStack

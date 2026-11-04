@@ -41,10 +41,10 @@
 #include "gaviewer.xbm"
 #endif /* WIN32 */
 
-#include <math.h>
-#include <stddef.h>
-#include <stdio.h>
-#include <string.h>
+#include <cmath>
+#include <cstddef>
+#include <cstdio>
+#include <cstring>
 
 #include <string>
 #include <utility>

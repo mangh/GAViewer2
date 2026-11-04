@@ -23,8 +23,8 @@
 #pragma warning(disable : 4311 4312 4244)
 #endif
 
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdio>
+#include <cstdlib>
 #include <string>
 
 // object types

@@ -18,9 +18,9 @@
 Some code for generating a geosphere, ported to use e3ga
 instead of LA
 */
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 
 #include "gaincludes.h"
 #include "gl_includes.h"
