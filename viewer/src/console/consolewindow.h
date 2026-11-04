@@ -17,7 +17,6 @@
 #ifndef _CONSOLE_WINDOW_H_
 #define _CONSOLE_WINDOW_H_
 
-#include <FL/Fl.H>
 #include <FL/Fl_Double_Window.H>
 
 class consoleWindow : public Fl_Double_Window

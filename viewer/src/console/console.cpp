@@ -14,10 +14,11 @@
 
 // Copyright 2002-2009, Daniel Fontijne, University of Amsterdam -- fontijne@science.uva.nl
 
+#include <ctype.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
-#include <iostream>
 #include <sstream>
 #include <string>
 
@@ -33,8 +34,6 @@ using namespace std;
 #include "ConsoleLexer.hpp"
 #include "consoleparserwrapper.h"
 #include <antlr/ANTLRException.hpp>
-#include <antlr/RecognitionException.hpp>
-#include <antlr/TokenStreamRecognitionException.hpp>
 
 void g_consoleCommandCallback(const char *cmd, void *cbArg)
 {

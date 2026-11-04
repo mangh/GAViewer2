@@ -3,5 +3,23 @@ CompileFlags:
 Diagnostics:
   UnusedIncludes: Strict
   MissingIncludes: Strict
+  Includes:
+    IgnoreHeader:
+      # Windows SDK internals: include <windows.h> rather than its sub-headers
+      - 'Windows Kits[/\\].*[/\\](um|shared)[/\\][^/\\]*'
+      # libpng internals: include <png.h>
+      - 'pngconf\.h'
+      - 'pnglibconf\.h'
   # ClangTidy:
   #   Add: [modernize-*]
+---
+# Generated code (ANTLR, Gaigen, codegen, flex/bison): leave includes as generated
+If:
+  PathMatch:
+    - viewer/src/(c3ga|c5ga|e3ga|i2ga|p3ga)/.*
+    - viewer/src/console/Console(Lexer|Parser).*
+    - viewer/src/console/consolegeneratedfunctions\.cpp
+    - viewer/src/typeset/font(lex|yacc)\..*
+Diagnostics:
+  UnusedIncludes: None
+  MissingIncludes: None

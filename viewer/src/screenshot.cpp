@@ -16,10 +16,12 @@
 
 #include <png.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <string>
 
+#include "gl_includes.h"
 #include "glwindow.h"
-#include "pngwrapper.h"
 #include "state.h"
 #include "uistate.h"
 

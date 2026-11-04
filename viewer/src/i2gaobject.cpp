@@ -16,19 +16,16 @@
 
 #include <math.h>
 #include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 
-#include "gl_includes.h"
+#include <string>
 
 #include "draw.h"
-#include "geosphere.h"
+#include "gaincludes.h"
 #include "glwindow.h"
+#include "mvint.h"
 #include "object.h"
-#include "osdep.h"
 #include "state.h"
 #include "uistate.h"
-#include "util.h"
 
 i2gaObject::i2gaObject(const i2ga &mv, const std::string &name /*= std::string("")*/, int drawMode /*= 0*/,
                        int creationFlags /*= 0*/, int forceFlags /*= 0*/)

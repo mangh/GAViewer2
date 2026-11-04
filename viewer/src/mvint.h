@@ -18,7 +18,7 @@
 #define _MV_INT_H_
 
 #include "gaincludes.h"
-#include "models.h"
+#include "models.h" // IWYU pragma: export
 
 /*
 Multivector interpretation.

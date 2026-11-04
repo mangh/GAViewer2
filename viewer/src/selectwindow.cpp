@@ -14,13 +14,22 @@
 
 // Copyright 2002-2009, Daniel Fontijne, University of Amsterdam -- fontijne@science.uva.nl
 
+#include <stddef.h>
+#include <stdlib.h>
+#include <string.h>
+
 #include "selectwindow.h"
 #include "glwindow.h"
 #include "object.h"
 #include "state.h"
 #include "uistate.h"
 
+#include <FL/Enumerations.H>
+#include <FL/Fl_Button.H>
+#include <FL/Fl_Check_Button.H>
 #include <FL/Fl_Scroll.H>
+#include <FL/Fl_Widget.H>
+#include <FL/Fl_Window.H>
 
 // maybe make non-modal, such that we can still interact with main window
 // but this would require reworking all of this stuff for interactivity

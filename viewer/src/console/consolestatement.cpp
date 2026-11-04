@@ -19,6 +19,11 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <set>
+#include <string>
+
+#include "../gaincludes.h"
+#include "../models.h"
 #include "../state.h"
 #include "console.h"
 #include "consolefunction.h"

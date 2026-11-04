@@ -18,6 +18,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <vector>
+
 #include "console/consolecontrol.h"
 #include "console/consolescope.h"
 #include "console/consolestatement.h"
@@ -29,9 +31,6 @@
 #include "state.h"
 #include "uistate.h"
 #include "util.h"
-
-#include <algorithm>
-#include <functional>
 
 static inline void printColor(FILE *F, const char *colName, float c[4])
 {

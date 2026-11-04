@@ -22,10 +22,12 @@
 #include "gl_includes.h"
 
 #include "draw.h"
+#include "gaincludes.h"
 #include "geosphere.h"
 #include "glwindow.h"
 #include "object.h"
 #include "osdep.h"
+#include "tubedraw.h"
 #include "uistate.h"
 #include "util.h"
 

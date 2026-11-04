@@ -16,18 +16,19 @@
 
 #include <math.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <time.h>
 
 #include "gl_includes.h"
+#include <FL/Enumerations.H>
 #include <FL/Fl.H>
+#include <FL/Fl_Gl_Window.H>
 
 #include "console/consolescope.h"
-#include "console/consolevariable.h"
-#include "geosphere.h"
+#include "gaincludes.h"
 #include "glwindow.h"
 #include "object.h"
-#include "osdep.h"
 #include "state.h"
 #include "typeset/openglfont.h"
 #include "uistate.h"

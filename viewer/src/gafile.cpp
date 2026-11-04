@@ -19,6 +19,10 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <string>
+
+#include <FL/fl_ask.H>
+
 #include "gaincludes.h"
 
 #include "console/consolewindow.h"
@@ -29,7 +33,6 @@
 #include "osdep.h"
 #include "state.h"
 #include "uistate.h"
-#include "util.h"
 
 // dummy constructor for ConsoleGAFile
 GAfile::GAfile(state *s)

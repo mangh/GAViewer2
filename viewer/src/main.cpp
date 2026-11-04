@@ -14,6 +14,7 @@
 
 // Copyright 2002-2009, Daniel Fontijne, University of Amsterdam -- fontijne@science.uva.nl
 
+#include <ctype.h>
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -25,17 +26,8 @@
 #include "state.h"
 #include "uistate.h"
 
-#include "osdep.h"
-#include "util.h"
-
-#include "geosphere.h"
-
-#include "mt19937-2.h"
-
 // test:
 #include "object.h"
-#include <iostream>
-#include <map>
 #include <string>
 
 const char *g_version = "0.86";

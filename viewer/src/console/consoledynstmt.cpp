@@ -19,7 +19,6 @@
 #include <string.h>
 
 #include "../glwindow.h"
-#include "../osdep.h"
 #include "../state.h"
 #include "../uistate.h"
 #include "console.h"
@@ -29,7 +28,8 @@
 #include "consolevariable.h"
 
 #include <algorithm>
-#include <iostream>
+#include <set>
+#include <string>
 #include <vector>
 
 state::dynStmtInfo::dynStmtInfo(consoleStmtListStmt *dynStmt, const std::string &workingDirectory,

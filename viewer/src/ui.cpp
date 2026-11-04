@@ -17,11 +17,24 @@
 #ifdef WIN32
 #include <windows.h>
 #include <commdlg.h> /* for win32 file browser */
-#include <direct.h>  /* for _getcwd() */
 
 #include "resource.h" /* for icon */
 #endif                /* WIN32 */
 
+#include <FL/Enumerations.H>
+#include <FL/Fl.H>
+#include <FL/Fl_Check_Button.H>
+#include <FL/Fl_Color_Chooser.H>
+#include <FL/Fl_File_Chooser.H>
+#include <FL/Fl_Menu_Bar.H>
+#include <FL/Fl_Menu_Button.H>
+#include <FL/Fl_Menu_Item.H>
+#include <FL/Fl_Multiline_Output.H>
+#include <FL/Fl_Scroll.H>
+#include <FL/Fl_Slider.H>
+#include <FL/Fl_Value_Slider.H>
+#include <FL/Fl_Widget.H>
+#include <FL/fl_ask.H>
 #include <FL/x.H> /* required to use windows file browser (contains definition of fl_xid()) */
 
 #ifndef WIN32
@@ -29,13 +42,22 @@
 #endif /* WIN32 */
 
 #include <math.h>
+#include <stddef.h>
+#include <stdio.h>
+#include <string.h>
+
+#include <string>
+#include <utility>
+#include <vector>
 
 #include "console/console.h"
 // #include "console/consolescope.h"
 // #include "console/consolevariable.h"
 #include "console/consolewindow.h"
+#include "console/fl_console.h"
 #include "dynamicstatementwindow.h"
 #include "gafile.h"
+#include "gaincludes.h"
 #include "glwindow.h"
 #include "mainwindow.h"
 #include "object.h"

@@ -15,8 +15,13 @@
 // Copyright 2002-2009, Daniel Fontijne, University of Amsterdam -- fontijne@science.uva.nl
 
 #include <math.h>
+#include <stdio.h>
 #include <string.h>
 
+#include <string>
+
+#include "../gaincludes.h"
+#include "../models.h"
 #include "../mvint.h"
 #include "../object.h"
 #include "../state.h"

@@ -19,8 +19,11 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <string>
+
 #include "gl_includes.h"
 
+#include "gaincludes.h"
 #include "glwindow.h"
 #include "object.h"
 #include "pngwrapper.h"

@@ -19,9 +19,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <FL/Fl.H>
+#include <FL/Enumerations.H>
 #include <FL/Fl_Text_Buffer.H>
-#include <FL/Fl_Text_Display.H>
 #include <FL/Fl_Text_Editor.H>
 
 #include "fl_console.h"

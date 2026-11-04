@@ -14,22 +14,23 @@
 
 // Copyright 2002-2009, Daniel Fontijne, University of Amsterdam -- fontijne@science.uva.nl
 
+#include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#ifndef WIN32
-#include <stdarg.h>
-#endif
 
-#include <algorithm>
-#include <iostream>
+#include <string>
+#include <utility>
 #include <vector>
+
+#include <FL/Enumerations.H>
 
 #include "console/console.h"
 #include "console/consolegafile.h"
 #include "console/consolescope.h"
 #include "console/consolevariable.h"
 #include "gafile.h"
+#include "gaincludes.h"
 #include "state.h"
 #include "uistate.h"
 

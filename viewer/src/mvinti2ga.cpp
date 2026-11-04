@@ -15,6 +15,8 @@
 // Copyright 2002-2009, Daniel Fontijne, University of Amsterdam -- fontijne@science.uva.nl
 
 #include <math.h>
+#include "gaincludes.h"
+#include "models.h"
 #include "mvint.h"
 
 int mvInt::interpret(const i2ga &X, int creationFlags /* = 0*/)

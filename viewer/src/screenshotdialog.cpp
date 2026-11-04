@@ -17,18 +17,23 @@
 #ifdef WIN32
 #include <FL/x.H>    /* for fl_xid() */
 #include <commdlg.h> /* for win32 file browser */
-#include <direct.h>  /* for _getcwd() */
 #include <windows.h>
 #endif /* WIN32 */
 
+#include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
+
+#include <string>
 
 #include "glwindow.h"
 #include "state.h"
 #include "uistate.h"
 
+#include <FL/Enumerations.H>
 #include <FL/Fl.H>
 #include <FL/Fl_Button.H>
+#include <FL/Fl_Check_Button.H>
 #include <FL/Fl_Input.H>
 #include <FL/Fl_Int_Input.H>
 #include <FL/Fl_Output.H>

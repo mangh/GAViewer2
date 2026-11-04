@@ -16,16 +16,24 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #pragma warning(disable : 4311 4312 4244)
 
+#include <FL/Enumerations.H>
 #include <FL/Fl_Button.H>
+#include <FL/Fl_Group.H>
+#include <FL/Fl_Output.H>
+#include <FL/Fl_Text_Buffer.H>
+#include <FL/Fl_Text_Display.H>
 #include <FL/Fl_Text_Editor.H>
+#include <FL/Fl_Widget.H>
+#include <FL/Fl_Window.H>
+#include <FL/fl_ask.H>
 
 #include "console/console.h"
 #include "console/consolestatement.h"
 #include "dynamicstatementwindow.h"
-#include "glwindow.h"
 #include "mainwindow.h"
 #include "object.h"
 #include "state.h"

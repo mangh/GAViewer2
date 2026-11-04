@@ -17,6 +17,7 @@
 #include <math.h>
 #include <string.h>
 
+#include "gaincludes.h"
 #include "mvint.h"
 
 /*

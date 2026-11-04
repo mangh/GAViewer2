@@ -15,12 +15,12 @@
 // Copyright 2002-2009, Daniel Fontijne, University of Amsterdam -- fontijne@science.uva.nl
 
 #include <math.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+
+#include <vector>
 
 #include "gl_includes.h"
 
+#include "gaincludes.h"
 #include "osdep.h"
 #include "p3ga/p3ga.h"
 #include "tubedraw.h"

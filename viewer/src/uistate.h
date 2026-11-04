@@ -22,29 +22,22 @@
 #pragma warning(disable : 4311 4312 4244)
 #endif
 
+#include <stddef.h>
+
 #include <FL/Fl.H>
 #include <FL/Fl_Button.H>
 #include <FL/Fl_Check_Button.H>
-#include <FL/Fl_Color_Chooser.H>
-#include <FL/Fl_Double_Window.H>
-#include <FL/Fl_File_Chooser.H>
-#include <FL/Fl_Float_Input.H>
-#include <FL/Fl_Group.H>
 #include <FL/Fl_Image.H>
-#include <FL/Fl_Input.H>
 #include <FL/Fl_Menu_Bar.H>
 #include <FL/Fl_Menu_Button.H>
 #include <FL/Fl_Menu_Item.H>
 #include <FL/Fl_Multiline_Output.H>
 #include <FL/Fl_Output.H>
-#include <FL/Fl_Round_Button.H>
 #include <FL/Fl_Scroll.H>
 #include <FL/Fl_Tabs.H>
-#include <FL/Fl_Tile.H>
 #include <FL/Fl_Value_Slider.H>
 #include <FL/Fl_Window.H>
 #include <FL/fl_ask.H>
-#include <FL/fl_message.H>
 
 #include <string>
 #include <utility>

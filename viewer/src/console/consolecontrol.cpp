@@ -15,23 +15,27 @@
 // Copyright 2002-2009, Daniel Fontijne, University of Amsterdam -- fontijne@science.uva.nl
 
 #include <stdlib.h>
+#include <string.h>
 
 #include <algorithm>
+#include <string>
 #include <utility>
 #include <vector>
 
+#include "../gaincludes.h"
 #include "../state.h"
 #include "../uistate.h"
 
 #include "consolecontrol.h"
+#include "consolefunction.h"
 #include "consolescope.h"
 #include "consolevariable.h"
 
+#include <FL/Enumerations.H>
 #include <FL/Fl_Check_Button.H>
-#include <FL/Fl_Menu_Bar.H>
 #include <FL/Fl_Menu_Button.H>
 #include <FL/Fl_Menu_Item.H>
-#include <FL/Fl_Output.H>
+#include <FL/Fl_Valuator.H>
 #include <FL/Fl_Value_Slider.H>
 
 int state::addConsoleControl(consoleControl *cc)

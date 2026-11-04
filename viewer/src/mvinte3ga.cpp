@@ -17,6 +17,8 @@
 #include <math.h>
 #include <string.h>
 
+#include "gaincludes.h"
+#include "models.h"
 #include "mvint.h"
 #include "object.h"
 #include "state.h"

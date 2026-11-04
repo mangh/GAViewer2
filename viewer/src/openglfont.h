@@ -13,8 +13,6 @@ Depends on "png.cpp", "mypng.h" and libpng for loading .png files
 #ifndef _OPENGL_FONT_
 #define _OPENGL_FONT_
 
-#include "gl_includes.h"
-
 /*
 sets 'fontName' as the current font for this thread / process.
 Loads font from 'fontName.fnt'.

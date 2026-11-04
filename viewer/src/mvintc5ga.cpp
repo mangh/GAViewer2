@@ -17,6 +17,8 @@
 #include <math.h>
 
 #include "console/consolevariable.h"
+#include "gaincludes.h"
+#include "models.h"
 #include "mvint.h"
 #include "state.h"
 

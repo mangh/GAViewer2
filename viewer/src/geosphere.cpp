@@ -22,6 +22,7 @@ instead of LA
 #include <stdlib.h>
 #include <string.h>
 
+#include "gaincludes.h"
 #include "gl_includes.h"
 
 #include "geosphere.h"

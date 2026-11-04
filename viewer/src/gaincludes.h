@@ -17,10 +17,13 @@
 #ifndef _GA_INCLUDES_H_
 #define _GA_INCLUDES_H_
 
+// umbrella header: the algebras below are deliberately provided to includers
+// IWYU pragma: begin_exports
 #include "e3ga/e3ga.h"
 #include "p3ga/p3ga.h"
 #include "c3ga/c3ga.h"
 #include "c5ga/c5ga.h"
 #include "i2ga/i2ga.h"
+// IWYU pragma: end_exports
 
 #endif /* _GA_INCLUDES_H_ */

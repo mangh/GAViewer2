@@ -17,6 +17,8 @@
 #ifndef _DRAW_FUNCTIONS_H_
 #define _DRAW_FUNCTIONS_H_
 
+#include <stddef.h>
+
 #include "gaincludes.h"
 
 class object;

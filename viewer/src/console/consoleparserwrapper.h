@@ -15,6 +15,10 @@
 // Copyright 2002-2009, Daniel Fontijne, University of Amsterdam -- fontijne@science.uva.nl
 
 #include "ConsoleParser.hpp"
+
+#include <antlr/RecognitionException.hpp>
+#include <antlr/TokenStream.hpp>
+#include <antlr/config.hpp>
 using namespace antlr;
 #include "../state.h"
 

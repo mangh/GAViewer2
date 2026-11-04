@@ -19,19 +19,17 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "gl_includes.h"
+#include <string>
 
 #include "c3gadraw.h"
 #include "console/consolevariable.h"
 #include "draw.h"
-#include "geosphere.h"
+#include "gaincludes.h"
 #include "glwindow.h"
+#include "mvint.h"
 #include "object.h"
-#include "osdep.h"
 #include "state.h"
-#include "tubedraw.h"
 #include "uistate.h"
-#include "util.h"
 
 Fl_Menu_Item gui_c5gaLineDrawMethods[] = {{"Curve", 0, NULL, (void *)DRAW_LINE_CURVE, 0},
                                           {"Curly tail", 0, NULL, (void *)DRAW_LINE_CURLYTAIL, 0},

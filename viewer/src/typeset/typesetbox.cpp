@@ -19,6 +19,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "../gl_includes.h"
+#include "fontparse.h"
 #include "openglfont.h"
 #include "typeset.h"
 #include "typesetbox.h"

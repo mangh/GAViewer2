@@ -28,12 +28,8 @@
 #include "console.h"
 #include "consolescope.h"
 #include "consolestatement.h"
-#include "consolevariable.h"
 
 using namespace std;
-
-#include <antlr/RecognitionException.hpp>
-#include <antlr/TokenStreamRecognitionException.hpp>
 
 #include "ConsoleLexer.hpp"
 #include "consoleparserwrapper.h"

@@ -19,13 +19,18 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <string>
+
 #include "gl_includes.h"
 
 #include "draw.h"
+#include "gaincludes.h"
 #include "glwindow.h"
+#include "mvint.h"
 #include "object.h"
 #include "osdep.h"
 #include "state.h"
+#include "tubedraw.h"
 #include "uistate.h"
 
 Fl_Menu_Item gui_e3gaBivectorDrawMethods[] = {

@@ -18,6 +18,9 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <string>
+
+#include "gaincludes.h"
 #include "glwindow.h"
 #include "osdep.h"
 #include "state.h"

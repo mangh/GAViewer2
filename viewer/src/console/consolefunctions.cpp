@@ -18,8 +18,12 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <string>
+
 // #include <iostream>
 
+#include "../gaincludes.h"
+#include "../models.h"
 #include "../state.h"
 // #include "../mvint.h"
 #include "console.h"

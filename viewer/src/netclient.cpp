@@ -14,8 +14,9 @@
 
 // Copyright 2002-2009, Daniel Fontijne, University of Amsterdam -- fontijne@science.uva.nl
 
+#include <string>
+
 #include "netclient.h"
-#include "netserver.h"
 
 netClient::netClient()
 {

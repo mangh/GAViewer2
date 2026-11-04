@@ -17,7 +17,10 @@
 #ifndef _CONSOLE_CONTROL_H_
 #define _CONSOLE_CONTROL_H_
 
+#include <stdio.h>
+
 #include <string>
+#include <utility>
 #include <vector>
 
 #include "../gaincludes.h"

@@ -13,6 +13,8 @@ This software is unsupported.
 #ifndef _SOFT_PIC_H_
 #define _SOFT_PIC_H_
 
+#include <stddef.h>
+
 #ifdef __cplusplus
 extern "C"
 {

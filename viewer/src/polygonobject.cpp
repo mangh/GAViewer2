@@ -19,15 +19,17 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <string>
+
 #include "gl_includes.h"
 
 #include "draw.h"
+#include "gaincludes.h"
 #include "glwindow.h"
 #include "object.h"
-#include "osdep.h"
 #include "state.h"
+#include "tubedraw.h"
 #include "uistate.h"
-#include "util.h"
 
 #define DRAW_PG_FILLED 0
 #define DRAW_PG_LINE_STRIP 1

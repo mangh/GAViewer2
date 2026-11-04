@@ -18,6 +18,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "../gaincludes.h"
+#include "../models.h"
 #include "../object.h"
 #include "../state.h"
 #include "../uistate.h"
@@ -27,8 +29,9 @@
 #include "consolestatement.h"
 #include "consolevariable.h"
 
-#include <iostream>
+#include <set>
 #include <string>
+#include <utility>
 #include <vector>
 
 int consoleScope::m_idCount = 0;

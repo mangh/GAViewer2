@@ -14,10 +14,13 @@
 
 // Copyright 2002-2009, Daniel Fontijne, University of Amsterdam -- fontijne@science.uva.nl
 
+#include <FL/Enumerations.H>
+#include <FL/Fl.H>
+#include <FL/Fl_Double_Window.H>
+
 #include "consolewindow.h"
 #include "../mainwindow.h"
 #include "../uistate.h"
-#include <stdio.h>
 
 void consoleWindow::initToNothing()
 {
