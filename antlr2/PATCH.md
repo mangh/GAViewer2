@@ -2,7 +2,7 @@
 
 ## Purpose
 
-The source code of ANTLR2 and GAViewer is already years old. Today's C/C++ compilers reject some code fragments as `obsolete expressions`; they also warn of the advent of `64-bit expressions`, which are still handled as if they were 32-bit. Some problems are related to the `OS platform`: some platforms were supported before, but in a different way (e.g., Linux), some were not used at all before (e.g., FreeBSD).
+The source code of ANTLR2 and GAViewer is already years old. Today's C/C++ compilers reject some code fragments as `obsolete expressions`; they also warn of the advent of `64-bit expressions`, which are still handled as if they were 32-bit. Some problems are related to the `OS platform`: some platforms were supported before, but in a different way (e.g., Linux), some were not used at all before (e.g., FreeBSD). Some standard library features used by ANTLR2 have been removed from newer `C++ standards` (e.g., `std::binary_function` in C++17, `std::uncaught_exception` in C++20).
 
 The purpose of the patch is to fix these errors and allow the code to compile successfully (many warnings are still displayed during compilation; some - those that seem obvious - have been disabled in the CMake script so that the more serious ones can be focused on).
 
@@ -16,12 +16,23 @@ The purpose of the patch is to fix these errors and allow the code to compile su
   ```sh
   cp ../build/_deps/antlr2-src/lib/cpp/antlr/CharScanner.hpp ./lib/cpp/antlr
   cp ../build/_deps/antlr2-src/lib/cpp/antlr/config.hpp ./lib/cpp/antlr
+  cp ../build/_deps/antlr2-src/lib/cpp/antlr/Parser.hpp ./lib/cpp/antlr
   cp ../build/_deps/antlr2-src/lib/cpp/src/String.cpp ./lib/cpp/src
+  ```
+- [ ] Add each new file to the `files_to_patch` list in the `antlr2/CMakeLists.txt` script (so that the patch is re-applied whenever it changes):
+  ```cmake
+  set(files_to_patch
+    "${ANTLR_LIB_INCLUDE_PATH}/CharScanner.hpp"
+    "${ANTLR_LIB_INCLUDE_PATH}/config.hpp"
+    "${ANTLR_LIB_INCLUDE_PATH}/Parser.hpp"
+    "${ANTLR_LIB_SOURCE_PATH}/String.cpp"
+  )
   ```
 - [ ] Make (manual) corrections to the above-mentioned files (in the `../build/_deps/antlr2-src/lib/cpp/*` folders).
   ```sh
   vim ../build/_deps/antlr2-src/lib/cpp/antlr/CharScanner.hpp
   vim ../build/_deps/antlr2-src/lib/cpp/antlr/config.hpp
+  vim ../build/_deps/antlr2-src/lib/cpp/antlr/Parser.hpp
   vim ../build/_deps/antlr2-src/lib/cpp/src/String.cpp
   ```
 - [ ] Generate a patch file for all the above changes:
@@ -51,6 +62,19 @@ The purpose of the patch is to fix these errors and allow the code to compile su
    private:
    	const CharScanner* scanner;
    public:
+  diff --git a/./lib/cpp/antlr/Parser.hpp b/../build/_deps/antlr2-src/lib/cpp/antlr/Parser.hpp
+  index c078ec6..e87881e 100644
+  --- a/./lib/cpp/antlr/Parser.hpp
+  +++ b/../build/_deps/antlr2-src/lib/cpp/antlr/Parser.hpp
+  @@ -298,7 +298,7 @@ protected:
+   		{
+   #ifdef ANTLR_CXX_SUPPORTS_UNCAUGHT_EXCEPTION
+   			// Only give trace if there's no uncaught exception..
+  -			if(!ANTLR_USE_NAMESPACE(std)uncaught_exception())
+  +			if(ANTLR_USE_NAMESPACE(std)uncaught_exceptions() == 0)
+   #endif
+   				parser->traceOut(text);
+   		}
   diff --git a/./lib/cpp/antlr/config.hpp b/../build/_deps/antlr2-src/lib/cpp/antlr/config.hpp
   index e336950..ec59f65 100644
   --- a/./lib/cpp/antlr/config.hpp
@@ -111,6 +135,19 @@ The purpose of the patch is to fix these errors and allow the code to compile su
    private:
    	const CharScanner* scanner;
    public:
+  diff --git a/@PATCH_SOURCE_DIR@/lib/cpp/antlr/Parser.hpp b/@PATCH_TARGET_DIR@/lib/cpp/antlr/Parser.hpp
+  index c078ec6..e87881e 100644
+  --- a/@PATCH_SOURCE_DIR@/lib/cpp/antlr/Parser.hpp
+  +++ b/@PATCH_TARGET_DIR@/lib/cpp/antlr/Parser.hpp
+  @@ -298,7 +298,7 @@ protected:
+   		{
+   #ifdef ANTLR_CXX_SUPPORTS_UNCAUGHT_EXCEPTION
+   			// Only give trace if there's no uncaught exception..
+  -			if(!ANTLR_USE_NAMESPACE(std)uncaught_exception())
+  +			if(ANTLR_USE_NAMESPACE(std)uncaught_exceptions() == 0)
+   #endif
+   				parser->traceOut(text);
+   		}
   diff --git a/@PATCH_SOURCE_DIR@/lib/cpp/antlr/config.hpp b/@PATCH_TARGET_DIR@/lib/cpp/antlr/config.hpp
   index e336950..ec59f65 100644
   --- a/@PATCH_SOURCE_DIR@/lib/cpp/antlr/config.hpp

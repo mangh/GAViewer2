@@ -64,6 +64,7 @@ cmake_path(SET ANTLR_LIB_SOURCE_PATH "${ANTLR_LIB_PATH}/src")
 set(files_to_patch
   "${ANTLR_LIB_INCLUDE_PATH}/CharScanner.hpp"
   "${ANTLR_LIB_INCLUDE_PATH}/config.hpp"
+  "${ANTLR_LIB_INCLUDE_PATH}/Parser.hpp"
   "${ANTLR_LIB_SOURCE_PATH}/String.cpp"
 )
 

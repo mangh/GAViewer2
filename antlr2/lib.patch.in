@@ -19,6 +19,19 @@ index 8a97e97..49c3d82 100644
  private:
  	const CharScanner* scanner;
  public:
+diff --git a/@PATCH_SOURCE_DIR@/lib/cpp/antlr/Parser.hpp b/@PATCH_TARGET_DIR@/lib/cpp/antlr/Parser.hpp
+index c078ec6..e87881e 100644
+--- a/@PATCH_SOURCE_DIR@/lib/cpp/antlr/Parser.hpp
++++ b/@PATCH_TARGET_DIR@/lib/cpp/antlr/Parser.hpp
+@@ -298,7 +298,7 @@ protected:
+ 		{
+ #ifdef ANTLR_CXX_SUPPORTS_UNCAUGHT_EXCEPTION
+ 			// Only give trace if there's no uncaught exception..
+-			if(!ANTLR_USE_NAMESPACE(std)uncaught_exception())
++			if(ANTLR_USE_NAMESPACE(std)uncaught_exceptions() == 0)
+ #endif
+ 				parser->traceOut(text);
+ 		}
 diff --git a/@PATCH_SOURCE_DIR@/lib/cpp/antlr/config.hpp b/@PATCH_TARGET_DIR@/lib/cpp/antlr/config.hpp
 index e336950..ec59f65 100644
 --- a/@PATCH_SOURCE_DIR@/lib/cpp/antlr/config.hpp
