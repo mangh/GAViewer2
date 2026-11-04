@@ -101,11 +101,10 @@ add_subdirectory ("fltk")
 add_subdirectory ("antlr2")
 
 # GAViewer (multi-purpose program for geometric algebra computations and visualization)
-# add_subdirectory("viewer")
-add_subdirectory("viewer2")
+add_subdirectory("viewer")
 
-# Interactive Book Figures for GAViewer
-#add_subdirectory("figures")
+# Interactive Book Figures for GAViewer (optional)
+add_subdirectory("figures")
 
-# FLTK Editor
-#add_subdirectory("editor")
+# # FLTK Editor (unrelated to GAViewer, to check/play with FLTK)
+# add_subdirectory("editor")
