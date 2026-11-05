@@ -87,6 +87,7 @@ ctest --test-dir build -j8 [-R FIG_2_2] [--output-on-failure]   # run
 cmake --build build --target regress_update_golden              # regenerate golden files (only after an intended change)
 ```
 
+- Test scripts `viewer/test/scripts/<name>.g` (tests `script.<name>`, golden `golden/<name>.txt`): each defines a console function `<name>()`. `algebra_functions` calls every built-in per-algebra function and operator in all five models (results printed with `print(x, "1.8e")`), `algebra_objects` creates typical blades/versors of every model as objects. A new script is picked up on the next CMake configure; create its golden file with `regress_update_golden` or `gaviewer_regress -I viewer/test/scripts -g viewer/test/golden/<name>.txt -u "<name>();"`.
 - Failing test → actual output in `<build>/viewer/test/actual/FIG_x_y.txt`; diff it against the golden file.
 - Run one figure by hand: `gaviewer_regress -I <figs-src> "FIG_2_2();"` (dump to stdout).
 - Code reachable from console functions or GA-file commands must check `gui_state` for NULL (the harness has no GUI).

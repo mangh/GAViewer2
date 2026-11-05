@@ -1,9 +1,9 @@
 # Headless regression tests for GAViewer
 #
-# Every book figure (FIG_x_y.g) is executed by the 'gaviewer_regress' harness,
-# without any GUI, and the resulting state (console output, objects, their
-# multivector coordinates and interpretations) is compared with a golden
-# reference in viewer/test/golden.
+# Every book figure (FIG_x_y.g) and every test script (scripts/<name>.g) is
+# executed by the 'gaviewer_regress' harness, without any GUI, and the resulting
+# state (console output, objects, their multivector coordinates and
+# interpretations) is compared with a golden reference in viewer/test/golden.
 #
 #   Run the tests:                 ctest --test-dir <build-dir> [-R FIG_2_2] [--output-on-failure]
 #   (Re)create golden references:  cmake --build <build-dir> --target regress_update_golden
@@ -64,6 +64,32 @@ foreach(figure_file ${figure_files})
 
   list(APPEND update_commands
     COMMAND ${harness} -I "${figs_SOURCE_DIR}" -g "${golden_dir}/${figure}.txt" -u "${command}"
+  )
+endforeach()
+
+# Test scripts (viewer/test/scripts/<name>.g): each defines a console function
+# <name>() that exercises a part of the console language (e.g. all the built-in
+# per-algebra functions in every model).
+set(scripts_dir "${CMAKE_CURRENT_SOURCE_DIR}/scripts")
+file(GLOB script_files LIST_DIRECTORIES false CONFIGURE_DEPENDS "${scripts_dir}/*.g")
+list(SORT script_files)
+
+foreach(script_file ${script_files})
+  get_filename_component(script "${script_file}" NAME_WE)
+  set(command "${script}()$<SEMICOLON>")
+
+  add_test(
+    NAME "script.${script}"
+    COMMAND ${harness}
+      -I "${scripts_dir}"
+      -o "${actual_dir}/${script}.txt"
+      -g "${golden_dir}/${script}.txt"
+      "${command}"
+  )
+  set_tests_properties("script.${script}" PROPERTIES TIMEOUT 120 LABELS "scripts")
+
+  list(APPEND update_commands
+    COMMAND ${harness} -I "${scripts_dir}" -g "${golden_dir}/${script}.txt" -u "${command}"
   )
 endforeach()
 

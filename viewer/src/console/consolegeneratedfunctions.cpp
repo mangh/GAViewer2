@@ -45,6 +45,33 @@ The code for the new function consists of two parts:
 
 static const char *sc_tempVarPrefix = "temporary console variable ";
 
+// Converts the precision argument of print(x, prec), e.g. "e", "1.8e" or "10.4f",
+// into a printf conversion ("%1.8e"). Only flags, a width and a precision of
+// at most two digits each and one of the conversions e, E, f, F, g, G are
+// accepted: the result is used as a printf format.
+static bool printPrecision(const std::string &prec, std::string &format)
+{
+    size_t i = 0;
+    while ((i < prec.size()) && std::strchr("-+ #0", prec[i]))
+        i++;
+    for (int part = 0; part < 2; part++)
+    {
+        if ((part == 1) && ((i >= prec.size()) || (prec[i] != '.')))
+            break;
+        if (part == 1)
+            i++;
+        size_t start = i;
+        while ((i < prec.size()) && (prec[i] >= '0') && (prec[i] <= '9'))
+            i++;
+        if (i - start > 2)
+            return false;
+    }
+    if ((i + 1 != prec.size()) || !std::strchr("eEfFgG", prec[i]))
+        return false;
+    format = "%" + prec;
+    return true;
+}
+
 namespace
 {
 inline double asinhScalar(double x)
@@ -200,32 +227,21 @@ consoleVariable *cf_e3ga_cp(consoleScope *s, consoleVariable *arg[])
 // ********************************* e3ga PRINT *********************************
 consoleVariable *cf_e3ga_print(consoleScope *s, consoleVariable *arg[])
 {
-    /*	cprintf("%s = %s\n",
-            (arg[0]->name().find(std::string(sc_tempVarPrefix)) == 0) ? "ans" : arg[0]->name().c_str(),
-            arg[0]->e().string());
-
-        return arg[0];*/
     std::string name = (arg[0]->name().find(std::string(sc_tempVarPrefix)) == 0) ? std::string("ans") : arg[0]->name();
-    std::string val = arg[0]->e().string();
-    char buf[2048];
-    sprintf(buf, "%s = %s\n", name.c_str(), val.c_str());
-    cprintf(buf);
+    cprintf("%s = %s\n", name.c_str(), arg[0]->e().string());
     return arg[0];
 }
 
 consoleVariable *cf_e3ga_print_prec(consoleScope *s, consoleVariable *arg[])
 {
-    const char *name = arg[0]->name().c_str();
-    char precstr[256];
-    sprintf(precstr, "%c%s", '%', arg[1]->name().c_str());
-    /*
-    cprintf("%s = %s\n",
-        (strstr(name, sc_tempVarPrefix) == name) ? "ans" : name,
-        arg[0]->e().string(precstr));*/
-    char buf[2048];
-    sprintf(buf, "%s = %s\n", (strstr(name, sc_tempVarPrefix) == name) ? "ans" : name, arg[0]->e().string(precstr));
-    cprintf(buf);
-
+    std::string name = (arg[0]->name().find(std::string(sc_tempVarPrefix)) == 0) ? std::string("ans") : arg[0]->name();
+    std::string format;
+    if (!printPrecision(arg[1]->name(), format))
+    {
+        cprintf("print(): invalid precision '%s' (use e.g. \"e\", \"1.8e\" or \"10.4f\")\n", arg[1]->name().c_str());
+        return arg[0];
+    }
+    cprintf("%s = %s\n", name.c_str(), arg[0]->e().string(format.c_str()));
     return arg[0];
 }
 
@@ -750,32 +766,21 @@ consoleVariable *cf_p3ga_cp(consoleScope *s, consoleVariable *arg[])
 // ********************************* p3ga PRINT *********************************
 consoleVariable *cf_p3ga_print(consoleScope *s, consoleVariable *arg[])
 {
-    /*	cprintf("%s = %s\n",
-            (arg[0]->name().find(std::string(sc_tempVarPrefix)) == 0) ? "ans" : arg[0]->name().c_str(),
-            arg[0]->p().string());
-
-        return arg[0];*/
     std::string name = (arg[0]->name().find(std::string(sc_tempVarPrefix)) == 0) ? std::string("ans") : arg[0]->name();
-    std::string val = arg[0]->p().string();
-    char buf[2048];
-    sprintf(buf, "%s = %s\n", name.c_str(), val.c_str());
-    cprintf(buf);
+    cprintf("%s = %s\n", name.c_str(), arg[0]->p().string());
     return arg[0];
 }
 
 consoleVariable *cf_p3ga_print_prec(consoleScope *s, consoleVariable *arg[])
 {
-    const char *name = arg[0]->name().c_str();
-    char precstr[256];
-    sprintf(precstr, "%c%s", '%', arg[1]->name().c_str());
-    /*
-    cprintf("%s = %s\n",
-        (strstr(name, sc_tempVarPrefix) == name) ? "ans" : name,
-        arg[0]->p().string(precstr));*/
-    char buf[2048];
-    sprintf(buf, "%s = %s\n", (strstr(name, sc_tempVarPrefix) == name) ? "ans" : name, arg[0]->p().string(precstr));
-    cprintf(buf);
-
+    std::string name = (arg[0]->name().find(std::string(sc_tempVarPrefix)) == 0) ? std::string("ans") : arg[0]->name();
+    std::string format;
+    if (!printPrecision(arg[1]->name(), format))
+    {
+        cprintf("print(): invalid precision '%s' (use e.g. \"e\", \"1.8e\" or \"10.4f\")\n", arg[1]->name().c_str());
+        return arg[0];
+    }
+    cprintf("%s = %s\n", name.c_str(), arg[0]->p().string(format.c_str()));
     return arg[0];
 }
 
@@ -1300,32 +1305,21 @@ consoleVariable *cf_c3ga_cp(consoleScope *s, consoleVariable *arg[])
 // ********************************* c3ga PRINT *********************************
 consoleVariable *cf_c3ga_print(consoleScope *s, consoleVariable *arg[])
 {
-    /*	cprintf("%s = %s\n",
-            (arg[0]->name().find(std::string(sc_tempVarPrefix)) == 0) ? "ans" : arg[0]->name().c_str(),
-            arg[0]->c().string());
-
-        return arg[0];*/
     std::string name = (arg[0]->name().find(std::string(sc_tempVarPrefix)) == 0) ? std::string("ans") : arg[0]->name();
-    std::string val = arg[0]->c().string();
-    char buf[2048];
-    sprintf(buf, "%s = %s\n", name.c_str(), val.c_str());
-    cprintf(buf);
+    cprintf("%s = %s\n", name.c_str(), arg[0]->c().string());
     return arg[0];
 }
 
 consoleVariable *cf_c3ga_print_prec(consoleScope *s, consoleVariable *arg[])
 {
-    const char *name = arg[0]->name().c_str();
-    char precstr[256];
-    sprintf(precstr, "%c%s", '%', arg[1]->name().c_str());
-    /*
-    cprintf("%s = %s\n",
-        (strstr(name, sc_tempVarPrefix) == name) ? "ans" : name,
-        arg[0]->c().string(precstr));*/
-    char buf[2048];
-    sprintf(buf, "%s = %s\n", (strstr(name, sc_tempVarPrefix) == name) ? "ans" : name, arg[0]->c().string(precstr));
-    cprintf(buf);
-
+    std::string name = (arg[0]->name().find(std::string(sc_tempVarPrefix)) == 0) ? std::string("ans") : arg[0]->name();
+    std::string format;
+    if (!printPrecision(arg[1]->name(), format))
+    {
+        cprintf("print(): invalid precision '%s' (use e.g. \"e\", \"1.8e\" or \"10.4f\")\n", arg[1]->name().c_str());
+        return arg[0];
+    }
+    cprintf("%s = %s\n", name.c_str(), arg[0]->c().string(format.c_str()));
     return arg[0];
 }
 
@@ -1850,32 +1844,21 @@ consoleVariable *cf_c5ga_cp(consoleScope *s, consoleVariable *arg[])
 // ********************************* c5ga PRINT *********************************
 consoleVariable *cf_c5ga_print(consoleScope *s, consoleVariable *arg[])
 {
-    /*	cprintf("%s = %s\n",
-            (arg[0]->name().find(std::string(sc_tempVarPrefix)) == 0) ? "ans" : arg[0]->name().c_str(),
-            arg[0]->c5().string());
-
-        return arg[0];*/
     std::string name = (arg[0]->name().find(std::string(sc_tempVarPrefix)) == 0) ? std::string("ans") : arg[0]->name();
-    std::string val = arg[0]->c5().string();
-    char buf[2048];
-    sprintf(buf, "%s = %s\n", name.c_str(), val.c_str());
-    cprintf(buf);
+    cprintf("%s = %s\n", name.c_str(), arg[0]->c5().string());
     return arg[0];
 }
 
 consoleVariable *cf_c5ga_print_prec(consoleScope *s, consoleVariable *arg[])
 {
-    const char *name = arg[0]->name().c_str();
-    char precstr[256];
-    sprintf(precstr, "%c%s", '%', arg[1]->name().c_str());
-    /*
-    cprintf("%s = %s\n",
-        (strstr(name, sc_tempVarPrefix) == name) ? "ans" : name,
-        arg[0]->c5().string(precstr));*/
-    char buf[2048];
-    sprintf(buf, "%s = %s\n", (strstr(name, sc_tempVarPrefix) == name) ? "ans" : name, arg[0]->c5().string(precstr));
-    cprintf(buf);
-
+    std::string name = (arg[0]->name().find(std::string(sc_tempVarPrefix)) == 0) ? std::string("ans") : arg[0]->name();
+    std::string format;
+    if (!printPrecision(arg[1]->name(), format))
+    {
+        cprintf("print(): invalid precision '%s' (use e.g. \"e\", \"1.8e\" or \"10.4f\")\n", arg[1]->name().c_str());
+        return arg[0];
+    }
+    cprintf("%s = %s\n", name.c_str(), arg[0]->c5().string(format.c_str()));
     return arg[0];
 }
 
@@ -2400,32 +2383,21 @@ consoleVariable *cf_i2ga_cp(consoleScope *s, consoleVariable *arg[])
 // ********************************* i2ga PRINT *********************************
 consoleVariable *cf_i2ga_print(consoleScope *s, consoleVariable *arg[])
 {
-    /*	cprintf("%s = %s\n",
-            (arg[0]->name().find(std::string(sc_tempVarPrefix)) == 0) ? "ans" : arg[0]->name().c_str(),
-            arg[0]->i2().string());
-
-        return arg[0];*/
     std::string name = (arg[0]->name().find(std::string(sc_tempVarPrefix)) == 0) ? std::string("ans") : arg[0]->name();
-    std::string val = arg[0]->i2().string();
-    char buf[2048];
-    sprintf(buf, "%s = %s\n", name.c_str(), val.c_str());
-    cprintf(buf);
+    cprintf("%s = %s\n", name.c_str(), arg[0]->i2().string());
     return arg[0];
 }
 
 consoleVariable *cf_i2ga_print_prec(consoleScope *s, consoleVariable *arg[])
 {
-    const char *name = arg[0]->name().c_str();
-    char precstr[256];
-    sprintf(precstr, "%c%s", '%', arg[1]->name().c_str());
-    /*
-    cprintf("%s = %s\n",
-        (strstr(name, sc_tempVarPrefix) == name) ? "ans" : name,
-        arg[0]->i2().string(precstr));*/
-    char buf[2048];
-    sprintf(buf, "%s = %s\n", (strstr(name, sc_tempVarPrefix) == name) ? "ans" : name, arg[0]->i2().string(precstr));
-    cprintf(buf);
-
+    std::string name = (arg[0]->name().find(std::string(sc_tempVarPrefix)) == 0) ? std::string("ans") : arg[0]->name();
+    std::string format;
+    if (!printPrecision(arg[1]->name(), format))
+    {
+        cprintf("print(): invalid precision '%s' (use e.g. \"e\", \"1.8e\" or \"10.4f\")\n", arg[1]->name().c_str());
+        return arg[0];
+    }
+    cprintf("%s = %s\n", name.c_str(), arg[0]->i2().string(format.c_str()));
     return arg[0];
 }
 
