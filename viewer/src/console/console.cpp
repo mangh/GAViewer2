@@ -19,84 +19,41 @@
 #include <cstdlib>
 #include <cstring>
 
-#include <sstream>
 #include <string>
 
 #include "../state.h"
 #include "console.h"
-
-// #include "consoleparse.h"
-
+#include "consolelangparser.h"
 #include "consolescope.h"
 #include "consolestatement.h"
-
-using namespace std;
-#include "ConsoleLexer.hpp"
-#include "consoleparserwrapper.h"
-#include <antlr/ANTLRException.hpp>
 
 void g_consoleCommandCallback(const char *cmd, void *cbArg)
 {
     if ((cbArg == NULL) || (cmd == NULL))
         return;
 
-    size_t l = strlen(cmd);
-    char *buf = (char *)malloc(l + 4);
-    if (buf == NULL)
-        return; // Check if malloc failed
-
-    strcpy(buf, cmd);
-
     // trim right
-    size_t i = l - 1;
-    for (; i >= 0 && isspace(buf[i]); i--)
-        ;
+    size_t l = strlen(cmd);
+    while ((l > 0) && isspace(static_cast<unsigned char>(cmd[l - 1])))
+        l--;
+    std::string buf(cmd, l);
 
-    if (i >= 0)
-    {
-        // check if last character is a ',' or ';', if not, then append ','
-        if ((buf[i] != ',') && (buf[i] != ';'))
-        {
-            strcpy(buf + i + 1, "\n,");
-        }
-        ((state *)cbArg)->consoleCommandCallback(buf);
-    }
+    // if the last character is not a ',' or ';', then append ','
+    // (an empty command is passed on as is: it resumes a suspended statement list)
+    if ((l > 0) && (buf.back() != ',') && (buf.back() != ';'))
+        buf += "\n,";
 
-    free(buf);
+    ((state *)cbArg)->consoleCommandCallback(buf.c_str());
 }
 
 consoleStmtListStmt *consoleParse(const char *cmd, const char *wd /* = NULL */)
 {
-    consoleStmtListStmt *sl = NULL;
-    string cmdStr(cmd);
-    istringstream input(cmdStr);
-
     if (wd)
         g_state->setWorkingDirectory(wd);
     else
         g_state->setWorkingDirectory(g_state->m_initialWorkingDirectory);
 
-    try
-    {
-        ConsoleLexer lexer(input);
-        ConsoleParserWrapper parser(lexer);
-        sl = parser.input();
-    }
-    catch (ANTLRException &)
-    {
-    }
-    catch (...)
-    {
-        cprintf("Non-ANTLRException during parsing\n");
-    }
-
-    /*	if (sl) { // temp test
-            char *readStr = sl->string();
-            printf("read: '%s'\n", readStr);
-            free(readStr);
-        }*/
-
-    return sl;
+    return consoleParseSource(cmd);
 }
 
 int state::consoleCommandCallback(const char *cmd)

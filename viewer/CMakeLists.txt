@@ -43,9 +43,8 @@ add_library(${core} STATIC
   "${GAVR_SOURCE_DIR}/console/consolefunctions.cpp"
   "${GAVR_SOURCE_DIR}/console/consolegafile.cpp"
   "${GAVR_SOURCE_DIR}/console/consolegeneratedfunctions.cpp"
-  "${GAVR_SOURCE_DIR}/console/ConsoleLexer.cpp"
+  "${GAVR_SOURCE_DIR}/console/consolelangparser.cpp"
   "${GAVR_SOURCE_DIR}/console/consoleoperators.cpp"
-  "${GAVR_SOURCE_DIR}/console/ConsoleParser.cpp"
   "${GAVR_SOURCE_DIR}/console/consolescope.cpp"
   "${GAVR_SOURCE_DIR}/console/consolesourcefileread.cpp"
   "${GAVR_SOURCE_DIR}/console/consolestatement.cpp"
@@ -206,7 +205,6 @@ target_link_libraries(${core}
   PUBLIC fltk::png
   PUBLIC fltk::gl
   PUBLIC fltk::fltk
-  PUBLIC antlr2::antlr2
 )
 target_link_libraries(${target}
   PRIVATE ${core}

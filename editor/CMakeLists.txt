@@ -115,7 +115,6 @@ target_link_libraries(${target}
   PRIVATE fltk::png
   PRIVATE fltk::gl
   PRIVATE fltk::fltk
-  # PRIVATE antlr2::antlr2
 )
 
 # Take advantage of interprocedural optimization (IPO/LTO), if available:

@@ -19,20 +19,13 @@
 #include <cstring>
 
 #include <fstream>
-#include <iostream>
-#include <string>
-// #include <ios>
+#include <sstream>
 
 #include "../osdep.h"
 #include "../state.h"
-#include "console.h"
+#include "consolelangparser.h"
 #include "consolescope.h"
 #include "consolestatement.h"
-
-using namespace std;
-
-#include "ConsoleLexer.hpp"
-#include "consoleparserwrapper.h"
 
 /*
 Read a source file, parses it, and adds possible functions to the global scope.
@@ -46,17 +39,15 @@ int state::consoleSourceFileRead(const char *filename)
 
     setWorkingDirectory(filename, true);
 
-    try
+    std::ifstream input(filename); // text mode: line endings are normalized
+    if (!input)
     {
-        std::fstream input(filename, std::ios::in);
-        ConsoleLexer lexer(input);
-        ConsoleParserWrapper parser(lexer);
-        sl = parser.input();
+        cprintf("\nstate::consoleSourceFileRead(): could not open '%s'\n", filename);
+        return -1;
     }
-    catch (...)
-    {
-        cprintf("state::consoleSourceFileRead(): exception while reading or parsing '%s'\n", filename);
-    }
+    std::ostringstream source;
+    source << input.rdbuf();
+    sl = consoleParseSource(source.str(), filename);
 
     if (sl)
     {

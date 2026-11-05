@@ -763,8 +763,7 @@ void ui_menuCallback(Fl_Widget *W, void *Data)
                    "\nGAViewer makes use of the following great libraries/programs:\n\n"
                    "-flex and byacc (label typesetting parser)\n"
                    "-zlib and libpng (reading and writing images)\n"
-                   "-FLTK (user interface)\n"
-                   "-ANTLR (console parser and internal programming language)\n",
+                   "-FLTK (user interface)\n",
                    g_version);
         break;
     case MI_START_ANIMATION:
