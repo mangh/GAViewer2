@@ -49,6 +49,16 @@ GAViewer2
 ```
 ```
 
+### Build Targets (`viewer/CMakeLists.txt`)
+
+| Target | Contents |
+|--------|----------|
+| `gaviewer_e3ga`, `gaviewer_p3ga`, `gaviewer_c3ga`, `gaviewer_c5ga`, `gaviewer_i2ga` | one static library per algebra (Gaigen generated `src/<name>/*.cpp`), no dependencies on the rest of GAViewer; the unit to swap for a Garamon implementation |
+| `gaviewer_algebras` | interface library bundling the five algebras |
+| `gaviewer_core` | everything else except `main.cpp` (console, objects, `mvInt`, GUI, …); links `gaviewer_algebras` and FLTK |
+| `GAViewer2` | the GUI application: `main.cpp` + `gaviewer_core` |
+| `gaviewer_regress` | the headless regression harness (`viewer/test`) + `gaviewer_core` |
+
 ### Key Types
 
 | Type | Role |
