@@ -29,7 +29,6 @@ GAViewer2
 ├───fltk                  ← FLTK cross-platform C++ GUI toolkit
 |
 └───viewer                ← GAViewer source code
-    ├───codegen           ← unused
     ├───test              ← headless regression tests (gaviewer_regress, golden files)
     └───src
         ├───c3ga          ← c3ga algebra (most likely generated using Gaigen 1)
@@ -54,7 +53,8 @@ GAViewer2
 
 | Type | Role |
 |------|------|
-|      |      |
+| `consoleFunc` (`console/consolefunction.h`) | entry of the built-in function table: name, function pointer, argument specs (`CVF_*` flags + model id `MVI_*`); the table is `consoleBuiltinFunctions()` |
+| `consoleAlgebra<MV>` (`console/consolealgebra.h`) | the console's binding of a multivector type (`e3ga`, `p3ga`, `c3ga`, `c5ga`, `i2ga`) to its model id, cast and factor setter; `mv<MV>(cv)` accesses a variable's multivector; `forEachConsoleAlgebra` iterates the algebras |
 
 ### Error Recovery
 
@@ -97,6 +97,8 @@ cmake --build build --target regress_update_golden              # regenerate gol
 ---
 
 ## Common Tasks
+
+- Add a built-in console function: if it exists for every algebra, write it as a template `cf_xxx<MV>` in `console/consolealgebrafunctions.cpp` and add its entry to `algebraFunctions()` (`M` = model id of `MV`); otherwise write it in `console/consolegeneralfunctions.cpp` and add it to `c_generalConsoleFunc[]`. Document it in `cf_help()`. (There is no code generator any more: the former `consolecodetemplates.txt` / `codegen` tool were replaced by these templates.)
 
 ---
 

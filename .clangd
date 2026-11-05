@@ -13,11 +13,10 @@ Diagnostics:
   # ClangTidy:
   #   Add: [modernize-*]
 ---
-# Generated code (Gaigen, codegen, flex/bison): leave includes as generated
+# Generated code (Gaigen, flex/bison): leave includes as generated
 If:
   PathMatch:
     - viewer/src/(c3ga|c5ga|e3ga|i2ga|p3ga)/.*
-    - viewer/src/console/consolegeneratedfunctions\.cpp
     - viewer/src/typeset/font(lex|yacc)\..*
 Diagnostics:
   UnusedIncludes: None

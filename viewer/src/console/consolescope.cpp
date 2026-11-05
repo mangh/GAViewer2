@@ -982,12 +982,8 @@ consoleGlobalScope::consoleGlobalScope(consoleGlobalScope *m_parent /* = NULL*/)
         setFlag(CSF_SUSPEND_ALLOWED, 1); // the only place where suspend is allowed
 
     // add all predefined functions
-    int i = 0;
-    while (c_consoleFunc[i].name)
-    {
-        addFunction(c_consoleFunc + i);
-        i++;
-    }
+    for (const consoleFunc *f = consoleBuiltinFunctions(); f->name; f++)
+        addFunction(f);
 
     m_defaultModel = -1;
     m_ip = "hip";

@@ -18,6 +18,7 @@
 #define _CONSOLE_FUNCTION_H_
 
 #include <string>
+#include <vector>
 
 class consoleFuncStmt;
 class consoleVariable;
@@ -53,7 +54,13 @@ typedef struct consoleFunc_s
     int arg[maxConsoleFuncArg];
 } consoleFunc;
 
-extern const consoleFunc c_consoleFunc[];
+// All built-in console functions: the general ones (consolegeneralfunctions.cpp)
+// followed by those of every algebra (consolealgebrafunctions.cpp).
+// The table is terminated by an entry with name == NULL.
+const consoleFunc *consoleBuiltinFunctions();
+
+// appends the built-in functions of every algebra to 'table'
+void appendAlgebraFunctions(std::vector<consoleFunc> &table);
 
 // executes function with name 'name'
 // frees all resources in 'cv'
