@@ -1,0 +1,1275 @@
+# gaviewer_regress
+# command: FIG_1_4();
+== load ==
+Parsing '<dir>/FIGS.g'
+Parsing '<dir>/FIG_10_2.g'
+Parsing '<dir>/FIG_10_3.g'
+Parsing '<dir>/FIG_10_4.g'
+Parsing '<dir>/FIG_11_1.g'
+Parsing '<dir>/FIG_11_10.g'
+Parsing '<dir>/FIG_11_12.g'
+Parsing '<dir>/FIG_11_2.g'
+Parsing '<dir>/FIG_11_5.g'
+Parsing '<dir>/FIG_11_6.g'
+Parsing '<dir>/FIG_12_1.g'
+Parsing '<dir>/FIG_12_2.g'
+Parsing '<dir>/FIG_12_3.g'
+Parsing '<dir>/FIG_12_4.g'
+Parsing '<dir>/FIG_12_5.g'
+Parsing '<dir>/FIG_13_2.g'
+Parsing '<dir>/FIG_13_3.g'
+Parsing '<dir>/FIG_13_4.g'
+Parsing '<dir>/FIG_13_6.g'
+Parsing '<dir>/FIG_13_7.g'
+Parsing '<dir>/FIG_14_1.g'
+Parsing '<dir>/FIG_14_10.g'
+Parsing '<dir>/FIG_14_2.g'
+Parsing '<dir>/FIG_14_3.g'
+Parsing '<dir>/FIG_14_4.g'
+Parsing '<dir>/FIG_14_6.g'
+Parsing '<dir>/FIG_14_7.g'
+Parsing '<dir>/FIG_14_9.g'
+Parsing '<dir>/FIG_15_1.g'
+Parsing '<dir>/FIG_15_13.g'
+Parsing '<dir>/FIG_15_2.g'
+Parsing '<dir>/FIG_15_3.g'
+Parsing '<dir>/FIG_15_4.g'
+Parsing '<dir>/FIG_15_5.g'
+Parsing '<dir>/FIG_15_6.g'
+Parsing '<dir>/FIG_15_7.g'
+Parsing '<dir>/FIG_15_8.g'
+Parsing '<dir>/FIG_15_9.g'
+Parsing '<dir>/FIG_16_1.g'
+Parsing '<dir>/FIG_16_10.g'
+Parsing '<dir>/FIG_16_11.g'
+Parsing '<dir>/FIG_16_12.g'
+Parsing '<dir>/FIG_16_13.g'
+Parsing '<dir>/FIG_16_2.g'
+Parsing '<dir>/FIG_16_3.g'
+Parsing '<dir>/FIG_16_6.g'
+Parsing '<dir>/FIG_16_7.g'
+Parsing '<dir>/FIG_16_8.g'
+Parsing '<dir>/FIG_16_9.g'
+Parsing '<dir>/FIG_1_1.g'
+Parsing '<dir>/FIG_1_3.g'
+Parsing '<dir>/FIG_1_4.g'
+Parsing '<dir>/FIG_23_3.g'
+Parsing '<dir>/FIG_2_1.g'
+Parsing '<dir>/FIG_2_14.g'
+Parsing '<dir>/FIG_2_2.g'
+Parsing '<dir>/FIG_2_3.g'
+Parsing '<dir>/FIG_2_4.g'
+Parsing '<dir>/FIG_2_5.g'
+Parsing '<dir>/FIG_2_6.g'
+Parsing '<dir>/FIG_2_7.g'
+Parsing '<dir>/FIG_2_8.g'
+Parsing '<dir>/FIG_3_1.g'
+Parsing '<dir>/FIG_3_2.g'
+Parsing '<dir>/FIG_3_3.g'
+Parsing '<dir>/FIG_3_4.g'
+Parsing '<dir>/FIG_3_5.g'
+Parsing '<dir>/FIG_3_6.g'
+Parsing '<dir>/FIG_3_7.g'
+Parsing '<dir>/FIG_3_8.g'
+Parsing '<dir>/FIG_4_1.g'
+Parsing '<dir>/FIG_4_2.g'
+Parsing '<dir>/FIG_4_3.g'
+Parsing '<dir>/FIG_5_1.g'
+Parsing '<dir>/FIG_5_2.g'
+Parsing '<dir>/FIG_5_3.g'
+Parsing '<dir>/FIG_6_1.g'
+Parsing '<dir>/FIG_6_2.g'
+Parsing '<dir>/FIG_6_3.g'
+Parsing '<dir>/FIG_6_4.g'
+Parsing '<dir>/FIG_6_5.g'
+Parsing '<dir>/FIG_7_1.g'
+Parsing '<dir>/FIG_7_2.g'
+Parsing '<dir>/FIG_7_3.g'
+Parsing '<dir>/FIG_7_6.g'
+Parsing '<dir>/FIG_7_7.g'
+Parsing '<dir>/FIG_7_8.g'
+Parsing '<dir>/FIG_8_1.g'
+Parsing '<dir>/FIG_8_2.g'
+Parsing '<dir>/FIG_8_3.g'
+Parsing '<dir>/Log.g'
+Parsing '<dir>/factored.g'
+Parsing '<dir>/init.g'Constant 'I3' not foundConstant 'I5' not found
+Parsing '<dir>/orbiter.g'
+Parsing '<dir>/orient.g'
+Parsing '<dir>/pantilt.g'
+Parsing '<dir>/unit.g'
+Parsing '<dir>/vtrail.g'
+== frame 0 ==
+-- console --
+INIT: model is e3ga
+INIT: inner product is left contraction
+fontsize 24
+a = 1.00*e1
+b = 1.00*e1 + 1.00*e2
+ab = 1.00*e1^e2
+-- objects --
+object   pan/tilt control ? e3ga drawMode=0x70 color=0 0 0 1
+  mv
+    1 1
+  int type=0x2108 valid=1
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1 0
+object a e3ga drawMode=0x30 color=1 0 0 1
+  mv
+    e1 1
+  int type=0x2109 valid=1
+    point0 1 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 1 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1 0
+object a_label text drawMode=0x0 color=0 0 0 1
+  text "\bold{a}"
+  at a
+object ab e3ga drawMode=0x30 color=1 0 0 0.5
+  mv
+    e1^e2 1
+  int type=0x210a valid=1
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 1
+    vector1 1 0 0
+    vector2 1 1 0
+    vector3 0 0 0
+    scalar 1 0
+object autocolor e3ga drawMode=0x150 color=1 0 0 1
+  mv
+    1 1
+  int type=0x2108 valid=1
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1 0
+object b e3ga drawMode=0x30 color=1 0 0 1
+  mv
+    e1 1
+    e2 1
+  int type=0x2109 valid=1
+    point0 1 1 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0.7071067812 0.7071067812 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1.414213562 0
+object b_label text drawMode=0x0 color=0 0 0 1
+  text "\bold{b}"
+  at b
+object camori e3ga drawMode=0x150 color=1 0 0 1
+  mv
+    1 1
+    e2^e3 -0.3093362496
+  int type=0x2200 valid=1
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 -1 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1.046751602 0.6
+object campos e3ga drawMode=0x170 color=1 0 0 1
+  mv
+    e3 11
+  int type=0x2109 valid=1
+    point0 0 0 11
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 1
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 11 0
+object pan e3ga drawMode=0x70 color=0 0 0 1
+  mv
+  int type=0x2000 valid=0
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 0 0
+object panstart e3ga drawMode=0x70 color=0 0 0 1
+  mv
+  int type=0x2000 valid=0
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 0 0
+object tilt e3ga drawMode=0x70 color=0 0 0 1
+  mv
+    1 0.6
+  int type=0x2108 valid=1
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 0.6 0
+object tiltstart e3ga drawMode=0x70 color=0 0 0 1
+  mv
+    1 0.6
+  int type=0x2108 valid=1
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 0.6 0
+== frame 1 ==
+-- console --
+INIT: model is e3ga
+INIT: inner product is left contraction
+fontsize 24
+a = 1.00*e1
+b = 1.00*e1 + 1.00*e2
+c = 1.00*e3
+abc = 1.00*e1^e2^e3
+-- objects --
+object   pan/tilt control ? e3ga drawMode=0x70 color=0 0 0 1
+  mv
+    1 1
+  int type=0x2108 valid=1
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1 0
+object a e3ga drawMode=0x30 color=1 0 0 1
+  mv
+    e1 1
+  int type=0x2109 valid=1
+    point0 1 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 1 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1 0
+object a_label text drawMode=0x0 color=0 0 0 1
+  text "\bold{a}"
+  at a
+object abc e3ga drawMode=0x30 color=0 1 0 0.5
+  mv
+    e1^e2^e3 1
+  int type=0x210b valid=1
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 1 0 0
+    vector1 1 1 0
+    vector2 0 0 1
+    vector3 0 0 0
+    scalar 1 0
+object autocolor e3ga drawMode=0x150 color=0 0 0 1
+  mv
+    1 1
+  int type=0x2108 valid=1
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1 0
+object b e3ga drawMode=0x30 color=1 0 0 1
+  mv
+    e1 1
+    e2 1
+  int type=0x2109 valid=1
+    point0 1 1 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0.7071067812 0.7071067812 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1.414213562 0
+object b_label text drawMode=0x0 color=0 0 0 1
+  text "\bold{b}"
+  at b
+object c e3ga drawMode=0x30 color=1 0 0 1
+  mv
+    e3 1
+  int type=0x2109 valid=1
+    point0 0 0 1
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 1
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1 0
+object c_label text drawMode=0x0 color=0 0 0 1
+  text "\bold{c}"
+  at c
+object camori e3ga drawMode=0x150 color=0 0 0 1
+  mv
+    1 1
+    e2^e3 -0.3093362496
+  int type=0x2200 valid=1
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 -1 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1.046751602 0.6
+object campos e3ga drawMode=0x170 color=0 0 0 1
+  mv
+    e3 11
+  int type=0x2109 valid=1
+    point0 0 0 11
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 1
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 11 0
+object pan e3ga drawMode=0x70 color=0 0 0 1
+  mv
+  int type=0x2000 valid=0
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 0 0
+object panstart e3ga drawMode=0x70 color=0 0 0 1
+  mv
+  int type=0x2000 valid=0
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 0 0
+object tilt e3ga drawMode=0x70 color=0 0 0 1
+  mv
+    1 0.6
+  int type=0x2108 valid=1
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 0.6 0
+object tiltstart e3ga drawMode=0x70 color=0 0 0 1
+  mv
+    1 0.6
+  int type=0x2108 valid=1
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 0.6 0
+== frame 2 ==
+-- console --
+INIT: model is p3ga
+INIT: inner product is left contraction
+fontsize 24
+a = 1.00*e1 + 1.00*e0
+b = 1.00*e1 + 1.00*e2 + 1.00*e0
+ab = 1.00*e1^e2 + -1.00*e2^e0
+-- objects --
+object   pan/tilt control ? e3ga drawMode=0x70 color=0 0 0 1
+  mv
+    1 1
+  int type=0x2108 valid=1
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1 0
+object a p3ga drawMode=0x30 color=1 0 0 1
+  mv
+    e1 1
+    e0 1
+  int type=0x4120 valid=1
+    point0 1 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1 0
+object a_label text drawMode=0x0 color=0 0 0 1
+  text "\eqn{a}"
+  at a
+object ab p3ga drawMode=0x10 color=0 0 1 1
+  mv
+    e1^e2 1
+    e2^e0 -1
+  int type=0x4143 valid=1
+    point0 1 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 1 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1 0
+object autocolor p3ga drawMode=0x170 color=0 0 0 1
+  mv
+    1 1
+  int type=0x4108 valid=1
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1 0
+object b p3ga drawMode=0x30 color=1 0 0 1
+  mv
+    e1 1
+    e2 1
+    e0 1
+  int type=0x4120 valid=1
+    point0 1 1 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1 0
+object b_label text drawMode=0x0 color=0 0 0 1
+  text "\eqn{b}"
+  at b
+object camori p3ga drawMode=0x170 color=0 0 0 1
+  mv
+    1 1
+    e2^e3 -0.3093362496
+  int type=0x4000 valid=0
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 0 0
+object campos e3ga drawMode=0x170 color=0 0 0 1
+  mv
+    e3 11
+  int type=0x2109 valid=1
+    point0 0 0 11
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 1
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 11 0
+object pan e3ga drawMode=0x70 color=0 0 0 1
+  mv
+  int type=0x2000 valid=0
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 0 0
+object panstart p3ga drawMode=0x70 color=0 0 0 1
+  mv
+  int type=0x4100 valid=1
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 0 0
+object tilt e3ga drawMode=0x70 color=0 0 0 1
+  mv
+    1 0.6
+  int type=0x2108 valid=1
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 0.6 0
+object tiltstart p3ga drawMode=0x70 color=0 0 0 1
+  mv
+    1 0.6
+  int type=0x4108 valid=1
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 0.6 0
+== frame 3 ==
+-- console --
+INIT: model is p3ga
+INIT: inner product is left contraction
+fontsize 24
+a = 1.00*e1 + 1.00*e0
+b = 1.00*e1 + 1.00*e2 + 1.00*e0
+c = 1.00*e3 + 1.00*e0
+abc = 1.00*e2^e3^e0 + 1.00*e1^e2^e0 + 1.00*e1^e2^e3
+-- objects --
+object   pan/tilt control ? e3ga drawMode=0x70 color=0 0 0 1
+  mv
+    1 1
+  int type=0x2108 valid=1
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1 0
+object a p3ga drawMode=0x30 color=1 0 0 1
+  mv
+    e1 1
+    e0 1
+  int type=0x4120 valid=1
+    point0 1 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1 0
+object a_label text drawMode=0x0 color=0 0 0 1
+  text "\eqn{a}"
+  at a
+object abc p3ga drawMode=0x0 color=1 1 0 1
+  mv
+    e2^e3^e0 1
+    e1^e2^e0 1
+    e1^e2^e3 1
+  int type=0x4144 valid=1
+    point0 0.5 0 0.5
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0.7071067812 0 0.7071067812
+    vector1 0.7071067812 0 -0.7071067812
+    vector2 0 1 0
+    vector3 0 0 0
+    scalar 1.414213562 0
+object autocolor p3ga drawMode=0x170 color=0 0 0 1
+  mv
+    1 1
+  int type=0x4108 valid=1
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1 0
+object b p3ga drawMode=0x30 color=1 0 0 1
+  mv
+    e1 1
+    e2 1
+    e0 1
+  int type=0x4120 valid=1
+    point0 1 1 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1 0
+object b_label text drawMode=0x0 color=0 0 0 1
+  text "\eqn{b}"
+  at b
+object c p3ga drawMode=0x30 color=1 0 0 1
+  mv
+    e3 1
+    e0 1
+  int type=0x4120 valid=1
+    point0 0 0 1
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1 0
+object c_label text drawMode=0x0 color=0 0 0 1
+  text "\eqn{c}"
+  at c
+object camori p3ga drawMode=0x170 color=0 0 0 1
+  mv
+    1 1
+    e2^e3 -0.3093362496
+  int type=0x4000 valid=0
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 0 0
+object campos e3ga drawMode=0x170 color=0 0 0 1
+  mv
+    e3 11
+  int type=0x2109 valid=1
+    point0 0 0 11
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 1
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 11 0
+object pan e3ga drawMode=0x70 color=0 0 0 1
+  mv
+  int type=0x2000 valid=0
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 0 0
+object panstart p3ga drawMode=0x70 color=0 0 0 1
+  mv
+  int type=0x4100 valid=1
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 0 0
+object tilt e3ga drawMode=0x70 color=0 0 0 1
+  mv
+    1 0.6
+  int type=0x2108 valid=1
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 0.6 0
+object tiltstart p3ga drawMode=0x70 color=0 0 0 1
+  mv
+    1 0.6
+  int type=0x4108 valid=1
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 0.6 0
+== frame 4 ==
+-- console --
+INIT: model is c3ga
+INIT: inner product is left contraction
+fontsize 24
+a = 1.00*e1 + 1.00*no + 0.50*ni
+b = 1.00*e1 + 1.00*e2 + 1.00*no + 1.00*ni
+c = 1.00*e3 + 1.00*no + 0.50*ni
+abc = 1.00*e1^e2^e3 + 1.00*e1^e2^no + 1.00*e2^e3^no + 0.50*e1^e2^ni + -0.50*e1^e3^ni + 0.50*e2^e3^ni + -0.50*e1^no^ni + 0.50*e3^no^ni
+-- objects --
+object   pan/tilt control ? e3ga drawMode=0x70 color=0 0 0 1
+  mv
+    1 1
+  int type=0x2108 valid=1
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1 0
+object a c3ga drawMode=0x10 color=1 0 0 1
+  mv
+    e1 1
+    no 1
+    ni 0.5
+  int type=0x6120 valid=1
+    point0 1 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1 0
+object a_label text drawMode=0x0 color=0 0 0 1
+  text "\eqn{a}"
+  at a
+object abc c3ga drawMode=0x12 color=0 1 0 1
+  mv
+    e1^e2^e3 1
+    e1^e2^no 1
+    e2^e3^no 1
+    e1^e2^ni 0.5
+    e1^e3^ni -0.5
+    e2^e3^ni 0.5
+    e1^no^ni -0.5
+    e3^no^ni 0.5
+  int type=0x6183 valid=1
+    point0 0.5 0.5 0.5
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0.7071067812 0 0.7071067812
+    vector1 0.9036020036 0 -0.9036020036
+    vector2 0 1.277886208 0
+    vector3 0 0 0
+    scalar 0.8660254038 1.414213562
+object autocolor c3ga drawMode=0x170 color=0 0 0 1
+  mv
+    1 1
+  int type=0x6108 valid=1
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar -1 0
+object b c3ga drawMode=0x10 color=1 0 0 1
+  mv
+    e1 1
+    e2 1
+    no 1
+    ni 1
+  int type=0x6120 valid=1
+    point0 1 1 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1 0
+object b_label text drawMode=0x0 color=0 0 0 1
+  text "\eqn{b}"
+  at b
+object c c3ga drawMode=0x10 color=1 0 0 1
+  mv
+    e3 1
+    no 1
+    ni 0.5
+  int type=0x6120 valid=1
+    point0 0 0 1
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1 0
+object c_label text drawMode=0x0 color=0 0 0 1
+  text "\eqn{c}"
+  at c
+object camori c3ga drawMode=0x170 color=0 0 0 1
+  mv
+    1 1
+    e2^e3 -0.3093362496
+  int type=0x6000 valid=0
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 0 0
+object campos e3ga drawMode=0x170 color=0 0 0 1
+  mv
+    e3 11
+  int type=0x2109 valid=1
+    point0 0 0 11
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 1
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 11 0
+object pan e3ga drawMode=0x70 color=0 0 0 1
+  mv
+  int type=0x2000 valid=0
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 0 0
+object panstart c3ga drawMode=0x70 color=0 0 0 1
+  mv
+  int type=0x6100 valid=1
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 0 0
+object tilt e3ga drawMode=0x70 color=0 0 0 1
+  mv
+    1 0.6
+  int type=0x2108 valid=1
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 0.6 0
+object tiltstart c3ga drawMode=0x70 color=0 0 0 1
+  mv
+    1 0.6
+  int type=0x6108 valid=1
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar -0.6 0
+== frame 5 ==
+-- console --
+INIT: model is c3ga
+INIT: inner product is left contraction
+fontsize 24
+a = 1.00*e1 + 1.00*no + 0.50*ni
+b = 1.00*e1 + 1.00*e2 + 1.00*no + 1.00*ni
+c = 1.00*e3 + 1.00*no + 0.50*ni
+d = -1.00*e3 + 1.00*no + 0.50*ni
+abc = 2.00*e1^e2^e3^no + 1.00*e1^e2^e3^ni + 1.00*e1^e3^no^ni
+-- objects --
+object   pan/tilt control ? e3ga drawMode=0x70 color=0 0 0 1
+  mv
+    1 1
+  int type=0x2108 valid=1
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1 0
+object a c3ga drawMode=0x10 color=1 0 0 1
+  mv
+    e1 1
+    no 1
+    ni 0.5
+  int type=0x6120 valid=1
+    point0 1 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1 0
+object a_label text drawMode=0x0 color=0 0 0 1
+  text "\eqn{a}"
+  at a
+object abc c3ga drawMode=0x12 color=1 1 0 0.5
+  mv
+    e1^e2^e3^no 2
+    e1^e2^e3^ni 1
+    e1^e3^no^ni 1
+  int type=0x6184 valid=1
+    point0 0 0.5 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1.118033989 2
+object autocolor c3ga drawMode=0x170 color=0 0 0 1
+  mv
+    1 1
+  int type=0x6108 valid=1
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar -1 0
+object b c3ga drawMode=0x10 color=1 0 0 1
+  mv
+    e1 1
+    e2 1
+    no 1
+    ni 1
+  int type=0x6120 valid=1
+    point0 1 1 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1 0
+object b_label text drawMode=0x0 color=0 0 0 1
+  text "\eqn{b}"
+  at b
+object c c3ga drawMode=0x10 color=1 0 0 1
+  mv
+    e3 1
+    no 1
+    ni 0.5
+  int type=0x6120 valid=1
+    point0 0 0 1
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1 0
+object c_label text drawMode=0x0 color=0 0 0 1
+  text "\eqn{c}"
+  at c
+object camori c3ga drawMode=0x170 color=0 0 0 1
+  mv
+    1 1
+    e2^e3 -0.3093362496
+  int type=0x6000 valid=0
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 0 0
+object campos e3ga drawMode=0x170 color=0 0 0 1
+  mv
+    e3 11
+  int type=0x2109 valid=1
+    point0 0 0 11
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 1
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 11 0
+object d c3ga drawMode=0x10 color=1 0 0 1
+  mv
+    e3 -1
+    no 1
+    ni 0.5
+  int type=0x6120 valid=1
+    point0 0 0 -1
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1 0
+object d_label text drawMode=0x0 color=0 0 0 1
+  text "\eqn{d}"
+  at d
+object pan e3ga drawMode=0x70 color=0 0 0 1
+  mv
+  int type=0x2000 valid=0
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 0 0
+object panstart c3ga drawMode=0x70 color=0 0 0 1
+  mv
+  int type=0x6100 valid=1
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 0 0
+object tilt e3ga drawMode=0x70 color=0 0 0 1
+  mv
+    1 0.6
+  int type=0x2108 valid=1
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 0.6 0
+object tiltstart c3ga drawMode=0x70 color=0 0 0 1
+  mv
+    1 0.6
+  int type=0x6108 valid=1
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar -0.6 0
+== frame 6 ==
+-- console --
+-- objects --
+object   pan/tilt control ? e3ga drawMode=0x70 color=0 0 0 1
+  mv
+    1 1
+  int type=0x2108 valid=1
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1 0
+object a c3ga drawMode=0x10 color=1 0 0 1
+  mv
+    e1 1
+    no 1
+    ni 0.5
+  int type=0x6120 valid=1
+    point0 1 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1 0
+object a_label text drawMode=0x0 color=0 0 0 1
+  text "\eqn{a}"
+  at a
+object abc c3ga drawMode=0x12 color=1 1 0 0.5
+  mv
+    e1^e2^e3^no 2
+    e1^e2^e3^ni 1
+    e1^e3^no^ni 1
+  int type=0x6184 valid=1
+    point0 0 0.5 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1.118033989 2
+object autocolor c3ga drawMode=0x170 color=0 0 0 1
+  mv
+    1 1
+  int type=0x6108 valid=1
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar -1 0
+object b c3ga drawMode=0x10 color=1 0 0 1
+  mv
+    e1 1
+    e2 1
+    no 1
+    ni 1
+  int type=0x6120 valid=1
+    point0 1 1 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1 0
+object b_label text drawMode=0x0 color=0 0 0 1
+  text "\eqn{b}"
+  at b
+object c c3ga drawMode=0x10 color=1 0 0 1
+  mv
+    e3 1
+    no 1
+    ni 0.5
+  int type=0x6120 valid=1
+    point0 0 0 1
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1 0
+object c_label text drawMode=0x0 color=0 0 0 1
+  text "\eqn{c}"
+  at c
+object camori c3ga drawMode=0x170 color=0 0 0 1
+  mv
+    1 1
+    e2^e3 -0.3093362496
+  int type=0x6000 valid=0
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 0 0
+object campos e3ga drawMode=0x170 color=0 0 0 1
+  mv
+    e3 11
+  int type=0x2109 valid=1
+    point0 0 0 11
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 1
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 11 0
+object d c3ga drawMode=0x10 color=1 0 0 1
+  mv
+    e3 -1
+    no 1
+    ni 0.5
+  int type=0x6120 valid=1
+    point0 0 0 -1
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1 0
+object d_label text drawMode=0x0 color=0 0 0 1
+  text "\eqn{d}"
+  at d
+object pan e3ga drawMode=0x70 color=0 0 0 1
+  mv
+  int type=0x2000 valid=0
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 0 0
+object panstart c3ga drawMode=0x70 color=0 0 0 1
+  mv
+  int type=0x6100 valid=1
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 0 0
+object tilt e3ga drawMode=0x70 color=0 0 0 1
+  mv
+    1 0.6
+  int type=0x2108 valid=1
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 0.6 0
+object tiltstart c3ga drawMode=0x70 color=0 0 0 1
+  mv
+    1 0.6
+  int type=0x6108 valid=1
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar -0.6 0

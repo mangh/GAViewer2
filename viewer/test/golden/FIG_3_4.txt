@@ -1,0 +1,239 @@
+# gaviewer_regress
+# command: FIG_3_4();
+== load ==
+Parsing '<dir>/FIGS.g'
+Parsing '<dir>/FIG_10_2.g'
+Parsing '<dir>/FIG_10_3.g'
+Parsing '<dir>/FIG_10_4.g'
+Parsing '<dir>/FIG_11_1.g'
+Parsing '<dir>/FIG_11_10.g'
+Parsing '<dir>/FIG_11_12.g'
+Parsing '<dir>/FIG_11_2.g'
+Parsing '<dir>/FIG_11_5.g'
+Parsing '<dir>/FIG_11_6.g'
+Parsing '<dir>/FIG_12_1.g'
+Parsing '<dir>/FIG_12_2.g'
+Parsing '<dir>/FIG_12_3.g'
+Parsing '<dir>/FIG_12_4.g'
+Parsing '<dir>/FIG_12_5.g'
+Parsing '<dir>/FIG_13_2.g'
+Parsing '<dir>/FIG_13_3.g'
+Parsing '<dir>/FIG_13_4.g'
+Parsing '<dir>/FIG_13_6.g'
+Parsing '<dir>/FIG_13_7.g'
+Parsing '<dir>/FIG_14_1.g'
+Parsing '<dir>/FIG_14_10.g'
+Parsing '<dir>/FIG_14_2.g'
+Parsing '<dir>/FIG_14_3.g'
+Parsing '<dir>/FIG_14_4.g'
+Parsing '<dir>/FIG_14_6.g'
+Parsing '<dir>/FIG_14_7.g'
+Parsing '<dir>/FIG_14_9.g'
+Parsing '<dir>/FIG_15_1.g'
+Parsing '<dir>/FIG_15_13.g'
+Parsing '<dir>/FIG_15_2.g'
+Parsing '<dir>/FIG_15_3.g'
+Parsing '<dir>/FIG_15_4.g'
+Parsing '<dir>/FIG_15_5.g'
+Parsing '<dir>/FIG_15_6.g'
+Parsing '<dir>/FIG_15_7.g'
+Parsing '<dir>/FIG_15_8.g'
+Parsing '<dir>/FIG_15_9.g'
+Parsing '<dir>/FIG_16_1.g'
+Parsing '<dir>/FIG_16_10.g'
+Parsing '<dir>/FIG_16_11.g'
+Parsing '<dir>/FIG_16_12.g'
+Parsing '<dir>/FIG_16_13.g'
+Parsing '<dir>/FIG_16_2.g'
+Parsing '<dir>/FIG_16_3.g'
+Parsing '<dir>/FIG_16_6.g'
+Parsing '<dir>/FIG_16_7.g'
+Parsing '<dir>/FIG_16_8.g'
+Parsing '<dir>/FIG_16_9.g'
+Parsing '<dir>/FIG_1_1.g'
+Parsing '<dir>/FIG_1_3.g'
+Parsing '<dir>/FIG_1_4.g'
+Parsing '<dir>/FIG_23_3.g'
+Parsing '<dir>/FIG_2_1.g'
+Parsing '<dir>/FIG_2_14.g'
+Parsing '<dir>/FIG_2_2.g'
+Parsing '<dir>/FIG_2_3.g'
+Parsing '<dir>/FIG_2_4.g'
+Parsing '<dir>/FIG_2_5.g'
+Parsing '<dir>/FIG_2_6.g'
+Parsing '<dir>/FIG_2_7.g'
+Parsing '<dir>/FIG_2_8.g'
+Parsing '<dir>/FIG_3_1.g'
+Parsing '<dir>/FIG_3_2.g'
+Parsing '<dir>/FIG_3_3.g'
+Parsing '<dir>/FIG_3_4.g'
+Parsing '<dir>/FIG_3_5.g'
+Parsing '<dir>/FIG_3_6.g'
+Parsing '<dir>/FIG_3_7.g'
+Parsing '<dir>/FIG_3_8.g'
+Parsing '<dir>/FIG_4_1.g'
+Parsing '<dir>/FIG_4_2.g'
+Parsing '<dir>/FIG_4_3.g'
+Parsing '<dir>/FIG_5_1.g'
+Parsing '<dir>/FIG_5_2.g'
+Parsing '<dir>/FIG_5_3.g'
+Parsing '<dir>/FIG_6_1.g'
+Parsing '<dir>/FIG_6_2.g'
+Parsing '<dir>/FIG_6_3.g'
+Parsing '<dir>/FIG_6_4.g'
+Parsing '<dir>/FIG_6_5.g'
+Parsing '<dir>/FIG_7_1.g'
+Parsing '<dir>/FIG_7_2.g'
+Parsing '<dir>/FIG_7_3.g'
+Parsing '<dir>/FIG_7_6.g'
+Parsing '<dir>/FIG_7_7.g'
+Parsing '<dir>/FIG_7_8.g'
+Parsing '<dir>/FIG_8_1.g'
+Parsing '<dir>/FIG_8_2.g'
+Parsing '<dir>/FIG_8_3.g'
+Parsing '<dir>/Log.g'
+Parsing '<dir>/factored.g'
+Parsing '<dir>/init.g'Constant 'I3' not foundConstant 'I5' not found
+Parsing '<dir>/orbiter.g'
+Parsing '<dir>/orient.g'
+Parsing '<dir>/pantilt.g'
+Parsing '<dir>/unit.g'
+Parsing '<dir>/vtrail.g'
+== frame 0 ==
+-- console --
+INIT: model is e3ga
+INIT: inner product is left contraction
+fontsize 24
+a = -1.00*e1 + 0.25*e2
+I2 = 1.00*e1^e2
+Error: no function 'set_object_ol_color' found that matches the arguments
+da = 0.25*e1 + 1.00*e2
+dda = 1.00*e1 + -0.25*e2
+-- objects --
+object I2 e3ga drawMode=0x22 color=1 1 1 1
+  mv
+    e1^e2 1
+  int type=0x210a valid=1
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 1
+    vector1 1 0 0
+    vector2 0 1 0
+    vector3 0 0 0
+    scalar 1 0
+object a e3ga drawMode=0x30 color=1 0 0 1
+  mv
+    e1 -1
+    e2 0.25
+  int type=0x2109 valid=1
+    point0 -1 0.25 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 -0.9701425001 0.242535625 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1.030776406 0
+object a_label text drawMode=0x0 color=0 0 0 1
+  text "\eqn{\bold{a}}"
+  at a
+object autocolor e3ga drawMode=0x150 color=1 0 0 1
+  mv
+    1 1
+  int type=0x2108 valid=1
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1 0
+object camori e3ga drawMode=0x150 color=1 0 0 1
+  mv
+    1 1
+  int type=0x2108 valid=1
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1 0
+object campos e3ga drawMode=0x170 color=1 0 0 1
+  mv
+    e1 0.1542
+    e2 0.2282
+    e3 5.8
+  int type=0x2109 valid=1
+    point0 0.1542 0.2282 5.8
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0.02655628365 0.03930054428 0.9988744821
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 5.806535359 0
+object da e3ga drawMode=0x30 color=0 0 1 1
+  mv
+    e1 0.25
+    e2 1
+  int type=0x2109 valid=1
+    point0 0.25 1 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0.242535625 0.9701425001 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1.030776406 0
+object dda e3ga drawMode=0x30 color=1 0 1 1
+  mv
+    e1 1
+    e2 -0.25
+  int type=0x2109 valid=1
+    point0 1 -0.25 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0.9701425001 -0.242535625 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1.030776406 0
+object dda_label text drawMode=0x0 color=0 0 0 1
+  text "\eqn{\bold{(a^{*})^{*} =\ws{0.1} -a}}"
+  at dda
+object lI e3ga drawMode=0x70 color=1 0 0 1
+  mv
+    e1 0.5
+    e2 0.5
+  int type=0x2109 valid=1
+    point0 0.5 0.5 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0.7071067812 0.7071067812 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 0.7071067812 0
+object lI_label text drawMode=0x0 color=0 0 0 1
+  text "\eqn{\bold{I_{2}}}"
+  at lI
+object lda e3ga drawMode=0x70 color=1 0 0 1
+  mv
+    e1 0.275
+    e2 1.1
+  int type=0x2109 valid=1
+    point0 0.275 1.1 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0.242535625 0.9701425001 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1.133854047 0
+object lda_label text drawMode=0x0 color=0 0 0 1
+  text "\eqn{\bold{a^{*}}}"
+  at lda

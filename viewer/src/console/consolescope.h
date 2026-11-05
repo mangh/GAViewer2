@@ -291,6 +291,10 @@ class consoleGlobalScope : public consoleScope
     int freeDynStmtVariables();
 
     int resumeStmtList();
+    inline int nbSuspendedStmtLists() const
+    {
+        return m_suspendedStmtListLength;
+    }
     int addSuspendStmtList(consoleStmtListStmt *stmtList, int *suspendIdcs);
     int execStmtList(consoleStmtListStmt *stmtList);
 

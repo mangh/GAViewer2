@@ -22,10 +22,13 @@ set(GAVR_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/src")
 #   GAViewer executable target to build
 #
 
+set(core "gaviewer_core")
 set(target "GAViewer2")
 
-# Add executable target to the project using the specified source files:
-add_executable(${target}
+# Everything except the entry point goes into a static library, so that the
+# GUI application and the headless regression harness (viewer/test) are built
+# from exactly the same object code:
+add_library(${core} STATIC
   "${GAVR_SOURCE_DIR}/c3gaobject.cpp"
   "${GAVR_SOURCE_DIR}/c3ga/c3ga.cpp"
   "${GAVR_SOURCE_DIR}/c3ga/c3ga_optc.cpp"
@@ -61,7 +64,6 @@ add_executable(${target}
   "${GAVR_SOURCE_DIR}/i2gaobject.cpp"
   "${GAVR_SOURCE_DIR}/i2ga/i2ga.cpp"
   "${GAVR_SOURCE_DIR}/i2ga/i2ga_optc2.cpp"
-  "${GAVR_SOURCE_DIR}/main.cpp"
   "${GAVR_SOURCE_DIR}/mainwindow.cpp"
   "${GAVR_SOURCE_DIR}/meshobject.cpp"
   "${GAVR_SOURCE_DIR}/mt19937-2.cpp"
@@ -98,6 +100,12 @@ add_executable(${target}
   "${GAVR_SOURCE_DIR}/util.cpp"
   "${GAVR_SOURCE_DIR}/writestate.cpp"
 )
+target_include_directories(${core} PUBLIC "${GAVR_SOURCE_DIR}")
+
+# The GUI application: the entry point plus the core library.
+add_executable(${target}
+  "${GAVR_SOURCE_DIR}/main.cpp"
+)
 
 # Add resources (icon)
 if (CMAKE_SYSTEM_NAME MATCHES "Windows")
@@ -111,10 +119,12 @@ endif()
 
 if (CMAKE_SYSTEM_NAME MATCHES "Windows")
   
+  target_compile_definitions(${core}
+    PUBLIC WIN32              # application being built for Windows
+    PUBLIC _MBCS              # for Multibyte Character Set
+  )
   target_compile_definitions(${target}
-    PRIVATE WIN32             # application being built for Windows
-    PRIVATE WIN32_NO_CONSOLE  # without a console
-    PRIVATE _MBCS             # for Multibyte Character Set
+    PRIVATE WIN32_NO_CONSOLE  # without a console (WinMain entry point in main.cpp)
   )
 
   set_target_properties(${target} PROPERTIES
@@ -128,71 +138,78 @@ endif()
 # get a clearer picture of the compilation and spot more serious
 # issues (if any).
 
-if (CMAKE_CXX_COMPILER_FRONTEND_VARIANT MATCHES "MSVC")
+foreach(tgt ${core} ${target})
 
-  target_compile_definitions(${target} PRIVATE
-    # deprecation warnings for the older, less secure functions
-    _CRT_SECURE_NO_WARNINGS   
-  )
-  target_compile_options(${target} PRIVATE
-    -W3       # production quality warnings
-    -wd4996   # deprecated function, class member, variable, or typedef
-  )
+  if (CMAKE_CXX_COMPILER_FRONTEND_VARIANT MATCHES "MSVC")
 
-elseif (CMAKE_CXX_COMPILER_FRONTEND_VARIANT MATCHES "GNU")
-
-  target_compile_options(${target}
-    PRIVATE
-    -Wall
-    -Wno-deprecated
-    -Wno-parentheses
-    -Wno-unused-variable
-  )
-  if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-    target_compile_options(${target}
-      PRIVATE
-      # function declaration without a prototype is deprecated in all versions of C
-      -Wno-deprecated-non-prototype
-      -Wno-format-security
+    target_compile_definitions(${tgt} PRIVATE
+      # deprecation warnings for the older, less secure functions
+      _CRT_SECURE_NO_WARNINGS   
     )
+    target_compile_options(${tgt} PRIVATE
+      -W3       # production quality warnings
+      -wd4996   # deprecated function, class member, variable, or typedef
+    )
+
+  elseif (CMAKE_CXX_COMPILER_FRONTEND_VARIANT MATCHES "GNU")
+
+    target_compile_options(${tgt}
+      PRIVATE
+      -Wall
+      -Wno-deprecated
+      -Wno-parentheses
+      -Wno-unused-variable
+    )
+    if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+      target_compile_options(${tgt}
+        PRIVATE
+        # function declaration without a prototype is deprecated in all versions of C
+        -Wno-deprecated-non-prototype
+        -Wno-format-security
+      )
+    endif()
+
   endif()
 
-endif()
+  ##########################################################################
+  #
+  #   ADDRESS SANITIZER
+  #
+  #   NOTE: I have not been able to get Address Sanitizer to work on Windows
+  #        (regardless of the compiler used)!
+  #
 
-##########################################################################
-#
-#   ADDRESS SANITIZER
-#
-#   NOTE: I have not been able to get Address Sanitizer to work on Windows
-#        (regardless of the compiler used)!
-#
+  if(USE_ASAN)
+    # if (CMAKE_CXX_COMPILER_FRONTEND_VARIANT MATCHES "MSVC")
+    #   # _DISABLE_*_ANNOTATION definitions are (were?) required to avoid error:
+    #   #
+    #   #    lld-link: error: /INFERASANLIBS is not allowed in .drectve
+    #   #
+    #   target_compile_definitions(${tgt} PRIVATE
+    #     _DISABLE_STRING_ANNOTATION
+    #     _DISABLE_VECTOR_ANNOTATION
+    #   )
+    # endif()
+    # Note: MSVC accepts both slash (/) and dash (-) options
+    target_compile_options(${tgt} PRIVATE -fsanitize=address)
+    # target_link_options(${tgt} PRIVATE -fsanitize=address)
+  endif()
 
-if(USE_ASAN)
-  # if (CMAKE_CXX_COMPILER_FRONTEND_VARIANT MATCHES "MSVC")
-  #   # _DISABLE_*_ANNOTATION definitions are (were?) required to avoid error:
-  #   #
-  #   #    lld-link: error: /INFERASANLIBS is not allowed in .drectve
-  #   #
-  #   target_compile_definitions(${target} PRIVATE
-  #     _DISABLE_STRING_ANNOTATION
-  #     _DISABLE_VECTOR_ANNOTATION
-  #   )
-  # endif()
-  # Note: MSVC accepts both slash (/) and dash (-) options
-  target_compile_options(${target} PRIVATE -fsanitize=address)
-  # target_link_options(${target} PRIVATE -fsanitize=address)
-endif()
+endforeach()
 
 ##########################################################################
 #
 #   LINK OPTIONS & LIBRARIES
 #
 
+target_link_libraries(${core}
+  PUBLIC fltk::png
+  PUBLIC fltk::gl
+  PUBLIC fltk::fltk
+  PUBLIC antlr2::antlr2
+)
 target_link_libraries(${target}
-  PRIVATE fltk::png
-  PRIVATE fltk::gl
-  PRIVATE fltk::fltk
-  PRIVATE antlr2::antlr2
+  PRIVATE ${core}
 )
 
 # Take advantage of interprocedural optimization (IPO/LTO), if available:
@@ -204,7 +221,7 @@ if(check_ipo_module_found)
     LANGUAGES C CXX
   )
   if(LTO_OPTIMIZATION_SUPPORTED)
-    set_property(TARGET ${target} PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
+    set_property(TARGET ${core} ${target} PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
   else()
     message(DEBUG "Interprocedural optimization (IPO/LTO) is not supported: ${LTO_OPTIMIZATION_ERROR}")
   endif()

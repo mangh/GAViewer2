@@ -1,0 +1,1783 @@
+# gaviewer_regress
+# command: FIG_2_3();
+== load ==
+Parsing '<dir>/FIGS.g'
+Parsing '<dir>/FIG_10_2.g'
+Parsing '<dir>/FIG_10_3.g'
+Parsing '<dir>/FIG_10_4.g'
+Parsing '<dir>/FIG_11_1.g'
+Parsing '<dir>/FIG_11_10.g'
+Parsing '<dir>/FIG_11_12.g'
+Parsing '<dir>/FIG_11_2.g'
+Parsing '<dir>/FIG_11_5.g'
+Parsing '<dir>/FIG_11_6.g'
+Parsing '<dir>/FIG_12_1.g'
+Parsing '<dir>/FIG_12_2.g'
+Parsing '<dir>/FIG_12_3.g'
+Parsing '<dir>/FIG_12_4.g'
+Parsing '<dir>/FIG_12_5.g'
+Parsing '<dir>/FIG_13_2.g'
+Parsing '<dir>/FIG_13_3.g'
+Parsing '<dir>/FIG_13_4.g'
+Parsing '<dir>/FIG_13_6.g'
+Parsing '<dir>/FIG_13_7.g'
+Parsing '<dir>/FIG_14_1.g'
+Parsing '<dir>/FIG_14_10.g'
+Parsing '<dir>/FIG_14_2.g'
+Parsing '<dir>/FIG_14_3.g'
+Parsing '<dir>/FIG_14_4.g'
+Parsing '<dir>/FIG_14_6.g'
+Parsing '<dir>/FIG_14_7.g'
+Parsing '<dir>/FIG_14_9.g'
+Parsing '<dir>/FIG_15_1.g'
+Parsing '<dir>/FIG_15_13.g'
+Parsing '<dir>/FIG_15_2.g'
+Parsing '<dir>/FIG_15_3.g'
+Parsing '<dir>/FIG_15_4.g'
+Parsing '<dir>/FIG_15_5.g'
+Parsing '<dir>/FIG_15_6.g'
+Parsing '<dir>/FIG_15_7.g'
+Parsing '<dir>/FIG_15_8.g'
+Parsing '<dir>/FIG_15_9.g'
+Parsing '<dir>/FIG_16_1.g'
+Parsing '<dir>/FIG_16_10.g'
+Parsing '<dir>/FIG_16_11.g'
+Parsing '<dir>/FIG_16_12.g'
+Parsing '<dir>/FIG_16_13.g'
+Parsing '<dir>/FIG_16_2.g'
+Parsing '<dir>/FIG_16_3.g'
+Parsing '<dir>/FIG_16_6.g'
+Parsing '<dir>/FIG_16_7.g'
+Parsing '<dir>/FIG_16_8.g'
+Parsing '<dir>/FIG_16_9.g'
+Parsing '<dir>/FIG_1_1.g'
+Parsing '<dir>/FIG_1_3.g'
+Parsing '<dir>/FIG_1_4.g'
+Parsing '<dir>/FIG_23_3.g'
+Parsing '<dir>/FIG_2_1.g'
+Parsing '<dir>/FIG_2_14.g'
+Parsing '<dir>/FIG_2_2.g'
+Parsing '<dir>/FIG_2_3.g'
+Parsing '<dir>/FIG_2_4.g'
+Parsing '<dir>/FIG_2_5.g'
+Parsing '<dir>/FIG_2_6.g'
+Parsing '<dir>/FIG_2_7.g'
+Parsing '<dir>/FIG_2_8.g'
+Parsing '<dir>/FIG_3_1.g'
+Parsing '<dir>/FIG_3_2.g'
+Parsing '<dir>/FIG_3_3.g'
+Parsing '<dir>/FIG_3_4.g'
+Parsing '<dir>/FIG_3_5.g'
+Parsing '<dir>/FIG_3_6.g'
+Parsing '<dir>/FIG_3_7.g'
+Parsing '<dir>/FIG_3_8.g'
+Parsing '<dir>/FIG_4_1.g'
+Parsing '<dir>/FIG_4_2.g'
+Parsing '<dir>/FIG_4_3.g'
+Parsing '<dir>/FIG_5_1.g'
+Parsing '<dir>/FIG_5_2.g'
+Parsing '<dir>/FIG_5_3.g'
+Parsing '<dir>/FIG_6_1.g'
+Parsing '<dir>/FIG_6_2.g'
+Parsing '<dir>/FIG_6_3.g'
+Parsing '<dir>/FIG_6_4.g'
+Parsing '<dir>/FIG_6_5.g'
+Parsing '<dir>/FIG_7_1.g'
+Parsing '<dir>/FIG_7_2.g'
+Parsing '<dir>/FIG_7_3.g'
+Parsing '<dir>/FIG_7_6.g'
+Parsing '<dir>/FIG_7_7.g'
+Parsing '<dir>/FIG_7_8.g'
+Parsing '<dir>/FIG_8_1.g'
+Parsing '<dir>/FIG_8_2.g'
+Parsing '<dir>/FIG_8_3.g'
+Parsing '<dir>/Log.g'
+Parsing '<dir>/factored.g'
+Parsing '<dir>/init.g'Constant 'I3' not foundConstant 'I5' not found
+Parsing '<dir>/orbiter.g'
+Parsing '<dir>/orient.g'
+Parsing '<dir>/pantilt.g'
+Parsing '<dir>/unit.g'
+Parsing '<dir>/vtrail.g'
+== frame 0 ==
+-- console --
+INIT: model is e3ga
+INIT: inner product is left contraction
+fontsize 24
+a = 1.50*e1
+b = 0.50*e1 + 1.00*e2
+biv1 = 1.50*e1^e2
+circle = 1.50*e1^e2^no + -0.89*e1^e2^ni + -0.75*e1^no^ni + 1.50*e2^no^ni
+spoke[1] = -0.06*e1^e2 + 0.16*e1^no + 0.09*e2^no + -0.11*e1^ni + 0.01*e2^ni + -0.19*no^ni
+spoke[2] = 0.13*e1^e2 + 0.16*e1^no + -0.09*e2^no + -0.02*e1^ni + -0.07*e2^ni + -0.10*no^ni
+spoke[3] = 0.14*e1^e2 + -0.00*e1^no + -0.19*e2^no + 0.08*e1^ni + -0.02*e2^ni + 0.11*no^ni
+spoke[4] = -0.03*e1^e2 + -0.16*e1^no + -0.09*e2^no + 0.09*e1^ni + 0.10*e2^ni + 0.23*no^ni
+spoke[5] = -0.22*e1^e2 + -0.16*e1^no + 0.09*e2^no + 0.01*e1^ni + 0.18*e2^ni + 0.13*no^ni
+spoke[6] = -0.23*e1^e2 + 0.00*e1^no + 0.19*e2^no + -0.10*e1^ni + 0.13*e2^ni + -0.08*no^ni
+bivori = 0
+-- objects --
+object Battitude c3ga drawMode=0x50 color=0 0 1 1
+  mv
+    e1^e2 1.5
+  int type=0x6943 valid=1
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 1
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1.5 0
+object I2 e3ga drawMode=0x70 color=0 0 1 1
+  mv
+    e1^e2 1
+  int type=0x210a valid=1
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 1
+    vector1 1 0 0
+    vector2 0 1 0
+    vector3 0 0 0
+    scalar 1 0
+object R c3ga drawMode=0x70 color=0 0 0 1
+  mv
+    1 -1
+  int type=0x6108 valid=0
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1 0
+object Vlocate e3ga drawMode=0x70 color=1 0 0 1
+  mv
+    e1 1
+    e2 0.5
+  int type=0x2109 valid=1
+    point0 1 0.5 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0.894427191 0.4472135955 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1.118033989 0
+object a e3ga drawMode=0x30 color=1 0 0 1
+  mv
+    e1 1.5
+  int type=0x2109 valid=1
+    point0 1.5 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 1 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1.5 0
+object alpha e3ga drawMode=0x70 color=0 0 0 1
+  mv
+    1 1
+  int type=0x2108 valid=1
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1 0
+object autocolor e3ga drawMode=0x150 color=1 0 0 1
+  mv
+    1 1
+  int type=0x2108 valid=1
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1 0
+object b e3ga drawMode=0x30 color=1 0 0 1
+  mv
+    e1 0.5
+    e2 1
+  int type=0x2109 valid=1
+    point0 0.5 1 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0.4472135955 0.894427191 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1.118033989 0
+object biv1 e3ga drawMode=0x30 color=1 0.200000003 0.200000003 0.200000003
+  mv
+    e1^e2 1.5
+  int type=0x210a valid=1
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 1
+    vector1 1.5 0 0
+    vector2 0.5 1 0
+    vector3 0 0 0
+    scalar 1.5 0
+object bivori e3ga drawMode=0x30 color=0 0 0 1
+  mv
+  int type=0x2000 valid=0
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 0 0
+object c1 e3ga drawMode=0x70 color=0 0 0 1
+  mv
+    1 1
+  int type=0x2108 valid=1
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1 0
+object c2 e3ga drawMode=0x70 color=0 0 0 1
+  mv
+  int type=0x2000 valid=0
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 0 0
+object c3 e3ga drawMode=0x70 color=0 0 0 1
+  mv
+  int type=0x2000 valid=0
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 0 0
+object camori e3ga drawMode=0x150 color=1 0 0 1
+  mv
+    1 0.933711
+    e2^e3 0.2343759
+    e3^e1 0.2700963
+    e1^e2 0.01731097
+  int type=0x2200 valid=1
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0.6546308644 0.7544008337 0.04835094076
+    vector1 0.5912231753 -0.4710770513 -0.6546308644
+    vector2 -0.4710770513 0.4571277654 -0.7544008337
+    vector3 0 0 0
+    scalar 0.9999999875 0.7323091625
+object campos e3ga drawMode=0x170 color=1 0 0 1
+  mv
+    e1 1.1016
+    e2 0.4254
+    e3 7.7
+  int type=0x2109 valid=1
+    point0 1.1016 0.4254 7.7
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0.141411615 0.05460829795 0.9884435689
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 7.790024886 0
+object circle c3ga drawMode=0x10 color=1 0 0 1
+  mv
+    e1^e2^no 1.5
+    e1^e2^ni -0.890625
+    e1^no^ni -0.75
+    e2^no^ni 1.5
+  int type=0x6183 valid=1
+    point0 1 0.5 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 1
+    vector1 2.449489743 0 0
+    vector2 0 2.449489743 0
+    vector3 0 0 0
+    scalar 0.25 1.5
+object i e3ga drawMode=0x30 color=0 0 0 1
+  mv
+    1 7
+  int type=0x2108 valid=1
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 7 0
+object la e3ga drawMode=0x70 color=1 0 0 1
+  mv
+    e1 0.75
+    e2 -0.05
+  int type=0x2109 valid=1
+    point0 0.75 -0.05 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0.9977851579 -0.06651901052 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 0.7516648189 0
+object la_label text drawMode=0x0 color=0 0 0 1
+  text "\eqn{\bold{a}}"
+  at la
+object lab e3ga drawMode=0x70 color=1 0 0 1
+  mv
+    e1 1
+    e2 0.5
+    e3 0.2
+  int type=0x2109 valid=1
+    point0 1 0.5 0.2
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0.8804509063 0.4402254532 0.1760901813
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1.135781669 0
+object lab_label text drawMode=0x0 color=0 0 0 1
+  text "\eqn{\bold{a \op b}}"
+  at lab
+object lb e3ga drawMode=0x70 color=1 0 0 1
+  mv
+    e1 0.0711145618
+    e2 0.5894427191
+  int type=0x2109 valid=1
+    point0 0.0711145618 0.5894427191 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0.1197785297 0.9928006365 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 0.5937171044 0
+object lb_label text drawMode=0x0 color=0 0 0 1
+  text "\eqn{\bold{b}}"
+  at lb
+object nattitude c3ga drawMode=0x50 color=0 0 1 1
+  mv
+    e1^e2 1
+  int type=0x6943 valid=1
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 1
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1 0
+object ns e3ga drawMode=0x70 color=0 0 0 1
+  mv
+    1 6
+  int type=0x2108 valid=1
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 6 0
+object size e3ga drawMode=0x70 color=0 0 0 1
+  mv
+    1 0.25
+  int type=0x2108 valid=1
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 0.25 0
+object spoke[1] c3ga drawMode=0x10 color=1 0 0 1
+  mv
+    e1^e2 -0.0594351184
+    e1^no 0.1623797632
+    e2^no 0.09375
+    e1^ni -0.106355153
+    e2^ni 0.008754342695
+    no^ni -0.1916766382
+  int type=0x6182 valid=1
+    point0 1.043810118 0.2366186491 0
+    point1 1.125 0.2834936491 0
+    point2 0.9626202368 0.1897436491 0
+    vector0 0 0 0
+    vector1 -0.1623797632 -0.09375 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 0.09375 0.1875
+object spoke[2] c3ga drawMode=0x10 color=1 0 0 1
+  mv
+    e1^e2 0.1280648816
+    e1^no 0.1623797632
+    e2^no -0.09375
+    e1^ni -0.01699968423
+    e2^ni -0.06741753231
+    no^ni -0.09792663821
+  int type=0x6182 valid=1
+    point0 0.7938101184 0.3303686491 0
+    point1 0.875 0.2834936491 0
+    point2 0.7126202368 0.3772436491 0
+    vector0 0 0 0
+    vector1 -0.1623797632 0.09375 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 0.09375 0.1875
+object spoke[3] c3ga drawMode=0x10 color=1 0 0 1
+  mv
+    e1^e2 0.140625
+    e1^no -5.711377205e-11
+    e2^no -0.1875
+    e1^ni 0.08349609377
+    e2^ni -0.02050781247
+    no^ni 0.1113281251
+  int type=0x6182 valid=1
+    point0 0.75 0.5937500001 0
+    point1 0.75 0.5000000001 0
+    point2 0.7500000001 0.6875000001 0
+    vector0 0 0 0
+    vector1 5.711377205e-11 0.1875 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 0.09375 0.1875
+object spoke[4] c3ga drawMode=0x10 color=1 0 0 1
+  mv
+    e1^e2 -0.0343148816
+    e1^no -0.1623797632
+    e2^no -0.09375
+    e1^ni 0.09463640298
+    e2^ni 0.1025737823
+    no^ni 0.2268328882
+  int type=0x6182 valid=1
+    point0 0.9561898816 0.7633813509 0
+    point1 0.875 0.7165063509 0
+    point2 1.037379763 0.8102563509 0
+    vector0 0 0 0
+    vector1 0.1623797632 0.09375 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 0.09375 0.1875
+object spoke[5] c3ga drawMode=0x10 color=1 0 0 1
+  mv
+    e1^e2 -0.2218148816
+    e1^no -0.1623797632
+    e2^no 0.09375
+    e1^ni 0.005280934228
+    e2^ni 0.1787456573
+    no^ni 0.1330828882
+  int type=0x6182 valid=1
+    point0 1.206189882 0.6696313509 0
+    point1 1.125 0.7165063509 0
+    point2 1.287379763 0.6227563509 0
+    vector0 0 0 0
+    vector1 0.1623797632 -0.09375 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 0.09375 0.1875
+object spoke[6] c3ga drawMode=0x10 color=1 0 0 1
+  mv
+    e1^e2 -0.234375
+    e2^no 0.1875
+    e1^ni -0.09521484375
+    e2^ni 0.1318359375
+    no^ni -0.076171875
+  int type=0x6182 valid=1
+    point0 1.25 0.40625 0
+    point1 1.25 0.5 0
+    point2 1.25 0.3125 0
+    vector0 0 0 0
+    vector1 0 -0.1875 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 0.09375 0.1875
+object tr e3ga drawMode=0x70 color=0 0 0 1
+  mv
+  int type=0x2000 valid=0
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 0 0
+object vec c3ga drawMode=0x50 color=1 0 0 0.5
+  mv
+    e1 0.25
+  int type=0x6944 valid=1
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 1 0 0
+    vector1 0 0 -1
+    vector2 0 1 0
+    vector3 0 0 0
+    scalar 0.25 0
+object vecn c3ga drawMode=0x50 color=1 0 0 0.5
+  mv
+    e2 0.1875
+  int type=0x6944 valid=1
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 1 0
+    vector1 1 0 0
+    vector2 0 0 -1
+    vector3 0 0 0
+    scalar 0.1875 0
+== frame 1 ==
+-- console --
+INIT: model is e3ga
+INIT: inner product is left contraction
+fontsize 24
+a = 1.50*e1
+b = 0.50*e1 + 1.00*e2
+biv1 = 1.50*e1^e2
+Btan21 = 1.50*e1^e2 + -0.50*e1^no + -1.00*e2^no + 0.56*e1^ni + -1.12*e2^ni + 0.75*no^ni
+-- objects --
+object Btan21 c3ga drawMode=0x30 color=1 0 0 1
+  mv
+    e1^e2 1.5
+    e1^no -0.5
+    e2^no -1
+    e1^ni 0.5625
+    e2^ni -1.125
+    no^ni 0.75
+  int type=0x6121 valid=1
+    point0 1.5 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0.4472135955 0.894427191 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1.118033989 0
+object I2 e3ga drawMode=0x70 color=0 0 1 1
+  mv
+    e1^e2 1
+  int type=0x210a valid=1
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 1
+    vector1 1.224744871 0 0
+    vector2 0.4082482905 0.8164965809 0
+    vector3 0 0 0
+    scalar 1 0
+object a e3ga drawMode=0x30 color=1 0 0 1
+  mv
+    e1 1.5
+  int type=0x2109 valid=1
+    point0 1.5 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 1 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1.5 0
+object autocolor e3ga drawMode=0x150 color=0 0 0 1
+  mv
+    1 1
+  int type=0x2108 valid=1
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1 0
+object b e3ga drawMode=0x70 color=1 0 0 1
+  mv
+    e1 0.5
+    e2 1
+  int type=0x2109 valid=1
+    point0 0.5 1 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0.4472135955 0.894427191 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1.118033989 0
+object biv1 e3ga drawMode=0x30 color=1 0.200000003 0.200000003 0.200000003
+  mv
+    e1^e2 1.5
+  int type=0x210a valid=1
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 1
+    vector1 1.5 0 0
+    vector2 0.5 1 0
+    vector3 0 0 0
+    scalar 1.5 0
+object camori e3ga drawMode=0x150 color=0 0 0 1
+  mv
+    1 0.933711
+    e2^e3 0.2343759
+    e3^e1 0.2700963
+    e1^e2 0.01731097
+  int type=0x2200 valid=1
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0.6546308644 0.7544008337 0.04835094076
+    vector1 3.182935274 -2.750690957 -0.1762968565
+    vector2 -0.7728155467 0.6830574575 -0.1942093757
+    vector3 0 0 0
+    scalar 0.9999999875 0.7323091625
+object campos e3ga drawMode=0x170 color=0 0 0 1
+  mv
+    e1 1.1016
+    e2 0.4254
+    e3 7.7
+  int type=0x2109 valid=1
+    point0 1.1016 0.4254 7.7
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0.141411615 0.05460829795 0.9884435689
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 7.790024886 0
+object la e3ga drawMode=0x70 color=1 0 0 1
+  mv
+    e1 0.75
+    e2 -0.05
+  int type=0x2109 valid=1
+    point0 0.75 -0.05 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0.9977851579 -0.06651901052 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 0.7516648189 0
+object la_label text drawMode=0x0 color=0 0 0 1
+  text "\eqn{\bold{a}}"
+  at la
+object lab e3ga drawMode=0x70 color=1 0 0 1
+  mv
+    e1 1
+    e2 0.5
+    e3 0.2
+  int type=0x2109 valid=1
+    point0 1 0.5 0.2
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0.8804509063 0.4402254532 0.1760901813
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1.135781669 0
+object lab_label text drawMode=0x0 color=0 0 0 1
+  text "\eqn{\bold{a \op b}}"
+  at lab
+object lb e3ga drawMode=0x70 color=1 0 0 1
+  mv
+    e1 1.79472136
+    e2 0.4776393202
+  int type=0x2109 valid=1
+    point0 1.79472136 0.4776393202 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0.9663625792 0.2571835249 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1.857192526 0
+object lb_label text drawMode=0x0 color=0 0 0 1
+  text "\eqn{\bold{b}}"
+  at lb
+object tr e3ga drawMode=0x70 color=0 0 0 1
+  mv
+  int type=0x2000 valid=0
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 0 0
+== frame 2 ==
+-- console --
+INIT: model is e3ga
+INIT: inner product is left contraction
+fontsize 24
+a = 1.50*e1
+b = 0.50*e1 + 1.00*e2
+biv1 = 1.50*e1^e2
+Btan11 = 1.50*e1^e2 + -0.50*e1^no + -1.00*e2^no + 0.56*e1^ni + -1.12*e2^ni + 0.75*no^ni
+Btan12 = 1.50*e1^e2 + 1.50*e1^no + -2.25*e1^ni + -3.00*e2^ni + -3.00*no^ni
+Btan13 = 0.50*e1^no + 1.00*e2^no + -0.31*e1^ni + -0.62*e2^ni + -1.25*no^ni
+-- objects --
+object Btan11 c3ga drawMode=0x30 color=1 0 0 1
+  mv
+    e1^e2 1.5
+    e1^no -0.5
+    e2^no -1
+    e1^ni 0.5625
+    e2^ni -1.125
+    no^ni 0.75
+  int type=0x6121 valid=1
+    point0 1.5 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0.4472135955 0.894427191 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1.118033989 0
+object Btan12 c3ga drawMode=0x30 color=1 0 0 1
+  mv
+    e1^e2 1.5
+    e1^no 1.5
+    e1^ni -2.25
+    e2^ni -3
+    no^ni -3
+  int type=0x6121 valid=1
+    point0 2 1 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 -1 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1.5 0
+object Btan13 c3ga drawMode=0x30 color=1 0 0 1
+  mv
+    e1^no 0.5
+    e2^no 1
+    e1^ni -0.3125
+    e2^ni -0.625
+    no^ni -1.25
+  int type=0x6121 valid=1
+    point0 0.5 1 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 -0.4472135955 -0.894427191 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1.118033989 0
+object I2 e3ga drawMode=0x70 color=0 0 1 1
+  mv
+    e1^e2 1
+  int type=0x210a valid=1
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 1
+    vector1 1.224744871 0 0
+    vector2 0.4082482905 0.8164965809 0
+    vector3 0 0 0
+    scalar 1 0
+object a e3ga drawMode=0x30 color=1 0 0 1
+  mv
+    e1 1.5
+  int type=0x2109 valid=1
+    point0 1.5 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 1 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1.5 0
+object autocolor e3ga drawMode=0x150 color=0 0 0 1
+  mv
+    1 1
+  int type=0x2108 valid=1
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1 0
+object b e3ga drawMode=0x70 color=1 0 0 1
+  mv
+    e1 0.5
+    e2 1
+  int type=0x2109 valid=1
+    point0 0.5 1 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0.4472135955 0.894427191 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1.118033989 0
+object biv1 e3ga drawMode=0x30 color=1 0.200000003 0.200000003 0.200000003
+  mv
+    e1^e2 1.5
+  int type=0x210a valid=1
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 1
+    vector1 1.5 0 0
+    vector2 0.5 1 0
+    vector3 0 0 0
+    scalar 1.5 0
+object camori e3ga drawMode=0x150 color=0 0 0 1
+  mv
+    1 0.933711
+    e2^e3 0.2343759
+    e3^e1 0.2700963
+    e1^e2 0.01731097
+  int type=0x2200 valid=1
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0.6546308644 0.7544008337 0.04835094076
+    vector1 3.182935274 -2.750690957 -0.1762968565
+    vector2 -0.7728155467 0.6830574575 -0.1942093757
+    vector3 0 0 0
+    scalar 0.9999999875 0.7323091625
+object campos e3ga drawMode=0x170 color=0 0 0 1
+  mv
+    e1 1.1016
+    e2 0.4254
+    e3 7.7
+  int type=0x2109 valid=1
+    point0 1.1016 0.4254 7.7
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0.141411615 0.05460829795 0.9884435689
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 7.790024886 0
+object la e3ga drawMode=0x70 color=1 0 0 1
+  mv
+    e1 0.75
+    e2 -0.05
+  int type=0x2109 valid=1
+    point0 0.75 -0.05 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0.9977851579 -0.06651901052 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 0.7516648189 0
+object la_label text drawMode=0x0 color=0 0 0 1
+  text "\eqn{\bold{a}}"
+  at la
+object lab e3ga drawMode=0x70 color=1 0 0 1
+  mv
+    e1 1
+    e2 0.5
+    e3 0.2
+  int type=0x2109 valid=1
+    point0 1 0.5 0.2
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0.8804509063 0.4402254532 0.1760901813
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1.135781669 0
+object lab_label text drawMode=0x0 color=0 0 0 1
+  text "\eqn{\bold{a \op b}}"
+  at lab
+object lb e3ga drawMode=0x70 color=1 0 0 1
+  mv
+    e1 1.79472136
+    e2 0.4776393202
+  int type=0x2109 valid=1
+    point0 1.79472136 0.4776393202 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0.9663625792 0.2571835249 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1.857192526 0
+object lb_label text drawMode=0x0 color=0 0 0 1
+  text "\eqn{\bold{b}}"
+  at lb
+object lma e3ga drawMode=0x70 color=1 0 0 1
+  mv
+    e1 1.25
+    e2 1.2
+  int type=0x2109 valid=1
+    point0 1.25 1.2 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0.721387321 0.6925318282 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1.732772345 0
+object lma_label text drawMode=0x0 color=0 0 0 1
+  text "\eqn{\bold{-a}}"
+  at lma
+object lmb e3ga drawMode=0x70 color=1 0 0 1
+  mv
+    e1 -0.048142397
+    e2 0.6490711985
+  int type=0x2109 valid=1
+    point0 -0.048142397 0.6490711985 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 -0.07396802765 0.9972606133 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 0.6508541397 0
+object lmb_label text drawMode=0x0 color=0 0 0 1
+  text "\eqn{\bold{-b}}"
+  at lmb
+object tr e3ga drawMode=0x70 color=0 0 0 1
+  mv
+  int type=0x2000 valid=0
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 0 0
+== frame 3 ==
+-- console --
+INIT: model is e3ga
+INIT: inner product is left contraction
+fontsize 24
+a = 1.50*e1
+b = 0.50*e1 + 1.00*e2
+c = 1.25*e1 + -0.50*e2
+biv1 = 1.50*e1^e2
+biv2 = 1.50*e1^e2
+a = 1.50*e1
+Btan11 = 1.50*e1^e2 + -0.50*e1^no + -1.00*e2^no + 0.56*e1^ni + -1.12*e2^ni + 0.75*no^ni
+Btan12 = 1.50*e1^e2 + 1.50*e1^no + -2.25*e1^ni + -3.00*e2^ni + -3.00*no^ni
+Btan13 = 0.50*e1^no + 1.00*e2^no + -0.31*e1^ni + -0.62*e2^ni + -1.25*no^ni
+Btan21 = 1.50*e1^e2 + -0.50*e1^no + -1.00*e2^no + -0.30*e1^ni + -0.97*e2^ni + 0.12*no^ni
+Btan22 = 1.50*e1^e2 + 1.25*e1^no + -0.50*e2^no + -1.32*e1^ni + -1.80*e2^ni + -1.94*no^ni
+Btan23 = 0.50*e1^no + 1.00*e2^no + -0.31*e1^ni + -0.62*e2^ni + -1.25*no^ni
+-- objects --
+object Btan11 c3ga drawMode=0x30 color=1 0 0 0.3000000119
+  mv
+    e1^e2 1.5
+    e1^no -0.5
+    e2^no -1
+    e1^ni 0.5625
+    e2^ni -1.125
+    no^ni 0.75
+  int type=0x6121 valid=1
+    point0 1.5 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0.4472135955 0.894427191 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1.118033989 0
+object Btan12 c3ga drawMode=0x30 color=1 0 0 0.3000000119
+  mv
+    e1^e2 1.5
+    e1^no 1.5
+    e1^ni -2.25
+    e2^ni -3
+    no^ni -3
+  int type=0x6121 valid=1
+    point0 2 1 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 -1 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1.5 0
+object Btan13 c3ga drawMode=0x30 color=1 0 0 0.3000000119
+  mv
+    e1^no 0.5
+    e2^no 1
+    e1^ni -0.3125
+    e2^ni -0.625
+    no^ni -1.25
+  int type=0x6121 valid=1
+    point0 0.5 1 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 -0.4472135955 -0.894427191 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1.118033989 0
+object Btan21 c3ga drawMode=0x30 color=1 0 0 1
+  mv
+    e1^e2 1.5
+    e1^no -0.5
+    e2^no -1
+    e1^ni -0.296875
+    e2^ni -0.96875
+    no^ni 0.125
+  int type=0x6121 valid=1
+    point0 1.25 -0.5 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0.4472135955 0.894427191 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1.118033989 0
+object Btan22 c3ga drawMode=0x30 color=1 0 0 1
+  mv
+    e1^e2 1.5
+    e1^no 1.25
+    e2^no -0.5
+    e1^ni -1.3203125
+    e2^ni -1.796875
+    no^ni -1.9375
+  int type=0x6121 valid=1
+    point0 1.75 0.5 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 -0.9284766909 0.3713906764 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1.346291202 0
+object Btan23 c3ga drawMode=0x30 color=1 0 0 1
+  mv
+    e1^no 0.5
+    e2^no 1
+    e1^ni -0.3125
+    e2^ni -0.625
+    no^ni -1.25
+  int type=0x6121 valid=1
+    point0 0.5 1 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 -0.4472135955 -0.894427191 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1.118033989 0
+object I2 e3ga drawMode=0x70 color=0 0 1 1
+  mv
+    e1^e2 1
+  int type=0x210a valid=1
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 1
+    vector1 1.224744871 0 0
+    vector2 0.4082482905 0.8164965809 0
+    vector3 0 0 0
+    scalar 1 0
+object a e3ga drawMode=0x30 color=1 0 0 0.3000000119
+  mv
+    e1 1.5
+  int type=0x2109 valid=1
+    point0 1.5 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 1 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1.5 0
+object autocolor e3ga drawMode=0x150 color=0 0 0 1
+  mv
+    1 1
+  int type=0x2108 valid=1
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1 0
+object b e3ga drawMode=0x70 color=1 0 0 1
+  mv
+    e1 0.5
+    e2 1
+  int type=0x2109 valid=1
+    point0 0.5 1 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0.4472135955 0.894427191 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1.118033989 0
+object biv1 e3ga drawMode=0x30 color=1 0.200000003 0.200000003 0.1000000015
+  mv
+    e1^e2 1.5
+  int type=0x210a valid=1
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 1
+    vector1 1.5 0 0
+    vector2 0.5 1 0
+    vector3 0 0 0
+    scalar 1.5 0
+object biv2 e3ga drawMode=0x30 color=1 0.200000003 0.200000003 0.3000000119
+  mv
+    e1^e2 1.5
+  int type=0x210a valid=1
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 1
+    vector1 1.25 -0.5 0
+    vector2 0.5 1 0
+    vector3 0 0 0
+    scalar 1.5 0
+object c e3ga drawMode=0x30 color=1 0 0 1
+  mv
+    e1 1.25
+    e2 -0.5
+  int type=0x2109 valid=1
+    point0 1.25 -0.5 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0.9284766909 -0.3713906764 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1.346291202 0
+object camori e3ga drawMode=0x150 color=0 0 0 1
+  mv
+    1 0.933711
+    e2^e3 0.2343759
+    e3^e1 0.2700963
+    e1^e2 0.01731097
+  int type=0x2200 valid=1
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0.6546308644 0.7544008337 0.04835094076
+    vector1 3.182935274 -2.750690957 -0.1762968565
+    vector2 -0.7728155467 0.6830574575 -0.1942093757
+    vector3 0 0 0
+    scalar 0.9999999875 0.7323091625
+object campos e3ga drawMode=0x170 color=0 0 0 1
+  mv
+    e1 1.1016
+    e2 0.4254
+    e3 7.7
+  int type=0x2109 valid=1
+    point0 1.1016 0.4254 7.7
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0.141411615 0.05460829795 0.9884435689
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 7.790024886 0
+object lab e3ga drawMode=0x70 color=1 0 0 1
+  mv
+    e1 0.875
+    e2 0.25
+    e3 0.2
+  int type=0x2109 valid=1
+    point0 0.875 0.25 0.2
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0.9391109869 0.2683174248 0.2146539399
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 0.9317322577 0
+object lab_label text drawMode=0x0 color=0 0 0 1
+  text "\eqn{\bold{a \op b}}"
+  at lab
+object lb e3ga drawMode=0x70 color=1 0 0 1
+  mv
+    e1 1.54472136
+    e2 -0.02236067977
+  int type=0x2109 valid=1
+    point0 1.54472136 -0.02236067977 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0.9998952458 -0.01447402618 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1.544883193 0
+object lb_label text drawMode=0x0 color=0 0 0 1
+  text "\eqn{\bold{b}}"
+  at lb
+object lc e3ga drawMode=0x70 color=1 0 0 1
+  mv
+    e1 0.3980971328
+    e2 -0.2130905012
+  int type=0x2109 valid=1
+    point0 0.3980971328 -0.2130905012 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0.8816419981 -0.4719188353 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 0.4515405728 0
+object lc_label text drawMode=0x0 color=0 0 0 1
+  text "\eqn{\bold{a-\frac{1}{2}b}}"
+  at lc
+object tr e3ga drawMode=0x70 color=0 0 0 1
+  mv
+  int type=0x2000 valid=0
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 0 0
+== frame 4 ==
+-- console --
+INIT: model is e3ga
+INIT: inner product is left contraction
+fontsize 24
+c = 1.25*e1 + -0.50*e2
+biv2 = 1.50*e1^e2
+biv1 = 1.50*e1^e2
+Btan21 = 1.50*e1^e2 + -0.50*e1^no + -1.00*e2^no + -0.30*e1^ni + -0.97*e2^ni + 0.12*no^ni
+Btan22 = 1.50*e1^e2 + 1.25*e1^no + -0.50*e2^no + -1.32*e1^ni + -1.80*e2^ni + -1.94*no^ni
+Btan23 = 0.50*e1^no + 1.00*e2^no + -0.31*e1^ni + -0.62*e2^ni + -1.25*no^ni
+Btan11 = 1.50*e1^e2 + -1.12*e1^no + -0.75*e2^no + 0.27*e1^ni + -1.20*e2^ni + 1.03*no^ni
+Btan12 = 1.50*e1^e2 + 1.25*e1^no + -0.50*e2^no + -3.19*e1^ni + -2.14*e2^ni + -2.84*no^ni
+Btan13 = 1.12*e1^no + 0.75*e2^no + -1.03*e1^ni + -0.69*e2^ni + -1.83*no^ni
+-- objects --
+object Btan11 c3ga drawMode=0x30 color=1 0 0 1
+  mv
+    e1^e2 1.5
+    e1^no -1.125
+    e2^no -0.75
+    e1^ni 0.26953125
+    e2^ni -1.1953125
+    no^ni 1.03125
+  int type=0x6121 valid=1
+    point0 1.25 -0.5 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0.8320502943 0.5547001962 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1.352081728 0
+object Btan12 c3ga drawMode=0x30 color=1 0 0 1
+  mv
+    e1^e2 1.5
+    e1^no 1.25
+    e2^no -0.5
+    e1^ni -3.189453125
+    e2^ni -2.13671875
+    no^ni -2.84375
+  int type=0x6121 valid=1
+    point0 2.375 0.25 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 -0.9284766909 0.3713906764 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1.346291202 0
+object Btan13 c3ga drawMode=0x30 color=1 0 0 1
+  mv
+    e1^no 1.125
+    e2^no 0.75
+    e1^ni -1.028320312
+    e2^ni -0.685546875
+    no^ni -1.828125
+  int type=0x6121 valid=1
+    point0 1.125 0.75 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 -0.8320502943 -0.5547001962 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1.352081728 0
+object Btan21 c3ga drawMode=0x30 color=1 0 0 0.3000000119
+  mv
+    e1^e2 1.5
+    e1^no -0.5
+    e2^no -1
+    e1^ni -0.296875
+    e2^ni -0.96875
+    no^ni 0.125
+  int type=0x6121 valid=1
+    point0 1.25 -0.5 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0.4472135955 0.894427191 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1.118033989 0
+object Btan22 c3ga drawMode=0x30 color=1 0 0 0.3000000119
+  mv
+    e1^e2 1.5
+    e1^no 1.25
+    e2^no -0.5
+    e1^ni -1.3203125
+    e2^ni -1.796875
+    no^ni -1.9375
+  int type=0x6121 valid=1
+    point0 1.75 0.5 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 -0.9284766909 0.3713906764 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1.346291202 0
+object Btan23 c3ga drawMode=0x30 color=1 0 0 0.3000000119
+  mv
+    e1^no 0.5
+    e2^no 1
+    e1^ni -0.3125
+    e2^ni -0.625
+    no^ni -1.25
+  int type=0x6121 valid=1
+    point0 0.5 1 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 -0.4472135955 -0.894427191 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1.118033989 0
+object I2 e3ga drawMode=0x70 color=0 0 1 1
+  mv
+    e1^e2 1
+  int type=0x210a valid=1
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 1
+    vector1 1.020620726 -0.4082482905 0
+    vector2 0.4082482905 0.8164965809 0
+    vector3 0 0 0
+    scalar 1 0
+object a e3ga drawMode=0x70 color=1 0 0 1
+  mv
+    e1 1.5
+  int type=0x2109 valid=1
+    point0 1.5 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 1 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1.5 0
+object autocolor e3ga drawMode=0x150 color=0 0 0 1
+  mv
+    1 1
+  int type=0x2108 valid=1
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1 0
+object b e3ga drawMode=0x70 color=1 0 0 1
+  mv
+    e1 0.5
+    e2 1
+  int type=0x2109 valid=1
+    point0 0.5 1 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0.4472135955 0.894427191 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1.118033989 0
+object biv1 e3ga drawMode=0x30 color=1 0.200000003 0.200000003 0.3000000119
+  mv
+    e1^e2 1.5
+  int type=0x210a valid=1
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 1
+    vector1 1.25 -0.5 0
+    vector2 1.125 0.75 0
+    vector3 0 0 0
+    scalar 1.5 0
+object biv2 e3ga drawMode=0x30 color=1 0.200000003 0.200000003 0.1000000015
+  mv
+    e1^e2 1.5
+  int type=0x210a valid=1
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 1
+    vector1 1.25 -0.5 0
+    vector2 0.5 1 0
+    vector3 0 0 0
+    scalar 1.5 0
+object c e3ga drawMode=0x30 color=1 0 0 1
+  mv
+    e1 1.25
+    e2 -0.5
+  int type=0x2109 valid=1
+    point0 1.25 -0.5 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0.9284766909 -0.3713906764 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1.346291202 0
+object camori e3ga drawMode=0x150 color=0 0 0 1
+  mv
+    1 0.933711
+    e2^e3 0.2343759
+    e3^e1 0.2700963
+    e1^e2 0.01731097
+  int type=0x2200 valid=1
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0.6546308644 0.7544008337 0.04835094076
+    vector1 3.569343048 -3.092219686 -0.07919216862
+    vector2 -0.7728155467 0.6830574575 -0.1942093757
+    vector3 0 0 0
+    scalar 0.9999999875 0.7323091625
+object campos e3ga drawMode=0x170 color=0 0 0 1
+  mv
+    e1 1.1016
+    e2 0.4254
+    e3 7.7
+  int type=0x2109 valid=1
+    point0 1.1016 0.4254 7.7
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0.141411615 0.05460829795 0.9884435689
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 7.790024886 0
+object d e3ga drawMode=0x70 color=1 0 0 1
+  mv
+    e1 1.125
+    e2 0.75
+  int type=0x2109 valid=1
+    point0 1.125 0.75 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0.8320502943 0.5547001962 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1.352081728 0
+object lab e3ga drawMode=0x70 color=1 0 0 1
+  mv
+    e1 1.1875
+    e2 0.125
+    e3 0.2
+  int type=0x2109 valid=1
+    point0 1.1875 0.125 0.2
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0.9808419618 0.1032465223 0.1651944357
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1.210694532 0
+object lab_label text drawMode=0x0 color=0 0 0 1
+  text "\eqn{\bold{a \op b}}"
+  at lab
+object lc e3ga drawMode=0x70 color=1 0 0 1
+  mv
+    e1 0.3980971328
+    e2 -0.2130905012
+  int type=0x2109 valid=1
+    point0 0.3980971328 -0.2130905012 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0.8816419981 -0.4719188353 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 0.4515405728 0
+object lc_label text drawMode=0x0 color=0 0 0 1
+  text "\eqn{\bold{a-\frac{1}{2}b}}"
+  at lc
+object ld e3ga drawMode=0x70 color=1 0 0 1
+  mv
+    e1 1.84023501
+    e2 -0.1666025147
+  int type=0x2109 valid=1
+    point0 1.84023501 -0.1666025147 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0.9959268837 -0.09016452921 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1.847761156 0
+object ld_label text drawMode=0x0 color=0 0 0 1
+  text "\eqn{\bold{\frac{1}{2}a + \frac{3}{4}b}}"
+  at ld
+object tr e3ga drawMode=0x70 color=0 0 0 1
+  mv
+  int type=0x2000 valid=0
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 0 0
+== frame 5 ==
+-- console --
+INIT: model is e3ga
+INIT: inner product is left contraction
+fontsize 24
+ab = 1.50*e1^e2
+-- objects --
+object a e3ga drawMode=0x70 color=1 0 0 1
+  mv
+    e1 1.5
+  int type=0x2109 valid=1
+    point0 1.5 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 1 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1.5 0
+object ab e3ga drawMode=0x22 color=1 0.5 0.5 1
+  mv
+    e1^e2 1.5
+  int type=0x210a valid=1
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 1
+    vector1 1.25 -0.5 0
+    vector2 1.125 0.75 0
+    vector3 0 0 0
+    scalar 1.5 0
+object autocolor e3ga drawMode=0x150 color=0 0 0 1
+  mv
+    1 1
+  int type=0x2108 valid=1
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1 0
+object b e3ga drawMode=0x70 color=1 0 0 1
+  mv
+    e1 0.5
+    e2 1
+  int type=0x2109 valid=1
+    point0 0.5 1 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0.4472135955 0.894427191 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1.118033989 0
+object camori e3ga drawMode=0x150 color=0 0 0 1
+  mv
+    1 0.933711
+    e2^e3 0.2343759
+    e3^e1 0.2700963
+    e1^e2 0.01731097
+  int type=0x2200 valid=1
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0.6546308644 0.7544008337 0.04835094076
+    vector1 3.569343048 -3.092219686 -0.07919216862
+    vector2 1.011855977 -0.8630523855 -0.2338054601
+    vector3 0 0 0
+    scalar 0.9999999875 0.7323091625
+object campos e3ga drawMode=0x170 color=0 0 0 1
+  mv
+    e1 1.1016
+    e2 0.4254
+    e3 7.7
+  int type=0x2109 valid=1
+    point0 1.1016 0.4254 7.7
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0.141411615 0.05460829795 0.9884435689
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 7.790024886 0
+object lab e3ga drawMode=0x70 color=1 0 0 1
+  mv
+    e3 0.2
+  int type=0x2109 valid=1
+    point0 0 0 0.2
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 1
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 0.2 0
+object lab_label text drawMode=0x0 color=0 0 0 1
+  text "\eqn{\bold{a \op b}}"
+  at lab
+object tr e3ga drawMode=0x70 color=0 0 0 1
+  mv
+  int type=0x2000 valid=0
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 0 0
+== frame 6 ==
+-- console --
+-- objects --
+object a e3ga drawMode=0x70 color=1 0 0 1
+  mv
+    e1 1.5
+  int type=0x2109 valid=1
+    point0 1.5 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 1 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1.5 0
+object ab e3ga drawMode=0x22 color=1 0.5 0.5 1
+  mv
+    e1^e2 1.5
+  int type=0x210a valid=1
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 1
+    vector1 1.25 -0.5 0
+    vector2 1.125 0.75 0
+    vector3 0 0 0
+    scalar 1.5 0
+object autocolor e3ga drawMode=0x150 color=0 0 0 1
+  mv
+    1 1
+  int type=0x2108 valid=1
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1 0
+object b e3ga drawMode=0x70 color=1 0 0 1
+  mv
+    e1 0.5
+    e2 1
+  int type=0x2109 valid=1
+    point0 0.5 1 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0.4472135955 0.894427191 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1.118033989 0
+object camori e3ga drawMode=0x150 color=0 0 0 1
+  mv
+    1 0.933711
+    e2^e3 0.2343759
+    e3^e1 0.2700963
+    e1^e2 0.01731097
+  int type=0x2200 valid=1
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0.6546308644 0.7544008337 0.04835094076
+    vector1 3.569343048 -3.092219686 -0.07919216862
+    vector2 1.011855977 -0.8630523855 -0.2338054601
+    vector3 0 0 0
+    scalar 0.9999999875 0.7323091625
+object campos e3ga drawMode=0x170 color=0 0 0 1
+  mv
+    e1 1.1016
+    e2 0.4254
+    e3 7.7
+  int type=0x2109 valid=1
+    point0 1.1016 0.4254 7.7
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0.141411615 0.05460829795 0.9884435689
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 7.790024886 0
+object lab e3ga drawMode=0x70 color=1 0 0 1
+  mv
+    e3 0.2
+  int type=0x2109 valid=1
+    point0 0 0 0.2
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 1
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 0.2 0
+object lab_label text drawMode=0x0 color=0 0 0 1
+  text "\eqn{\bold{a \op b}}"
+  at lab
+object tr e3ga drawMode=0x70 color=0 0 0 1
+  mv
+  int type=0x2000 valid=0
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 0 0

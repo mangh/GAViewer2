@@ -44,6 +44,7 @@
 #include "typeset/typeset.h"
 
 state *g_state = NULL;
+const char *g_version = "0.86";
 
 state::state()
 {
@@ -337,8 +338,11 @@ int state::resetGAfileState()
     m_tsMode = "verbatim"; // todo: can this be replaced by a call to tsReset()
     m_tsFont = "regular";
     setInputWaitState(0);
-    gui_state->m_mainWindow->setTitle("untitled");
-    gui_state->setStatus("");
+    if (gui_state)
+    {
+        gui_state->m_mainWindow->setTitle("untitled");
+        gui_state->setStatus("");
+    }
     return 0;
 }
 
@@ -1295,16 +1299,24 @@ int state::updateAnimation()
     return 0;
 }
 
+int (*g_cprintfHook)(const char *fmt, va_list ap) = NULL;
+
 // prints to the console
 int cprintf(const char *fmt, ...)
 {
     va_list ap;
     va_start(ap, fmt);
 
-    if (g_state && gui_state && gui_state->m_console)
-        return gui_state->m_console->cprintf(fmt, ap);
+    int result;
+    if (g_cprintfHook)
+        result = g_cprintfHook(fmt, ap);
+    else if (g_state && gui_state && gui_state->m_console)
+        result = gui_state->m_console->cprintf(fmt, ap);
     else
-        return vprintf(fmt, ap);
+        result = vprintf(fmt, ap);
+
+    va_end(ap);
+    return result;
 }
 
 /*int cprintfC(const char *fmt, ...) {

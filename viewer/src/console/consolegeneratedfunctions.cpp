@@ -3027,7 +3027,8 @@ consoleVariable *cf_clf(consoleScope *s, consoleVariable *arg[])
     g_state->removeAllObjects();
     g_state->setDefaultGlobalScopeVariables();
 
-    gui_state->setStatus("");
+    if (gui_state)
+        gui_state->setStatus("");
     return new consoleVariable("", e3ga(0.0));
 }
 
@@ -3555,7 +3556,8 @@ consoleVariable *cf_screenshot(consoleScope *s, consoleVariable *arg[])
     int height = (int)(arg[2]->scalar() + 0.5);
     bool wol = arg[3]->scalar() != 0.0;
 
-    gui_state->setupScreenshot(arg[0]->name(), width, height, wol);
+    if (gui_state)
+        gui_state->setupScreenshot(arg[0]->name(), width, height, wol);
 
     return new consoleVariable("", e3ga(0.0));
 }
@@ -3566,7 +3568,7 @@ consoleVariable *cf_set_window_title(consoleScope *s, consoleVariable *arg[])
     static char title[1024];
     strcpy(title, (std::string("GAViewer: ") + arg[0]->name()).c_str());
     //	strcpy(title, arg[0]->name().c_str());
-    if (gui_state->m_mainWindow)
+    if (gui_state && gui_state->m_mainWindow)
         gui_state->m_mainWindow->label(title);
 
     return new consoleVariable("", e3ga(0.0));
@@ -3615,14 +3617,16 @@ consoleVariable *cf_net_close(consoleScope *s, consoleVariable *arg[])
 // ********************************* MOUSE INTERACTION *********************************
 consoleVariable *cf_disable_mouse_interaction(consoleScope *s, consoleVariable *arg[])
 {
-    gui_state->setInteractiveMouse(false);
+    if (gui_state)
+        gui_state->setInteractiveMouse(false);
     e3ga tmp(0.0);
     return new consoleVariable("", tmp);
 }
 
 consoleVariable *cf_enable_mouse_interaction(consoleScope *s, consoleVariable *arg[])
 {
-    gui_state->setInteractiveMouse(true);
+    if (gui_state)
+        gui_state->setInteractiveMouse(true);
     e3ga tmp(0.0);
     return new consoleVariable("", tmp);
 }
@@ -3630,7 +3634,8 @@ consoleVariable *cf_enable_mouse_interaction(consoleScope *s, consoleVariable *a
 // ********************************* SET POINT SIZE  *********************************
 consoleVariable *cf_set_point_size(consoleScope *s, consoleVariable *arg[])
 {
-    gui_state->setPointSize(arg[0]->scalar());
+    if (gui_state)
+        gui_state->setPointSize(arg[0]->scalar());
     e3ga tmp(0.0);
     return new consoleVariable("", tmp);
 }
@@ -3638,7 +3643,8 @@ consoleVariable *cf_set_point_size(consoleScope *s, consoleVariable *arg[])
 // ********************************* SET NEAR FAR CLIP PLANES*********************************
 consoleVariable *cf_set_near_far_clip_planes(consoleScope *s, consoleVariable *arg[])
 {
-    gui_state->m_glWindow->setNearFarClipPlanes(arg[0]->scalar(), arg[1]->scalar());
+    if (gui_state)
+        gui_state->m_glWindow->setNearFarClipPlanes(arg[0]->scalar(), arg[1]->scalar());
     e3ga tmp(0.0);
     return new consoleVariable("", tmp);
 }
@@ -3646,7 +3652,8 @@ consoleVariable *cf_set_near_far_clip_planes(consoleScope *s, consoleVariable *a
 // ********************************* SET TEXT SCALE *********************************
 consoleVariable *cf_set_text_scale(consoleScope *s, consoleVariable *arg[])
 {
-    gui_state->setTextScale(fabs(arg[0]->scalar()));
+    if (gui_state)
+        gui_state->setTextScale(fabs(arg[0]->scalar()));
     e3ga tmp(0.0);
     return new consoleVariable("", tmp);
 }
@@ -3654,7 +3661,8 @@ consoleVariable *cf_set_text_scale(consoleScope *s, consoleVariable *arg[])
 // ********************************* SET LINE WIDTH *********************************
 consoleVariable *cf_set_line_width(consoleScope *s, consoleVariable *arg[])
 {
-    gui_state->setLineWidth(fabs(arg[0]->scalar()));
+    if (gui_state)
+        gui_state->setLineWidth(fabs(arg[0]->scalar()));
     e3ga tmp(0.0);
     return new consoleVariable("", tmp);
 }
@@ -3663,9 +3671,12 @@ consoleVariable *cf_set_line_width(consoleScope *s, consoleVariable *arg[])
 consoleVariable *cf_set_gl_lines(consoleScope *s, consoleVariable *arg[])
 {
     // first set to opposite of requested:
-    gui_state->m_tubeDraw.setUseOpenGL(arg[0]->scalar() == 0.0);
-    // then call menu callback (which toggles the value):
-    ui_menuCallback(NULL, (void *)MI_GLLINES);
+    if (gui_state)
+    {
+        gui_state->m_tubeDraw.setUseOpenGL(arg[0]->scalar() == 0.0);
+        // then call menu callback (which toggles the value):
+        ui_menuCallback(NULL, (void *)MI_GLLINES);
+    }
 
     e3ga tmp(0.0);
     return new consoleVariable("", tmp);
@@ -3674,7 +3685,8 @@ consoleVariable *cf_set_gl_lines(consoleScope *s, consoleVariable *arg[])
 // ********************************* SET VECTOR HEAD SIZE *********************************
 consoleVariable *cf_set_vector_head_size(consoleScope *s, consoleVariable *arg[])
 {
-    gui_state->setVectorHeadSize(arg[0]->scalar());
+    if (gui_state)
+        gui_state->setVectorHeadSize(arg[0]->scalar());
     e3ga tmp(0.0);
     return new consoleVariable("", tmp);
 }
@@ -3837,7 +3849,8 @@ consoleVariable *cf_unmute_warnings(consoleScope *s, consoleVariable *arg[])
 consoleVariable *cf_diary(consoleScope *s, consoleVariable *arg[])
 {
     const char *filename = NULL;
-    gui_state->saveDiary(filename);
+    if (gui_state)
+        gui_state->saveDiary(filename);
     return new consoleVariable("", e3ga(0.0));
 }
 
@@ -3845,7 +3858,8 @@ consoleVariable *cf_diary(consoleScope *s, consoleVariable *arg[])
 consoleVariable *cf_diary_filename(consoleScope *s, consoleVariable *arg[])
 {
     const char *filename = arg[0]->name().c_str();
-    gui_state->saveDiary(filename);
+    if (gui_state)
+        gui_state->saveDiary(filename);
     return new consoleVariable("", e3ga(0.0));
 }
 

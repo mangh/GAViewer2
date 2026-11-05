@@ -1,0 +1,352 @@
+# gaviewer_regress
+# command: FIG_8_1();
+== load ==
+Parsing '<dir>/FIGS.g'
+Parsing '<dir>/FIG_10_2.g'
+Parsing '<dir>/FIG_10_3.g'
+Parsing '<dir>/FIG_10_4.g'
+Parsing '<dir>/FIG_11_1.g'
+Parsing '<dir>/FIG_11_10.g'
+Parsing '<dir>/FIG_11_12.g'
+Parsing '<dir>/FIG_11_2.g'
+Parsing '<dir>/FIG_11_5.g'
+Parsing '<dir>/FIG_11_6.g'
+Parsing '<dir>/FIG_12_1.g'
+Parsing '<dir>/FIG_12_2.g'
+Parsing '<dir>/FIG_12_3.g'
+Parsing '<dir>/FIG_12_4.g'
+Parsing '<dir>/FIG_12_5.g'
+Parsing '<dir>/FIG_13_2.g'
+Parsing '<dir>/FIG_13_3.g'
+Parsing '<dir>/FIG_13_4.g'
+Parsing '<dir>/FIG_13_6.g'
+Parsing '<dir>/FIG_13_7.g'
+Parsing '<dir>/FIG_14_1.g'
+Parsing '<dir>/FIG_14_10.g'
+Parsing '<dir>/FIG_14_2.g'
+Parsing '<dir>/FIG_14_3.g'
+Parsing '<dir>/FIG_14_4.g'
+Parsing '<dir>/FIG_14_6.g'
+Parsing '<dir>/FIG_14_7.g'
+Parsing '<dir>/FIG_14_9.g'
+Parsing '<dir>/FIG_15_1.g'
+Parsing '<dir>/FIG_15_13.g'
+Parsing '<dir>/FIG_15_2.g'
+Parsing '<dir>/FIG_15_3.g'
+Parsing '<dir>/FIG_15_4.g'
+Parsing '<dir>/FIG_15_5.g'
+Parsing '<dir>/FIG_15_6.g'
+Parsing '<dir>/FIG_15_7.g'
+Parsing '<dir>/FIG_15_8.g'
+Parsing '<dir>/FIG_15_9.g'
+Parsing '<dir>/FIG_16_1.g'
+Parsing '<dir>/FIG_16_10.g'
+Parsing '<dir>/FIG_16_11.g'
+Parsing '<dir>/FIG_16_12.g'
+Parsing '<dir>/FIG_16_13.g'
+Parsing '<dir>/FIG_16_2.g'
+Parsing '<dir>/FIG_16_3.g'
+Parsing '<dir>/FIG_16_6.g'
+Parsing '<dir>/FIG_16_7.g'
+Parsing '<dir>/FIG_16_8.g'
+Parsing '<dir>/FIG_16_9.g'
+Parsing '<dir>/FIG_1_1.g'
+Parsing '<dir>/FIG_1_3.g'
+Parsing '<dir>/FIG_1_4.g'
+Parsing '<dir>/FIG_23_3.g'
+Parsing '<dir>/FIG_2_1.g'
+Parsing '<dir>/FIG_2_14.g'
+Parsing '<dir>/FIG_2_2.g'
+Parsing '<dir>/FIG_2_3.g'
+Parsing '<dir>/FIG_2_4.g'
+Parsing '<dir>/FIG_2_5.g'
+Parsing '<dir>/FIG_2_6.g'
+Parsing '<dir>/FIG_2_7.g'
+Parsing '<dir>/FIG_2_8.g'
+Parsing '<dir>/FIG_3_1.g'
+Parsing '<dir>/FIG_3_2.g'
+Parsing '<dir>/FIG_3_3.g'
+Parsing '<dir>/FIG_3_4.g'
+Parsing '<dir>/FIG_3_5.g'
+Parsing '<dir>/FIG_3_6.g'
+Parsing '<dir>/FIG_3_7.g'
+Parsing '<dir>/FIG_3_8.g'
+Parsing '<dir>/FIG_4_1.g'
+Parsing '<dir>/FIG_4_2.g'
+Parsing '<dir>/FIG_4_3.g'
+Parsing '<dir>/FIG_5_1.g'
+Parsing '<dir>/FIG_5_2.g'
+Parsing '<dir>/FIG_5_3.g'
+Parsing '<dir>/FIG_6_1.g'
+Parsing '<dir>/FIG_6_2.g'
+Parsing '<dir>/FIG_6_3.g'
+Parsing '<dir>/FIG_6_4.g'
+Parsing '<dir>/FIG_6_5.g'
+Parsing '<dir>/FIG_7_1.g'
+Parsing '<dir>/FIG_7_2.g'
+Parsing '<dir>/FIG_7_3.g'
+Parsing '<dir>/FIG_7_6.g'
+Parsing '<dir>/FIG_7_7.g'
+Parsing '<dir>/FIG_7_8.g'
+Parsing '<dir>/FIG_8_1.g'
+Parsing '<dir>/FIG_8_2.g'
+Parsing '<dir>/FIG_8_3.g'
+Parsing '<dir>/Log.g'
+Parsing '<dir>/factored.g'
+Parsing '<dir>/init.g'Constant 'I3' not foundConstant 'I5' not found
+Parsing '<dir>/orbiter.g'
+Parsing '<dir>/orient.g'
+Parsing '<dir>/pantilt.g'
+Parsing '<dir>/unit.g'
+Parsing '<dir>/vtrail.g'
+== frame 0 ==
+-- console --
+INIT: model is e3ga
+INIT: inner product is left contraction
+fontsize 24
+x = 1.50*e1
+a = 0.50*e1 + 0.50*e2
+unitsphere = 1.00*no + -0.50*ni
+invx = 0.67*e1
+tana = 0.75*e1^e2 + -0.50*e1^no + -0.50*e2^no + 0.56*e1^ni + -0.56*e2^ni + 0.75*no^ni
+tanra = 0.75*e1^e2 + 0.50*e1^no + -0.50*e2^no + -0.56*e1^ni + -0.56*e2^ni + -0.75*no^ni
+xa = 2.00*e1 + 0.50*e2
+invxa = 0.47*e1 + 0.12*e2
+tanrainv = 0.15*e1^e2 + 0.22*e1^no + -0.22*e2^no + -0.05*e1^ni + -0.05*e2^ni + -0.15*no^ni
+-- objects --
+object a e3ga drawMode=0x30 color=0 0 1 1
+  mv
+    e1 0.5
+    e2 0.5
+  int type=0x2109 valid=1
+    point0 0.5 0.5 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0.7071067812 0.7071067812 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 0.7071067812 0
+object a_label text drawMode=0x0 color=0 0 0 1
+  text "\blue{\bold{a}}"
+  at a
+object autocolor e3ga drawMode=0x150 color=1 0 0 1
+  mv
+    1 1
+  int type=0x2108 valid=1
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1 0
+object camori e3ga drawMode=0x150 color=1 0 0 1
+  mv
+    1 1
+  int type=0x2108 valid=1
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1 0
+object campos e3ga drawMode=0x170 color=1 0 0 1
+  mv
+    e3 5
+  int type=0x2109 valid=1
+    point0 0 0 5
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 1
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 5 0
+object delinvx e3ga drawMode=0x70 color=1 0 0 1
+  mv
+    e1 -0.2222222222
+    e2 0.2222222222
+  int type=0x2109 valid=1
+    point0 -0.2222222222 0.2222222222 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 -0.7071067812 0.7071067812 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 0.3142696805 0
+object invx e3ga drawMode=0x30 color=1 0 0 1
+  mv
+    e1 0.6666666667
+  int type=0x2109 valid=1
+    point0 0.6666666667 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 1 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 0.6666666667 0
+object invx_label text drawMode=0x0 color=0 0 0 1
+  text "\eqn{\bold{x^{-1}}}"
+  at invx
+object invxa e3ga drawMode=0x30 color=1 0 0 1
+  mv
+    e1 0.4705882353
+    e2 0.1176470588
+  int type=0x2109 valid=1
+    point0 0.4705882353 0.1176470588 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0.9701425001 0.242535625 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 0.4850712501 0
+object invxa_label text drawMode=0x0 color=0 0 0 1
+  text "\eqn{\bold{(x+a)^{-1}}}"
+  at invxa
+object ra e3ga drawMode=0x70 color=1 0 0 1
+  mv
+    e1 -0.5
+    e2 0.5
+  int type=0x2109 valid=1
+    point0 -0.5 0.5 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 -0.7071067812 0.7071067812 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 0.7071067812 0
+object tana c3ga drawMode=0x30 color=0 0 1 1
+  mv
+    e1^e2 0.75
+    e1^no -0.5
+    e2^no -0.5
+    e1^ni 0.5625
+    e2^ni -0.5625
+    no^ni 0.75
+  int type=0x6121 valid=1
+    point0 1.5 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0.7071067812 0.7071067812 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 0.7071067812 0
+object tanra c3ga drawMode=0x30 color=0 0 1 1
+  mv
+    e1^e2 0.75
+    e1^no 0.5
+    e2^no -0.5
+    e1^ni -0.5625
+    e2^ni -0.5625
+    no^ni -0.75
+  int type=0x6121 valid=1
+    point0 1.5 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 -0.7071067812 0.7071067812 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 0.7071067812 0
+object tanrainv c3ga drawMode=0x30 color=0 0 1 1
+  mv
+    e1^e2 0.1481481481
+    e1^no 0.2222222222
+    e2^no -0.2222222222
+    e1^ni -0.04938271605
+    e2^ni -0.04938271605
+    no^ni -0.1481481481
+  int type=0x6121 valid=1
+    point0 0.6666666667 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 -0.7071067812 0.7071067812 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 0.3142696805 0
+object unitsphere c3ga drawMode=0x10 color=1 1 1 0.5
+  mv
+    no 1
+    ni -0.5
+  int type=0x6984 valid=1
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1 -1
+object x e3ga drawMode=0x30 color=1 0 0 1
+  mv
+    e1 1.5
+  int type=0x2109 valid=1
+    point0 1.5 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 1 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1.5 0
+object x_label text drawMode=0x0 color=0 0 0 1
+  text "\bold{x}"
+  at x
+object xa e3ga drawMode=0x30 color=1 0 0 1
+  mv
+    e1 2
+    e2 0.5
+  int type=0x2109 valid=1
+    point0 2 0.5 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0.9701425001 0.242535625 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 2.061552813 0
+object xa_label text drawMode=0x0 color=0 0 0 1
+  text "\bold{x+a}"
+  at xa
+object xdelinvx e3ga drawMode=0x70 color=1 0 0 1
+  mv
+    e1 0.4444444444
+    e2 0.2222222222
+  int type=0x2109 valid=1
+    point0 0.4444444444 0.2222222222 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0.894427191 0.4472135955 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 0.496903995 0
+object xdelinvx_label text drawMode=0x0 color=0 0 0 1
+  text "\blue{\eqn{\bold{-x^{-1}a x^{-1}}}}"
+  at xdelinvx
+object xra e3ga drawMode=0x70 color=1 0 0 1
+  mv
+    e1 1
+    e2 0.5
+  int type=0x2109 valid=1
+    point0 1 0.5 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0.894427191 0.4472135955 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1.118033989 0
+object xra_label text drawMode=0x0 color=0 0 0 1
+  text "\blue{\eqn{\bold{-x a x^{-1}}}}"
+  at xra

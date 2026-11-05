@@ -29,7 +29,6 @@
 #include "object.h"
 #include <string>
 
-const char *g_version = "0.86";
 
 /*
 To compile without a console for win32:

@@ -1,0 +1,371 @@
+# gaviewer_regress
+# command: FIG_13_3();
+== load ==
+Parsing '<dir>/FIGS.g'
+Parsing '<dir>/FIG_10_2.g'
+Parsing '<dir>/FIG_10_3.g'
+Parsing '<dir>/FIG_10_4.g'
+Parsing '<dir>/FIG_11_1.g'
+Parsing '<dir>/FIG_11_10.g'
+Parsing '<dir>/FIG_11_12.g'
+Parsing '<dir>/FIG_11_2.g'
+Parsing '<dir>/FIG_11_5.g'
+Parsing '<dir>/FIG_11_6.g'
+Parsing '<dir>/FIG_12_1.g'
+Parsing '<dir>/FIG_12_2.g'
+Parsing '<dir>/FIG_12_3.g'
+Parsing '<dir>/FIG_12_4.g'
+Parsing '<dir>/FIG_12_5.g'
+Parsing '<dir>/FIG_13_2.g'
+Parsing '<dir>/FIG_13_3.g'
+Parsing '<dir>/FIG_13_4.g'
+Parsing '<dir>/FIG_13_6.g'
+Parsing '<dir>/FIG_13_7.g'
+Parsing '<dir>/FIG_14_1.g'
+Parsing '<dir>/FIG_14_10.g'
+Parsing '<dir>/FIG_14_2.g'
+Parsing '<dir>/FIG_14_3.g'
+Parsing '<dir>/FIG_14_4.g'
+Parsing '<dir>/FIG_14_6.g'
+Parsing '<dir>/FIG_14_7.g'
+Parsing '<dir>/FIG_14_9.g'
+Parsing '<dir>/FIG_15_1.g'
+Parsing '<dir>/FIG_15_13.g'
+Parsing '<dir>/FIG_15_2.g'
+Parsing '<dir>/FIG_15_3.g'
+Parsing '<dir>/FIG_15_4.g'
+Parsing '<dir>/FIG_15_5.g'
+Parsing '<dir>/FIG_15_6.g'
+Parsing '<dir>/FIG_15_7.g'
+Parsing '<dir>/FIG_15_8.g'
+Parsing '<dir>/FIG_15_9.g'
+Parsing '<dir>/FIG_16_1.g'
+Parsing '<dir>/FIG_16_10.g'
+Parsing '<dir>/FIG_16_11.g'
+Parsing '<dir>/FIG_16_12.g'
+Parsing '<dir>/FIG_16_13.g'
+Parsing '<dir>/FIG_16_2.g'
+Parsing '<dir>/FIG_16_3.g'
+Parsing '<dir>/FIG_16_6.g'
+Parsing '<dir>/FIG_16_7.g'
+Parsing '<dir>/FIG_16_8.g'
+Parsing '<dir>/FIG_16_9.g'
+Parsing '<dir>/FIG_1_1.g'
+Parsing '<dir>/FIG_1_3.g'
+Parsing '<dir>/FIG_1_4.g'
+Parsing '<dir>/FIG_23_3.g'
+Parsing '<dir>/FIG_2_1.g'
+Parsing '<dir>/FIG_2_14.g'
+Parsing '<dir>/FIG_2_2.g'
+Parsing '<dir>/FIG_2_3.g'
+Parsing '<dir>/FIG_2_4.g'
+Parsing '<dir>/FIG_2_5.g'
+Parsing '<dir>/FIG_2_6.g'
+Parsing '<dir>/FIG_2_7.g'
+Parsing '<dir>/FIG_2_8.g'
+Parsing '<dir>/FIG_3_1.g'
+Parsing '<dir>/FIG_3_2.g'
+Parsing '<dir>/FIG_3_3.g'
+Parsing '<dir>/FIG_3_4.g'
+Parsing '<dir>/FIG_3_5.g'
+Parsing '<dir>/FIG_3_6.g'
+Parsing '<dir>/FIG_3_7.g'
+Parsing '<dir>/FIG_3_8.g'
+Parsing '<dir>/FIG_4_1.g'
+Parsing '<dir>/FIG_4_2.g'
+Parsing '<dir>/FIG_4_3.g'
+Parsing '<dir>/FIG_5_1.g'
+Parsing '<dir>/FIG_5_2.g'
+Parsing '<dir>/FIG_5_3.g'
+Parsing '<dir>/FIG_6_1.g'
+Parsing '<dir>/FIG_6_2.g'
+Parsing '<dir>/FIG_6_3.g'
+Parsing '<dir>/FIG_6_4.g'
+Parsing '<dir>/FIG_6_5.g'
+Parsing '<dir>/FIG_7_1.g'
+Parsing '<dir>/FIG_7_2.g'
+Parsing '<dir>/FIG_7_3.g'
+Parsing '<dir>/FIG_7_6.g'
+Parsing '<dir>/FIG_7_7.g'
+Parsing '<dir>/FIG_7_8.g'
+Parsing '<dir>/FIG_8_1.g'
+Parsing '<dir>/FIG_8_2.g'
+Parsing '<dir>/FIG_8_3.g'
+Parsing '<dir>/Log.g'
+Parsing '<dir>/factored.g'
+Parsing '<dir>/init.g'Constant 'I3' not foundConstant 'I5' not found
+Parsing '<dir>/orbiter.g'
+Parsing '<dir>/orient.g'
+Parsing '<dir>/pantilt.g'
+Parsing '<dir>/unit.g'
+Parsing '<dir>/vtrail.g'
+== frame 0 ==
+-- console --
+INIT: model is c3ga
+INIT: inner product is left contraction
+fontsize 24
+u = 1.00*e1 + -1.00*e3
+n = 1.00*e3
+x = -4.21*e1 + -2.18*e2 + -0.47*e3 + 1.00*no + 11.35*ni
+y = -3.51*e1 + -2.45*e2 + -2.08*e3 + 1.00*no + 11.32*ni
+uprime = 1.00*e1 + 1.00*e3
+p = 1.00*e3 + -2.08*ni
+L = 2.18*e1^e2^ni + 4.68*e1^e3^ni + 2.18*e2^e3^ni + -1.00*e1^no^ni + 1.00*e3^no^ni
+Lprime = 2.18*e1^e2^ni + -0.52*e1^e3^ni + -2.18*e2^e3^ni + -1.00*e1^no^ni + -1.00*e3^no^ni
+-- objects --
+object   pan/tilt control ? e3ga drawMode=0x70 color=0 0 0 1
+  mv
+    1 1
+  int type=0x2108 valid=1
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1 0
+object L c3ga drawMode=0x12 color=0.8000000119 0.8000000119 0 1
+  mv
+    e1^e2^ni 2.18
+    e1^e3^ni 4.68
+    e2^e3^ni 2.18
+    e1^no^ni -1
+    e3^no^ni 1
+  int type=0x6143 valid=1
+    point0 -2.34 -2.18 -2.34
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0.7071067812 0 -0.7071067812
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1.414213562 0
+object Lprime c3ga drawMode=0x12 color=0.8000000119 0.5 0 1
+  mv
+    e1^e2^ni 2.18
+    e1^e3^ni -0.52
+    e2^e3^ni -2.18
+    e1^no^ni -1
+    e3^no^ni -1
+  int type=0x6143 valid=1
+    point0 -0.26 -2.18 0.26
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0.7071067812 0 0.7071067812
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1.414213562 0
+object Lprime_label text drawMode=0x0 color=0 0 0 1
+  text "\eqn{\pi \gp \hat{\Lambda} \gp /\pi}"
+  at Lprime
+object autocolor c3ga drawMode=0x170 color=1 0 0 1
+  mv
+    1 1
+  int type=0x6108 valid=1
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar -1 0
+object camori c3ga drawMode=0x170 color=0 0 0 1
+  mv
+    1 1
+    e1^e2 0.3093362496
+    e1^e3 -0.29696706
+    e2^e3 0.9600137728
+  int type=0x6000 valid=0
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 0 0
+object campos c3ga drawMode=0x170 color=0 0 0 1
+  mv
+    e1 -0.98
+    e2 -1.3
+    e3 20.1
+  int type=0x6944 valid=1
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 -0.0485970754 -0.06446550818 0.9967359342
+    vector1 0.9988172318 -0.001568978205 0.0485970754
+    vector2 -0.001568978205 0.9979187024 0.06446550818
+    vector3 0 0 0
+    scalar 20.16582257 0
+object lL c3ga drawMode=0x50 color=1 0 0 0.5
+  mv
+    e1 -6.21
+    e2 -2.18
+    e3 1.53
+    no 1
+    ni 11.3487
+  int type=0x6984 valid=1
+    point0 -6.21 -2.18 1.53
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 4.79165942 -1
+object lL_label text drawMode=0x0 color=0 0 0 1
+  text "\eqn{\Lambda}"
+  at lL
+object n e3ga drawMode=0x30 color=1 0 0 1
+  mv
+    e3 1
+  int type=0x2109 valid=1
+    point0 0 0 1
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 1
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1 0
+object n_label text drawMode=0x0 color=0 0 0 1
+  text "\eqn{\bold{n}}"
+  at n
+object p c3ga drawMode=0x10 color=1 0 0 0.5
+  mv
+    e3 1
+    ni -2.08
+  int type=0x6944 valid=1
+    point0 0 0 -2.08
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 1
+    vector1 1 0 0
+    vector2 0 1 0
+    vector3 0 0 0
+    scalar 1 0
+object p_label text drawMode=0x0 color=0 0 0 1
+  text "\eqn{\pi}"
+  at p
+object pan e3ga drawMode=0x70 color=0 0 0 1
+  mv
+    1 -0.6
+  int type=0x2108 valid=1
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar -0.6 0
+object panstart c3ga drawMode=0x70 color=0 0 0 1
+  mv
+    1 -0.6
+  int type=0x6108 valid=1
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 0.6 0
+object tilt e3ga drawMode=0x70 color=0 0 0 1
+  mv
+    1 -1.53
+  int type=0x2108 valid=1
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar -1.53 0
+object tiltstart c3ga drawMode=0x70 color=0 0 0 1
+  mv
+    1 -1.53
+  int type=0x6108 valid=1
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1.53 0
+object u e3ga drawMode=0x30 color=1 1 0 1
+  mv
+    e1 1
+    e3 -1
+  int type=0x2109 valid=1
+    point0 1 0 -1
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0.7071067812 0 -0.7071067812
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1.414213562 0
+object u_label text drawMode=0x0 color=0 0 0 1
+  text "\eqn{\bold{u}}"
+  at u
+object uprime e3ga drawMode=0x30 color=1 0.5 0 1
+  mv
+    e1 1
+    e3 1
+  int type=0x2109 valid=1
+    point0 1 0 1
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0.7071067812 0 0.7071067812
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1.414213562 0
+object uprime_label text drawMode=0x0 color=0 0 0 1
+  text "\eqn{\bold{u'}}"
+  at uprime
+object x c3ga drawMode=0x10 color=1 0 0 1
+  mv
+    e1 -4.21
+    e2 -2.18
+    e3 -0.47
+    no 1
+    ni 11.3487
+  int type=0x6120 valid=1
+    point0 -4.21 -2.18 -0.47
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1 0
+object x_label text drawMode=0x0 color=0 0 0 1
+  text "\eqn{x}"
+  at x
+object y c3ga drawMode=0x10 color=1 0 0 1
+  mv
+    e1 -3.51
+    e2 -2.45
+    e3 -2.08
+    no 1
+    ni 11.3245
+  int type=0x6120 valid=1
+    point0 -3.51 -2.45 -2.08
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1 0
+object y_label text drawMode=0x0 color=0 0 0 1
+  text "\eqn{y}"
+  at y

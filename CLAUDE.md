@@ -73,6 +73,17 @@ GAViewer2
 
 ## Testing
 
+Headless regression tests (`viewer/test`): the `gaviewer_regress` harness links the same `gaviewer_core` static library as the GUI, runs each book figure (`FIG_x_y();`) with `gui_state == NULL`, resumes at every `suspend;`, and dumps per frame the console output plus every object (multivector coordinates and `mvInt` interpretation). The dump is compared with `viewer/test/golden/FIG_x_y.txt`: numbers within a relative tolerance (1e-6), everything else exactly.
+
+```
+ctest --test-dir build -j8 [-R FIG_2_2] [--output-on-failure]   # run
+cmake --build build --target regress_update_golden              # regenerate golden files (only after an intended change)
+```
+
+- Failing test → actual output in `<build>/viewer/test/actual/FIG_x_y.txt`; diff it against the golden file.
+- Run one figure by hand: `gaviewer_regress -I <figs-src> "FIG_2_2();"` (dump to stdout).
+- Code reachable from console functions or GA-file commands must check `gui_state` for NULL (the harness has no GUI).
+
 ---
 
 ---

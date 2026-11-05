@@ -17,6 +17,7 @@
 #ifndef _STATE_H_
 #define _STATE_H_
 
+#include <cstdarg>
 #include <cstddef>
 #include <cstdio>
 
@@ -393,5 +394,9 @@ extern const char *g_version;
 
 // prints to the console
 extern int cprintf(const char *fmt, ...);
+
+// When set, cprintf() output is routed here instead of the GUI console or stdout
+// (used by the headless regression harness to capture console output).
+extern int (*g_cprintfHook)(const char *fmt, va_list ap);
 
 #endif /* _STATE_H_ */

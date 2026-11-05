@@ -318,7 +318,7 @@ int GAfile::read(state *s)
             parseLine(s);
             // printf("Parse line %d\n", m_lineNb);
 
-            if (gui_state->m_mainWindow == NULL)
+            if (gui_state && gui_state->m_mainWindow == NULL)
                 return 0; // program terminated
             m_bufLen = 0;
         }
@@ -814,7 +814,8 @@ int GAfile::parseLine(state *s)
                     m_lineNb);
             return 0;
         }
-        gui_state->setConsoleFontSize(h);
+        if (gui_state)
+            gui_state->setConsoleFontSize(h);
     }
     else if (!strcmpnc(entryname, "clear"))
     { // clear *********************
@@ -823,7 +824,8 @@ int GAfile::parseLine(state *s)
         if (gui_state && (gui_state->m_console))
             gui_state->m_console->clear();
 
-        gui_state->setStatus("");
+        if (gui_state)
+            gui_state->setStatus("");
         s->newGlobalScope();
     }
     else if (!strcmpnc(entryname, "clearconsole"))
@@ -854,8 +856,11 @@ int GAfile::parseLine(state *s)
         // retrieve coordinates, built up multivector
         if ((n = e3gaMv.parseString(line + strlen("eyepos"), &eBen)) < 0)
             return n;
-        gui_state->m_glWindow->setCamPos(e3gaMv(GRADE1));
-        gui_state->m_glWindow->redraw();
+        if (gui_state && gui_state->m_glWindow)
+        {
+            gui_state->m_glWindow->setCamPos(e3gaMv(GRADE1));
+            gui_state->m_glWindow->redraw();
+        }
     }
     else if ((!strcmpnc(entryname, "eyetrl")) || (!strcmpnc(entryname, "camtrl")))
     { // eyetrl *********************
@@ -887,8 +892,11 @@ int GAfile::parseLine(state *s)
         // retrieve coordinates, built up multivector
         if ((n = e3gaMv.parseString(line + strlen("eyepos"), &eBen)) < 0)
             return n;
-        gui_state->m_glWindow->setCamOri((-e3gaMv(GRADE2)).exp());
-        gui_state->m_glWindow->redraw();
+        if (gui_state && gui_state->m_glWindow)
+        {
+            gui_state->m_glWindow->setCamOri((-e3gaMv(GRADE2)).exp());
+            gui_state->m_glWindow->redraw();
+        }
     }
     else if ((!strcmpnc(entryname, "eyerot")) || (!strcmpnc(entryname, "camrot")))
     { // eyerot *********************
@@ -931,7 +939,9 @@ int GAfile::parseLine(state *s)
 
         if (!strcmpnc(name, "controls"))
         {
-            if (h)
+            if (!gui_state)
+                ; // headless: there is no GUI element to hide or show
+            else if (h)
             {
                 if (gui_state->m_controlGroupVisible)
                     ui_menuCallback(NULL, (void *)MI_HIDE_CONTROLS);
@@ -944,7 +954,9 @@ int GAfile::parseLine(state *s)
         }
         else if (!strcmpnc(name, "scalar_controls"))
         {
-            if (h)
+            if (!gui_state)
+                ; // headless: there is no GUI element to hide or show
+            else if (h)
             {
                 if (gui_state->m_scalarGroupVisible)
                     ui_menuCallback(NULL, (void *)MI_HIDE_SCALAR_CONTROLS);
@@ -957,7 +969,9 @@ int GAfile::parseLine(state *s)
         }
         else if (!strcmpnc(name, "console"))
         {
-            if (h)
+            if (!gui_state)
+                ; // headless: there is no GUI element to hide or show
+            else if (h)
             {
                 if (gui_state->m_consoleVisible)
                     ui_menuCallback(NULL, (void *)MI_HIDE_CONSOLE);
@@ -974,7 +988,8 @@ int GAfile::parseLine(state *s)
                 o->hide();
             else
                 o->show();
-            gui_state->m_glWindow->redraw();
+            if (gui_state && gui_state->m_glWindow)
+                gui_state->m_glWindow->redraw();
         }
         else
         {
@@ -1010,7 +1025,8 @@ int GAfile::parseLine(state *s)
                     entryname, m_lineNb);
             return 0;
         }
-        gui_state->setStatus(text);
+        if (gui_state)
+            gui_state->setStatus(text);
     }
     else if ((!strcmpnc(entryname, "polygon")) || (!strcmpnc(entryname, "simplex")))
     { // polygon/simplex ***********************
@@ -1114,8 +1130,11 @@ int GAfile::parseLine(state *s)
     }
     else if (!strcmpnc(entryname, "exit"))
     { // exit*********************
-        delete gui_state->m_mainWindow;
-        gui_state->m_mainWindow = NULL;
+        if (gui_state)
+        {
+            delete gui_state->m_mainWindow;
+            gui_state->m_mainWindow = NULL;
+        }
         return 0;
     }
     else if (!strcmpnc(entryname, "delete"))
@@ -1169,6 +1188,8 @@ int GAfile::parseLine(state *s)
         if (h < 100)
             h = 100;
 
+        if (!(gui_state && gui_state->m_mainWindow))
+            return 0;
         if (n == 3)
             gui_state->m_mainWindow->size(w, h);
         else if (n == 5)
@@ -1232,6 +1253,8 @@ int GAfile::parseLine(state *s)
     else if (!strcmpnc(entryname, "fullscreen"))
     { // fullscreen *********************
         n = sscanf(line, "%s %s", entryname, name);
+        if (!gui_state)
+            return 0;
         if ((n == 1) || (!strcmpnc(name, "on")))
         {
             if (gui_state->m_fullscreen)
@@ -1400,7 +1423,8 @@ int GAfile::parseLine(state *s)
             g_state->removeObject(name);
         }
 
-        gui_state->m_glWindow->redraw();
+        if (gui_state && gui_state->m_glWindow)
+            gui_state->m_glWindow->redraw();
     }
     else if (!strcmpnc(entryname, "mesh"))
     {                            // mesh ***********************

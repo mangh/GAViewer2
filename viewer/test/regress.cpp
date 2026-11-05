@@ -1,0 +1,546 @@
+// gaviewer_regress -- headless regression harness for GAViewer.
+//
+// Loads .g source files, executes a console command (e.g. "FIG_2_2();") exactly
+// as if it was typed into the GAViewer console, and dumps the resulting state:
+// the console output and every object (multivector coordinates plus their
+// geometric interpretation). Each time the script suspends ('suspend;'), the
+// state is dumped as a new frame and execution is resumed, until the script
+// completes.
+//
+// The dump can be compared against a "golden" reference file. Numbers are
+// compared with a tolerance, everything else must match exactly. This makes
+// the harness usable as a safety net while replacing the parser (output must
+// be identical) and the algebra implementation (numbers may differ slightly).
+//
+// Usage:
+//   gaviewer_regress [-I <dir>]... [-o <actual>] [-g <golden> [-u]] [-t <tol>] <command>
+//
+//   -I <dir>     load all .g files in <dir> (sorted by name); may be repeated
+//   -o <file>    write the dump to <file> (default: stdout, unless -g is given)
+//   -g <file>    compare the dump with golden reference <file>; exit code 1 on mismatch
+//   -u           (with -g) write/overwrite the golden reference instead of comparing
+//   -t <tol>     numeric tolerance, relative to magnitude (default 1e-6)
+//   -f <n>       maximum number of frames (default 100)
+
+// <windows.h> (pulled in by the OpenGL headers) must not define min/max macros:
+#ifndef NOMINMAX
+#define NOMINMAX
+#endif
+
+#include <algorithm>
+#include <cctype>
+#include <cmath>
+#include <cstdarg>
+#include <cstdio>
+#include <cstdlib>
+#include <filesystem>
+#include <fstream>
+#include <ios>
+#include <sstream>
+#include <string>
+#include <string_view>
+#include <system_error>
+#include <utility>
+#include <vector>
+
+#include "console/console.h"
+#include "console/consolescope.h"
+#include "gaincludes.h"
+#include "mvint.h"
+#include "object.h"
+#include "state.h"
+
+namespace fs = std::filesystem;
+
+namespace
+{
+
+// ---------------------------------------------------------------------------
+// console output capture
+// ---------------------------------------------------------------------------
+
+std::string g_log;
+
+int captureCprintf(const char *fmt, va_list ap)
+{
+    va_list ap2;
+    va_copy(ap2, ap);
+    int n = std::vsnprintf(nullptr, 0, fmt, ap2);
+    va_end(ap2);
+    if (n <= 0)
+        return n;
+    std::string buf(static_cast<size_t>(n) + 1, '\0');
+    std::vsnprintf(buf.data(), buf.size(), fmt, ap);
+    buf.resize(static_cast<size_t>(n));
+    g_log += buf;
+    return n;
+}
+
+void replaceAll(std::string &s, const std::string &from, const std::string &to)
+{
+    if (from.empty())
+        return;
+    for (size_t pos = 0; (pos = s.find(from, pos)) != std::string::npos; pos += to.size())
+        s.replace(pos, from.size(), to);
+}
+
+// Paths that must not leak into the dump (they differ between machines).
+std::vector<std::pair<std::string, std::string>> g_pathSubstitutions;
+
+std::string takeLog()
+{
+    std::string s;
+    s.swap(g_log);
+    replaceAll(s, "\r\n", "\n");
+    for (const auto &[from, to] : g_pathSubstitutions)
+        replaceAll(s, from, to);
+    if (!s.empty() && s.back() != '\n')
+        s += '\n';
+    return s;
+}
+
+// ---------------------------------------------------------------------------
+// state dump
+// ---------------------------------------------------------------------------
+
+std::string num(double x)
+{
+    if (std::fabs(x) < 1e-12)
+        x = 0.0; // also maps -0 to 0
+    char buf[64];
+    std::snprintf(buf, sizeof(buf), "%.10g", x);
+    return buf;
+}
+
+std::string hex(int x)
+{
+    char buf[16];
+    std::snprintf(buf, sizeof(buf), "0x%x", static_cast<unsigned>(x));
+    return buf;
+}
+
+// Gaigen 1 multivector: coordinates are stored per grade, basis element names
+// are listed in the same (grade-major) order.
+template <class MV>
+void dumpMv(std::ostringstream &out, const MV &mv, char *const *names, const int *gradeSize, int nbGrades)
+{
+    out << "  mv\n";
+    int ia = 0;
+    for (int g = 0; g < nbGrades; g++)
+    {
+        const double *c = mv.coordinates(1 << g);
+        for (int j = 0; j < gradeSize[g]; j++)
+            if (num(c[j]) != "0")
+                out << "    " << names[ia + j] << " " << num(c[j]) << "\n";
+        ia += gradeSize[g];
+    }
+}
+
+void dumpInt(std::ostringstream &out, const mvInt &I)
+{
+    out << "  int type=" << hex(I.m_type) << " valid=" << I.m_valid << "\n";
+    for (int i = 0; i < MVINT_NB_POINTS; i++)
+        out << "    point" << i << " " << num(I.m_point[i][0]) << " " << num(I.m_point[i][1]) << " "
+            << num(I.m_point[i][2]) << "\n";
+    for (int i = 0; i < MVINT_NB_VECTORS; i++)
+        out << "    vector" << i << " " << num(I.m_vector[i][0]) << " " << num(I.m_vector[i][1]) << " "
+            << num(I.m_vector[i][2]) << "\n";
+    out << "    scalar";
+    for (int i = 0; i < MVINT_NB_SCALAR; i++)
+        out << " " << num(I.m_scalar[i]);
+    out << "\n";
+}
+
+const char *typeName(int t)
+{
+    switch (t)
+    {
+    case OT_TEXT:
+        return "text";
+    case OT_E3GA:
+        return "e3ga";
+    case OT_P3GA:
+        return "p3ga";
+    case OT_C3GA:
+        return "c3ga";
+    case OT_C5GA:
+        return "c5ga";
+    case OT_I2GA:
+        return "i2ga";
+    case OT_POLYGON:
+        return "polygon";
+    case OT_MESH:
+        return "mesh";
+    default:
+        return "unknown";
+    }
+}
+
+std::string dumpObjects()
+{
+    std::ostringstream out;
+    for (const auto &[key, o] : g_state->m_objects)
+    {
+        const float *c = o->fgColor();
+        out << "object " << o->m_name << " " << typeName(o->m_type) << " drawMode=" << hex(o->m_drawMode)
+            << " color=" << num(c[0]) << " " << num(c[1]) << " " << num(c[2]) << " " << num(c[3]) << "\n";
+
+        switch (o->m_type)
+        {
+        case OT_E3GA: {
+            auto *eo = static_cast<e3gaObject *>(o);
+            dumpMv(out, eo->m_mv, e3gai_basisElementNames, e3gai_gradeSize, 4);
+            dumpInt(out, eo->m_int);
+            break;
+        }
+        case OT_P3GA: {
+            auto *po = static_cast<p3gaObject *>(o);
+            dumpMv(out, po->m_mv, p3gai_basisElementNames, p3gai_gradeSize, 5);
+            dumpInt(out, po->m_int);
+            break;
+        }
+        case OT_C3GA: {
+            auto *co = static_cast<c3gaObject *>(o);
+            dumpMv(out, co->m_mv, c3gai_basisElementNames, c3gai_gradeSize, 6);
+            dumpInt(out, co->m_int);
+            break;
+        }
+        case OT_C5GA: {
+            auto *co = static_cast<c5gaObject *>(o);
+            dumpMv(out, co->m_mv, c5gai_basisElementNames, c5gai_gradeSize, 8);
+            dumpInt(out, co->m_int);
+            break;
+        }
+        case OT_I2GA: {
+            auto *io = static_cast<i2gaObject *>(o);
+            dumpMv(out, io->m_mv, i2gai_basisElementNames, i2gai_gradeSize, 7);
+            dumpInt(out, io->m_int);
+            break;
+        }
+        case OT_TEXT: {
+            auto *to = static_cast<textObject *>(o);
+            std::string text = to->m_text ? to->m_text : "";
+            replaceAll(text, "\n", "\\n");
+            out << "  text \"" << text << "\"\n";
+            if (!to->m_pointName.empty())
+                out << "  at " << to->m_pointName << "\n";
+            else
+                dumpMv(out, to->m_pos, e3gai_basisElementNames, e3gai_gradeSize, 4);
+            break;
+        }
+        case OT_POLYGON: {
+            // dynamic polygons refer to their vertices by name, static ones store coordinates
+            auto *po = static_cast<polygonObject *>(o);
+            for (int i = 0; i < po->m_nbVertices; i++)
+            {
+                out << "  vertex" << i;
+                if (po->m_vertexName)
+                    out << " " << po->m_vertexName[i];
+                else if (po->m_vertex)
+                    out << " " << num(po->m_vertex[3 * i]) << " " << num(po->m_vertex[3 * i + 1]) << " "
+                        << num(po->m_vertex[3 * i + 2]);
+                out << "\n";
+            }
+            break;
+        }
+        default:
+            break;
+        }
+    }
+    return out.str();
+}
+
+// ---------------------------------------------------------------------------
+// tolerant comparison
+// ---------------------------------------------------------------------------
+
+bool isIdentChar(char ch)
+{
+    return std::isalnum(static_cast<unsigned char>(ch)) || ch == '_' || ch == '^';
+}
+
+bool isDigit(char ch)
+{
+    return std::isdigit(static_cast<unsigned char>(ch)) != 0;
+}
+
+struct Token
+{
+    bool isNumber;
+    double value;
+    std::string text;
+};
+
+// Splits a line into numbers and non-number words (whitespace separates tokens).
+// A number is only recognized when it does not continue an identifier, so
+// 'e1', 'e1^e2' or 'FIG_2_2' are words, but '1.5' in '1.5*e1' is a number.
+std::vector<Token> tokenize(const std::string &line)
+{
+    std::vector<Token> tokens;
+    size_t i = 0, n = line.size();
+    std::string word;
+    auto flushWord = [&] {
+        if (!word.empty())
+            tokens.push_back({false, 0.0, word});
+        word.clear();
+    };
+    while (i < n)
+    {
+        char ch = line[i];
+        if (std::isspace(static_cast<unsigned char>(ch)))
+        {
+            flushWord();
+            i++;
+            continue;
+        }
+        bool prevIdent = (i > 0) && isIdentChar(line[i - 1]);
+        bool signOrDot = (ch == '-' || ch == '+' || ch == '.');
+        bool startsNumber =
+            isDigit(ch) || (signOrDot && i + 1 < n &&
+                            (isDigit(line[i + 1]) || (line[i + 1] == '.' && i + 2 < n && isDigit(line[i + 2]))));
+        if (startsNumber && !prevIdent)
+        {
+            const char *begin = line.c_str() + i;
+            char *end = nullptr;
+            double v = std::strtod(begin, &end);
+            if (end != begin)
+            {
+                flushWord();
+                tokens.push_back({true, v, std::string(begin, static_cast<size_t>(end - begin))});
+                i += static_cast<size_t>(end - begin);
+                continue;
+            }
+        }
+        word += ch;
+        i++;
+    }
+    flushWord();
+    return tokens;
+}
+
+bool linesMatch(const std::string &expected, const std::string &actual, double tol)
+{
+    if (expected == actual)
+        return true;
+    auto te = tokenize(expected), ta = tokenize(actual);
+    if (te.size() != ta.size())
+        return false;
+    for (size_t k = 0; k < te.size(); k++)
+    {
+        if (te[k].isNumber != ta[k].isNumber)
+            return false;
+        if (te[k].isNumber)
+        {
+            double a = te[k].value, b = ta[k].value;
+            if (std::fabs(a - b) > tol * std::max(1.0, std::max(std::fabs(a), std::fabs(b))))
+                return false;
+        }
+        else if (te[k].text != ta[k].text)
+            return false;
+    }
+    return true;
+}
+
+std::vector<std::string> splitLines(const std::string &s)
+{
+    std::vector<std::string> lines;
+    std::istringstream in(s);
+    std::string line;
+    while (std::getline(in, line))
+    {
+        if (!line.empty() && line.back() == '\r')
+            line.pop_back();
+        lines.push_back(line);
+    }
+    return lines;
+}
+
+// Returns the number of mismatching lines (reports the first few on stderr).
+int compare(const std::string &expected, const std::string &actual, double tol)
+{
+    auto le = splitLines(expected), la = splitLines(actual);
+    int mismatches = 0;
+    const int maxReported = 10;
+    size_t n = std::max(le.size(), la.size());
+    for (size_t i = 0; i < n; i++)
+    {
+        const std::string *e = (i < le.size()) ? &le[i] : nullptr;
+        const std::string *a = (i < la.size()) ? &la[i] : nullptr;
+        if (e && a && linesMatch(*e, *a, tol))
+            continue;
+        if (mismatches < maxReported)
+        {
+            std::fprintf(stderr, "line %zu:\n  expected: %s\n  actual:   %s\n", i + 1, e ? e->c_str() : "<end of file>",
+                         a ? a->c_str() : "<end of file>");
+        }
+        mismatches++;
+        if (!e || !a)
+        {
+            // one file ended: count the rest as a single mismatch, no point in listing them all
+            break;
+        }
+    }
+    if (le.size() != la.size())
+        std::fprintf(stderr, "line count: expected %zu, actual %zu\n", le.size(), la.size());
+    return mismatches;
+}
+
+bool readFile(const fs::path &p, std::string &content)
+{
+    std::ifstream in(p, std::ios::binary);
+    if (!in)
+        return false;
+    std::ostringstream ss;
+    ss << in.rdbuf();
+    content = ss.str();
+    replaceAll(content, "\r\n", "\n");
+    return true;
+}
+
+bool writeFile(const fs::path &p, const std::string &content)
+{
+    if (p.has_parent_path())
+        fs::create_directories(p.parent_path());
+    std::ofstream out(p, std::ios::binary);
+    out << content;
+    return static_cast<bool>(out);
+}
+
+int usage()
+{
+    std::fprintf(stderr, "usage: gaviewer_regress [-I <dir>]... [-o <actual>] [-g <golden> [-u]] [-t <tol>] [-f <n>] "
+                         "<command>\n");
+    return 2;
+}
+
+} // namespace
+
+int main(int argc, char *argv[])
+{
+    std::vector<fs::path> includeDirs;
+    fs::path outPath, goldenPath;
+    bool update = false;
+    double tol = 1e-6;
+    int maxFrames = 100;
+    std::string command;
+
+    for (int i = 1; i < argc; i++)
+    {
+        std::string_view a = argv[i];
+        auto next = [&]() -> const char * { return (i + 1 < argc) ? argv[++i] : nullptr; };
+        const char *v = nullptr;
+        if (a == "-I" && (v = next()))
+            includeDirs.emplace_back(v);
+        else if (a == "-o" && (v = next()))
+            outPath = v;
+        else if (a == "-g" && (v = next()))
+            goldenPath = v;
+        else if (a == "-u")
+            update = true;
+        else if (a == "-t" && (v = next()))
+            tol = std::atof(v);
+        else if (a == "-f" && (v = next()))
+            maxFrames = std::atoi(v);
+        else if (!a.empty() && a[0] != '-' && command.empty())
+            command = a;
+        else
+            return usage();
+    }
+    if (command.empty() || (update && goldenPath.empty()))
+        return usage();
+
+    g_cprintfHook = captureCprintf;
+
+    // headless: gui_state stays NULL
+    g_state = new state();
+    g_state->m_nbNetServers = 0; // never open the network port
+
+    std::string dump = "# gaviewer_regress\n# command: " + command + "\n";
+
+    // load the .g source files (sorted, so the order -- and output -- is deterministic)
+    for (const auto &dir : includeDirs)
+    {
+        std::error_code ec;
+        fs::path absDir = fs::absolute(dir, ec);
+        std::string generic = absDir.generic_string(), native = absDir.string();
+        g_pathSubstitutions.emplace_back(generic, "<dir>");
+        g_pathSubstitutions.emplace_back(native, "<dir>");
+
+        std::vector<fs::path> files;
+        for (const auto &entry : fs::directory_iterator(absDir, ec))
+            if (entry.is_regular_file() && entry.path().extension() == ".g")
+                files.push_back(entry.path());
+        if (ec)
+        {
+            std::fprintf(stderr, "cannot read directory '%s': %s\n", native.c_str(), ec.message().c_str());
+            return 2;
+        }
+        std::sort(files.begin(), files.end());
+        for (const auto &f : files)
+        {
+            g_state->consoleSourceFileRead(f.generic_string().c_str());
+            if (!g_log.empty() && g_log.back() != '\n')
+                g_log += '\n'; // "Parsing '<file>'" is not terminated by a newline
+        }
+    }
+    dump += "== load ==\n" + takeLog();
+
+    // run the command, then keep resuming while the script is suspended
+    g_consoleCommandCallback(command.c_str(), g_state);
+    int frame = 0;
+    for (;;)
+    {
+        dump += "== frame " + std::to_string(frame) + " ==\n";
+        dump += "-- console --\n" + takeLog();
+        dump += "-- objects --\n" + dumpObjects();
+
+        if (g_state->m_globalScope->nbSuspendedStmtLists() <= 0)
+            break;
+        if (++frame >= maxFrames)
+        {
+            dump += "== frame limit reached ==\n";
+            break;
+        }
+        g_state->consoleCommandCallback(""); // empty input resumes the suspended statement list
+    }
+
+    if (!outPath.empty() && !writeFile(outPath, dump))
+    {
+        std::fprintf(stderr, "cannot write '%s'\n", outPath.string().c_str());
+        return 2;
+    }
+
+    if (goldenPath.empty())
+    {
+        if (outPath.empty())
+            std::fwrite(dump.data(), 1, dump.size(), stdout);
+        return 0;
+    }
+
+    if (update)
+    {
+        if (!writeFile(goldenPath, dump))
+        {
+            std::fprintf(stderr, "cannot write '%s'\n", goldenPath.string().c_str());
+            return 2;
+        }
+        std::printf("golden reference written: %s\n", goldenPath.string().c_str());
+        return 0;
+    }
+
+    std::string expected;
+    if (!readFile(goldenPath, expected))
+    {
+        std::fprintf(stderr, "golden reference '%s' not found (build target 'regress_update_golden' to create it)\n",
+                     goldenPath.string().c_str());
+        return 1;
+    }
+    int mismatches = compare(expected, dump, tol);
+    if (mismatches)
+    {
+        std::fprintf(stderr, "%d mismatching line(s) against '%s'%s%s\n", mismatches, goldenPath.string().c_str(),
+                     outPath.empty() ? "" : "; actual output: ", outPath.empty() ? "" : outPath.string().c_str());
+        return 1;
+    }
+    return 0;
+}

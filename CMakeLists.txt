@@ -77,7 +77,12 @@ endif()
 #       ctest --test-dir ./build/ [-V[V]] 
 #
 
-#enable_testing()
+option(GAVIEWER_BUILD_TESTS "Build the GAViewer headless regression tests: OFF/ON" ON)
+message(DEBUG "Build GAViewer tests: ${GAVIEWER_BUILD_TESTS}")
+
+if(GAVIEWER_BUILD_TESTS)
+  enable_testing()
+endif()
 
 ##########################################################################
 #
@@ -105,6 +110,12 @@ add_subdirectory("viewer")
 
 # Interactive Book Figures for GAViewer (optional)
 add_subdirectory("figures")
+
+# Headless regression tests (run the book figures, compare with golden references).
+# They need the sample figures, so they come after the "figures" subdirectory.
+if(GAVIEWER_BUILD_TESTS)
+  add_subdirectory("viewer/test")
+endif()
 
 # # FLTK Editor (unrelated to GAViewer, to check/play with FLTK)
 # add_subdirectory("editor")
