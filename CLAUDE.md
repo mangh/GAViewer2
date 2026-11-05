@@ -53,8 +53,10 @@ GAViewer2
 
 | Type | Role |
 |------|------|
+| `consoleVariable` (`console/consolevariable.h`) | a console value: name, flags, draw properties and the multivector, a `std::variant<std::monostate, e3ga, p3ga, c3ga, c5ga, i2ga>`; `mv<MV>()` (and `e()`, `p()`, `c()`, `c5()`, `i2()`) returns it as type `MV` (a static zero if of another model), `visitMV(f, none)` calls `f` with it as its actual type, `model()` is derived from it |
+| `modelId<MV>`, `modelName(model)` (`models.h`) | model id (`MVI_*`) of a multivector type, name ("e3ga", …) of a model id |
 | `consoleFunc` (`console/consolefunction.h`) | entry of the built-in function table: name, function pointer, argument specs (`CVF_*` flags + model id `MVI_*`); the table is `consoleBuiltinFunctions()` |
-| `consoleAlgebra<MV>` (`console/consolealgebra.h`) | the console's binding of a multivector type (`e3ga`, `p3ga`, `c3ga`, `c5ga`, `i2ga`) to its model id, cast and factor setter; `mv<MV>(cv)` accesses a variable's multivector; `forEachConsoleAlgebra` iterates the algebras |
+| `consoleAlgebra<MV>` (`console/consolealgebra.h`) | the console's binding of a multivector type (`e3ga`, `p3ga`, `c3ga`, `c5ga`, `i2ga`) to its model id, cast, factor setter and object creation; `mv<MV>(cv)` accesses a variable's multivector; `forEachConsoleAlgebra` iterates the algebras, `withConsoleAlgebra(model, f)` calls `f.template operator()<MV>()` for a model id |
 
 ### Error Recovery
 

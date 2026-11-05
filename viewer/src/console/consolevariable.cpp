@@ -19,6 +19,8 @@
 #include <cstring>
 
 #include <string>
+#include <type_traits>
+#include <variant>
 
 #include "../gaincludes.h"
 #include "../models.h"
@@ -34,16 +36,7 @@ int consoleVariable::m_tempVarCount = 1;
 consoleVariable::consoleVariable(const std::string &pname, const consoleVariable *cv)
 {
     initToNothing();
-    if (cv->model() == MVI_E3GA)
-        set((pname.length() > 0) ? pname : cv->name(), &cv->e());
-    else if (cv->model() == MVI_P3GA)
-        set((pname.length() > 0) ? pname : cv->name(), &cv->p());
-    else if (cv->model() == MVI_C3GA)
-        set((pname.length() > 0) ? pname : cv->name(), &cv->c());
-    else if (cv->model() == MVI_C5GA)
-        set((pname.length() > 0) ? pname : cv->name(), &cv->c5());
-    else if (cv->model() == MVI_I2GA)
-        set((pname.length() > 0) ? pname : cv->name(), &cv->i2());
+    cv->visitMV([&](const auto &mv) { return setMV((pname.length() > 0) ? pname : cv->name(), mv); }, 0);
 
     // copy other properties
     m_op = cv->op();
@@ -126,14 +119,11 @@ consoleVariable::consoleVariable(const consoleVariable &cv)
 
 consoleVariable::~consoleVariable()
 {
-    deleteMV();
-
-    initToNothing();
 }
 
 void consoleVariable::initToNothing()
 {
-    m_mv = NULL;
+    m_mv = std::monostate();
     m_op = 0;
     m_flags = 0;
     m_next = NULL;
@@ -144,32 +134,6 @@ void consoleVariable::initToNothing()
     int i;
     for (i = 0; i < 4; i++)
         m_color[i] = 0.0f;
-}
-
-void consoleVariable::deleteMV()
-{
-    if (m_mv)
-    {
-        switch (model())
-        {
-        case MVI_E3GA:
-            delete (e3ga *)m_mv;
-            break;
-        case MVI_P3GA:
-            delete (p3ga *)m_mv;
-            break;
-        case MVI_C3GA:
-            delete (c3ga *)m_mv;
-            break;
-        case MVI_C5GA:
-            delete (c5ga *)m_mv;
-            break;
-        case MVI_I2GA:
-            delete (i2ga *)m_mv;
-            break;
-        }
-    }
-    m_mv = NULL;
 }
 
 consoleVariable &consoleVariable::operator=(const consoleVariable &cv)
@@ -183,39 +147,21 @@ void consoleVariable::set(const consoleVariable &cv)
 {
     name(cv.name());
 
-    m_model = cv.model();
     m_op = cv.op();
     m_flags = cv.m_flags;
 
-    deleteMV();
-    switch (cv.model())
-    {
-    case MVI_E3GA:
-        m_mv = new e3ga(*(e3ga *)cv.m_mv);
-        break;
-    case MVI_P3GA:
-        m_mv = new p3ga(*(p3ga *)cv.m_mv);
-        break;
-    case MVI_C3GA:
-        m_mv = new c3ga(*(c3ga *)cv.m_mv);
-        break;
-    case MVI_C5GA:
-        m_mv = new c5ga(*(c5ga *)cv.m_mv);
-        break;
-    case MVI_I2GA:
-        m_mv = new i2ga(*(i2ga *)cv.m_mv);
-        break;
-    }
+    m_mv = cv.m_mv;
 
     m_drawMode = cv.drawMode();
     m_forceFlags = cv.forceFlags();
     color4(cv.color());
 }
 
-int consoleVariable::set(const std::string &pname, const e3ga *mv)
+// sets the name and the multivector, and the default draw mode and color
+template <class MV> int consoleVariable::setMV(const std::string &pname, const MV &mv)
 {
     int err;
-    if (err = name(pname))
+    if ((err = name(pname)))
         return err;
 
     int i;
@@ -223,169 +169,50 @@ int consoleVariable::set(const std::string &pname, const e3ga *mv)
     for (i = 0; i < 4; i++)
         m_color[i] = g_state->m_fgColor[i];
 
-    m_mv = (void *)(new e3ga(*mv));
+    m_mv = mv;
 
-    /*if (I) m_int = new mvInt(I);
-    else m_int = new mvInt(e());*/
-    m_model = MVI_E3GA;
+    return 0;
+}
 
-    return (m_mv == NULL) ? -1 : 0;
+int consoleVariable::set(const std::string &pname, const e3ga *mv)
+{
+    return setMV(pname, *mv);
 }
 
 int consoleVariable::set(const std::string &pname, const p3ga *mv)
 {
-    int err;
-    if (err = name(pname))
-        return err;
-
-    int i;
-    m_drawMode = OD_MAGNITUDE; // | OD_ORI;
-    for (i = 0; i < 4; i++)
-        m_color[i] = g_state->m_fgColor[i];
-
-    m_mv = (void *)(new p3ga(*mv));
-
-    /*	if (I) m_int = new mvInt(I);
-        else m_int = new mvInt(p());*/
-    m_model = MVI_P3GA;
-
-    return (m_mv == NULL) ? -1 : 0;
+    return setMV(pname, *mv);
 }
 
 int consoleVariable::set(const std::string &pname, const c3ga *mv)
 {
-    int err;
-    if (err = name(pname))
-        return err;
-
-    int i;
-    m_drawMode = OD_MAGNITUDE; // | OD_ORI;
-    for (i = 0; i < 4; i++)
-        m_color[i] = g_state->m_fgColor[i];
-
-    m_mv = (void *)(new c3ga(*mv));
-
-    m_model = MVI_C3GA;
-
-    return (m_mv == NULL) ? -1 : 0;
+    return setMV(pname, *mv);
 }
 
 int consoleVariable::set(const std::string &pname, const c5ga *mv)
 {
-    int err;
-    if (err = name(pname))
-        return err;
-
-    int i;
-    m_drawMode = OD_MAGNITUDE; // | OD_ORI;
-    for (i = 0; i < 4; i++)
-        m_color[i] = g_state->m_fgColor[i];
-
-    m_mv = (void *)(new c5ga(*mv));
-
-    m_model = MVI_C5GA;
-
-    return (m_mv == NULL) ? -1 : 0;
+    return setMV(pname, *mv);
 }
 
 int consoleVariable::set(const std::string &pname, const i2ga *mv)
 {
-    int err;
-    if (err = name(pname))
-        return err;
-
-    int i;
-    m_drawMode = OD_MAGNITUDE; // | OD_ORI;
-    for (i = 0; i < 4; i++)
-        m_color[i] = g_state->m_fgColor[i];
-
-    m_mv = (void *)(new i2ga(*mv));
-
-    m_model = MVI_I2GA;
-
-    return (m_mv == NULL) ? -1 : 0;
-}
-
-e3ga &consoleVariable::e() const
-{
-    static e3ga null;
-    return (model() == MVI_E3GA) ? *(e3ga *)m_mv : null;
-}
-
-p3ga &consoleVariable::p() const
-{
-    static p3ga null;
-    return (model() == MVI_P3GA) ? *(p3ga *)m_mv : null;
-}
-
-c3ga &consoleVariable::c() const
-{
-    static c3ga null;
-    return (model() == MVI_C3GA) ? *(c3ga *)m_mv : null;
-}
-
-c5ga &consoleVariable::c5() const
-{
-    static c5ga null;
-    return (model() == MVI_C5GA) ? *(c5ga *)m_mv : null;
-}
-
-i2ga &consoleVariable::i2() const
-{
-    static i2ga null;
-    return (model() == MVI_I2GA) ? *(i2ga *)m_mv : null;
+    return setMV(pname, *mv);
 }
 
 int consoleVariable::model() const
 {
-    return m_model;
+    return visitMV([](const auto &mv) { return modelId<std::remove_cvref_t<decltype(mv)>>; }, 0);
 }
 
 mvInt *consoleVariable::interpretation() const
 {
-    mvInt *mvi = NULL;
-    switch (model())
-    {
-    case MVI_E3GA:
-        mvi = new mvInt(e());
-        break;
-    case MVI_P3GA:
-        mvi = new mvInt(p());
-        break;
-    case MVI_C3GA:
-        mvi = new mvInt(c());
-        break;
-    case MVI_C5GA:
-        mvi = new mvInt(c5());
-        break;
-    case MVI_I2GA:
-        mvi = new mvInt(i2());
-        break;
-    }
-    return mvi;
+    return visitMV([](const auto &mv) { return new mvInt(mv); }, (mvInt *)NULL);
 }
 
 int consoleVariable::grade() const
 {
-    int grade = -1, type = 0;
-    switch (model())
-    {
-    case MVI_E3GA:
-        type = e().mvType(&grade);
-        break;
-    case MVI_P3GA:
-        type = p().mvType(&grade);
-        break;
-    case MVI_C3GA:
-        type = c().mvType(&grade);
-        break;
-    case MVI_C5GA:
-        type = c5().mvType(&grade);
-        break;
-    case MVI_I2GA:
-        type = i2().mvType(&grade);
-        break;
-    }
+    int grade = -1;
+    int type = visitMV([&](const auto &mv) { return mv.mvType(&grade); }, 0);
 
     if (type == GA_BLADE)
         grade = (int)(log((double)grade) / log((double)2) + 0.45);
@@ -397,98 +224,29 @@ int consoleVariable::grade() const
 
 int consoleVariable::print(const char *str) const
 {
-    switch (model())
-    {
-    case MVI_E3GA:
-        e().print(str, "%f");
-        break;
-    case MVI_P3GA:
-        p().print(str, "%f");
-        break;
-    case MVI_C3GA:
-        c().print(str, "%f");
-        break;
-    case MVI_C5GA:
-        c5().print(str, "%f");
-        break;
-    case MVI_I2GA:
-        i2().print(str, "%f");
-        break;
-    default:
+    if (!visitMV(
+            [&](const auto &mv) {
+                mv.print(str, "%f");
+                return true;
+            },
+            false))
         printf("%s: unknown model\n", str);
-        break;
-    }
     return 0;
 }
 
 const char *consoleVariable::string() const
 {
-    switch (model())
-    {
-    case MVI_E3GA:
-        return e().string("%e");
-
-    case MVI_P3GA:
-        return p().string("%e");
-
-    case MVI_C3GA:
-        return c().string("%e");
-
-    case MVI_C5GA:
-        return c5().string("%e");
-
-    case MVI_I2GA:
-        return i2().string("%e");
-
-    default:
-        return "unknown model";
-    }
+    return visitMV([](const auto &mv) { return mv.string("%e"); }, "unknown model");
 }
 
 int consoleVariable::isTrue() const
 {
-    switch (model())
-    {
-    case MVI_E3GA:
-        return (e().norm_a() != 0.0);
-        break;
-    case MVI_P3GA:
-        return (p().norm_a() != 0.0);
-        break;
-    case MVI_C3GA:
-        return (c().norm_a() != 0.0);
-        break;
-    case MVI_C5GA:
-        return (c5().norm_a() != 0.0);
-        break;
-    case MVI_I2GA:
-        return (i2().norm_a() != 0.0);
-        break;
-    }
-    return 0;
+    return visitMV([](const auto &mv) { return (int)(mv.norm_a() != 0.0); }, 0);
 }
 
 GAIM_FLOAT consoleVariable::scalar() const
 {
-    switch (model())
-    {
-    case MVI_E3GA:
-        return e().scalar();
-        break;
-    case MVI_P3GA:
-        return p().scalar();
-        break;
-    case MVI_C3GA:
-        return c().scalar();
-        break;
-    case MVI_C5GA:
-        return c5().scalar();
-        break;
-    case MVI_I2GA:
-        return i2().scalar();
-        break;
-    }
-    return 0;
+    return visitMV([](const auto &mv) { return (GAIM_FLOAT)mv.scalar(); }, (GAIM_FLOAT)0);
 }
 
 int consoleVariable::name(const std::string &name)

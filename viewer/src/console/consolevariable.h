@@ -18,8 +18,11 @@
 #define _CONSOLE_VARIABLE_H_
 
 #include <string>
+#include <type_traits>
+#include <variant>
 
 #include "../gaincludes.h"
+#include "../models.h"
 #include "../mvint.h"
 
 #define CVF_CONSTANT (1 << 0)
@@ -91,14 +94,53 @@ class consoleVariable
     consoleVariable *castToC5ga() const;
     consoleVariable *castToI2ga() const;
 
-    e3ga &e() const;
-    p3ga &p() const;
-    c3ga &c() const;
-    c5ga &c5() const;
-    i2ga &i2() const;
+    // The multivector of the variable, of type MV (e3ga, p3ga, ...). If the
+    // variable is of another model, a (shared, static) zero multivector of type MV.
+    template <class MV> MV &mv() const
+    {
+        if (MV *v = std::get_if<MV>(&m_mv))
+            return *v;
+        static MV null;
+        return null;
+    }
+    e3ga &e() const
+    {
+        return mv<e3ga>();
+    }
+    p3ga &p() const
+    {
+        return mv<p3ga>();
+    }
+    c3ga &c() const
+    {
+        return mv<c3ga>();
+    }
+    c5ga &c5() const
+    {
+        return mv<c5ga>();
+    }
+    i2ga &i2() const
+    {
+        return mv<i2ga>();
+    }
+
+    // Calls f(mv) with the multivector of the variable (as its actual type:
+    // f is typically a generic lambda) and returns the result, or returns
+    // 'none' if the variable has no multivector.
+    template <class R, class F> R visitMV(F &&f, R none = R()) const
+    {
+        return std::visit(
+            [&](auto &v) -> R {
+                if constexpr (std::is_same_v<std::remove_cvref_t<decltype(v)>, std::monostate>)
+                    return none;
+                else
+                    return f(v);
+            },
+            m_mv);
+    }
 
     // mvInt *I() const;
-    int model() const;
+    int model() const; // the model id (MVI_XXX) of the multivector, 0 if none
     mvInt *interpretation() const;
     int grade() const;
 
@@ -143,8 +185,8 @@ class consoleVariable
 
   protected:
     std::string m_name;
-    void *m_mv;
-    int m_model;
+    // the multivector (mutable: e(), p(), ... of a const variable return a modifiable multivector)
+    mutable std::variant<std::monostate, e3ga, p3ga, c3ga, c5ga, i2ga> m_mv;
     int m_op; // operator (as in consoleoperators.h)
 
     int getFlag(int flag) const;
@@ -182,7 +224,7 @@ class consoleVariable
     consoleVariable *castC5gaToC3ga() const;
     consoleVariable *castC5gaToI2ga() const;
 
-    void deleteMV();
+    template <class MV> int setMV(const std::string &name, const MV &mv);
 
     static int m_tempVarCount;
 };

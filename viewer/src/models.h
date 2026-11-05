@@ -24,6 +24,40 @@
 #define MVI_I2GA (4 << 13)
 #define MVI_C5GA (5 << 13)
 #define MVI_MODEL_MASK (7 << 13)
+
+class e3ga;
+class p3ga;
+class c3ga;
+class c5ga;
+class i2ga;
+
+// the model id (MVI_XXX) of multivector type MV
+template <class MV> constexpr int modelId = 0; // (not an algebra)
+template <> inline constexpr int modelId<e3ga> = MVI_E3GA;
+template <> inline constexpr int modelId<p3ga> = MVI_P3GA;
+template <> inline constexpr int modelId<c3ga> = MVI_C3GA;
+template <> inline constexpr int modelId<c5ga> = MVI_C5GA;
+template <> inline constexpr int modelId<i2ga> = MVI_I2GA;
+
+// the name of a model ("e3ga", ...), or NULL if 'model' is not a model id
+inline const char *modelName(int model)
+{
+    switch (model)
+    {
+    case MVI_E3GA:
+        return "e3ga";
+    case MVI_P3GA:
+        return "p3ga";
+    case MVI_C3GA:
+        return "c3ga";
+    case MVI_C5GA:
+        return "c5ga";
+    case MVI_I2GA:
+        return "i2ga";
+    default:
+        return 0;
+    }
+}
 // more to come???
 
 #endif /* _MODELS_H_ */

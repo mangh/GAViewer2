@@ -24,6 +24,7 @@
 #include "../state.h"
 #include "../uistate.h"
 #include "console.h"
+#include "consolealgebra.h"
 #include "consolefunction.h"
 #include "consolescope.h"
 #include "consolestatement.h"
@@ -31,6 +32,7 @@
 
 #include <set>
 #include <string>
+#include <type_traits>
 #include <utility>
 #include <vector>
 
@@ -40,7 +42,7 @@ int consoleScope::m_idCount = 0;
 // todo: merge with the same function in 'consolefunctions.cpp
 static inline int model(int v)
 {
-    return v & (MVI_E3GA | MVI_P3GA | MVI_C3GA | MVI_I2GA | CVF_ANY_MODEL);
+    return v & (MVI_MODEL_MASK | CVF_ANY_MODEL);
 }
 
 static inline int compareModel(int m1, int m2)
@@ -751,22 +753,9 @@ int consoleScope::processConstant(consoleVariable **variable)
     {
         (*variable)->rhs(1);
         (*variable)->lhs(0);
-        if (m_defaultModel == MVI_P3GA)
-        {
-            *variable = consoleExecFunc(this, "cast_p3ga", *variable);
-        }
-        else if (m_defaultModel == MVI_C3GA)
-        {
-            *variable = consoleExecFunc(this, "cast_c3ga", *variable);
-        }
-        else if (m_defaultModel == MVI_C5GA)
-        {
-            *variable = consoleExecFunc(this, "cast_c5ga", *variable);
-        }
-        else if (m_defaultModel == MVI_I2GA)
-        {
-            *variable = consoleExecFunc(this, "cast_i2ga", *variable);
-        }
+        // (note: constants are not cast to e3ga, e.g. 'no' stays c3ga when the default model is e3ga)
+        if ((m_defaultModel != MVI_E3GA) && modelName(m_defaultModel))
+            *variable = consoleExecFunc(this, std::string("cast_") + modelName(m_defaultModel), *variable);
     }
     (*variable)->rhs(1);
     (*variable)->lhs(0);
@@ -1070,16 +1059,13 @@ consoleVariable *consoleGlobalScope::assignVariable(consoleVariable *target, con
     }
 
     // assign value to variable
-    if (value->model() == MVI_E3GA)
-        g_state->addE3gaObject(value->e(), target->name(), drawMode, value->creationFlags(), value->forceFlags());
-    else if (value->model() == MVI_P3GA)
-        g_state->addP3gaObject(value->p(), target->name(), drawMode, value->creationFlags(), value->forceFlags());
-    else if (value->model() == MVI_C3GA)
-        g_state->addC3gaObject(value->c(), target->name(), drawMode, value->creationFlags(), value->forceFlags());
-    else if (value->model() == MVI_C5GA)
-        g_state->addC5gaObject(value->c5(), target->name(), drawMode, value->creationFlags(), value->forceFlags());
-    else if (value->model() == MVI_I2GA)
-        g_state->addI2gaObject(value->i2(), target->name(), drawMode, value->creationFlags(), value->forceFlags());
+    value->visitMV(
+        [&](const auto &mv) {
+            using MV = std::remove_cvref_t<decltype(mv)>;
+            return consoleAlgebra<MV>::addObject(mv, target->name(), drawMode, value->creationFlags(),
+                                                 value->forceFlags());
+        },
+        0);
 
     // restore color state
     g_state->setColor("fgcolor", tempC);

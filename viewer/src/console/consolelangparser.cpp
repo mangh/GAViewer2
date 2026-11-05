@@ -1014,13 +1014,9 @@ Ptr<consoleStatement> Parser::expr()
             Ptr<consoleStatement> e = expr();
             if (!e)
                 return nullptr;
-            const char *castFunc = (m == MVI_E3GA)   ? "cast_e3ga"
-                                   : (m == MVI_P3GA) ? "cast_p3ga"
-                                   : (m == MVI_C3GA) ? "cast_c3ga"
-                                   : (m == MVI_C5GA) ? "cast_c5ga"
-                                                     : "cast_i2ga";
+            const std::string castFunc = std::string("cast_") + modelName(m);
             return std::make_unique<consoleFuncCallStmt>(
-                t.line, t.column, castFunc, new consoleFuncArgListStmt(new consoleExprListStmt(e.release())), 1);
+                t.line, t.column, castFunc.c_str(), new consoleFuncArgListStmt(new consoleExprListStmt(e.release())), 1);
         }
         Token t = consume();
         Ptr<consoleExprListStmt> el = exprlist();

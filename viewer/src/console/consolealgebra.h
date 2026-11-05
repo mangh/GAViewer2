@@ -17,14 +17,18 @@
 
 /*
 The algebras (models) known to the console, and what the console needs to know
-about each of them: its model id (MVI_XXX), its name, how a console variable is
-cast to it and how its multivector is accessed.
+about each of them: its model id (MVI_XXX), the name of its cast function, how
+a console variable is cast to it, how its factors are set and how an object is
+created from it. (The multivector of a console variable is accessed with
+consoleVariable::mv<MV>(); its model id is modelId<MV>, see models.h.)
 
 This is the one place where the console binds a model id to a multivector type:
 code that is the same for every algebra is written as a template over the
 multivector type MV (see consolealgebrafunctions.cpp) and uses
 consoleAlgebra<MV> and mv<MV>() only.
 */
+
+#include <string>
 
 #include "../gaincludes.h" // IWYU pragma: export
 #include "../models.h"     // IWYU pragma: export
@@ -35,12 +39,8 @@ template <class MV> struct consoleAlgebra; // specialized for every algebra belo
 
 template <> struct consoleAlgebra<e3ga>
 {
-    static constexpr int model = MVI_E3GA;
+    static constexpr int model = modelId<e3ga>;
     static constexpr const char *castName = "cast_e3ga";
-    static e3ga &get(const consoleVariable *cv)
-    {
-        return cv->e();
-    }
     static consoleVariable *castTo(const consoleVariable *cv)
     {
         return cv->castToE3ga();
@@ -49,16 +49,16 @@ template <> struct consoleAlgebra<e3ga>
     {
         return g_state->setE3gaFactor(mv, idx);
     }
+    static int addObject(const e3ga &mv, const std::string &name, int drawMode, int creationFlags, int forceFlags)
+    {
+        return g_state->addE3gaObject(mv, name, drawMode, creationFlags, forceFlags);
+    }
 };
 
 template <> struct consoleAlgebra<p3ga>
 {
-    static constexpr int model = MVI_P3GA;
+    static constexpr int model = modelId<p3ga>;
     static constexpr const char *castName = "cast_p3ga";
-    static p3ga &get(const consoleVariable *cv)
-    {
-        return cv->p();
-    }
     static consoleVariable *castTo(const consoleVariable *cv)
     {
         return cv->castToP3ga();
@@ -67,16 +67,16 @@ template <> struct consoleAlgebra<p3ga>
     {
         return g_state->setP3gaFactor(mv, idx);
     }
+    static int addObject(const p3ga &mv, const std::string &name, int drawMode, int creationFlags, int forceFlags)
+    {
+        return g_state->addP3gaObject(mv, name, drawMode, creationFlags, forceFlags);
+    }
 };
 
 template <> struct consoleAlgebra<c3ga>
 {
-    static constexpr int model = MVI_C3GA;
+    static constexpr int model = modelId<c3ga>;
     static constexpr const char *castName = "cast_c3ga";
-    static c3ga &get(const consoleVariable *cv)
-    {
-        return cv->c();
-    }
     static consoleVariable *castTo(const consoleVariable *cv)
     {
         return cv->castToC3ga();
@@ -85,16 +85,16 @@ template <> struct consoleAlgebra<c3ga>
     {
         return g_state->setC3gaFactor(mv, idx);
     }
+    static int addObject(const c3ga &mv, const std::string &name, int drawMode, int creationFlags, int forceFlags)
+    {
+        return g_state->addC3gaObject(mv, name, drawMode, creationFlags, forceFlags);
+    }
 };
 
 template <> struct consoleAlgebra<c5ga>
 {
-    static constexpr int model = MVI_C5GA;
+    static constexpr int model = modelId<c5ga>;
     static constexpr const char *castName = "cast_c5ga";
-    static c5ga &get(const consoleVariable *cv)
-    {
-        return cv->c5();
-    }
     static consoleVariable *castTo(const consoleVariable *cv)
     {
         return cv->castToC5ga();
@@ -103,16 +103,16 @@ template <> struct consoleAlgebra<c5ga>
     {
         return g_state->setC5gaFactor(mv, idx);
     }
+    static int addObject(const c5ga &mv, const std::string &name, int drawMode, int creationFlags, int forceFlags)
+    {
+        return g_state->addC5gaObject(mv, name, drawMode, creationFlags, forceFlags);
+    }
 };
 
 template <> struct consoleAlgebra<i2ga>
 {
-    static constexpr int model = MVI_I2GA;
+    static constexpr int model = modelId<i2ga>;
     static constexpr const char *castName = "cast_i2ga";
-    static i2ga &get(const consoleVariable *cv)
-    {
-        return cv->i2();
-    }
     static consoleVariable *castTo(const consoleVariable *cv)
     {
         return cv->castToI2ga();
@@ -121,12 +121,42 @@ template <> struct consoleAlgebra<i2ga>
     {
         return g_state->setI2gaFactor(mv, idx);
     }
+    static int addObject(const i2ga &mv, const std::string &name, int drawMode, int creationFlags, int forceFlags)
+    {
+        return g_state->addI2gaObject(mv, name, drawMode, creationFlags, forceFlags);
+    }
 };
 
 // the multivector of console variable 'cv', which must be of model consoleAlgebra<MV>::model
 template <class MV> inline MV &mv(const consoleVariable *cv)
 {
-    return consoleAlgebra<MV>::get(cv);
+    return cv->mv<MV>();
+}
+
+// Calls f.template operator()<MV>() for the algebra MV with model id 'model';
+// returns false (and does not call f) if 'model' is not a model id.
+template <class F> inline bool withConsoleAlgebra(int model, F &&f)
+{
+    switch (model)
+    {
+    case MVI_E3GA:
+        f.template operator()<e3ga>();
+        return true;
+    case MVI_P3GA:
+        f.template operator()<p3ga>();
+        return true;
+    case MVI_C3GA:
+        f.template operator()<c3ga>();
+        return true;
+    case MVI_C5GA:
+        f.template operator()<c5ga>();
+        return true;
+    case MVI_I2GA:
+        f.template operator()<i2ga>();
+        return true;
+    default:
+        return false;
+    }
 }
 
 // Calls f.template operator()<MV>() for every algebra, in the order of the model ids

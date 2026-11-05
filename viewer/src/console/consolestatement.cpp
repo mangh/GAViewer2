@@ -26,6 +26,7 @@
 #include "../models.h"
 #include "../state.h"
 #include "console.h"
+#include "consolealgebra.h"
 #include "consolefunction.h"
 #include "consoleoperators.h"
 #include "consolescope.h"
@@ -500,25 +501,10 @@ consoleVariable *consoleConstantScalarStmt::execute(consoleScope *s)
     char str[256];
     sprintf(str, "%f", m_value);
 
-    consoleVariable *result;
-    switch (s->getDefaultModel())
-    {
-    case MVI_P3GA:
-        result = new consoleVariable(str, p3ga(m_value));
-        break;
-    case MVI_C3GA:
-        result = new consoleVariable(str, c3ga(m_value));
-        break;
-    case MVI_C5GA:
-        result = new consoleVariable(str, c5ga(m_value));
-        break;
-    case MVI_I2GA:
-        result = new consoleVariable(str, i2ga(m_value));
-        break;
-    default:
+    // a scalar of the default model (e3ga if there is none)
+    consoleVariable *result = NULL;
+    if (!withConsoleAlgebra(s->getDefaultModel(), [&]<class MV>() { result = new consoleVariable(str, MV(m_value)); }))
         result = new consoleVariable(str, e3ga(m_value));
-        break;
-    }
 
     result->rhs(1);
     result->lhs(0);
@@ -2048,30 +2034,9 @@ char *consoleFuncArgSpecStmt::string(int cr /*= 0*/, int tl /* = 0 */)
     const char *quotes = (quote(m_name)) ? "\"" : "";
 
     char *str = (char *)malloc(strlen(m_name) + 32);
-    char *model;
-    switch (m_model)
-    {
-    case MVI_E3GA:
-        model = (char *)"e3ga ";
-        break;
-    case MVI_P3GA:
-        model = (char *)"p3ga ";
-        break;
-    case MVI_C3GA:
-        model = (char *)"c3ga ";
-        break;
-    case MVI_C5GA:
-        model = (char *)"c5ga ";
-        break;
-    case MVI_I2GA:
-        model = (char *)"i2ga ";
-        break;
-    default:
-        model = (char *)"";
-        break;
-    }
+    const char *model = modelName(m_model);
 
-    sprintf(str, "%s%s%s%s", model, quotes, m_name, quotes);
+    sprintf(str, "%s%s%s%s%s", (model) ? model : "", (model) ? " " : "", quotes, m_name, quotes);
 
     return str;
 }
@@ -2372,8 +2337,7 @@ char *consoleSetStmt::string(int cr /*= 0*/, int tl /*= 0*/)
     else if (m_what == "default_model")
     {
         sprintf(str + i, "%s(%s)%s", m_what.c_str(),
-                (m_intValue == -1) ? "none"
-                                   : ((m_intValue == MVI_E3GA) ? "e3ga" : ((m_intValue == MVI_P3GA) ? "p3ga" : "c3ga")),
+                (modelName(m_intValue)) ? modelName(m_intValue) : "none",
                 (cr) ? "\n" : "");
     }
     else

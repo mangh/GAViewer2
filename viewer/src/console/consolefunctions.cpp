@@ -36,10 +36,10 @@
 
 int consoleFreeCvList(consoleVariable *cv, consoleVariable *exempt = NULL);
 
-// important: adjust when new models are introduced...
+// the model id of an argument spec (or CVF_ANY_MODEL)
 static inline int model(int v)
 {
-    return v & (MVI_E3GA | MVI_P3GA | MVI_C3GA | MVI_C5GA | MVI_I2GA | CVF_ANY_MODEL);
+    return v & (MVI_MODEL_MASK | CVF_ANY_MODEL);
 }
 
 // static inline int compareModel(int m1, int m2) {
@@ -114,83 +114,22 @@ consoleVariable *consoleExecFunc(consoleScope *s_in, const std::string &name, co
             arg[i]->next(NULL);
 
             // coerce
-            if (model(f->arg[i]) == MVI_E3GA)
+            if (const char *targetModel = modelName(model(f->arg[i])))
             {
+                // (note: only the e3ga part of the argument is checked, so this warning is only
+                // issued for e3ga arguments that are not a scalar)
                 if (!(arg[i]->e().norm_a() - arg[i]->e()(GRADE0).norm_a() < 10e-6))
                 {
                     if (!s_in->supressWarnings())
                     {
                         if (s_in->globalScope())
-                            cprintf("Coerced '%s' to e3ga\n", arg[i]->name().c_str());
+                            cprintf("Coerced '%s' to %s\n", arg[i]->name().c_str(), targetModel);
                         else
-                            cprintf("Coerced '%s' to e3ga (in function %s)\n", arg[i]->name().c_str(),
+                            cprintf("Coerced '%s' to %s (in function %s)\n", arg[i]->name().c_str(), targetModel,
                                     s_in->functionName().c_str());
                     }
                 }
-                cvCast = consoleExecFunc(s_in, "cast_e3ga", arg[i]);
-            }
-            else if (model(f->arg[i]) == MVI_P3GA)
-            {
-                if (!(arg[i]->e().norm_a() - arg[i]->e()(GRADE0).norm_a() < 10e-6))
-                {
-                    if (!s_in->supressWarnings())
-                    {
-                        if (s_in->globalScope())
-                            cprintf("Coerced '%s' to p3ga\n", arg[i]->name().c_str());
-                        else
-                            cprintf("Coerced '%s' to p3ga (in function %s)\n", arg[i]->name().c_str(),
-                                    s_in->functionName().c_str());
-                    }
-                }
-                cvCast = consoleExecFunc(s_in, "cast_p3ga", arg[i]);
-            }
-            else if (model(f->arg[i]) == MVI_C3GA)
-            {
-                if (!(arg[i]->e().norm_a() - arg[i]->e()(GRADE0).norm_a() < 10e-6))
-                {
-                    if (!s_in->supressWarnings())
-                    {
-                        if (s_in->globalScope())
-                            cprintf("Coerced '%s' to c3ga\n", arg[i]->name().c_str());
-                        else
-                            cprintf("Coerced '%s' to c3ga (in function %s)\n", arg[i]->name().c_str(),
-                                    s_in->functionName().c_str());
-                    }
-                }
-
-                cvCast = consoleExecFunc(s_in, "cast_c3ga", arg[i]);
-            }
-            else if (model(f->arg[i]) == MVI_C5GA)
-            {
-                if (!(arg[i]->e().norm_a() - arg[i]->e()(GRADE0).norm_a() < 10e-6))
-                {
-                    if (!s_in->supressWarnings())
-                    {
-                        if (s_in->globalScope())
-                            cprintf("Coerced '%s' to c5ga\n", arg[i]->name().c_str());
-                        else
-                            cprintf("Coerced '%s' to c5ga (in function %s)\n", arg[i]->name().c_str(),
-                                    s_in->functionName().c_str());
-                    }
-                }
-
-                cvCast = consoleExecFunc(s_in, "cast_c5ga", arg[i]);
-            }
-            else if (model(f->arg[i]) == MVI_I2GA)
-            {
-                if (!(arg[i]->e().norm_a() - arg[i]->e()(GRADE0).norm_a() < 10e-6))
-                {
-                    if (!s_in->supressWarnings())
-                    {
-                        if (s_in->globalScope())
-                            cprintf("Coerced '%s' to i2ga\n", arg[i]->name().c_str());
-                        else
-                            cprintf("Coerced '%s' to i2ga (in function %s)\n", arg[i]->name().c_str(),
-                                    s_in->functionName().c_str());
-                    }
-                }
-
-                cvCast = consoleExecFunc(s_in, "cast_i2ga", arg[i]);
+                cvCast = consoleExecFunc(s_in, std::string("cast_") + targetModel, arg[i]);
             }
             else
             {
@@ -295,27 +234,10 @@ std::string getFuncStringNameWithArguments(const consoleFunc *f, int argNames)
         {
             nameWithArguments += ((i == 0) ? "" : ", ");
 
-            switch (s->model())
-            {
-            case MVI_E3GA:
-                nameWithArguments += "e3ga ";
-                break;
-            case MVI_P3GA:
-                nameWithArguments += "p3ga ";
-                break;
-            case MVI_C3GA:
-                nameWithArguments += "c3ga ";
-                break;
-            case MVI_C5GA:
-                nameWithArguments += "c5ga ";
-                break;
-            case MVI_I2GA:
-                nameWithArguments += "i2ga ";
-                break;
-            default:
+            if (const char *argModel = modelName(s->model()))
+                nameWithArguments += std::string(argModel) + " ";
+            else
                 nameWithArguments += " ";
-                break;
-            }
             if (argNames)
                 nameWithArguments += s->name();
 
@@ -330,27 +252,10 @@ std::string getFuncStringNameWithArguments(const consoleFunc *f, int argNames)
         {
             nameWithArguments += ((i == 0) ? "" : ", ");
 
-            switch (model(f->arg[i]))
-            {
-            case MVI_E3GA:
-                nameWithArguments += "e3ga ";
-                break;
-            case MVI_P3GA:
-                nameWithArguments += "p3ga ";
-                break;
-            case MVI_C3GA:
-                nameWithArguments += "c3ga ";
-                break;
-            case MVI_C5GA:
-                nameWithArguments += "c5ga ";
-                break;
-            case MVI_I2GA:
-                nameWithArguments += "i2ga ";
-                break;
-            default:
+            if (const char *argModel = modelName(model(f->arg[i])))
+                nameWithArguments += std::string(argModel) + " ";
+            else
                 nameWithArguments += " ";
-                break;
-            }
         }
     }
     nameWithArguments += ")";
