@@ -102,6 +102,10 @@ endif()
 # - PNG reference library (libpng).
 add_subdirectory ("fltk")
 
+# Garamon (generator of geometric algebra libraries): the algebras are
+# generated at build time (header-only libraries garamon_<name>).
+add_subdirectory("garamon")
+
 # GAViewer (multi-purpose program for geometric algebra computations and visualization)
 add_subdirectory("viewer")
 

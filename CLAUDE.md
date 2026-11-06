@@ -27,6 +27,7 @@ GAViewer2
 ├───cmake                 ← CMake helper scripts
 ├───figures               ← (optional) sample figures (for GAViewer)
 ├───fltk                  ← FLTK cross-platform C++ GUI toolkit
+├───garamon               ← Garamon fork (fetched), algebra configurations (<name>.conf) generated at build time
 |
 └───viewer                ← GAViewer source code
     ├───test              ← headless regression tests (gaviewer_regress, golden files)
@@ -55,6 +56,7 @@ GAViewer2
 |--------|----------|
 | `gaviewer_e3ga`, `gaviewer_p3ga`, `gaviewer_c3ga`, `gaviewer_c5ga`, `gaviewer_i2ga` | one static library per algebra (Gaigen generated `src/<name>/*.cpp`), no dependencies on the rest of GAViewer; the unit to swap for a Garamon implementation |
 | `gaviewer_algebras` | interface library bundling the five algebras |
+| `garamon_<name>` (`garamon/CMakeLists.txt`) | header-only Garamon algebra generated at build time from `garamon/<name>.conf` by the fetched fork's `garamon_generator` (`#include <<name>/Mvec.hpp>`, needs Eigen, provided as `Eigen3::Eigen`); so far `garamon_e3ga`, used only by the smoke test `garamon.smoke_e3ga` |
 | `gaviewer_core` | everything else except `main.cpp` (console, objects, `mvInt`, GUI, …); links `gaviewer_algebras` and FLTK |
 | `GAViewer2` | the GUI application: `main.cpp` + `gaviewer_core` |
 | `gaviewer_regress` | the headless regression harness (`viewer/test`) + `gaviewer_core` |
