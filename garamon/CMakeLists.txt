@@ -19,7 +19,7 @@ include(FetchContent)
 FetchContent_Declare(
   garamon
   GIT_REPOSITORY https://github.com/mangh/garamon.git
-  GIT_TAG        69c2cae515670477f57b9a3562d1062fbc302133 # "Generate header-only libraries installed as CMake packages", Oct 28, 2026
+  GIT_TAG        6ee8c1124ce63b4d33d6c31d456cfd7d6c5f33e1 # "Mvec: no implicit conversions to and from non-arithmetic types", Nov 6, 2026
   EXCLUDE_FROM_ALL # the generator is built only as a dependency of the generated algebras
 )
 
