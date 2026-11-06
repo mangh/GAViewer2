@@ -42,7 +42,7 @@ namespace ga
 // basis order) of the coordinates with an absolute value > 1e-14, separated by
 // " + "; "0" if there are none. 'fp' is the printf conversion of a coordinate
 // (e.g. "%2.2f", "%e"); the coordinate is printed as a float (as in Gaigen).
-template <class MV> std::string toString(const MV &a, const char *fp = "%2.2f")
+template <garamonMV MV> std::string toString(const MV &a, const char *fp = "%2.2f")
 {
     char format[64], term[512];
     std::snprintf(format, sizeof(format), "%%s%s%%s%%s", fp);
@@ -55,7 +55,7 @@ template <class MV> std::string toString(const MV &a, const char *fp = "%2.2f")
         if (std::fabs(c) > 1e-14)
         {
             std::snprintf(term, sizeof(term), format, first ? "" : " + ", (float)c, (i) ? "*" : "",
-                          (i) ? algebraTraits<MV>::displayBasis[i].name : "");
+                          (i) ? algebraTraits<MV>::displayBasis[i].name.c_str() : "");
             s += term;
             first = false;
         }
@@ -63,10 +63,25 @@ template <class MV> std::string toString(const MV &a, const char *fp = "%2.2f")
     return first ? std::string("0") : s;
 }
 
+// Renames a basis vector in the display names of the basis blades (e.g. "e1" -> "x"
+// turns "e1^e2" into "x^e2"); every occurrence of 'oldName' is replaced, as in Gaigen.
+template <garamonMV MV> void renameBasisVector(const std::string &oldName, const std::string &newName)
+{
+    if (oldName.empty())
+        return;
+    for (displayBlade &b : algebraTraits<MV>::displayBasis)
+    {
+        std::string name = b.name;
+        for (std::size_t pos = 0; (pos = name.find(oldName, pos)) != std::string::npos; pos += newName.size())
+            name.replace(pos, oldName.size(), newName);
+        b.name = name;
+    }
+}
+
 // The names parse() knows: the basis vectors (by default) and any added name
 // (e.g. "I3" for the pseudoscalar), plus optional start and end delimiters
 // (e.g. '[' and ']') around the multivector.
-template <class MV> class basisNames
+template <garamonMV MV> class basisNames
 {
   public:
     basisNames(char startDelimiter = 0, char endDelimiter = 0)
@@ -106,7 +121,7 @@ template <class MV> class basisNames
 
 // Parses a multivector, e.g. "1.0*e1 + -2.5*e2^e3" (or "[...]" with delimiters):
 // sets 'result' and returns the number of characters read, or -1 on error.
-template <class MV> int parse(const char *str, MV &result, const basisNames<MV> &names = basisNames<MV>())
+template <garamonMV MV> int parse(const char *str, MV &result, const basisNames<MV> &names = basisNames<MV>())
 {
     auto isFloatChar = [](char c) { return (c != 0) && std::strchr("0123456789.", c); };
     int idx = 0, beCnt = 0;

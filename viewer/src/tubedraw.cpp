@@ -25,22 +25,24 @@
 #include "p3ga/p3ga.h"
 #include "tubedraw.h"
 
-e3ga rotorFromVectorToVector(const e3ga &v1, const e3ga &v2)
+e3ga::mv rotorFromVectorToVector(const e3ga::mv &v1, const e3ga::mv &v2)
 {
-    if ((v1 % v2).scalar() < -0.99999f)
+    if (ga::scalar(ga::scp(v1, v2)) < -0.99999f)
     {
         // (near) 180 degree rotation:
-        e3ga tmp = v1 << (v1 ^ v2);
-        double n2 = tmp.norm_a();
+        e3ga::mv tmp = ga::lcont(v1, e3ga::mv(v1 ^ v2));
+        double n2 = ga::norm_a(tmp);
         if (n2 != 0.0f)
-            tmp = tmp.normal();
+            tmp = ga::normalize(tmp);
         else
-            tmp = ((v1 ^ e3ga::e1).norm_a() > (v1 ^ e3ga::e2).norm_a()) ? e3ga::e1 : e3ga::e2;
-        return (v1 ^ tmp).normal();
+            tmp = (ga::norm_a(e3ga::mv(v1 ^ e3ga::e1<double>())) > ga::norm_a(e3ga::mv(v1 ^ e3ga::e2<double>())))
+                      ? e3ga::e1<double>()
+                      : e3ga::e2<double>();
+        return ga::normalize(e3ga::mv(v1 ^ tmp));
     }
     else
     {
-        GAIM_FLOAT s = (GAIM_FLOAT)sqrt(2.0 * (1.0f + (v2 % v1).scalar()));
+        GAIM_FLOAT s = (GAIM_FLOAT)sqrt(2.0 * (1.0f + ga::scalar(ga::scp(v2, v1))));
         return (1.0 + v2 * v1) * (1.0f / s);
     }
 }
@@ -97,25 +99,25 @@ void TubeDraw::end()
         unsigned int startIdx = 0;
         unsigned int endIdx = (unsigned int)m_vertices.size();
 
-        std::vector<e3ga> tubeVertices(m_nbSegments * (endIdx - startIdx));
-        std::vector<e3ga> tubeDirections(endIdx - startIdx);
+        std::vector<e3ga::mv> tubeVertices(m_nbSegments * (endIdx - startIdx));
+        std::vector<e3ga::mv> tubeDirections(endIdx - startIdx);
 
         // compute initial vertices (factor the dual of the first direction, or use e1 if l = 0)
-        e3ga prevDir;
+        e3ga::mv prevDir;
         {
             // first direction
-            e3ga dir = m_vertices[startIdx + 1] - m_vertices[startIdx];
-            if (dir.norm_a() == 0)
-                dir = e3ga::e1;
+            e3ga::mv dir = m_vertices[startIdx + 1] - m_vertices[startIdx];
+            if (ga::norm_a(dir) == 0)
+                dir = e3ga::e1<double>();
             else
-                dir = dir.normal();
+                dir = ga::normalize(dir);
             prevDir = dir;
             tubeDirections[0] = dir;
 
             // get factors:
-            e3ga plane = dir.dual();
-            e3ga factors[2];
-            plane.factor(factors);
+            e3ga::mv plane = ga::dual(dir);
+            std::vector<e3ga::mv> factors;
+            ga::factor(plane, factors);
 
             // construct first segments:
             for (int i = 0; i < m_nbSegments; i++)
@@ -130,22 +132,22 @@ void TubeDraw::end()
         while ((startIdx + 1) < endIdx)
         {
             // compute direction of this segment:
-            e3ga newDir = m_vertices[startIdx + 1] - m_vertices[startIdx];
-            if (newDir.norm_a() == 0)
+            e3ga::mv newDir = m_vertices[startIdx + 1] - m_vertices[startIdx];
+            if (ga::norm_a(newDir) == 0)
                 newDir = prevDir;
             else
-                newDir = newDir.normal();
+                newDir = ga::normalize(newDir);
             tubeDirections[startIdx] = newDir;
 
             // compute rotor from prev segment to current segment
-            e3ga R = rotorFromVectorToVector(prevDir, newDir);
-            e3ga Ri = R.inverse();
+            e3ga::mv R = rotorFromVectorToVector(prevDir, newDir);
+            e3ga::mv Ri = ga::inverse(R);
 
             // rotate all vertices of the previous segment:
             for (int i = 0; i < m_nbSegments; i++)
             {
                 tubeVertices[startIdx * m_nbSegments + i] =
-                    (R * tubeVertices[(startIdx - 1) * m_nbSegments + i] * Ri)(GRADE1);
+                    ga::takeGrade(e3ga::mv(R * tubeVertices[(startIdx - 1) * m_nbSegments + i] * Ri), GRADE1);
             }
 
             prevDir = newDir;
@@ -177,7 +179,7 @@ void TubeDraw::end()
             }
 
             // average segments:
-            std::vector<e3ga> avgTubeVertices(m_nbSegments * (endIdx - startIdx));
+            std::vector<e3ga::mv> avgTubeVertices(m_nbSegments * (endIdx - startIdx));
             int i = 1;
             if (m_what == GL_LINE_LOOP)
                 i = 0;
@@ -193,18 +195,18 @@ void TubeDraw::end()
                 int prevIdx = i - 1;
                 if (prevIdx < 0)
                     prevIdx = ((int)m_vertices.size()) - 2;
-                const e3ga &td1 = tubeDirections[i];
-                const e3ga &td2 = tubeDirections[prevIdx];
-                p3ga d1(GRADE1, td1[GRADE1][0], td1[GRADE1][1], td1[GRADE1][2], 0);
-                p3ga d2(GRADE1, td2[GRADE1][0], td2[GRADE1][1], td2[GRADE1][2], 0);
+                const e3ga::mv &td1 = tubeDirections[i];
+                const e3ga::mv &td2 = tubeDirections[prevIdx];
+                p3ga d1(GRADE1, td1[e3ga::E1], td1[e3ga::E2], td1[e3ga::E3], 0);
+                p3ga d2(GRADE1, td2[e3ga::E1], td2[e3ga::E2], td2[e3ga::E3], 0);
 
                 for (int s = 0; s < m_nbSegments; s++)
                 {
-                    const e3ga &tp1 = tubeVertices[i * m_nbSegments + s];
-                    const e3ga &tp2 = tubeVertices[prevIdx * m_nbSegments + s];
+                    const e3ga::mv &tp1 = tubeVertices[i * m_nbSegments + s];
+                    const e3ga::mv &tp2 = tubeVertices[prevIdx * m_nbSegments + s];
 
-                    p3ga p1(GRADE1, tp1[GRADE1][0], tp1[GRADE1][1], tp1[GRADE1][2], 1);
-                    p3ga p2(GRADE1, tp2[GRADE1][0], tp2[GRADE1][1], tp2[GRADE1][2], 1);
+                    p3ga p1(GRADE1, tp1[e3ga::E1], tp1[e3ga::E2], tp1[e3ga::E3], 1);
+                    p3ga p2(GRADE1, tp2[e3ga::E1], tp2[e3ga::E2], tp2[e3ga::E3], 1);
 
                     p3ga L1 = p1 ^ d1;
                     p3ga L2 = p2 ^ d2;
@@ -219,7 +221,7 @@ void TubeDraw::end()
                         p3ga I = (L1 << P) << L2;
                         GAIM_FLOAT Iw = I[GRADE1][3];
                         avgTubeVertices[i * m_nbSegments + s] =
-                            e3ga(GRADE1, I[GRADE1][0] / Iw, I[GRADE1][1] / Iw, I[GRADE1][2] / Iw);
+                            e3ga::vector(I[GRADE1][0] / Iw, I[GRADE1][1] / Iw, I[GRADE1][2] / Iw);
                     }
                 }
             }
@@ -250,7 +252,7 @@ void TubeDraw::end()
     }
 }
 
-void TubeDraw::drawTubeSegment(int vIdx, const std::vector<e3ga> &vertices)
+void TubeDraw::drawTubeSegment(int vIdx, const std::vector<e3ga::mv> &vertices)
 {
     double lw = m_lineWidth / 250.0;
 
@@ -263,31 +265,33 @@ void TubeDraw::drawTubeSegment(int vIdx, const std::vector<e3ga> &vertices)
     for (int _i = 0; _i <= m_nbSegments; _i++)
     {
         int i = (_i) % m_nbSegments;
-        const e3ga &n1 = vertices[vIdx * m_nbSegments + i];
-        glNormal3dv(n1[GRADE1]);
-        glVertex3dv((m_vertices[vIdx] + lw * n1)[GRADE1]);
+        const e3ga::mv &n1 = vertices[vIdx * m_nbSegments + i];
+        glNormal3dv(e3ga::xyz(n1).data());
+        glVertex3dv(e3ga::xyz(m_vertices[vIdx] + lw * n1).data());
 
-        const e3ga &n2 = vertices[(vIdxp1)*m_nbSegments + i];
-        glNormal3dv(n2[GRADE1]);
-        glVertex3dv((m_vertices[vIdxp1] + lw * n2)[GRADE1]);
+        const e3ga::mv &n2 = vertices[(vIdxp1)*m_nbSegments + i];
+        glNormal3dv(e3ga::xyz(n2).data());
+        glVertex3dv(e3ga::xyz(m_vertices[vIdxp1] + lw * n2).data());
     }
     glEnd();
 }
 
-void TubeDraw::drawTubeCap(int vIdx, const std::vector<e3ga> &vertices, bool endCap)
+void TubeDraw::drawTubeCap(int vIdx, const std::vector<e3ga::mv> &vertices, bool endCap)
 {
     double lw = m_lineWidth / 250.0;
 
     glBegin(GL_TRIANGLE_FAN);
-    glNormal3dv((vertices[vIdx * m_nbSegments + 0] ^ vertices[vIdx * m_nbSegments + 1]).dual().normal()[GRADE1]);
-    glVertex3dv(m_vertices[vIdx][GRADE1]);
+    glNormal3dv(
+        e3ga::xyz(ga::normalize(ga::dual(e3ga::mv(vertices[vIdx * m_nbSegments + 0] ^ vertices[vIdx * m_nbSegments + 1]))))
+            .data());
+    glVertex3dv(e3ga::xyz(m_vertices[vIdx]).data());
     for (int _i = 0; _i <= m_nbSegments; _i++)
     {
         int i = (_i) % m_nbSegments;
         if (endCap)
             i = m_nbSegments - 1 - i; // flip order on end cap
-        const e3ga &n1 = vertices[vIdx * m_nbSegments + i];
-        glVertex3dv((m_vertices[vIdx] + lw * n1)[GRADE1]);
+        const e3ga::mv &n1 = vertices[vIdx * m_nbSegments + i];
+        glVertex3dv(e3ga::xyz(m_vertices[vIdx] + lw * n1).data());
     }
     glEnd();
 }
@@ -305,7 +309,7 @@ void TubeDraw::vertex3d(double x, double y, double z)
     }
     else
     {
-        m_vertices.push_back(e3ga(GRADE1, x, y, z));
+        m_vertices.push_back(e3ga::vector(x, y, z));
     }
 }
 

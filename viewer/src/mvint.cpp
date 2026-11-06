@@ -38,7 +38,7 @@ mvInt::mvInt(const mvInt *I)
     copy(I);
 }
 
-mvInt::mvInt(const e3ga &mv, int creationFlags /*= 0 */)
+mvInt::mvInt(const e3ga::mv &mv, int creationFlags /*= 0 */)
 {
     initToNothing();
     interpret(mv, creationFlags);

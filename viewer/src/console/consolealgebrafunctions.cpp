@@ -36,6 +36,8 @@ id of MV.
 
 #include "../mt19937-2.h"
 #include "../state.h"
+#include "../ga/format.h"
+#include "../ga/gaigencompat.h"
 #include "consolealgebra.h"
 #include "consolefunction.h"
 #include "consolescope.h"
@@ -83,153 +85,153 @@ namespace
 // ********************************* SCALAR *********************************
 template <class MV> consoleVariable *cf_scalar(consoleScope *s, consoleVariable *arg[])
 {
-    return new consoleVariable("", MV(mv<MV>(arg[0]).scalar()));
+    return new consoleVariable("", MV(ga::scalar(mv<MV>(arg[0]))));
 }
 
 // ********************************* DUAL *********************************
 template <class MV> consoleVariable *cf_dual(consoleScope *s, consoleVariable *arg[])
 {
-    return new consoleVariable("", mv<MV>(arg[0]).dual());
+    return new consoleVariable("", ga::dual(mv<MV>(arg[0])));
 }
 
 // ********************************* DUAL2 *********************************
 template <class MV> consoleVariable *cf_dual2(consoleScope *s, consoleVariable *arg[])
 {
-    return new consoleVariable("", mv<MV>(arg[0]) << mv<MV>(arg[1]).inverse());
+    return new consoleVariable("", ga::lcont(mv<MV>(arg[0]), ga::inverse(mv<MV>(arg[1]))));
 }
 
 // ********************************* REVERSE *********************************
 template <class MV> consoleVariable *cf_reverse(consoleScope *s, consoleVariable *arg[])
 {
-    return new consoleVariable("", mv<MV>(arg[0]).reverse());
+    return new consoleVariable("", ga::reverse(mv<MV>(arg[0])));
 }
 
 // ********************************* CLIFFORD_CONJUGATE *********************************
 template <class MV> consoleVariable *cf_clifford_conjugate(consoleScope *s, consoleVariable *arg[])
 {
-    return new consoleVariable("", mv<MV>(arg[0]).cliffordConjugate());
+    return new consoleVariable("", ga::cliffordConjugate(mv<MV>(arg[0])));
 }
 
 // ********************************* GRADE INVOLUTION *********************************
 template <class MV> consoleVariable *cf_grade_involution(consoleScope *s, consoleVariable *arg[])
 {
-    return new consoleVariable("", mv<MV>(arg[0]).gradeInvolution());
+    return new consoleVariable("", ga::gradeInvolution(mv<MV>(arg[0])));
 }
 
 // ********************************* INVERSE *********************************
 template <class MV> consoleVariable *cf_inverse(consoleScope *s, consoleVariable *arg[])
 {
-    return new consoleVariable("", mv<MV>(arg[0]).inverse());
+    return new consoleVariable("", ga::inverse(mv<MV>(arg[0])));
 }
 
 // ********************************* GENERAL INVERSE *********************************
 template <class MV> consoleVariable *cf_general_inverse(consoleScope *s, consoleVariable *arg[])
 {
-    return new consoleVariable("", mv<MV>(arg[0]).generalInverse());
+    return new consoleVariable("", ga::generalInverse(mv<MV>(arg[0])));
 }
 
 // ********************************* NEGATE *********************************
 template <class MV> consoleVariable *cf_negate(consoleScope *s, consoleVariable *arg[])
 {
-    return new consoleVariable("", mv<MV>(arg[0]).negate());
+    return new consoleVariable("", ga::negate(mv<MV>(arg[0])));
 }
 
 // ********************************* GP *********************************
 template <class MV> consoleVariable *cf_gp(consoleScope *s, consoleVariable *arg[])
 {
-    return new consoleVariable("", gp(mv<MV>(arg[0]), mv<MV>(arg[1])));
+    return new consoleVariable("", ga::gp(mv<MV>(arg[0]), mv<MV>(arg[1])));
 }
 
 // ********************************* IGP *********************************
 template <class MV> consoleVariable *cf_igp(consoleScope *s, consoleVariable *arg[])
 {
-    return new consoleVariable("", igp(mv<MV>(arg[0]), mv<MV>(arg[1])));
+    return new consoleVariable("", ga::igp(mv<MV>(arg[0]), mv<MV>(arg[1])));
 }
 
 // ********************************* OP *********************************
 template <class MV> consoleVariable *cf_op(consoleScope *s, consoleVariable *arg[])
 {
-    return new consoleVariable("", op(mv<MV>(arg[0]), mv<MV>(arg[1])));
+    return new consoleVariable("", ga::op(mv<MV>(arg[0]), mv<MV>(arg[1])));
 }
 
 // ********************************* HIP *********************************
 template <class MV> consoleVariable *cf_hip(consoleScope *s, consoleVariable *arg[])
 {
-    return new consoleVariable("", hip(mv<MV>(arg[0]), mv<MV>(arg[1])));
+    return new consoleVariable("", ga::hip(mv<MV>(arg[0]), mv<MV>(arg[1])));
 }
 
 // ********************************* MHIP *********************************
 template <class MV> consoleVariable *cf_mhip(consoleScope *s, consoleVariable *arg[])
 {
-    return new consoleVariable("", mhip(mv<MV>(arg[0]), mv<MV>(arg[1])));
+    return new consoleVariable("", ga::mhip(mv<MV>(arg[0]), mv<MV>(arg[1])));
 }
 
 // ********************************* LCONT *********************************
 template <class MV> consoleVariable *cf_lcont(consoleScope *s, consoleVariable *arg[])
 {
-    return new consoleVariable("", lcont(mv<MV>(arg[0]), mv<MV>(arg[1])));
+    return new consoleVariable("", ga::lcont(mv<MV>(arg[0]), mv<MV>(arg[1])));
 }
 
 // ********************************* GPEM *********************************
 template <class MV> consoleVariable *cf_gpem(consoleScope *s, consoleVariable *arg[])
 {
-    return new consoleVariable("", gpem(mv<MV>(arg[0]), mv<MV>(arg[1])));
+    return new consoleVariable("", ga::gpem(mv<MV>(arg[0]), mv<MV>(arg[1])));
 }
 
 // ********************************* LCEM *********************************
 template <class MV> consoleVariable *cf_lcem(consoleScope *s, consoleVariable *arg[])
 {
-    return new consoleVariable("", lcem(mv<MV>(arg[0]), mv<MV>(arg[1])));
+    return new consoleVariable("", ga::lcem(mv<MV>(arg[0]), mv<MV>(arg[1])));
 }
 
 // ********************************* RCONT *********************************
 template <class MV> consoleVariable *cf_rcont(consoleScope *s, consoleVariable *arg[])
 {
-    return new consoleVariable("", rcont(mv<MV>(arg[0]), mv<MV>(arg[1])));
+    return new consoleVariable("", ga::rcont(mv<MV>(arg[0]), mv<MV>(arg[1])));
 }
 
 // ********************************* SCP *********************************
 template <class MV> consoleVariable *cf_scp(consoleScope *s, consoleVariable *arg[])
 {
-    return new consoleVariable("", scp(mv<MV>(arg[0]), mv<MV>(arg[1])));
+    return new consoleVariable("", ga::scp(mv<MV>(arg[0]), mv<MV>(arg[1])));
 }
 
 // ********************************* ADD *********************************
 template <class MV> consoleVariable *cf_add(consoleScope *s, consoleVariable *arg[])
 {
-    return new consoleVariable("", add(mv<MV>(arg[0]), mv<MV>(arg[1])));
+    return new consoleVariable("", MV(mv<MV>(arg[0]) + mv<MV>(arg[1])));
 }
 
 // ********************************* SUB *********************************
 template <class MV> consoleVariable *cf_sub(consoleScope *s, consoleVariable *arg[])
 {
-    return new consoleVariable("", sub(mv<MV>(arg[0]), mv<MV>(arg[1])));
+    return new consoleVariable("", MV(mv<MV>(arg[0]) - mv<MV>(arg[1])));
 }
 
 // ********************************* MEET *********************************
 template <class MV> consoleVariable *cf_meet(consoleScope *s, consoleVariable *arg[])
 {
-    return new consoleVariable("", meet(mv<MV>(arg[0]), mv<MV>(arg[1])));
+    return new consoleVariable("", ga::meet(mv<MV>(arg[0]), mv<MV>(arg[1])));
 }
 
 // ********************************* JOIN *********************************
 template <class MV> consoleVariable *cf_join(consoleScope *s, consoleVariable *arg[])
 {
-    return new consoleVariable("", join(mv<MV>(arg[0]), mv<MV>(arg[1])));
+    return new consoleVariable("", ga::join(mv<MV>(arg[0]), mv<MV>(arg[1])));
 }
 
 // ********************************* CP *********************************
 template <class MV> consoleVariable *cf_cp(consoleScope *s, consoleVariable *arg[])
 {
     return new consoleVariable("",
-                               op(0.5, sub(gp(mv<MV>(arg[0]), mv<MV>(arg[1])), gp(mv<MV>(arg[1]), mv<MV>(arg[0])))));
+                               MV((ga::gp(mv<MV>(arg[0]), mv<MV>(arg[1])) - ga::gp(mv<MV>(arg[1]), mv<MV>(arg[0]))) * 0.5));
 }
 
 // ********************************* PRINT *********************************
 template <class MV> consoleVariable *cf_print(consoleScope *s, consoleVariable *arg[])
 {
     std::string name = (arg[0]->name().find(std::string(sc_tempVarPrefix)) == 0) ? std::string("ans") : arg[0]->name();
-    cprintf("%s = %s\n", name.c_str(), mv<MV>(arg[0]).string());
+    cprintf("%s = %s\n", name.c_str(), ga::toString(mv<MV>(arg[0])).c_str());
     return arg[0];
 }
 
@@ -242,7 +244,7 @@ template <class MV> consoleVariable *cf_print_prec(consoleScope *s, consoleVaria
         cprintf("print(): invalid precision '%s' (use e.g. \"e\", \"1.8e\" or \"10.4f\")\n", arg[1]->name().c_str());
         return arg[0];
     }
-    cprintf("%s = %s\n", name.c_str(), mv<MV>(arg[0]).string(format.c_str()));
+    cprintf("%s = %s\n", name.c_str(), ga::toString(mv<MV>(arg[0]), format.c_str()).c_str());
     return arg[0];
 }
 
@@ -257,14 +259,14 @@ template <class MV> consoleVariable *cf_assign(consoleScope *s, consoleVariable 
 // ********************************* GRADE *********************************
 template <class MV> consoleVariable *cf_grade(consoleScope *s, consoleVariable *arg[])
 {
-    return new consoleVariable("", mv<MV>(arg[0])(1 << ((int)mv<MV>(arg[1]).scalar())));
+    return new consoleVariable("", ga::takeGrade(mv<MV>(arg[0]), 1u << ((int)ga::scalar(mv<MV>(arg[1])))));
 }
 
 // ********************************* GRADE *********************************
 template <class MV> consoleVariable *cf_grade_nb(consoleScope *s, consoleVariable *arg[])
 {
-    int grade, type = mv<MV>(arg[0]).mvType(&grade); // epsilon?
-    if (type == GA_BLADE)
+    int grade, type = ga::mvType(mv<MV>(arg[0]), &grade); // epsilon?
+    if (type == ga::mvTypeBlade)
         grade = (int)(log((double)grade) / log((double)2) + 0.45);
     else
         grade = -1;
@@ -275,9 +277,9 @@ template <class MV> consoleVariable *cf_grade_nb(consoleScope *s, consoleVariabl
 // ********************************* VERSOR PARITY *********************************
 template <class MV> consoleVariable *cf_versor_parity(consoleScope *s, consoleVariable *arg[])
 {
-    int grade, type = mv<MV>(arg[0]).mvType(&grade); // epsilon?
-    if ((type == GA_BLADE) || (type == GA_VERSOR))
-        grade = mv<MV>(arg[0]).largestGrade() & 1;
+    int grade, type = ga::mvType(mv<MV>(arg[0]), &grade); // epsilon?
+    if ((type == ga::mvTypeBlade) || (type == ga::mvTypeVersor))
+        grade = ga::largestGrade(mv<MV>(arg[0])) & 1;
     else
         grade = -1;
 
@@ -287,7 +289,7 @@ template <class MV> consoleVariable *cf_versor_parity(consoleScope *s, consoleVa
 // ********************************* NORM *********************************
 template <class MV> consoleVariable *cf_norm(consoleScope *s, consoleVariable *arg[])
 {
-    GAIM_FLOAT n = mv<MV>(arg[0]).norm_b();
+    GAIM_FLOAT n = ga::norm_b(mv<MV>(arg[0]));
     n = sqrt(fabs(n)) * ((n < 0) ? -1.0 : 1.0);
     return new consoleVariable("", MV(n));
 }
@@ -295,67 +297,67 @@ template <class MV> consoleVariable *cf_norm(consoleScope *s, consoleVariable *a
 // ********************************* NORM_A *********************************
 template <class MV> consoleVariable *cf_norm_2(consoleScope *s, consoleVariable *arg[])
 {
-    return new consoleVariable("", MV(mv<MV>(arg[0]).norm_a()));
+    return new consoleVariable("", MV(ga::norm_a(mv<MV>(arg[0]))));
 }
 // ********************************* NORM_B *********************************
 template <class MV> consoleVariable *cf_norm_r(consoleScope *s, consoleVariable *arg[])
 {
-    return new consoleVariable("", MV(mv<MV>(arg[0]).norm_b()));
+    return new consoleVariable("", MV(ga::norm_b(mv<MV>(arg[0]))));
 }
 
 // ********************************* NORMALIZE *********************************
 template <class MV> consoleVariable *cf_normalize(consoleScope *s, consoleVariable *arg[])
 {
-    GAIM_FLOAT n = sqrt(fabs(mv<MV>(arg[0]).norm_b()));
+    GAIM_FLOAT n = sqrt(fabs(ga::norm_b(mv<MV>(arg[0]))));
     return new consoleVariable("", MV(mv<MV>(arg[0]) * ((n == 0.0) ? 0.0 : (1.0 / n))));
 }
 
 // ********************************* SQRT *********************************
 template <class MV> consoleVariable *cf_sqrt(consoleScope *s, consoleVariable *arg[])
 {
-    return new consoleVariable("", MV(sqrt(mv<MV>(arg[0]).scalar())));
+    return new consoleVariable("", MV(sqrt(ga::scalar(mv<MV>(arg[0])))));
 }
 
 // ********************************* ABS *********************************
 template <class MV> consoleVariable *cf_abs(consoleScope *s, consoleVariable *arg[])
 {
-    return new consoleVariable("", MV(fabs(mv<MV>(arg[0]).scalar())));
+    return new consoleVariable("", MV(fabs(ga::scalar(mv<MV>(arg[0])))));
 }
 
 // ********************************* TAN *********************************
 template <class MV> consoleVariable *cf_tan(consoleScope *s, consoleVariable *arg[])
 {
-    return new consoleVariable("", MV(tan(mv<MV>(arg[0]).scalar())));
+    return new consoleVariable("", MV(tan(ga::scalar(mv<MV>(arg[0])))));
 }
 
 // ********************************* COS *********************************
 template <class MV> consoleVariable *cf_cos(consoleScope *s, consoleVariable *arg[])
 {
-    return new consoleVariable("", MV(cos(mv<MV>(arg[0]).scalar())));
+    return new consoleVariable("", MV(cos(ga::scalar(mv<MV>(arg[0])))));
 }
 
 // ********************************* SIN *********************************
 template <class MV> consoleVariable *cf_sin(consoleScope *s, consoleVariable *arg[])
 {
-    return new consoleVariable("", MV(sin(mv<MV>(arg[0]).scalar())));
+    return new consoleVariable("", MV(sin(ga::scalar(mv<MV>(arg[0])))));
 }
 
 // ********************************* COSH *********************************
 template <class MV> consoleVariable *cf_cosh(consoleScope *s, consoleVariable *arg[])
 {
-    return new consoleVariable("", MV(cosh(mv<MV>(arg[0]).scalar())));
+    return new consoleVariable("", MV(cosh(ga::scalar(mv<MV>(arg[0])))));
 }
 
 // ********************************* SINH *********************************
 template <class MV> consoleVariable *cf_sinh(consoleScope *s, consoleVariable *arg[])
 {
-    return new consoleVariable("", MV(sinh(mv<MV>(arg[0]).scalar())));
+    return new consoleVariable("", MV(sinh(ga::scalar(mv<MV>(arg[0])))));
 }
 
 // ********************************* ACOSH *********************************
 template <class MV> consoleVariable *cf_acosh(consoleScope *s, consoleVariable *arg[])
 {
-    double x = mv<MV>(arg[0]).scalar();
+    double x = ga::scalar(mv<MV>(arg[0]));
     double value = (x >= 1) ? log(x + sqrt(x * x - 1)) : 0.0;
     return new consoleVariable("", MV(value));
 }
@@ -363,14 +365,14 @@ template <class MV> consoleVariable *cf_acosh(consoleScope *s, consoleVariable *
 // ********************************* ASINH *********************************
 template <class MV> consoleVariable *cf_asinh(consoleScope *s, consoleVariable *arg[])
 {
-    MV B = mv<MV>(arg[0]).grade(GRADE2);
-    if (B.norm_a() != 0.0)
+    MV B = ga::takeGrade(mv<MV>(arg[0]), GRADE2);
+    if (ga::norm_a(B) != 0.0)
     {
-        double B2 = gp(B, B).scalar();
+        double B2 = ga::scalar(ga::gp(B, B));
         if (B2 < 0.0)
         {
             double sqrtMB2 = sqrt(-B2);
-            return new consoleVariable("", op(asin(sqrtMB2) / sqrtMB2, B));
+            return new consoleVariable("", MV(B * (asin(sqrtMB2) / sqrtMB2)));
         }
         else if (B2 == 0.0)
         {
@@ -379,12 +381,12 @@ template <class MV> consoleVariable *cf_asinh(consoleScope *s, consoleVariable *
         else
         {
             double sqrtB2 = sqrt(B2);
-            return new consoleVariable("", op(asinhScalar(sqrtB2) / sqrtB2, B));
+            return new consoleVariable("", MV(B * (asinhScalar(sqrtB2) / sqrtB2)));
         }
     }
     else
     {
-        double x = mv<MV>(arg[0]).scalar();
+        double x = ga::scalar(mv<MV>(arg[0]));
         double value = asinhScalar(x);
         return new consoleVariable("", MV(value));
     }
@@ -393,13 +395,13 @@ template <class MV> consoleVariable *cf_asinh(consoleScope *s, consoleVariable *
 // ********************************* ATAN *********************************
 template <class MV> consoleVariable *cf_atan(consoleScope *s, consoleVariable *arg[])
 {
-    return new consoleVariable("", MV(atan(mv<MV>(arg[0]).scalar())));
+    return new consoleVariable("", MV(atan(ga::scalar(mv<MV>(arg[0])))));
 }
 
 // ********************************* ATAN2 *********************************
 template <class MV> consoleVariable *cf_atan2(consoleScope *s, consoleVariable *arg[])
 {
-    return new consoleVariable("", MV(atan2(mv<MV>(arg[0]).scalar(), mv<MV>(arg[1]).scalar())));
+    return new consoleVariable("", MV(atan2(ga::scalar(mv<MV>(arg[0])), ga::scalar(mv<MV>(arg[1])))));
 }
 
 // ********************************* MAX *********************************
@@ -419,19 +421,19 @@ template <class MV> consoleVariable *cf_min(consoleScope *s, consoleVariable *ar
 // ********************************* ACOS *********************************
 template <class MV> consoleVariable *cf_acos(consoleScope *s, consoleVariable *arg[])
 {
-    return new consoleVariable("", MV(acos(mv<MV>(arg[0]).scalar())));
+    return new consoleVariable("", MV(acos(ga::scalar(mv<MV>(arg[0])))));
 }
 
 // ********************************* ASIN *********************************
 template <class MV> consoleVariable *cf_asin(consoleScope *s, consoleVariable *arg[])
 {
-    return new consoleVariable("", MV(asin(mv<MV>(arg[0]).scalar())));
+    return new consoleVariable("", MV(asin(ga::scalar(mv<MV>(arg[0])))));
 }
 
 // ********************************* SINC *********************************
 template <class MV> consoleVariable *cf_sinc(consoleScope *s, consoleVariable *arg[])
 {
-    double x = mv<MV>(arg[0]).scalar();
+    double x = ga::scalar(mv<MV>(arg[0]));
     if (x == 0.0)
         return new consoleVariable("", MV(1.0));
     else
@@ -441,31 +443,31 @@ template <class MV> consoleVariable *cf_sinc(consoleScope *s, consoleVariable *a
 // ********************************* EXP *********************************
 template <class MV> consoleVariable *cf_exp(consoleScope *s, consoleVariable *arg[])
 {
-    return new consoleVariable("", MV(mv<MV>(arg[0]).exp(12)));
+    return new consoleVariable("", MV(ga::exp(mv<MV>(arg[0]), 12)));
 }
 
 // ********************************* LOG *********************************
 template <class MV> consoleVariable *cf_log(consoleScope *s, consoleVariable *arg[])
 {
-    double x = mv<MV>(arg[0]).scalar();
+    double x = ga::scalar(mv<MV>(arg[0]));
     if (x == 0.0)
         return new consoleVariable("", MV(0));
     else if (x > 0.0)
         return new consoleVariable("", MV(log(x)));
     else
-        return new consoleVariable("", MV(std::numbers::pi * (MV::e1 ^ MV::e2) + log(-x)));
+        return new consoleVariable("", MV(std::numbers::pi * (ga::basisVector<MV>(0) ^ ga::basisVector<MV>(1)) + log(-x)));
 }
 
 // ********************************* SCALAR_POW *********************************
 template <class MV> consoleVariable *cf_scalar_pow(consoleScope *s, consoleVariable *arg[])
 {
-    return new consoleVariable("", MV(pow(mv<MV>(arg[0]).scalar(), mv<MV>(arg[1]).scalar())));
+    return new consoleVariable("", MV(pow(ga::scalar(mv<MV>(arg[0])), ga::scalar(mv<MV>(arg[1])))));
 }
 
 // ********************************* RANDOM SEED *********************************
 template <class MV> consoleVariable *cf_randSeed(consoleScope *s, consoleVariable *arg[])
 {
-    double _seed = mv<MV>(arg[0]).scalar();
+    double _seed = ga::scalar(mv<MV>(arg[0]));
     unsigned long seed = (unsigned long)(_seed * 32768.0);
     sgenrand(seed);
 
@@ -475,15 +477,15 @@ template <class MV> consoleVariable *cf_randSeed(consoleScope *s, consoleVariabl
 // ********************************* RANDOM GAUSS NUMBER *********************************
 template <class MV> consoleVariable *cf_randGauss(consoleScope *s, consoleVariable *arg[])
 {
-    double mean = mv<MV>(arg[0]).scalar();
-    double variance = mv<MV>(arg[1]).scalar();
+    double mean = ga::scalar(mv<MV>(arg[0]));
+    double variance = ga::scalar(mv<MV>(arg[1]));
     return new consoleVariable("", MV(gaussNoise(mean, variance)));
 }
 
 // ********************************* POW *********************************
 template <class MV> consoleVariable *cf_pow(consoleScope *s, consoleVariable *arg[])
 {
-    int n = (int)(mv<MV>(arg[1]).scalar() + 0.5), i;
+    int n = (int)(ga::scalar(mv<MV>(arg[1])) + 0.5), i;
     MV r(1.0);
     for (i = 0; i < n; i++)
         r = r * mv<MV>(arg[0]);
@@ -494,13 +496,13 @@ template <class MV> consoleVariable *cf_pow(consoleScope *s, consoleVariable *ar
 // ********************************* VERSOR PRODUCT *********************************
 template <class MV> consoleVariable *cf_versorProduct(consoleScope *s, consoleVariable *arg[])
 {
-    return new consoleVariable("", MV(mv<MV>(arg[0]) * mv<MV>(arg[1]) * mv<MV>(arg[0]).inverse()));
+    return new consoleVariable("", MV(mv<MV>(arg[0]) * mv<MV>(arg[1]) * ga::inverse(mv<MV>(arg[0]))));
 }
 
 // ********************************* INVERSE VERSOR PRODUCT *********************************
 template <class MV> consoleVariable *cf_inverseVersorProduct(consoleScope *s, consoleVariable *arg[])
 {
-    return new consoleVariable("", MV(mv<MV>(arg[0]).inverse() * mv<MV>(arg[1]) * mv<MV>(arg[0])));
+    return new consoleVariable("", MV(ga::inverse(mv<MV>(arg[0])) * mv<MV>(arg[1]) * mv<MV>(arg[0])));
 }
 
 // ********************************* mierenneuk VERSOR PRODUCT *********************************
@@ -509,12 +511,12 @@ template <class MV> consoleVariable *cf_MNversorProduct(consoleScope *s, console
     MV v = mv<MV>(arg[0]);
     MV o = mv<MV>(arg[1]);
 
-    int vgrade = v.largestGrade() & 1;
+    int vgrade = ga::largestGrade(v) & 1;
 
     if (vgrade)
-        return new consoleVariable("", MV(v * o.gradeInvolution() * v.inverse()));
+        return new consoleVariable("", MV(v * ga::gradeInvolution(o) * ga::inverse(v)));
     else
-        return new consoleVariable("", MV(v * o * v.inverse()));
+        return new consoleVariable("", MV(v * o * ga::inverse(v)));
 }
 
 // ********************************* mierenneuk INVERSE VERSOR PRODUCT *********************************
@@ -523,43 +525,40 @@ template <class MV> consoleVariable *cf_MNinverseVersorProduct(consoleScope *s, 
     MV v = mv<MV>(arg[0]);
     MV o = mv<MV>(arg[1]);
 
-    int vgrade = v.largestGrade() & 1;
+    int vgrade = ga::largestGrade(v) & 1;
 
     if (vgrade)
-        return new consoleVariable("", MV(v.inverse() * o.gradeInvolution() * v));
+        return new consoleVariable("", MV(ga::inverse(v) * ga::gradeInvolution(o) * v));
     else
-        return new consoleVariable("", MV(v.inverse() * o * v));
+        return new consoleVariable("", MV(ga::inverse(v) * o * v));
 }
 
 // ********************************* PROJECT *********************************
 template <class MV> consoleVariable *cf_project(consoleScope *s, consoleVariable *arg[])
 {
-    MV tmp;
-    tmp.project(mv<MV>(arg[1]), mv<MV>(arg[0]));
-    return new consoleVariable("", tmp);
+    return new consoleVariable("", ga::project(mv<MV>(arg[1]), mv<MV>(arg[0])));
 }
 
 // ********************************* reject *********************************
 template <class MV> consoleVariable *cf_reject(consoleScope *s, consoleVariable *arg[])
 {
-    MV tmp;
-    tmp.reject(mv<MV>(arg[1]), mv<MV>(arg[0]));
-    return new consoleVariable("", tmp);
+    return new consoleVariable("", ga::reject(mv<MV>(arg[1]), mv<MV>(arg[0])));
 }
 
 // ********************************* factor *********************************
 template <class MV> consoleVariable *cf_factor(consoleScope *s, consoleVariable *arg[])
 {
-    MV tmp[5];
-    mv<MV>(arg[0]).factor(tmp);
+    std::vector<MV> factors;
+    int n = ga::factor(mv<MV>(arg[0]), factors);
 
-    int f = (int)(mv<MV>(arg[1]).scalar()) - 1;
+    // factor 1, 2, ... (clamped to 1 ... 5, as with Gaigen's array of 5 factors; 0 if there is no such factor)
+    int f = (int)(ga::scalar(mv<MV>(arg[1]))) - 1;
     if (f > 4)
         f = 4;
     else if (f < 0)
         f = 0;
 
-    return new consoleVariable("", tmp[f]);
+    return new consoleVariable("", (f < n) ? factors[f] : MV());
 }
 
 // ********************************* set_factor *********************************
@@ -573,51 +572,51 @@ template <class MV> consoleVariable *cf_set_factor(consoleScope *s, consoleVaria
 // ********************************* equal *********************************
 template <class MV> consoleVariable *cf_equal(consoleScope *s, consoleVariable *arg[])
 {
-    return new consoleVariable("", MV((mv<MV>(arg[0]) - mv<MV>(arg[1])).norm_a() == 0.0));
+    return new consoleVariable("", MV(ga::norm_a(MV(mv<MV>(arg[0]) - mv<MV>(arg[1]))) == 0.0));
 }
 
 // ********************************* ne *********************************
 template <class MV> consoleVariable *cf_ne(consoleScope *s, consoleVariable *arg[])
 {
-    return new consoleVariable("", MV((mv<MV>(arg[0]) - mv<MV>(arg[1])).norm_a() != 0.0));
+    return new consoleVariable("", MV(ga::norm_a(MV(mv<MV>(arg[0]) - mv<MV>(arg[1]))) != 0.0));
 }
 
 // ********************************* less *********************************
 template <class MV> consoleVariable *cf_less(consoleScope *s, consoleVariable *arg[])
 {
-    return new consoleVariable("", MV(mv<MV>(arg[0]).scalar() < mv<MV>(arg[1]).scalar()));
+    return new consoleVariable("", MV(ga::scalar(mv<MV>(arg[0])) < ga::scalar(mv<MV>(arg[1]))));
 }
 // ********************************* greater *********************************
 template <class MV> consoleVariable *cf_greater(consoleScope *s, consoleVariable *arg[])
 {
-    return new consoleVariable("", MV(mv<MV>(arg[0]).scalar() > mv<MV>(arg[1]).scalar()));
+    return new consoleVariable("", MV(ga::scalar(mv<MV>(arg[0])) > ga::scalar(mv<MV>(arg[1]))));
 }
 // ********************************* le *********************************
 template <class MV> consoleVariable *cf_le(consoleScope *s, consoleVariable *arg[])
 {
-    return new consoleVariable("", MV(mv<MV>(arg[0]).scalar() <= mv<MV>(arg[1]).scalar()));
+    return new consoleVariable("", MV(ga::scalar(mv<MV>(arg[0])) <= ga::scalar(mv<MV>(arg[1]))));
 }
 // ********************************* ge *********************************
 template <class MV> consoleVariable *cf_ge(consoleScope *s, consoleVariable *arg[])
 {
-    return new consoleVariable("", MV(mv<MV>(arg[0]).scalar() >= mv<MV>(arg[1]).scalar()));
+    return new consoleVariable("", MV(ga::scalar(mv<MV>(arg[0])) >= ga::scalar(mv<MV>(arg[1]))));
 }
 
 // ********************************* and *********************************
 template <class MV> consoleVariable *cf_and(consoleScope *s, consoleVariable *arg[])
 {
-    return new consoleVariable("", MV(((mv<MV>(arg[0]).norm_a() != 0.0) && (mv<MV>(arg[1]).norm_a() != 0.0))));
+    return new consoleVariable("", MV(((ga::norm_a(mv<MV>(arg[0])) != 0.0) && (ga::norm_a(mv<MV>(arg[1])) != 0.0))));
 }
 // ********************************* or *********************************
 template <class MV> consoleVariable *cf_or(consoleScope *s, consoleVariable *arg[])
 {
-    return new consoleVariable("", MV(((mv<MV>(arg[0]).norm_a() != 0.0) || (mv<MV>(arg[1]).norm_a() != 0.0))));
+    return new consoleVariable("", MV(((ga::norm_a(mv<MV>(arg[0])) != 0.0) || (ga::norm_a(mv<MV>(arg[1])) != 0.0))));
 }
 
 // ********************************* not *********************************
 template <class MV> consoleVariable *cf_not(consoleScope *s, consoleVariable *arg[])
 {
-    return new consoleVariable("", MV(mv<MV>(arg[0]).norm_a() == 0.0));
+    return new consoleVariable("", MV(ga::norm_a(mv<MV>(arg[0])) == 0.0));
 }
 
 // ********************************* CAST *********************************

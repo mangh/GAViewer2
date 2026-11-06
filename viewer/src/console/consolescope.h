@@ -26,7 +26,7 @@
 #include <vector>
 
 #include "consolefunction.h"
-#include "../e3ga/e3ga.h"
+#include "../ga/e3ga.h"
 
 class consoleVariable;
 class consoleFuncStmt;
@@ -171,10 +171,10 @@ class consoleScope
         return m_id;
     }
 
-    int externalAssignVariable(const std::string &name, const e3ga &val,
+    int externalAssignVariable(const std::string &name, const e3ga::mv &val,
                                int drawMode = 0); // used by none-console functions to assign a variable
     int externalLookupVariable(const std::string &name, int global,
-                               e3ga &val); // used by none-console functions to lookup a variable
+                               e3ga::mv &val); // used by none-console functions to lookup a variable
 
   protected:
     int lookupLocalVariable(int sid, const std::string &name, int global,

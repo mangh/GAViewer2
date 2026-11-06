@@ -29,6 +29,7 @@ produced by the 'codegen' tool from consolecodetemplates.txt.)
 #include <stdlib.h>
 #include <string.h>
 
+#include <array>
 #include <string>
 #include <utility>
 #include <vector>
@@ -52,29 +53,29 @@ produced by the 'codegen' tool from consolecodetemplates.txt.)
 
 consoleVariable *cf_p3ga_point3(consoleScope *s, consoleVariable *arg[])
 {
-    p3ga pt(arg[0]->e().scalar() * p3ga::e1 + arg[1]->e().scalar() * p3ga::e2 + arg[2]->e().scalar() * p3ga::e3 +
+    p3ga pt(ga::scalar(arg[0]->e()) * p3ga::e1 + ga::scalar(arg[1]->e()) * p3ga::e2 + ga::scalar(arg[2]->e()) * p3ga::e3 +
             p3ga::e0);
     return new consoleVariable("", pt);
 }
 
 consoleVariable *cf_p3ga_point1(consoleScope *s, consoleVariable *arg[])
 {
-    const GAIM_FLOAT *c = arg[0]->e()[GRADE1];
-    p3ga pt(c[E3GA_E1] * p3ga::e1 + c[E3GA_E2] * p3ga::e2 + c[E3GA_E3] * p3ga::e3 + p3ga::e0);
+    const std::array<double, 3> c = e3ga::xyz(arg[0]->e());
+    p3ga pt(c[0] * p3ga::e1 + c[1] * p3ga::e2 + c[2] * p3ga::e3 + p3ga::e0);
     return new consoleVariable("", pt);
 }
 
 consoleVariable *cf_c3ga_point3(consoleScope *s, consoleVariable *arg[])
 {
-    GAIM_FLOAT e1c = arg[0]->e().scalar(), e2c = arg[1]->e().scalar(), e3c = arg[2]->e().scalar();
+    GAIM_FLOAT e1c = ga::scalar(arg[0]->e()), e2c = ga::scalar(arg[1]->e()), e3c = ga::scalar(arg[2]->e());
     c3ga pt(GRADE1, e1c, e2c, e3c, 1.0, 0.5 * (e1c * e1c + e2c * e2c + e3c * e3c));
     return new consoleVariable("", pt);
 }
 
 consoleVariable *cf_c3ga_point1(consoleScope *s, consoleVariable *arg[])
 {
-    const GAIM_FLOAT *c = arg[0]->e()[GRADE1];
-    GAIM_FLOAT e1c = c[E3GA_E1], e2c = c[E3GA_E2], e3c = c[E3GA_E3];
+    const std::array<double, 3> c = e3ga::xyz(arg[0]->e());
+    GAIM_FLOAT e1c = c[0], e2c = c[1], e3c = c[2];
     c3ga pt(GRADE1, e1c, e2c, e3c, 1.0, 0.5 * (e1c * e1c + e2c * e2c + e3c * e3c));
     return new consoleVariable("", pt);
 }
@@ -103,7 +104,7 @@ consoleVariable *cf_c3ga_pointP1(consoleScope *s, consoleVariable *arg[])
 
 consoleVariable *cf_translation_versor3(consoleScope *s, consoleVariable *arg[])
 {
-    GAIM_FLOAT e1c = arg[0]->e().scalar(), e2c = arg[1]->e().scalar(), e3c = arg[2]->e().scalar();
+    GAIM_FLOAT e1c = ga::scalar(arg[0]->e()), e2c = ga::scalar(arg[1]->e()), e3c = ga::scalar(arg[2]->e());
     c3ga t(GRADE1, e1c, e2c, e3c, 0.0, 0.0);
     c3ga tv = 1 - 0.5 * (t ^ c3ga::ni);
     return new consoleVariable("", tv);
@@ -111,8 +112,8 @@ consoleVariable *cf_translation_versor3(consoleScope *s, consoleVariable *arg[])
 
 consoleVariable *cf_translation_versor1(consoleScope *s, consoleVariable *arg[])
 {
-    const GAIM_FLOAT *c = arg[0]->e()[GRADE1];
-    GAIM_FLOAT e1c = c[E3GA_E1], e2c = c[E3GA_E2], e3c = c[E3GA_E3];
+    const std::array<double, 3> c = e3ga::xyz(arg[0]->e());
+    GAIM_FLOAT e1c = c[0], e2c = c[1], e3c = c[2];
     c3ga t(GRADE1, e1c, e2c, e3c, 0.0, 0.0);
     c3ga tv = 1 - 0.5 * (t ^ c3ga::ni);
     return new consoleVariable("", tv);
@@ -126,7 +127,7 @@ consoleVariable *cf_clf(consoleScope *s, consoleVariable *arg[])
 
     if (gui_state)
         gui_state->setStatus("");
-    return new consoleVariable("", e3ga(0.0));
+    return new consoleVariable("", e3ga::mv(0.0));
 }
 
 // ********************************* CLC *********************************
@@ -137,14 +138,14 @@ consoleVariable *cf_clc(consoleScope *s, consoleVariable *arg[])
     if (g_state)
         g_state->removeAllConsoleControls();
 
-    return new consoleVariable("", e3ga(0.0));
+    return new consoleVariable("", e3ga::mv(0.0));
 }
 
 // ********************************* RED .. GRAY *********************************
 
 consoleVariable *cf_set_object_X_color4(const std::string &objectName, int X, float R, float G, float B, float A)
 {
-    e3ga tmp(0.0);
+    e3ga::mv tmp(0.0);
     object *O = g_state->getObjectPtrByName(objectName);
     if (O == NULL)
     {
@@ -166,7 +167,7 @@ consoleVariable *cf_set_object_X_color4(const std::string &objectName, int X, fl
 
 consoleVariable *cf_set_object_X_color3(const std::string &objectName, int X, float R, float G, float B)
 {
-    e3ga tmp(0.0);
+    e3ga::mv tmp(0.0);
     object *O = g_state->getObjectPtrByName(objectName);
     if (O == NULL)
     {
@@ -188,21 +189,21 @@ consoleVariable *cf_set_object_X_color3(const std::string &objectName, int X, fl
 consoleVariable *cf_set_object_fg_color_vector(consoleScope *s, consoleVariable *arg[])
 {
     const std::string &objectName = arg[0]->name();
-    return cf_set_object_X_color3(objectName, 0, (float)arg[1]->e()[GRADE1][0], (float)arg[1]->e()[GRADE1][1],
-                                  (float)arg[1]->e()[GRADE1][2]);
+    return cf_set_object_X_color3(objectName, 0, (float)arg[1]->e()[e3ga::E1], (float)arg[1]->e()[e3ga::E2],
+                                  (float)arg[1]->e()[e3ga::E3]);
 }
 
 consoleVariable *cf_set_object_fg_color_RGB(consoleScope *s, consoleVariable *arg[])
 {
     const std::string &objectName = arg[0]->name();
-    return cf_set_object_X_color3(objectName, 0, (float)arg[1]->e().scalar(), (float)arg[2]->e().scalar(),
-                                  (float)arg[3]->e().scalar());
+    return cf_set_object_X_color3(objectName, 0, (float)ga::scalar(arg[1]->e()), (float)ga::scalar(arg[2]->e()),
+                                  (float)ga::scalar(arg[3]->e()));
 }
 consoleVariable *cf_set_object_fg_color_RGBA(consoleScope *s, consoleVariable *arg[])
 {
     const std::string &objectName = arg[0]->name();
-    return cf_set_object_X_color4(objectName, 0, (float)arg[1]->e().scalar(), (float)arg[2]->e().scalar(),
-                                  (float)arg[3]->e().scalar(), (float)arg[4]->e().scalar());
+    return cf_set_object_X_color4(objectName, 0, (float)ga::scalar(arg[1]->e()), (float)ga::scalar(arg[2]->e()),
+                                  (float)ga::scalar(arg[3]->e()), (float)ga::scalar(arg[4]->e()));
 }
 
 static consoleVariable *cf_set_color3_internal(consoleScope *s, consoleVariable *arg[], float c[3])
@@ -277,23 +278,23 @@ consoleVariable *cf_grey(consoleScope *s, consoleVariable *arg[])
 
 consoleVariable *cf_color1(consoleScope *s, consoleVariable *arg[])
 {
-    const GAIM_FLOAT *c = arg[1]->e()[GRADE1];
-    arg[0]->color3((float)c[E3GA_E1], (float)c[E3GA_E2], (float)c[E3GA_E3]);
+    const std::array<double, 3> c = e3ga::xyz(arg[1]->e());
+    arg[0]->color3((float)c[0], (float)c[1], (float)c[2]);
     arg[0]->modifiedColor();
     return arg[0];
 }
 
 consoleVariable *cf_color3(consoleScope *s, consoleVariable *arg[])
 {
-    arg[0]->color3((float)arg[1]->e().scalar(), (float)arg[2]->e().scalar(), (float)arg[3]->e().scalar());
+    arg[0]->color3((float)ga::scalar(arg[1]->e()), (float)ga::scalar(arg[2]->e()), (float)ga::scalar(arg[3]->e()));
     arg[0]->modifiedColor();
     return arg[0];
 }
 
 consoleVariable *cf_color4(consoleScope *s, consoleVariable *arg[])
 {
-    arg[0]->color4((float)arg[1]->e().scalar(), (float)arg[2]->e().scalar(), (float)arg[3]->e().scalar(),
-                   (float)arg[4]->e().scalar());
+    arg[0]->color4((float)ga::scalar(arg[1]->e()), (float)ga::scalar(arg[2]->e()), (float)ga::scalar(arg[3]->e()),
+                   (float)ga::scalar(arg[4]->e()));
     arg[0]->modifiedColor();
     arg[0]->modifiedAlpha();
     return arg[0];
@@ -308,7 +309,7 @@ static consoleVariable *cf_alpha_internal(consoleVariable *arg0, float arg1)
 
 consoleVariable *cf_alpha(consoleScope *s, consoleVariable *arg[])
 {
-    return cf_alpha_internal(arg[0], (float)arg[1]->e().scalar());
+    return cf_alpha_internal(arg[0], (float)ga::scalar(arg[1]->e()));
 }
 
 consoleVariable *cf_versor(consoleScope *s, consoleVariable *arg[])
@@ -481,37 +482,37 @@ consoleVariable *cf_weight(consoleScope *s, consoleVariable *arg[])
 consoleVariable *cf_get_color(consoleScope *s, consoleVariable *arg[])
 {
     const float *c = arg[0]->color();
-    return new consoleVariable("", e3ga(GRADE1, c[0], c[1], c[2]));
+    return new consoleVariable("", e3ga::vector(c[0], c[1], c[2]));
 }
 
 consoleVariable *cf_get_alpha(consoleScope *s, consoleVariable *arg[])
 {
-    return new consoleVariable("", e3ga((GAIM_FLOAT)arg[0]->alpha()));
+    return new consoleVariable("", e3ga::mv((GAIM_FLOAT)arg[0]->alpha()));
 }
 
 consoleVariable *cf_get_stipple(consoleScope *s, consoleVariable *arg[])
 {
-    return new consoleVariable("", e3ga((GAIM_FLOAT)((arg[0]->drawMode() & OD_STIPPLE) != 0)));
+    return new consoleVariable("", e3ga::mv((GAIM_FLOAT)((arg[0]->drawMode() & OD_STIPPLE) != 0)));
 }
 consoleVariable *cf_get_wireframe(consoleScope *s, consoleVariable *arg[])
 {
-    return new consoleVariable("", e3ga((GAIM_FLOAT)((arg[0]->drawMode() & OD_WIREFRAME) != 0)));
+    return new consoleVariable("", e3ga::mv((GAIM_FLOAT)((arg[0]->drawMode() & OD_WIREFRAME) != 0)));
 }
 consoleVariable *cf_get_outline(consoleScope *s, consoleVariable *arg[])
 {
-    return new consoleVariable("", e3ga((GAIM_FLOAT)((arg[0]->drawMode() & OD_OUTLINE) != 0)));
+    return new consoleVariable("", e3ga::mv((GAIM_FLOAT)((arg[0]->drawMode() & OD_OUTLINE) != 0)));
 }
 consoleVariable *cf_get_weight(consoleScope *s, consoleVariable *arg[])
 {
-    return new consoleVariable("", e3ga((GAIM_FLOAT)((arg[0]->drawMode() & OD_MAGNITUDE) != 0)));
+    return new consoleVariable("", e3ga::mv((GAIM_FLOAT)((arg[0]->drawMode() & OD_MAGNITUDE) != 0)));
 }
 consoleVariable *cf_get_ori(consoleScope *s, consoleVariable *arg[])
 {
-    return new consoleVariable("", e3ga((GAIM_FLOAT)((arg[0]->drawMode() & OD_ORI) != 0)));
+    return new consoleVariable("", e3ga::mv((GAIM_FLOAT)((arg[0]->drawMode() & OD_ORI) != 0)));
 }
 consoleVariable *cf_get_hide(consoleScope *s, consoleVariable *arg[])
 {
-    return new consoleVariable("", e3ga((GAIM_FLOAT)((arg[0]->drawMode() & OD_HIDE) != 0)));
+    return new consoleVariable("", e3ga::mv((GAIM_FLOAT)((arg[0]->drawMode() & OD_HIDE) != 0)));
 }
 
 consoleVariable *cf_bit_not(consoleScope *s, consoleVariable *arg[])
@@ -520,7 +521,7 @@ consoleVariable *cf_bit_not(consoleScope *s, consoleVariable *arg[])
     s1 += (s1 >= 0.0) ? 0.5 : -0.5;
     unsigned int i1 = (unsigned int)(s1 + ((s1 >= 0.0) ? 0.5 : -0.5));
     i1 = (unsigned int)0xFFFFFFFF ^ i1;
-    return new consoleVariable("", e3ga((GAIM_FLOAT)i1));
+    return new consoleVariable("", e3ga::mv((GAIM_FLOAT)i1));
 }
 
 consoleVariable *cf_bit_and(consoleScope *s, consoleVariable *arg[])
@@ -531,7 +532,7 @@ consoleVariable *cf_bit_and(consoleScope *s, consoleVariable *arg[])
     GAIM_FLOAT s2 = arg[1]->scalar();
     unsigned int i2 = (unsigned int)(s2 + ((s2 >= 0.0) ? 0.5 : -0.5));
 
-    return new consoleVariable("", e3ga((GAIM_FLOAT)(i1 & i2)));
+    return new consoleVariable("", e3ga::mv((GAIM_FLOAT)(i1 & i2)));
 }
 
 consoleVariable *cf_bit_or(consoleScope *s, consoleVariable *arg[])
@@ -542,7 +543,7 @@ consoleVariable *cf_bit_or(consoleScope *s, consoleVariable *arg[])
     GAIM_FLOAT s2 = arg[1]->scalar();
     unsigned int i2 = (unsigned int)(s2 + ((s2 >= 0.0) ? 0.5 : -0.5));
 
-    return new consoleVariable("", e3ga((GAIM_FLOAT)(i1 | i2)));
+    return new consoleVariable("", e3ga::mv((GAIM_FLOAT)(i1 | i2)));
 }
 
 consoleVariable *cf_bit_xor(consoleScope *s, consoleVariable *arg[])
@@ -553,7 +554,7 @@ consoleVariable *cf_bit_xor(consoleScope *s, consoleVariable *arg[])
     GAIM_FLOAT s2 = arg[1]->scalar();
     unsigned int i2 = (unsigned int)(s2 + ((s2 >= 0.0) ? 0.5 : -0.5));
 
-    return new consoleVariable("", e3ga((GAIM_FLOAT)(i1 ^ i2)));
+    return new consoleVariable("", e3ga::mv((GAIM_FLOAT)(i1 ^ i2)));
 }
 
 consoleVariable *cf_bit_shift(consoleScope *s, consoleVariable *arg[])
@@ -565,9 +566,9 @@ consoleVariable *cf_bit_shift(consoleScope *s, consoleVariable *arg[])
     int i2 = (int)(s2 + ((s2 >= 0.0) ? 0.5 : -0.5));
 
     if (i2 < 0)
-        return new consoleVariable("", e3ga((GAIM_FLOAT)(i1 >> (-i2))));
+        return new consoleVariable("", e3ga::mv((GAIM_FLOAT)(i1 >> (-i2))));
     else
-        return new consoleVariable("", e3ga((GAIM_FLOAT)(i1 << (i2))));
+        return new consoleVariable("", e3ga::mv((GAIM_FLOAT)(i1 << (i2))));
 }
 
 // ********************************* CREATE POLYGON  *********************************
@@ -594,7 +595,7 @@ consoleVariable *cf_create_polygon(consoleScope *s, consoleVariable *arg[], int 
 
     g_state->addObject(PO);
 
-    e3ga tmp(0.0);
+    e3ga::mv tmp(0.0);
     return new consoleVariable("", tmp);
 }
 
@@ -642,7 +643,7 @@ consoleVariable *cf_create_arc(consoleScope *s, consoleVariable *arg[])
 
     g_state->addObject(PO);
 
-    e3ga tmp(0.0);
+    e3ga::mv tmp(0.0);
     return new consoleVariable("", tmp);
 }
 
@@ -656,7 +657,7 @@ consoleVariable *cf_screenshot(consoleScope *s, consoleVariable *arg[])
     if (gui_state)
         gui_state->setupScreenshot(arg[0]->name(), width, height, wol);
 
-    return new consoleVariable("", e3ga(0.0));
+    return new consoleVariable("", e3ga::mv(0.0));
 }
 
 // ********************************* SET WINDOW TITLE  *********************************
@@ -668,7 +669,7 @@ consoleVariable *cf_set_window_title(consoleScope *s, consoleVariable *arg[])
     if (gui_state && gui_state->m_mainWindow)
         gui_state->m_mainWindow->label(title);
 
-    return new consoleVariable("", e3ga(0.0));
+    return new consoleVariable("", e3ga::mv(0.0));
 }
 
 // ********************************* ADD NET PORT  *********************************
@@ -678,7 +679,7 @@ consoleVariable *cf_add_net_port(consoleScope *s, consoleVariable *arg[])
     sprintf(buf, "%d", (int)arg[0]->scalar());
     g_state->openNetServer(buf);
 
-    e3ga tmp(0.0);
+    e3ga::mv tmp(0.0);
     return new consoleVariable("", tmp);
 }
 
@@ -689,7 +690,7 @@ consoleVariable *cf_remove_net_port(consoleScope *s, consoleVariable *arg[])
     sprintf(buf, "%d", (int)arg[0]->scalar());
     g_state->closeNetServer(buf);
 
-    e3ga tmp(0.0);
+    e3ga::mv tmp(0.0);
     return new consoleVariable("", tmp);
 }
 
@@ -698,7 +699,7 @@ consoleVariable *cf_net_status(consoleScope *s, consoleVariable *arg[])
 {
     g_state->displayNetStatus();
 
-    e3ga tmp(0.0);
+    e3ga::mv tmp(0.0);
     return new consoleVariable("", tmp);
 }
 
@@ -707,7 +708,7 @@ consoleVariable *cf_net_close(consoleScope *s, consoleVariable *arg[])
 {
     g_state->closeNetServers();
 
-    e3ga tmp(0.0);
+    e3ga::mv tmp(0.0);
     return new consoleVariable("", tmp);
 }
 
@@ -716,7 +717,7 @@ consoleVariable *cf_disable_mouse_interaction(consoleScope *s, consoleVariable *
 {
     if (gui_state)
         gui_state->setInteractiveMouse(false);
-    e3ga tmp(0.0);
+    e3ga::mv tmp(0.0);
     return new consoleVariable("", tmp);
 }
 
@@ -724,7 +725,7 @@ consoleVariable *cf_enable_mouse_interaction(consoleScope *s, consoleVariable *a
 {
     if (gui_state)
         gui_state->setInteractiveMouse(true);
-    e3ga tmp(0.0);
+    e3ga::mv tmp(0.0);
     return new consoleVariable("", tmp);
 }
 
@@ -733,7 +734,7 @@ consoleVariable *cf_set_point_size(consoleScope *s, consoleVariable *arg[])
 {
     if (gui_state)
         gui_state->setPointSize(arg[0]->scalar());
-    e3ga tmp(0.0);
+    e3ga::mv tmp(0.0);
     return new consoleVariable("", tmp);
 }
 
@@ -742,7 +743,7 @@ consoleVariable *cf_set_near_far_clip_planes(consoleScope *s, consoleVariable *a
 {
     if (gui_state)
         gui_state->m_glWindow->setNearFarClipPlanes(arg[0]->scalar(), arg[1]->scalar());
-    e3ga tmp(0.0);
+    e3ga::mv tmp(0.0);
     return new consoleVariable("", tmp);
 }
 
@@ -751,7 +752,7 @@ consoleVariable *cf_set_text_scale(consoleScope *s, consoleVariable *arg[])
 {
     if (gui_state)
         gui_state->setTextScale(fabs(arg[0]->scalar()));
-    e3ga tmp(0.0);
+    e3ga::mv tmp(0.0);
     return new consoleVariable("", tmp);
 }
 
@@ -760,7 +761,7 @@ consoleVariable *cf_set_line_width(consoleScope *s, consoleVariable *arg[])
 {
     if (gui_state)
         gui_state->setLineWidth(fabs(arg[0]->scalar()));
-    e3ga tmp(0.0);
+    e3ga::mv tmp(0.0);
     return new consoleVariable("", tmp);
 }
 
@@ -775,7 +776,7 @@ consoleVariable *cf_set_gl_lines(consoleScope *s, consoleVariable *arg[])
         ui_menuCallback(NULL, (void *)MI_GLLINES);
     }
 
-    e3ga tmp(0.0);
+    e3ga::mv tmp(0.0);
     return new consoleVariable("", tmp);
 }
 
@@ -784,7 +785,7 @@ consoleVariable *cf_set_vector_head_size(consoleScope *s, consoleVariable *arg[]
 {
     if (gui_state)
         gui_state->setVectorHeadSize(arg[0]->scalar());
-    e3ga tmp(0.0);
+    e3ga::mv tmp(0.0);
     return new consoleVariable("", tmp);
 }
 
@@ -800,7 +801,7 @@ consoleVariable *cf_set_point_sub_div(consoleScope *s, consoleVariable *arg[])
     gsFree(&g_pointSphere);
     gsCompute(&g_pointSphere, subDiv);
 
-    e3ga tmp(0.0);
+    e3ga::mv tmp(0.0);
     return new consoleVariable("", tmp);
 }
 
@@ -816,13 +817,13 @@ consoleVariable *cf_set_sphere_sub_div(consoleScope *s, consoleVariable *arg[])
     gsFree(&g_sphereSphere);
     gsCompute(&g_sphereSphere, subDiv);
 
-    e3ga tmp(0.0);
+    e3ga::mv tmp(0.0);
     return new consoleVariable("", tmp);
 }
 
 consoleVariable *cf_cmd(consoleScope *s, consoleVariable *arg[])
 {
-    e3ga tmp(0.0);
+    e3ga::mv tmp(0.0);
 
     // cprintf("cmd: '%s'\n", arg[0]->name().c_str());
     g_state->m_consoleGAfile->read(g_state, arg[0]->name().c_str());
@@ -833,14 +834,14 @@ consoleVariable *cf_cmd(consoleScope *s, consoleVariable *arg[])
 // ********************************* RANDOM NUMBER *********************************
 consoleVariable *cf_rand(consoleScope *s, consoleVariable *arg[])
 {
-    return new consoleVariable("", e3ga(genrand()));
+    return new consoleVariable("", e3ga::mv(genrand()));
     //	return new consoleVariable("", i2ga(genrand()));
 }
 
 // *********************************  TIME *********************************
 consoleVariable *cf_time(consoleScope *s, consoleVariable *arg[])
 {
-    return new consoleVariable("", e3ga(u_timeGet()));
+    return new consoleVariable("", e3ga::mv(u_timeGet()));
     //	return new consoleVariable("", i2ga(u_timeGet()));
 }
 
@@ -849,7 +850,7 @@ consoleVariable *cf_randGaussStd(consoleScope *s, consoleVariable *arg[])
 {
     double mean = 0.0;
     double variance = 1.0;
-    return new consoleVariable("", e3ga(gaussNoise(mean, variance)));
+    return new consoleVariable("", e3ga::mv(gaussNoise(mean, variance)));
     // return new consoleVariable("", i2ga(gaussNoise(mean, variance)));
 }
 
@@ -857,35 +858,35 @@ consoleVariable *cf_randGaussStd(consoleScope *s, consoleVariable *arg[])
 consoleVariable *cf_cld(consoleScope *s, consoleVariable *arg[])
 {
     g_state->removeAllDynStmt();
-    return new consoleVariable("", e3ga(0.0));
+    return new consoleVariable("", e3ga::mv(0.0));
 }
 
 // ********************************* CLD *********************************
 consoleVariable *cf_cld_1(consoleScope *s, consoleVariable *arg[])
 {
     g_state->removeDynStmt(arg[0]->name());
-    return new consoleVariable("", e3ga(0.0));
+    return new consoleVariable("", e3ga::mv(0.0));
 }
 
 // ********************************* START ANIMATION *********************************
 consoleVariable *cf_start_animation(consoleScope *s, consoleVariable *arg[])
 {
     g_state->startAnimation();
-    return new consoleVariable("", e3ga(0.0));
+    return new consoleVariable("", e3ga::mv(0.0));
 }
 
 // ********************************* STOP ANIMATION *********************************
 consoleVariable *cf_stop_animation(consoleScope *s, consoleVariable *arg[])
 {
     g_state->stopAnimation();
-    return new consoleVariable("", e3ga(0.0));
+    return new consoleVariable("", e3ga::mv(0.0));
 }
 
 // ********************************* PAUSE ANIMATION *********************************
 consoleVariable *cf_pause_animation(consoleScope *s, consoleVariable *arg[])
 {
     g_state->pauseAnimation();
-    return new consoleVariable("", e3ga(0.0));
+    return new consoleVariable("", e3ga::mv(0.0));
 }
 
 // ********************************* RESET *********************************
@@ -897,13 +898,13 @@ consoleVariable *cf_reset(consoleScope *s, consoleVariable *arg[])
     }
     else
         s->resetRequested(1);
-    return new consoleVariable("", e3ga(0.0));
+    return new consoleVariable("", e3ga::mv(0.0));
 }
 
 // ********************************* CPRINT *********************************
 consoleVariable *cf_cprint(consoleScope *s, consoleVariable *arg[])
 {
-    e3ga tmp(0.0);
+    e3ga::mv tmp(0.0);
 
     cprintf("%s\n", arg[0]->name().c_str());
 
@@ -915,7 +916,7 @@ consoleVariable *cf_prompt(consoleScope *s, consoleVariable *arg[])
 {
     if (gui_state && gui_state->m_console)
         gui_state->m_console->prompt(arg[0]->name().c_str());
-    return new consoleVariable("", e3ga(0.0));
+    return new consoleVariable("", e3ga::mv(0.0));
 }
 
 // ********************************* PROMPT_DEFAULT *********************************
@@ -923,7 +924,7 @@ consoleVariable *cf_prompt_default(consoleScope *s, consoleVariable *arg[])
 {
     if (gui_state && gui_state->m_console)
         gui_state->m_console->prompt(">> ");
-    return new consoleVariable("", e3ga(0.0));
+    return new consoleVariable("", e3ga::mv(0.0));
 }
 
 // ********************************* MUTE WARNINGS *********************************
@@ -931,7 +932,7 @@ consoleVariable *cf_mute_warnings(consoleScope *s, consoleVariable *arg[])
 {
     if (g_state)
         g_state->m_globalScope->supressWarnings(1);
-    return new consoleVariable("", e3ga(0.0));
+    return new consoleVariable("", e3ga::mv(0.0));
 }
 
 // ********************************* UNMUTE WARNINGS *********************************
@@ -939,7 +940,7 @@ consoleVariable *cf_unmute_warnings(consoleScope *s, consoleVariable *arg[])
 {
     if (g_state)
         g_state->m_globalScope->supressWarnings(0);
-    return new consoleVariable("", e3ga(0.0));
+    return new consoleVariable("", e3ga::mv(0.0));
 }
 
 // ********************************* DIARY *********************************
@@ -948,7 +949,7 @@ consoleVariable *cf_diary(consoleScope *s, consoleVariable *arg[])
     const char *filename = NULL;
     if (gui_state)
         gui_state->saveDiary(filename);
-    return new consoleVariable("", e3ga(0.0));
+    return new consoleVariable("", e3ga::mv(0.0));
 }
 
 // ********************************* DIARY *********************************
@@ -957,7 +958,7 @@ consoleVariable *cf_diary_filename(consoleScope *s, consoleVariable *arg[])
     const char *filename = arg[0]->name().c_str();
     if (gui_state)
         gui_state->saveDiary(filename);
-    return new consoleVariable("", e3ga(0.0));
+    return new consoleVariable("", e3ga::mv(0.0));
 }
 
 // ********************************* SELECT *********************************
@@ -978,7 +979,7 @@ consoleVariable *cf_remove(consoleScope *s, consoleVariable *arg[])
     {
         cprintf("Error: '%s' does not exist in global scope\n", arg[0]->name().c_str());
     }
-    return new consoleVariable("", e3ga(0.0));
+    return new consoleVariable("", e3ga::mv(0.0));
 }
 
 // ********************************* ADD CONST *********************************
@@ -992,7 +993,7 @@ consoleVariable *cf_add_const(consoleScope *s, consoleVariable *arg[])
     {
         ((consoleGlobalScope *)s)->addConstant(arg[0]->name(), arg[0]);
     }
-    return new consoleVariable("", e3ga(0.0));
+    return new consoleVariable("", e3ga::mv(0.0));
 }
 
 // ********************************* RENAME BUILTIN CONST *********************************
@@ -1006,7 +1007,7 @@ consoleVariable *cf_rename_builtin_const(consoleScope *s, consoleVariable *arg[]
     {
         ((consoleGlobalScope *)s)->renameBuiltinConstant(arg[0]->name(), arg[1]->name());
     }
-    return new consoleVariable("", e3ga(0.0));
+    return new consoleVariable("", e3ga::mv(0.0));
 }
 
 // ********************************* REMOVE CONST *********************************
@@ -1020,7 +1021,7 @@ consoleVariable *cf_remove_const(consoleScope *s, consoleVariable *arg[])
     {
         ((consoleGlobalScope *)s)->removeConstant(arg[0]->name());
     }
-    return new consoleVariable("", e3ga(0.0));
+    return new consoleVariable("", e3ga::mv(0.0));
 }
 
 // ********************************* LABEL *********************************
@@ -1028,7 +1029,7 @@ consoleVariable *cf_label(consoleScope *s, consoleVariable *arg[])
 {
     g_state->addTextObject(arg[0]->name().c_str(), arg[0]->name(), arg[0]->name() + "_label", LABEL_DYNAMIC | LABEL_3D,
                            -1);
-    return new consoleVariable("", e3ga(0.0));
+    return new consoleVariable("", e3ga::mv(0.0));
 }
 
 // ********************************* LABEL 2 *********************************
@@ -1036,7 +1037,7 @@ consoleVariable *cf_label2(consoleScope *s, consoleVariable *arg[])
 {
     g_state->addTextObject(arg[1]->name().c_str(), arg[0]->name(), arg[0]->name() + "_label", LABEL_DYNAMIC | LABEL_3D,
                            -1);
-    return new consoleVariable("", e3ga(0.0));
+    return new consoleVariable("", e3ga::mv(0.0));
 }
 
 // ********************************* CAMROTFUNC *********************************
@@ -1046,13 +1047,13 @@ consoleVariable *cf_camrotfunc(consoleScope *s, consoleVariable *arg[])
     /*	if (g_state->removeObject(arg[0]->name()) < 0) {
             cprintf("Error: '%s' does not exist in global scope\n", arg[0]->name().c_str());
         }*/
-    return new consoleVariable("", e3ga(0.0));
+    return new consoleVariable("", e3ga::mv(0.0));
 }
 
 // ********************************* GET DRAW FLAGS *********************************
 consoleVariable *cf_get_draw_flags(consoleScope *s, consoleVariable *arg[])
 {
-    return new consoleVariable("", e3ga((GAIM_FLOAT)arg[0]->forceFlags()));
+    return new consoleVariable("", e3ga::mv((GAIM_FLOAT)arg[0]->forceFlags()));
 }
 
 // ********************************* GET INTERPRETATION *********************************
@@ -1062,7 +1063,7 @@ consoleVariable *cf_get_interpretation(consoleScope *s, consoleVariable *arg[])
     int interpretation = (mvi && mvi->m_valid) ? mvi->m_type : 0;
     if (mvi)
         delete mvi;
-    return new consoleVariable("", e3ga((GAIM_FLOAT)interpretation));
+    return new consoleVariable("", e3ga::mv((GAIM_FLOAT)interpretation));
 }
 
 // ********************************* AUTO COLOR *********************************
@@ -1182,19 +1183,19 @@ consoleVariable *cf_console_ctrl_remove(consoleScope *s, consoleVariable *arg[])
 {
     g_state->removeConsoleControl(arg[0]->name());
 
-    return new consoleVariable("", e3ga(0.0));
+    return new consoleVariable("", e3ga::mv(0.0));
 }
 
 consoleVariable *cf_console_ctrl_bool(consoleScope *s, consoleVariable *arg[])
 {
     g_state->addConsoleControlBool(arg[0]->name(), arg[0]->isTrue());
-    return new consoleVariable("", e3ga(0.0));
+    return new consoleVariable("", e3ga::mv(0.0));
 }
 
 consoleVariable *cf_console_ctrl_bool_with_callback(consoleScope *s, consoleVariable *arg[])
 {
     g_state->addConsoleControlBool(arg[0]->name(), arg[0]->isTrue(), arg[1]->name());
-    return new consoleVariable("", e3ga(0.0));
+    return new consoleVariable("", e3ga::mv(0.0));
 }
 
 consoleVariable *cf_console_ctrl_range_cb(consoleScope *s, consoleVariable *arg[], bool callback)
@@ -1214,7 +1215,7 @@ consoleVariable *cf_console_ctrl_range_cb(consoleScope *s, consoleVariable *arg[
 
     g_state->addConsoleControlRange(arg[0]->name(), arg[0]->scalar(), minValue, maxValue, rStep, callbackName);
 
-    return new consoleVariable("", e3ga(0.0));
+    return new consoleVariable("", e3ga::mv(0.0));
 }
 
 consoleVariable *cf_console_ctrl_range(consoleScope *s, consoleVariable *arg[])
@@ -1237,7 +1238,7 @@ consoleVariable *cf_console_ctrl_range_step_cb(consoleScope *s, consoleVariable 
 
     g_state->addConsoleControlRange(arg[0]->name(), arg[0]->scalar(), minValue, maxValue, step, callbackName);
 
-    return new consoleVariable("", e3ga(0.0));
+    return new consoleVariable("", e3ga::mv(0.0));
 }
 
 consoleVariable *cf_console_ctrl_range_step(consoleScope *s, consoleVariable *arg[])
@@ -1262,7 +1263,7 @@ consoleVariable *cf_console_ctrl_selectionN_cb(consoleScope *s, consoleVariable 
 
     g_state->addConsoleControlSelection(arg[0]->name(), arg[0]->scalar(), options, callbackName);
 
-    return new consoleVariable("", e3ga(0.0));
+    return new consoleVariable("", e3ga::mv(0.0));
 }
 
 consoleVariable *cf_console_ctrl_selection1(consoleScope *s, consoleVariable *arg[])
@@ -1321,7 +1322,7 @@ consoleVariable *cf_console_ctrl_selection6_with_callback(consoleScope *s, conso
 
 consoleVariable *cf_help_general(consoleScope *s, consoleVariable *arg[])
 {
-    e3ga tmp(0.0);
+    e3ga::mv tmp(0.0);
 
     cprintf("\nHelp is available on the following topics:\n"
             "help(system)\n"
@@ -1344,7 +1345,7 @@ consoleVariable *cf_help_general(consoleScope *s, consoleVariable *arg[])
 
 consoleVariable *cf_help(consoleScope *s, consoleVariable *arg[])
 {
-    e3ga tmp(0.0);
+    e3ga::mv tmp(0.0);
     int all = arg[0]->name() == "all";
 
     if (all || (arg[0]->name() == "system"))

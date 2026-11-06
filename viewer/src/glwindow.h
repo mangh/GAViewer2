@@ -44,12 +44,12 @@ class glwindow : public Fl_Gl_Window
 
     // position & orientation of camera (todo: create functions that to set these variables; these functions should call
     // clearRecentPicks());
-    e3ga m_posI;
-    e3ga m_oriI;
-    e3ga &getCamOri();
-    void setCamOri(const e3ga &R);
-    e3ga &getCamPos();
-    void setCamPos(const e3ga &t);
+    e3ga::mv m_posI;
+    e3ga::mv m_oriI;
+    e3ga::mv &getCamOri();
+    void setCamOri(const e3ga::mv &R);
+    e3ga::mv &getCamPos();
+    void setCamPos(const e3ga::mv &t);
 
     void beginglDraw();
     void endglDraw();
@@ -107,7 +107,7 @@ class glwindow : public Fl_Gl_Window
 
     double m_translationDepth; // the depth at which the last translate selection was done
     double m_frustumWidth, m_frustumHeight, m_frustumNear, m_frustumFar; // set every time glFrustum is called
-    int vectorAtDepth(double depth, double vx, double vy, e3ga &v);
+    int vectorAtDepth(double depth, double vx, double vy, e3ga::mv &v);
 
     // screenshot
     int performScreenShot();

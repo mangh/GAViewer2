@@ -146,9 +146,9 @@ int c5gaObject::pick(glwindow *window)
 
 int c5gaObject::translate(glwindow *window, double depth, double motionX, double motionY)
 {
-    e3ga v;
+    e3ga::mv v;
     window->vectorAtDepth(depth, motionX, -motionY, v);
-    c5ga t(GRADE1, v[GRADE1][E3GA_E1], v[GRADE1][E3GA_E2], v[GRADE1][E3GA_E3], 0, 0, 0, 0);
+    c5ga t(GRADE1, v[e3ga::E1], v[e3ga::E2], v[e3ga::E3], 0, 0, 0, 0);
     c5ga tv(1 - 0.5 * (t ^ c5ga::ni));
 
     int modified = 0;

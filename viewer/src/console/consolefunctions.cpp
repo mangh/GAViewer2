@@ -118,7 +118,7 @@ consoleVariable *consoleExecFunc(consoleScope *s_in, const std::string &name, co
             {
                 // (note: only the e3ga part of the argument is checked, so this warning is only
                 // issued for e3ga arguments that are not a scalar)
-                if (!(arg[i]->e().norm_a() - arg[i]->e()(GRADE0).norm_a() < 10e-6))
+                if (!(ga::norm_a(arg[i]->e()) - ga::gradeNorm_a(arg[i]->e(), 0) < 10e-6))
                 {
                     if (!s_in->supressWarnings())
                     {
@@ -171,7 +171,7 @@ consoleVariable *consoleExecFunc(consoleScope *s_in, const std::string &name, co
             {
                 cprintf("Error, in function '%s': batch '%s' can only be called in global scope\n",
                         s_in->functionName().c_str(), f->name);
-                result = new consoleVariable("", e3ga(0.0));
+                result = new consoleVariable("", e3ga::mv(0.0));
             }
             else
             {
@@ -190,7 +190,7 @@ consoleVariable *consoleExecFunc(consoleScope *s_in, const std::string &name, co
     else
     {
         cprintf("Warning: function call '%s' failed (dummy function in scope?), returning 0.0\n", f->name);
-        result = new consoleVariable("", e3ga(0.0));
+        result = new consoleVariable("", e3ga::mv(0.0));
     }
 
     // everything that comes out of a function can be a 'rhs' argument

@@ -59,7 +59,7 @@ enum mvTypes
     mvTypeMultivector = 3, // anything else
 };
 
-template <class MV> constexpr int dimensionOf()
+template <garamonMV MV> constexpr int dimensionOf()
 {
     return algebraTraits<MV>::dimension;
 }
@@ -69,21 +69,21 @@ template <class MV> constexpr int dimensionOf()
 // ---------------------------------------------------------------------------
 
 // the coordinate of display basis blade 'i' (see algebraTraits<MV>::displayBasis)
-template <class MV> double coordinate(const MV &a, std::size_t i)
+template <garamonMV MV> double coordinate(const MV &a, std::size_t i)
 {
     const displayBlade &b = algebraTraits<MV>::displayBasis[i];
     return b.sign * a[b.bitmap];
 }
 
 // sets the coordinate of display basis blade 'i'
-template <class MV> void setCoordinate(MV &a, std::size_t i, double value)
+template <garamonMV MV> void setCoordinate(MV &a, std::size_t i, double value)
 {
     const displayBlade &b = algebraTraits<MV>::displayBasis[i];
     a[b.bitmap] = b.sign * value;
 }
 
 // the multivector with the given coordinates (in display basis order)
-template <class MV> MV fromCoordinates(const std::vector<double> &c)
+template <garamonMV MV> MV fromCoordinates(const std::vector<double> &c)
 {
     MV r;
     for (std::size_t i = 0; i < c.size(); i++)
@@ -93,7 +93,7 @@ template <class MV> MV fromCoordinates(const std::vector<double> &c)
 }
 
 // the coordinates (in display basis order)
-template <class MV> std::vector<double> coordinates(const MV &a)
+template <garamonMV MV> std::vector<double> coordinates(const MV &a)
 {
     constexpr std::size_t n = std::size_t(1) << dimensionOf<MV>();
     std::vector<double> c(n);
@@ -103,7 +103,7 @@ template <class MV> std::vector<double> coordinates(const MV &a)
 }
 
 // the basis blade with display index 'i' (with its display orientation)
-template <class MV> MV basisBlade(std::size_t i)
+template <garamonMV MV> MV basisBlade(std::size_t i)
 {
     MV r;
     setCoordinate(r, i, 1.0);
@@ -112,19 +112,28 @@ template <class MV> MV basisBlade(std::size_t i)
 
 // true if 'a' has a part of grade 'k' (zero has none; Garamon's isGrade(0)
 // is true for zero, Gaigen's grade usage of zero is empty)
-template <class MV> bool hasGrade(const MV &a, int k)
+template <garamonMV MV> bool hasGrade(const MV &a, int k)
 {
     return !a.isEmpty() && a.isGrade(k);
 }
 
+// basis vector 'i' (in display basis order)
+template <garamonMV MV> MV basisVector(int i)
+{
+    for (std::size_t k = 0; k < algebraTraits<MV>::displayBasis.size(); k++)
+        if ((bitmapGrade(algebraTraits<MV>::displayBasis[k].bitmap) == 1) && (i-- == 0))
+            return basisBlade<MV>(k);
+    return MV();
+}
+
 // the scalar part
-template <class MV> double scalar(const MV &a)
+template <garamonMV MV> double scalar(const MV &a)
 {
     return a[0];
 }
 
 // bitmask of the grades present in 'a' (bit k: grade k)
-template <class MV> unsigned gradeUsage(const MV &a)
+template <garamonMV MV> unsigned gradeUsage(const MV &a)
 {
     unsigned usage = 0;
     for (int k = 0; k <= dimensionOf<MV>(); k++)
@@ -134,7 +143,7 @@ template <class MV> unsigned gradeUsage(const MV &a)
 }
 
 // the parts of 'a' of the grades in 'gradeMask' (bit k: grade k)
-template <class MV> MV takeGrade(const MV &a, unsigned gradeMask)
+template <garamonMV MV> MV takeGrade(const MV &a, unsigned gradeMask)
 {
     MV r;
     for (int k = 0; k <= dimensionOf<MV>(); k++)
@@ -144,7 +153,7 @@ template <class MV> MV takeGrade(const MV &a, unsigned gradeMask)
 }
 
 // the sum of the squares of the coordinates of grade 'k'
-template <class MV> double gradeNorm_a(const MV &a, int k)
+template <garamonMV MV> double gradeNorm_a(const MV &a, int k)
 {
     double n = 0.0;
     for (std::size_t i = 0; i < algebraTraits<MV>::displayBasis.size(); i++)
@@ -157,7 +166,7 @@ template <class MV> double gradeNorm_a(const MV &a, int k)
 }
 
 // true if a coordinate of grade 'k' has an absolute value > 'epsilon'
-template <class MV> bool gradeAbove(const MV &a, int k, double epsilon)
+template <garamonMV MV> bool gradeAbove(const MV &a, int k, double epsilon)
 {
     for (const displayBlade &b : algebraTraits<MV>::displayBasis)
         if ((bitmapGrade(b.bitmap) == k) && (std::fabs(a[b.bitmap]) > epsilon))
@@ -166,7 +175,7 @@ template <class MV> bool gradeAbove(const MV &a, int k, double epsilon)
 }
 
 // the grade of 'a' if it is homogeneous, -1 if not (0 for a scalar or zero)
-template <class MV> int grade(const MV &a)
+template <garamonMV MV> int grade(const MV &a)
 {
     unsigned usage = gradeUsage(a);
     for (int g = dimensionOf<MV>(); g > 0; g--)
@@ -176,7 +185,7 @@ template <class MV> int grade(const MV &a)
 }
 
 // the highest grade with a non-zero coordinate (-1 if none above grade 0)
-template <class MV> int maxGrade(const MV &a)
+template <garamonMV MV> int maxGrade(const MV &a)
 {
     unsigned usage = gradeUsage(a);
     for (int g = dimensionOf<MV>(); g > 0; g--)
@@ -186,7 +195,7 @@ template <class MV> int maxGrade(const MV &a)
 }
 
 // the grade whose coordinates have the largest sum of squares (the lowest one if equal)
-template <class MV> int largestGrade(const MV &a)
+template <garamonMV MV> int largestGrade(const MV &a)
 {
     unsigned usage = gradeUsage(a);
     double largest = -1.0;
@@ -206,7 +215,7 @@ template <class MV> int largestGrade(const MV &a)
 
 // the highest grade of 'a' with a coordinate > epsilon; 'part' is set to that grade part of 'a'
 // (to zero, and 0 is returned, if there is none)
-template <class MV> int highestGrade(const MV &a, MV &part, double epsilon = defaultEpsilon)
+template <garamonMV MV> int highestGrade(const MV &a, MV &part, double epsilon = defaultEpsilon)
 {
     unsigned usage = gradeUsage(a);
     for (int g = dimensionOf<MV>(); g >= 0; g--)
@@ -220,7 +229,7 @@ template <class MV> int highestGrade(const MV &a, MV &part, double epsilon = def
 }
 
 // removes the grades whose coordinates are all <= epsilon (in absolute value)
-template <class MV> MV compress(const MV &a, double epsilon = defaultEpsilon)
+template <garamonMV MV> MV compress(const MV &a, double epsilon = defaultEpsilon)
 {
     MV r(a);
     for (int g = 0; g <= dimensionOf<MV>(); g++)
@@ -230,7 +239,7 @@ template <class MV> MV compress(const MV &a, double epsilon = defaultEpsilon)
 }
 
 // sum of the squares of the coordinates
-template <class MV> double norm_a(const MV &a)
+template <garamonMV MV> double norm_a(const MV &a)
 {
     double n = 0.0;
     for (const displayBlade &b : algebraTraits<MV>::displayBasis)
@@ -239,7 +248,7 @@ template <class MV> double norm_a(const MV &a)
 }
 
 // the largest absolute value of a coordinate
-template <class MV> double largestCoordinate(const MV &a)
+template <garamonMV MV> double largestCoordinate(const MV &a)
 {
     double m = 0.0;
     for (const displayBlade &b : algebraTraits<MV>::displayBasis)
@@ -251,12 +260,12 @@ template <class MV> double largestCoordinate(const MV &a)
 // involutions, dual
 // ---------------------------------------------------------------------------
 
-template <class MV> MV reverse(const MV &a)
+template <garamonMV MV> MV reverse(const MV &a)
 {
     return a.reverse();
 }
 
-template <class MV> MV gradeInvolution(const MV &a)
+template <garamonMV MV> MV gradeInvolution(const MV &a)
 {
     MV r;
     for (int g = 0; g <= dimensionOf<MV>(); g++)
@@ -265,18 +274,18 @@ template <class MV> MV gradeInvolution(const MV &a)
     return r;
 }
 
-template <class MV> MV cliffordConjugate(const MV &a)
+template <garamonMV MV> MV cliffordConjugate(const MV &a)
 {
     return reverse(gradeInvolution(a));
 }
 
-template <class MV> MV negate(const MV &a)
+template <garamonMV MV> MV negate(const MV &a)
 {
     return -a;
 }
 
 // A I^-1
-template <class MV> MV dual(const MV &a)
+template <garamonMV MV> MV dual(const MV &a)
 {
     return a * algebraTraits<MV>::Iinv();
 }
@@ -285,28 +294,28 @@ template <class MV> MV dual(const MV &a)
 // products
 // ---------------------------------------------------------------------------
 
-template <class MV> MV gp(const MV &a, const MV &b)
+template <garamonMV MV> MV gp(const MV &a, const MV &b)
 {
     return a * b;
 }
 
-template <class MV> MV op(const MV &a, const MV &b)
+template <garamonMV MV> MV op(const MV &a, const MV &b)
 {
     return a ^ b;
 }
 
-template <class MV> MV lcont(const MV &a, const MV &b)
+template <garamonMV MV> MV lcont(const MV &a, const MV &b)
 {
     return a < b;
 }
 
-template <class MV> MV rcont(const MV &a, const MV &b)
+template <garamonMV MV> MV rcont(const MV &a, const MV &b)
 {
     return a > b;
 }
 
 // scalar product <a b>
-template <class MV> MV scp(const MV &a, const MV &b)
+template <garamonMV MV> MV scp(const MV &a, const MV &b)
 {
     return (a * b).grade(0);
 }
@@ -314,7 +323,7 @@ template <class MV> MV scp(const MV &a, const MV &b)
 namespace detail
 {
 // sum over the grade parts a_r, b_s of <a_r b_s>_|r-s|, with or without the scalars
-template <class MV> MV innerProduct(const MV &a, const MV &b, bool withScalars)
+template <garamonMV MV> MV innerProduct(const MV &a, const MV &b, bool withScalars)
 {
     MV r;
     for (int ga = 0; ga <= dimensionOf<MV>(); ga++)
@@ -333,25 +342,25 @@ template <class MV> MV innerProduct(const MV &a, const MV &b, bool withScalars)
 } // namespace detail
 
 // Hestenes inner product (0 if an operand is a scalar)
-template <class MV> MV hip(const MV &a, const MV &b)
+template <garamonMV MV> MV hip(const MV &a, const MV &b)
 {
     return detail::innerProduct(a, b, false);
 }
 
 // modified Hestenes inner product (scalars included)
-template <class MV> MV mhip(const MV &a, const MV &b)
+template <garamonMV MV> MV mhip(const MV &a, const MV &b)
 {
     return detail::innerProduct(a, b, true);
 }
 
 // the products with the Euclidean metric (the same as gp and lcont in a
 // Euclidean algebra; algebras with another metric need their own version)
-template <class MV> MV gpem(const MV &a, const MV &b)
+template <garamonMV MV> MV gpem(const MV &a, const MV &b)
 {
     return gp(a, b);
 }
 
-template <class MV> MV lcem(const MV &a, const MV &b)
+template <garamonMV MV> MV lcem(const MV &a, const MV &b)
 {
     return lcont(a, b);
 }
@@ -361,7 +370,7 @@ template <class MV> MV lcem(const MV &a, const MV &b)
 // ---------------------------------------------------------------------------
 
 // ~a / <a ~a>; 'ok' is set to false (and zero is returned) if <a ~a> == 0
-template <class MV> MV versorInverse(const MV &a, bool *ok = nullptr)
+template <garamonMV MV> MV versorInverse(const MV &a, bool *ok = nullptr)
 {
     MV r = reverse(a);
     double s = scalar(scp(a, r));
@@ -372,19 +381,19 @@ template <class MV> MV versorInverse(const MV &a, bool *ok = nullptr)
     return r * (1.0 / s);
 }
 
-template <class MV> MV inverse(const MV &a)
+template <garamonMV MV> MV inverse(const MV &a)
 {
     return versorInverse(a);
 }
 
 // a * b^-1
-template <class MV> MV igp(const MV &a, const MV &b)
+template <garamonMV MV> MV igp(const MV &a, const MV &b)
 {
     return gp(a, inverse(b));
 }
 
 // the inverse of any invertible multivector (solves a x = 1); zero if 'a' is singular
-template <class MV> MV generalInverse(const MV &a)
+template <garamonMV MV> MV generalInverse(const MV &a)
 {
     constexpr std::size_t n = std::size_t(1) << dimensionOf<MV>();
     // m[row][col]: column j = coordinates of a * (basis blade j)
@@ -427,20 +436,20 @@ template <class MV> MV generalInverse(const MV &a)
 }
 
 // <a ~a>
-template <class MV> double norm_b(const MV &a)
+template <garamonMV MV> double norm_b(const MV &a)
 {
     return scalar(scp(a, reverse(a)));
 }
 
 // a / sqrt(norm_a(a)) (norm = 1) or a / sqrt(|norm_b(a)|) (norm = 2)
-template <class MV> MV normalize(const MV &a, int norm = 1)
+template <garamonMV MV> MV normalize(const MV &a, int norm = 1)
 {
     double s = (norm == 2) ? 1.0 / std::sqrt(std::fabs(norm_b(a))) : 1.0 / std::sqrt(norm_a(a));
     return a * s;
 }
 
 // exp(a), Taylor series of 'order' terms, with scaling and squaring
-template <class MV> MV exp(const MV &a, int order = 9)
+template <garamonMV MV> MV exp(const MV &a, int order = 9)
 {
     MV result(1.0);
     if (order == 0)
@@ -481,7 +490,7 @@ template <class MV> MV exp(const MV &a, int order = 9)
 
 // blade or versor? Returns mvTypeBlade, mvTypeVersor or mvTypeMultivector; 'gradeMask'
 // is set to the grade (as a bitmask: 1 << grade) of a blade (to 0 otherwise)
-template <class MV> int mvType(const MV &a, int *gradeMask = nullptr, double epsilon = defaultEpsilon)
+template <garamonMV MV> int mvType(const MV &a, int *gradeMask = nullptr, double epsilon = defaultEpsilon)
 {
     // (this test fails on 'e1 + (e2 ^ e3)': it says versor, while it is not; as in Gaigen)
     if (gradeMask)
@@ -535,13 +544,13 @@ template <class MV> int mvType(const MV &a, int *gradeMask = nullptr, double eps
 }
 
 // (a _| blade) _| blade^-1
-template <class MV> MV project(const MV &blade, const MV &a)
+template <garamonMV MV> MV project(const MV &blade, const MV &a)
 {
     return lcont(lcont(a, blade), versorInverse(blade));
 }
 
 // blade^-1 _| (blade ^ a)
-template <class MV> MV reject(const MV &blade, const MV &a)
+template <garamonMV MV> MV reject(const MV &blade, const MV &a)
 {
     return lcont(versorInverse(blade), op(blade, a));
 }
@@ -549,7 +558,7 @@ template <class MV> MV reject(const MV &blade, const MV &a)
 // Factors the blade (or versor, if 'versor' is true) 'a' into vectors: their outer
 // (geometric) product is 'a'. Returns the number of factors, stored in 'factors'
 // (the factors are scaled to be of about the same size).
-template <class MV> int factor(const MV &a, std::vector<MV> &factors, bool versor = false)
+template <garamonMV MV> int factor(const MV &a, std::vector<MV> &factors, bool versor = false)
 {
     factors.clear();
     int ga = versor ? maxGrade(a) : grade(a);
@@ -605,7 +614,7 @@ template <class MV> int factor(const MV &a, std::vector<MV> &factors, bool verso
 }
 
 // the highest grade part of a b ('d'); returns its grade
-template <class MV> int deltaProduct(const MV &a, const MV &b, MV &d)
+template <garamonMV MV> int deltaProduct(const MV &a, const MV &b, MV &d)
 {
     return highestGrade(gp(a, b), d);
 }
@@ -613,7 +622,7 @@ template <class MV> int deltaProduct(const MV &a, const MV &b, MV &d)
 namespace detail
 {
 // the part of 'a' of its grade, or of its grade part with the largest norm if it is not homogeneous
-template <class MV> MV homogeneousPart(const MV &a, int &g)
+template <garamonMV MV> MV homogeneousPart(const MV &a, int &g)
 {
     g = grade(a);
     if (g >= 0)
@@ -624,7 +633,7 @@ template <class MV> MV homogeneousPart(const MV &a, int &g)
 } // namespace detail
 
 // the join of two blades
-template <class MV> MV join(const MV &a, const MV &b)
+template <garamonMV MV> MV join(const MV &a, const MV &b)
 {
     int ga, gb;
     MV ca = detail::homogeneousPart(a, ga), cb = detail::homogeneousPart(b, gb);
@@ -668,7 +677,7 @@ template <class MV> MV join(const MV &a, const MV &b)
 }
 
 // the meet of two blades
-template <class MV> MV meet(const MV &a, const MV &b)
+template <garamonMV MV> MV meet(const MV &a, const MV &b)
 {
     int ga, gb;
     MV ca = detail::homogeneousPart(a, ga), cb = detail::homogeneousPart(b, gb);

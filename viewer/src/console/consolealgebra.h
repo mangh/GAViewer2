@@ -37,19 +37,19 @@ consoleAlgebra<MV> and mv<MV>() only.
 
 template <class MV> struct consoleAlgebra; // specialized for every algebra below
 
-template <> struct consoleAlgebra<e3ga>
+template <> struct consoleAlgebra<e3ga::mv>
 {
-    static constexpr int model = modelId<e3ga>;
+    static constexpr int model = modelId<e3ga::mv>;
     static constexpr const char *castName = "cast_e3ga";
     static consoleVariable *castTo(const consoleVariable *cv)
     {
         return cv->castToE3ga();
     }
-    static int setFactor(const e3ga &mv, int idx)
+    static int setFactor(const e3ga::mv &mv, int idx)
     {
         return g_state->setE3gaFactor(mv, idx);
     }
-    static int addObject(const e3ga &mv, const std::string &name, int drawMode, int creationFlags, int forceFlags)
+    static int addObject(const e3ga::mv &mv, const std::string &name, int drawMode, int creationFlags, int forceFlags)
     {
         return g_state->addE3gaObject(mv, name, drawMode, creationFlags, forceFlags);
     }
@@ -140,7 +140,7 @@ template <class F> inline bool withConsoleAlgebra(int model, F &&f)
     switch (model)
     {
     case MVI_E3GA:
-        f.template operator()<e3ga>();
+        f.template operator()<e3ga::mv>();
         return true;
     case MVI_P3GA:
         f.template operator()<p3ga>();
@@ -164,7 +164,7 @@ template <class F> inline bool withConsoleAlgebra(int model, F &&f)
 // function table.
 template <class F> inline void forEachConsoleAlgebra(F &&f)
 {
-    f.template operator()<e3ga>();
+    f.template operator()<e3ga::mv>();
     f.template operator()<p3ga>();
     f.template operator()<c3ga>();
     f.template operator()<c5ga>();

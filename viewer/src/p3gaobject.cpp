@@ -157,7 +157,7 @@ int p3gaObject::draw(glwindow *window)
     TubeDraw &T = gui_state->m_tubeDraw;
     GAIM_FLOAT x, y, z, c, scale, scaleSign;
     int s;
-    e3ga e3gaR;
+    e3ga::mv e3gaR;
     float rotM[16];
 
     if (m_type == MVI_UNKNOWN)
@@ -262,7 +262,7 @@ int p3gaObject::draw(glwindow *window)
             glTranslated(m_int.m_point[0][0], m_int.m_point[0][1], m_int.m_point[0][2]);
 
             // rotate e3 to line direction
-            e3gaRve3(e3gaR, e3ga(GRADE1, m_int.m_vector[0][0], m_int.m_vector[0][1], m_int.m_vector[0][2]));
+            e3gaRve3(e3gaR, e3ga::vector(m_int.m_vector[0][0], m_int.m_vector[0][1], m_int.m_vector[0][2]));
             e3gaRotorToOpenGLMatrix(e3gaR, rotM);
             glMultMatrixf(rotM);
 
@@ -420,10 +420,10 @@ int p3gaObject::draw(glwindow *window)
 
 int p3gaObject::translate(glwindow *window, double depth, double motionX, double motionY)
 {
-    e3ga v;
+    e3ga::mv v;
     GAIM_FLOAT m, mnew;
     window->vectorAtDepth(depth, motionX, -motionY, v);
-    p3ga t(GRADE1, v[GRADE1][E3GA_E1], v[GRADE1][E3GA_E2], v[GRADE1][E3GA_E3], 0);
+    p3ga t(GRADE1, v[e3ga::E1], v[e3ga::E2], v[e3ga::E3], 0);
 
     int modified = 0;
     switch (m_int.type())

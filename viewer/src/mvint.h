@@ -106,7 +106,7 @@ class mvInt
   public:
     mvInt();
     mvInt(const mvInt *I);
-    mvInt(const e3ga &mv, int creationFlags = 0);
+    mvInt(const e3ga::mv &mv, int creationFlags = 0);
     mvInt(const p3ga &mv, int creationFlags = 0);
     mvInt(const c3ga &mv, int creationFlags = 0);
     mvInt(const c5ga &mv, int creationFlags = 0);
@@ -117,7 +117,7 @@ class mvInt
     int copy(const mvInt *I);
 
     // interprets a multvector. Return 0 on success, -1 if the multivector can not be interpreted
-    int interpret(const e3ga &mv, int creationFlags = 0);
+    int interpret(const e3ga::mv &mv, int creationFlags = 0);
     int interpret(const p3ga &mv, int creationFlags = 0);
     int interpret(const c3ga &mv, int creationFlags = 0);
     int interpret(const c5ga &mv, int creationFlags = 0);

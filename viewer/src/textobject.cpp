@@ -34,7 +34,7 @@
 #include "util.h"
 
 // constructor for fixed position
-textObject::textObject(const char *text, const e3ga &pos, const std::string &name /*= std::string("")*/,
+textObject::textObject(const char *text, const e3ga::mv &pos, const std::string &name /*= std::string("")*/,
                        int creationFlags /*= 0*/, int labelFlags /*= 0*/, int width /* = -1*/)
     : object(OT_TEXT, name, creationFlags)
 {
@@ -73,7 +73,7 @@ textObject::textObject(const char *text, const std::string &pointName, const std
     {
         object *o = g_state->getObjectPtrByName(pointName);
         const GAIM_FLOAT *pos = o->getPoint(0), null[3] = {0.0, 0.0, 0.0};
-        m_pos.setVector((pos) ? pos : null);
+        m_pos = e3ga::vector((pos) ? pos : null);
     }
 
     m_tsMode = g_state->m_tsMode;
@@ -216,6 +216,14 @@ int textObject::freeImage()
     m_imageWidth = m_imageHeight = -1;
     m_textureWidth = m_textureHeight = -1;
     return 0;
+}
+
+const GAIM_FLOAT *textObject::posXYZ()
+{
+    m_posXYZ[0] = m_pos[e3ga::E1];
+    m_posXYZ[1] = m_pos[e3ga::E2];
+    m_posXYZ[2] = m_pos[e3ga::E3];
+    return m_posXYZ;
 }
 
 int textObject::copy(const object *o, int &propertiesChanged, int forceFlags /*= -1*/)
@@ -374,7 +382,7 @@ int textObject::draw(glwindow *window)
         object *o = g_state->getObjectPtrByName(m_pointName);
         const GAIM_FLOAT null[3] = {0.0, 0.0, 0.0};
         const GAIM_FLOAT *pos = (o == NULL) ? NULL : o->getPoint(0);
-        m_pos.setVector((pos) ? pos : null);
+        m_pos = e3ga::vector((pos) ? pos : null);
     }
 
     GLfloat lineWidth;
@@ -386,7 +394,7 @@ int textObject::draw(glwindow *window)
 
     if (!(m_flags & LABEL_2D))
     {
-        glTranslated(m_pos[GRADE1][0], m_pos[GRADE1][1], m_pos[GRADE1][2]);
+        glTranslated(m_pos[e3ga::E1], m_pos[e3ga::E2], m_pos[e3ga::E3]);
     }
 
     // store info in member variables; this info is reused during the pick() function
@@ -429,7 +437,7 @@ int textObject::draw(glwindow *window)
                 glTranslatef((float)window->getRenderWidth() / 2.0 - m_width, 0.0f, 0.0f);
             else if (m_flags & LABEL_PX)
                 glTranslatef(-(float)window->getRenderWidth() / 2.0, 0.0f, 0.0f);
-            glTranslatef(((m_flags & LABEL_NX) ? -1.0f : 1.0f) * m_pos[GRADE1][0], 0.0f, 0.0f);
+            glTranslatef(((m_flags & LABEL_NX) ? -1.0f : 1.0f) * m_pos[e3ga::E1], 0.0f, 0.0f);
         }
 
         // then for the y-axis
@@ -439,7 +447,7 @@ int textObject::draw(glwindow *window)
             glTranslatef(0.0f, (float)window->getRenderHeight() / 2.0, 0.0f);
         else if (m_flags & LABEL_NY)
             glTranslatef(0.0f, -(float)window->getRenderHeight() / 2.0 + m_height, 0.0f);
-        glTranslatef(0.0, ((m_flags & LABEL_PY) ? -1.0f : 1.0f) * m_pos[GRADE1][1], 0.0f);
+        glTranslatef(0.0, ((m_flags & LABEL_PY) ? -1.0f : 1.0f) * m_pos[e3ga::E2], 0.0f);
 
         glGetDoublev(GL_MODELVIEW_MATRIX, m_mvMatrix);
     }
@@ -650,8 +658,8 @@ int textObject::pick(glwindow *window)
     glGetDoublev(GL_PROJECTION_MATRIX, pjMatrix);
     glGetDoublev(GL_VIEWPORT, viewport);
 
-    pt1[0] = m_pos[GRADE1][0]; pt1[1] = m_pos[GRADE1][1];
-    pt1[2] = m_pos[GRADE1][2]; pt1[3] = 1;
+    pt1[0] = m_pos[e3ga::E1]; pt1[1] = m_pos[e3ga::E2];
+    pt1[2] = m_pos[e3ga::E3]; pt1[3] = 1;
 
     GLmatrixVectorMul(mvMatrix, pt1, pt2);
     z = pt2[2] / pt2[3];
@@ -714,12 +722,12 @@ int textObject::translate(glwindow *window, double depth, double motionX, double
     }
     else if (m_flags & LABEL_2D)
     {
-        m_pos -= ((m_flags & LABEL_NX) ? -1.0 : 1.0) * (GAIM_FLOAT)motionX * e3ga::e1 +
-                 ((m_flags & LABEL_NY) ? -1.0 : 1.0) * (GAIM_FLOAT)motionY * e3ga::e2;
+        m_pos -= ((m_flags & LABEL_NX) ? -1.0 : 1.0) * (GAIM_FLOAT)motionX * e3ga::e1<double>() +
+                 ((m_flags & LABEL_NY) ? -1.0 : 1.0) * (GAIM_FLOAT)motionY * e3ga::e2<double>();
     }
     else
     {
-        e3ga v;
+        e3ga::mv v;
         window->vectorAtDepth(depth, motionX, -motionY, v);
         m_pos -= v;
     }

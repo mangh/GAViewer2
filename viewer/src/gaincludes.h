@@ -19,7 +19,9 @@
 
 // umbrella header: the algebras below are deliberately provided to includers
 // IWYU pragma: begin_exports
-#include "e3ga/e3ga.h"
+#include "ga/e3ga.h"       // Garamon
+#include "ga/algorithms.h" // the operations on the Garamon algebras
+#include "ga/format.h"
 #include "p3ga/p3ga.h"
 #include "c3ga/c3ga.h"
 #include "c5ga/c5ga.h"

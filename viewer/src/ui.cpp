@@ -666,7 +666,7 @@ void ui_menuCallback(Fl_Widget *W, void *Data)
 {
     int item = (int)((unsigned char *)Data - (unsigned char *)NULL);
     int mi = 0, d = 1;
-    e3ga B, R;
+    e3ga::mv B, R;
     GAIM_FLOAT angle;
     state::OI oi;
 
@@ -786,27 +786,27 @@ void ui_menuCallback(Fl_Widget *W, void *Data)
     case MI_PRINT_ROTATION_BIVECTOR:
         // todo: use function rotor2Bivector for this purpose
         R = gui_state->m_glWindow->getCamOri();
-        R = R / sqrt((R << R.reverse()).scalar()); // normalization (rotor seems to drift of unit manifold, todo: fix
+        R = R * (1.0 / sqrt(ga::scalar(ga::lcont(R, R.reverse())))); // normalization (rotor seems to drift of unit manifold, todo: fix
                                                    // this in glwindow.cpp)
-        B = R(GRADE2);
-        angle = atan2(sqrt(B.norm_a()), R.scalar());
-        if (B.norm_a() != 0.0)
-            B = angle * B.normal();
+        B = ga::takeGrade(R, GRADE2);
+        angle = atan2(sqrt(ga::norm_a(B)), ga::scalar(R));
+        if (ga::norm_a(B) != 0.0)
+            B = angle * ga::normalize(B);
         else
             B = 0.0;
         /*		R.print("Rotor : "); // check...
                 B.exp().print("exp(B): ");*/
-        cprintf("Camera bivector: %s", B.string("%e"));
+        cprintf("Camera bivector: %s", ga::toString(B, "%e").c_str());
         break;
     case MI_PRINT_ROTATION_ROTOR:
         R = gui_state->m_glWindow->getCamOri();
-        R = R / sqrt((R << R.reverse()).scalar()); // normalization (rotor seems to drift of unit manifold, todo: fix
+        R = R * (1.0 / sqrt(ga::scalar(ga::lcont(R, R.reverse())))); // normalization (rotor seems to drift of unit manifold, todo: fix
                                                    // this in glwindow.cpp)
         // R.print("Camera rotor: ", "%e");
-        cprintf("Camera rotor: %s", R.string("%e"));
+        cprintf("Camera rotor: %s", ga::toString(R, "%e").c_str());
         break;
     case MI_PRINT_TRANSLATION_VECTOR:
-        cprintf("Camera translation: %s\n", gui_state->m_glWindow->getCamPos().string("%e"));
+        cprintf("Camera translation: %s\n", ga::toString(gui_state->m_glWindow->getCamPos(), "%e").c_str());
         break;
     case MI_SLEEP_x4:
         g_state->setPlaybackSpeed(4.0);

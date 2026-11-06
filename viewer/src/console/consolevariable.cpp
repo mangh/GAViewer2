@@ -22,6 +22,7 @@
 #include <type_traits>
 #include <variant>
 
+#include "../ga/gaigencompat.h" // the ga:: operations also for the Gaigen algebras
 #include "../gaincludes.h"
 #include "../models.h"
 #include "../mvint.h"
@@ -51,7 +52,7 @@ consoleVariable::consoleVariable(const std::string &pname, const consoleVariable
         m_color[i] = cv->m_color[i];
 }
 
-consoleVariable::consoleVariable(const std::string &name, const e3ga *mv)
+consoleVariable::consoleVariable(const std::string &name, const e3ga::mv *mv)
 {
     initToNothing();
     set(name, mv);
@@ -81,7 +82,7 @@ consoleVariable::consoleVariable(const std::string &name, const i2ga *mv)
     set(name, mv);
 }
 
-consoleVariable::consoleVariable(const std::string &name, const e3ga &mv)
+consoleVariable::consoleVariable(const std::string &name, const e3ga::mv &mv)
 {
     initToNothing();
     set(name, &mv);
@@ -174,7 +175,7 @@ template <class MV> int consoleVariable::setMV(const std::string &pname, const M
     return 0;
 }
 
-int consoleVariable::set(const std::string &pname, const e3ga *mv)
+int consoleVariable::set(const std::string &pname, const e3ga::mv *mv)
 {
     return setMV(pname, *mv);
 }
@@ -212,9 +213,9 @@ mvInt *consoleVariable::interpretation() const
 int consoleVariable::grade() const
 {
     int grade = -1;
-    int type = visitMV([&](const auto &mv) { return mv.mvType(&grade); }, 0);
+    int type = visitMV([&](const auto &mv) { return ga::mvType(mv, &grade); }, 0);
 
-    if (type == GA_BLADE)
+    if (type == ga::mvTypeBlade)
         grade = (int)(log((double)grade) / log((double)2) + 0.45);
     else
         grade = -1;
@@ -226,7 +227,7 @@ int consoleVariable::print(const char *str) const
 {
     if (!visitMV(
             [&](const auto &mv) {
-                mv.print(str, "%f");
+                printf("%s%s\n", (str) ? str : "", ga::toString(mv, "%f").c_str());
                 return true;
             },
             false))
@@ -234,19 +235,19 @@ int consoleVariable::print(const char *str) const
     return 0;
 }
 
-const char *consoleVariable::string() const
+std::string consoleVariable::string() const
 {
-    return visitMV([](const auto &mv) { return mv.string("%e"); }, "unknown model");
+    return visitMV([](const auto &mv) { return ga::toString(mv, "%e"); }, std::string("unknown model"));
 }
 
 int consoleVariable::isTrue() const
 {
-    return visitMV([](const auto &mv) { return (int)(mv.norm_a() != 0.0); }, 0);
+    return visitMV([](const auto &mv) { return (int)(ga::norm_a(mv) != 0.0); }, 0);
 }
 
 GAIM_FLOAT consoleVariable::scalar() const
 {
-    return visitMV([](const auto &mv) { return (GAIM_FLOAT)mv.scalar(); }, (GAIM_FLOAT)0);
+    return visitMV([](const auto &mv) { return (GAIM_FLOAT)ga::scalar(mv); }, (GAIM_FLOAT)0);
 }
 
 int consoleVariable::name(const std::string &name)
@@ -487,17 +488,17 @@ consoleVariable *consoleVariable::next()
 consoleVariable *consoleVariable::castE3gaToP3ga() const
 {
     p3ga vp;
-    const e3ga &ve = e();
+    const e3ga::mv &ve = e();
     vp =
         // grade 0
-        ve.scalar() +
+        ga::scalar(ve) +
         // grade 1
-        ve[GRADE1][E3GA_E1] * p3ga::e1 + ve[GRADE1][E3GA_E2] * p3ga::e2 + ve[GRADE1][E3GA_E3] * p3ga::e3 +
+        ve[e3ga::E1] * p3ga::e1 + ve[e3ga::E2] * p3ga::e2 + ve[e3ga::E3] * p3ga::e3 +
         // grade 2
-        ve[GRADE2][E3GA_E1_E2] * (p3ga::e1 ^ p3ga::e2) + ve[GRADE2][E3GA_E2_E3] * (p3ga::e2 ^ p3ga::e3) +
-        ve[GRADE2][E3GA_E3_E1] * (p3ga::e3 ^ p3ga::e1) +
+        ve[e3ga::E12] * (p3ga::e1 ^ p3ga::e2) + ve[e3ga::E23] * (p3ga::e2 ^ p3ga::e3) +
+        (-ve[e3ga::E13]) * (p3ga::e3 ^ p3ga::e1) +
         // grade 3
-        ve[GRADE3][E3GA_I] * (p3ga::e1 ^ p3ga::e2 ^ p3ga::e3);
+        ve[e3ga::E123] * (p3ga::e1 ^ p3ga::e2 ^ p3ga::e3);
 
     vp.compress();
     return new consoleVariable("", vp);
@@ -506,17 +507,17 @@ consoleVariable *consoleVariable::castE3gaToP3ga() const
 consoleVariable *consoleVariable::castE3gaToC3ga() const
 {
     c3ga vc;
-    const e3ga &ve = e();
+    const e3ga::mv &ve = e();
     vc =
         // grade 0
-        ve.scalar() +
+        ga::scalar(ve) +
         // grade 1
-        ve[GRADE1][E3GA_E1] * c3ga::e1 + ve[GRADE1][E3GA_E2] * c3ga::e2 + ve[GRADE1][E3GA_E3] * c3ga::e3 +
+        ve[e3ga::E1] * c3ga::e1 + ve[e3ga::E2] * c3ga::e2 + ve[e3ga::E3] * c3ga::e3 +
         // grade 2
-        ve[GRADE2][E3GA_E1_E2] * (c3ga::e1 ^ c3ga::e2) + ve[GRADE2][E3GA_E2_E3] * (c3ga::e2 ^ c3ga::e3) +
-        ve[GRADE2][E3GA_E3_E1] * (c3ga::e3 ^ c3ga::e1) +
+        ve[e3ga::E12] * (c3ga::e1 ^ c3ga::e2) + ve[e3ga::E23] * (c3ga::e2 ^ c3ga::e3) +
+        (-ve[e3ga::E13]) * (c3ga::e3 ^ c3ga::e1) +
         // grade 3
-        ve[GRADE3][E3GA_I] * (c3ga::e1 ^ c3ga::e2 ^ c3ga::e3);
+        ve[e3ga::E123] * (c3ga::e1 ^ c3ga::e2 ^ c3ga::e3);
 
     vc.compress();
     return new consoleVariable("", vc);
@@ -525,17 +526,17 @@ consoleVariable *consoleVariable::castE3gaToC3ga() const
 consoleVariable *consoleVariable::castE3gaToC5ga() const
 {
     c5ga vc;
-    const e3ga &ve = e();
+    const e3ga::mv &ve = e();
     vc =
         // grade 0
-        ve.scalar() +
+        ga::scalar(ve) +
         // grade 1
-        ve[GRADE1][E3GA_E1] * c5ga::e1 + ve[GRADE1][E3GA_E2] * c5ga::e2 + ve[GRADE1][E3GA_E3] * c5ga::e3 +
+        ve[e3ga::E1] * c5ga::e1 + ve[e3ga::E2] * c5ga::e2 + ve[e3ga::E3] * c5ga::e3 +
         // grade 2
-        ve[GRADE2][E3GA_E1_E2] * (c5ga::e1 ^ c5ga::e2) + ve[GRADE2][E3GA_E2_E3] * (c5ga::e2 ^ c5ga::e3) +
-        ve[GRADE2][E3GA_E3_E1] * (c5ga::e3 ^ c5ga::e1) +
+        ve[e3ga::E12] * (c5ga::e1 ^ c5ga::e2) + ve[e3ga::E23] * (c5ga::e2 ^ c5ga::e3) +
+        (-ve[e3ga::E13]) * (c5ga::e3 ^ c5ga::e1) +
         // grade 3
-        ve[GRADE3][E3GA_I] * (c5ga::e1 ^ c5ga::e2 ^ c5ga::e3);
+        ve[e3ga::E123] * (c5ga::e1 ^ c5ga::e2 ^ c5ga::e3);
 
     vc.compress();
     return new consoleVariable("", vc);
@@ -594,58 +595,58 @@ consoleVariable *consoleVariable::castP3gaToC5ga() const
 
 consoleVariable *consoleVariable::castP3gaToE3ga() const
 {
-    e3ga ve;
+    e3ga::mv ve;
     const p3ga &vp = p();
     ve =
         // grade 0
         vp.scalar() +
         // grade 1
-        vp[GRADE1][P3GA_E1] * e3ga::e1 + vp[GRADE1][P3GA_E2] * e3ga::e2 + vp[GRADE1][P3GA_E3] * e3ga::e3 +
+        vp[GRADE1][P3GA_E1] * e3ga::e1<double>() + vp[GRADE1][P3GA_E2] * e3ga::e2<double>() + vp[GRADE1][P3GA_E3] * e3ga::e3<double>() +
         // grade 2
-        vp[GRADE2][P3GA_E1_E2] * (e3ga::e1 ^ e3ga::e2) + vp[GRADE2][P3GA_E2_E3] * (e3ga::e2 ^ e3ga::e3) +
-        vp[GRADE2][P3GA_E3_E1] * (e3ga::e3 ^ e3ga::e1) +
+        vp[GRADE2][P3GA_E1_E2] * (e3ga::e1<double>() ^ e3ga::e2<double>()) + vp[GRADE2][P3GA_E2_E3] * (e3ga::e2<double>() ^ e3ga::e3<double>()) +
+        vp[GRADE2][P3GA_E3_E1] * (e3ga::e3<double>() ^ e3ga::e1<double>()) +
         // grade 3
-        vp[GRADE3][P3GA_E1_E2_E3] * (e3ga::e1 ^ e3ga::e2 ^ e3ga::e3);
+        vp[GRADE3][P3GA_E1_E2_E3] * (e3ga::e1<double>() ^ e3ga::e2<double>() ^ e3ga::e3<double>());
 
-    ve.compress();
+    ve = ga::compress(ve);
     return new consoleVariable("", ve);
 }
 
 consoleVariable *consoleVariable::castC3gaToE3ga() const
 {
-    e3ga ve;
+    e3ga::mv ve;
     const c3ga &vc = c();
     ve =
         // grade 0
         vc.scalar() +
         // grade 1
-        vc[GRADE1][C3GA_E1] * e3ga::e1 + vc[GRADE1][C3GA_E2] * e3ga::e2 + vc[GRADE1][C3GA_E3] * e3ga::e3 +
+        vc[GRADE1][C3GA_E1] * e3ga::e1<double>() + vc[GRADE1][C3GA_E2] * e3ga::e2<double>() + vc[GRADE1][C3GA_E3] * e3ga::e3<double>() +
         // grade 2
-        vc[GRADE2][C3GA_E1_E2] * (e3ga::e1 ^ e3ga::e2) + vc[GRADE2][C3GA_E2_E3] * (e3ga::e2 ^ e3ga::e3) +
-        vc[GRADE2][C3GA_E1_E3] * (e3ga::e1 ^ e3ga::e3) +
+        vc[GRADE2][C3GA_E1_E2] * (e3ga::e1<double>() ^ e3ga::e2<double>()) + vc[GRADE2][C3GA_E2_E3] * (e3ga::e2<double>() ^ e3ga::e3<double>()) +
+        vc[GRADE2][C3GA_E1_E3] * (e3ga::e1<double>() ^ e3ga::e3<double>()) +
         // grade 3
-        vc[GRADE3][C3GA_E1_E2_E3] * (e3ga::e1 ^ e3ga::e2 ^ e3ga::e3);
+        vc[GRADE3][C3GA_E1_E2_E3] * (e3ga::e1<double>() ^ e3ga::e2<double>() ^ e3ga::e3<double>());
 
-    ve.compress();
+    ve = ga::compress(ve);
     return new consoleVariable("", ve);
 }
 
 consoleVariable *consoleVariable::castC5gaToE3ga() const
 {
-    e3ga ve;
+    e3ga::mv ve;
     const c5ga &vc = c5();
     ve =
         // grade 0
         vc.scalar() +
         // grade 1
-        vc[GRADE1][C5GA_E1] * e3ga::e1 + vc[GRADE1][C5GA_E2] * e3ga::e2 + vc[GRADE1][C5GA_E3] * e3ga::e3 +
+        vc[GRADE1][C5GA_E1] * e3ga::e1<double>() + vc[GRADE1][C5GA_E2] * e3ga::e2<double>() + vc[GRADE1][C5GA_E3] * e3ga::e3<double>() +
         // grade 2
-        vc[GRADE2][C5GA_E1_E2] * (e3ga::e1 ^ e3ga::e2) + vc[GRADE2][C5GA_E2_E3] * (e3ga::e2 ^ e3ga::e3) +
-        vc[GRADE2][C5GA_E1_E3] * (e3ga::e1 ^ e3ga::e3) +
+        vc[GRADE2][C5GA_E1_E2] * (e3ga::e1<double>() ^ e3ga::e2<double>()) + vc[GRADE2][C5GA_E2_E3] * (e3ga::e2<double>() ^ e3ga::e3<double>()) +
+        vc[GRADE2][C5GA_E1_E3] * (e3ga::e1<double>() ^ e3ga::e3<double>()) +
         // grade 3
-        vc[GRADE3][C5GA_E1_E2_E3] * (e3ga::e1 ^ e3ga::e2 ^ e3ga::e3);
+        vc[GRADE3][C5GA_E1_E2_E3] * (e3ga::e1<double>() ^ e3ga::e2<double>() ^ e3ga::e3<double>());
 
-    ve.compress();
+    ve = ga::compress(ve);
     return new consoleVariable("", ve);
 }
 
@@ -827,16 +828,16 @@ consoleVariable *consoleVariable::castC3gaToC5ga() const
 consoleVariable *consoleVariable::castE3gaToI2ga() const
 {
     i2ga vi2;
-    const e3ga &ve = e();
+    const e3ga::mv &ve = e();
 
     // only e1, e2 are preserved
     vi2 =
         // grade 0
-        ve.scalar() +
+        ga::scalar(ve) +
         // grade 1
-        ve[GRADE1][E3GA_E1] * i2ga::e1 + ve[GRADE1][E3GA_E2] * i2ga::e2 +
+        ve[e3ga::E1] * i2ga::e1 + ve[e3ga::E2] * i2ga::e2 +
         // grade 2
-        ve[GRADE2][E3GA_E1_E2] * (i2ga::e1 ^ i2ga::e2);
+        ve[e3ga::E12] * (i2ga::e1 ^ i2ga::e2);
 
     vi2.compress();
     return new consoleVariable("", vi2);
@@ -921,7 +922,7 @@ consoleVariable *consoleVariable::castC5gaToI2ga() const
 
 consoleVariable *consoleVariable::castI2gaToE3ga() const
 {
-    e3ga ve;
+    e3ga::mv ve;
     const i2ga &vi2 = i2();
 
     // only e1, e2 are preserved
@@ -929,11 +930,11 @@ consoleVariable *consoleVariable::castI2gaToE3ga() const
         // grade 0
         vi2.scalar() +
         // grade 1
-        vi2[GRADE1][I2GA_E1] * e3ga::e1 + vi2[GRADE1][I2GA_E2] * e3ga::e2 +
+        vi2[GRADE1][I2GA_E1] * e3ga::e1<double>() + vi2[GRADE1][I2GA_E2] * e3ga::e2<double>() +
         // grade 2
-        vi2[GRADE2][I2GA_E1_E2] * (e3ga::e1 ^ e3ga::e2);
+        vi2[GRADE2][I2GA_E1_E2] * (e3ga::e1<double>() ^ e3ga::e2<double>());
 
-    ve.compress();
+    ve = ga::compress(ve);
     return new consoleVariable("", ve);
 }
 
@@ -1131,7 +1132,7 @@ consoleVariable *consoleVariable::castToI2ga() const
 
 void *consoleVariableScalar(const char *name, double val)
 {
-    e3ga tmp(val);
+    e3ga::mv tmp(val);
     consoleVariable *cv = new consoleVariable(name, tmp);
     cv->rhs(1);
     return cv;

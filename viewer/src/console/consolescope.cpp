@@ -597,20 +597,21 @@ consoleVariable *consoleScope::assignVariable(consoleVariable *target, consoleVa
     return new consoleVariable("", result); // return a copy of result, because it will be deleted.
 }
 
-static e3ga s_pi(3.1415926535897932384626433832795);
-static e3ga s_e(2.7182818284590452353602874713527);
+static e3ga::mv s_pi(3.1415926535897932384626433832795);
+static e3ga::mv s_e1 = e3ga::e1<double>(), s_e2 = e3ga::e2<double>(), s_e3 = e3ga::e3<double>();
+static e3ga::mv s_e(2.7182818284590452353602874713527);
 static struct
 {
     char *name;
-    e3ga *e;
+    e3ga::mv *e;
     p3ga *p;
     c3ga *c;
     c5ga *c5;
     i2ga *i2;
     bool nameAlloced;
-} s_constant[] = {{(char *)"e1", (e3ga *)&(e3ga::e1), NULL, NULL, NULL, NULL, false},
-                  {(char *)"e2", (e3ga *)&(e3ga::e2), NULL, NULL, NULL, NULL, false},
-                  {(char *)"e3", (e3ga *)&(e3ga::e3), NULL, NULL, NULL, NULL, false},
+} s_constant[] = {{(char *)"e1", &s_e1, NULL, NULL, NULL, NULL, false},
+                  {(char *)"e2", &s_e2, NULL, NULL, NULL, NULL, false},
+                  {(char *)"e3", &s_e3, NULL, NULL, NULL, NULL, false},
                   {(char *)"e4", NULL, NULL, NULL, (c5ga *)&(c5ga::e4), NULL, false},
                   {(char *)"e5", NULL, NULL, NULL, (c5ga *)&(c5ga::e5), NULL, false},
                   {(char *)"e0", NULL, (p3ga *)&(p3ga::e0), NULL, NULL, NULL, false},
@@ -697,7 +698,7 @@ void consoleGlobalScope::renameBuiltinConstant(const std::string &oldName, const
         {
             //	        printf("index %d = %s\n", i, s_constant[i].name);
             if (s_constant[i].e)
-                e3ga::renameBasisVector(oldName.c_str(), newName.c_str());
+                ga::renameBasisVector<e3ga::mv>(oldName, newName);
             else if (s_constant[i].p)
                 p3ga::renameBasisVector(oldName.c_str(), newName.c_str());
             else if (s_constant[i].c)
@@ -926,13 +927,13 @@ int consoleScope::supressErrors(int val)
     return setFlag(CSF_SUPRESS_ERRORS, val);
 }
 
-int consoleScope::externalAssignVariable(const std::string &name, const e3ga &val, int drawMode /*= 0*/)
+int consoleScope::externalAssignVariable(const std::string &name, const e3ga::mv &val, int drawMode /*= 0*/)
 {
     consoleVariable *valueCv = new consoleVariable("", val);
     if (drawMode)
         valueCv->drawMode(drawMode);
 
-    consoleVariable *targetCv = new consoleVariable(name, e3ga(0.0));
+    consoleVariable *targetCv = new consoleVariable(name, e3ga::mv(0.0));
 
     consoleVariable *resultCv = assignVariable(targetCv, valueCv);
     delete resultCv;
@@ -943,7 +944,7 @@ int consoleScope::externalAssignVariable(const std::string &name, const e3ga &va
     return 0;
 }
 
-int consoleScope::externalLookupVariable(const std::string &name, int global, e3ga &val)
+int consoleScope::externalLookupVariable(const std::string &name, int global, e3ga::mv &val)
 {
     consoleVariable *cv, *castCv;
     if (lookupVariable(name, global, &cv) == 0)

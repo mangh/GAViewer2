@@ -238,14 +238,14 @@ std::string state::fullFilename(const std::string &filename)
 void state::setDefaultGlobalScopeVariables()
 {
     // camera orientation (camori)
-    m_globalScope->externalAssignVariable("camori", e3ga(1.0), OD_HIDE | OD_HIDE_ALWAYS);
+    m_globalScope->externalAssignVariable("camori", e3ga::mv(1.0), OD_HIDE | OD_HIDE_ALWAYS);
 
     // camera position (campos)
-    m_globalScope->externalAssignVariable("campos", e3ga(GRADE1, 0.0, 0.0, 11.0),
+    m_globalScope->externalAssignVariable("campos", e3ga::vector(0.0, 0.0, 11.0),
                                           OD_HIDE | OD_HIDE_ALWAYS | OD_MAGNITUDE);
 
     // autocolor function on or off (autocolor)
-    m_globalScope->externalAssignVariable("autocolor", e3ga(1.0), OD_HIDE | OD_HIDE_ALWAYS);
+    m_globalScope->externalAssignVariable("autocolor", e3ga::mv(1.0), OD_HIDE | OD_HIDE_ALWAYS);
 
     return;
 }
@@ -601,17 +601,18 @@ int state::freeOpenFile()
     return 0;
 }
 
-int state::addE3gaObject(const e3ga &mv, const std::string &name, int drawMode /* = 0 */, int creationFlags /*= 0*/,
+int state::addE3gaObject(const e3ga::mv &mv, const std::string &name, int drawMode /* = 0 */, int creationFlags /*= 0*/,
                          int forceFlags /* = 0 */)
 {
     e3gaObject *o = new e3gaObject(mv, name, drawMode, creationFlags, forceFlags);
     if (!o->m_int.m_valid)
     {
-        if (mv.norm_a() > 1e-5)
+        if (ga::norm_a(mv) > 1e-5)
         {
             if (!m_globalScope->supressWarnings())
             {
-                cprintf("Interpretation of object '%s' with coordinates %s failed.\n", name.c_str(), mv.string());
+                cprintf("Interpretation of object '%s' with coordinates %s failed.\n", name.c_str(),
+                        ga::toString(mv).c_str());
             }
         }
         //		delete o; // yeah?
@@ -711,7 +712,7 @@ int state::addI2gaObject(const i2ga &mv, const std::string &name, int drawMode /
     return 0;
 }
 
-int state::addTextObject(const char *text, const e3ga &pos, const std::string &name, int labelFlags, int width)
+int state::addTextObject(const char *text, const e3ga::mv &pos, const std::string &name, int labelFlags, int width)
 {
     textObject *o = new textObject(text, pos, name, 0, labelFlags, width);
     addObject(o);
@@ -943,14 +944,14 @@ int state::setColor(const char *colorName, float r, float g, float b, float a /*
     return 0;
 }
 
-int state::setTrl(e3ga &trl, double dIn)
+int state::setTrl(e3ga::mv &trl, double dIn)
 {
     double duration = dIn;
     m_trlTime = -1.0;
     if ((gui_state == NULL) || (duration < 0.0))
         return -1;
 
-    trl = trl(GRADE1);
+    trl = ga::takeGrade(trl, GRADE1);
 
     duration *= m_playbackSpeed;
     if (duration == 0.0)
@@ -963,7 +964,7 @@ int state::setTrl(e3ga &trl, double dIn)
     {
         m_trlTime = u_timeGet();
         m_trlEndTime = m_trlTime + duration;
-        m_trl = trl / m_playbackSpeed;
+        m_trl = trl * (1.0 / m_playbackSpeed);
     }
     return 0;
 }
@@ -990,27 +991,27 @@ int state::handleTrl()
     return 0;
 }
 
-int state::setRot(e3ga &rot, double dIn)
+int state::setRot(e3ga::mv &rot, double dIn)
 {
     double duration = dIn;
     m_rotTime = -1.0;
     if ((gui_state == NULL) || (duration < 0.0))
         return -1;
 
-    rot = -rot(GRADE2);
+    rot = -ga::takeGrade(rot, GRADE2);
 
     duration *= m_playbackSpeed;
     if (duration == 0.0)
     {
         // instantanious translation
-        gui_state->m_glWindow->setCamOri((dIn * rot).exp() * gui_state->m_glWindow->getCamOri());
+        gui_state->m_glWindow->setCamOri(ga::exp(e3ga::mv(dIn * rot)) * gui_state->m_glWindow->getCamOri());
         gui_state->m_glWindow->redraw();
     }
     else
     {
         m_rotTime = u_timeGet();
         m_rotEndTime = m_rotTime + duration;
-        m_rot = rot / m_playbackSpeed;
+        m_rot = rot * (1.0 / m_playbackSpeed);
     }
     return 0;
 }
@@ -1029,7 +1030,8 @@ int state::handleRot()
     else
     {
         double t = U_MIN(m_rotEndTime, u_timeGet());
-        gui_state->m_glWindow->setCamOri((m_rot * (t - m_rotTime)).exp() * gui_state->m_glWindow->getCamOri());
+        gui_state->m_glWindow->setCamOri(ga::exp(e3ga::mv(m_rot * (t - m_rotTime))) *
+                                         gui_state->m_glWindow->getCamOri());
         gui_state->m_glWindow->redraw();
 
         m_rotTime = (t >= m_rotEndTime) ? -1.0 : t;
@@ -1135,14 +1137,14 @@ int state::setPlaybackSpeed(double speed)
     return 0;
 }
 
-int state::setE3gaFactor(const e3ga &mv, int idx)
+int state::setE3gaFactor(const e3ga::mv &mv, int idx)
 {
     if ((idx < 0) || (idx > 2))
     {
         printf("state::setE3gaFactor(): invalid index %d\n", idx);
         return -1;
     }
-    m_e3gaFactor[idx] = mv(GRADE1);
+    m_e3gaFactor[idx] = ga::takeGrade(mv, GRADE1);
 
     return 0;
 }
@@ -1217,7 +1219,7 @@ int state::forwardAnimationTime(double dt)
 {
     consoleVariable *atime;
     if (m_globalScope->lookupVariable("atime", 1, &atime) == 0)
-        setAnimationTime(atime->e().scalar() + dt);
+        setAnimationTime(ga::scalar(atime->e()) + dt);
     else
     {
         cprintf("Can not lookup global variable 'atime', setting it to %f \n", dt);
@@ -1228,7 +1230,7 @@ int state::forwardAnimationTime(double dt)
 
 int state::setAnimationTime(double t)
 {
-    g_state->m_globalScope->externalAssignVariable("atime", e3ga(t), OD_HIDE | OD_HIDE_ALWAYS);
+    g_state->m_globalScope->externalAssignVariable("atime", e3ga::mv(t), OD_HIDE | OD_HIDE_ALWAYS);
     /*	consoleVariable *atime = new consoleVariable("", e3ga(t));
         atime->drawMode(OD_HIDE | OD_HIDE_ALWAYS);
         g_state->m_globalScope->assignVariable(new consoleVariable("atime", e3ga(0.0)), atime);

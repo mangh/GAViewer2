@@ -49,8 +49,8 @@ glwindow::glwindow(int X, int Y, int W, int H, const char *L) : Fl_Gl_Window(X, 
 
     setNearFarClipPlanes(-1.0, -1.0); // reset near and far clip planes
 
-    setCamPos(11 * e3ga::e3);
-    setCamOri(e3ga(1)); // identity rotation
+    setCamPos(11 * e3ga::e3<double>());
+    setCamOri(e3ga::mv(1)); // identity rotation
 
     m_depthMaskAllowedOff = 1;
 
@@ -96,9 +96,9 @@ void glwindow::setNearFarClipPlanes(double n, double f)
     }
 }
 
-e3ga &glwindow::getCamOri()
+e3ga::mv &glwindow::getCamOri()
 {
-    static e3ga ori;
+    static e3ga::mv ori;
     if (g_state && (g_state->m_globalScope->externalLookupVariable("camori", 1, ori) == 0))
     {
         // nothing to do...
@@ -108,7 +108,7 @@ e3ga &glwindow::getCamOri()
     return ori;
 }
 
-void glwindow::setCamOri(const e3ga &R)
+void glwindow::setCamOri(const e3ga::mv &R)
 {
     if (g_state)
     {
@@ -117,15 +117,15 @@ void glwindow::setCamOri(const e3ga &R)
     }
 }
 
-e3ga &glwindow::getCamPos()
+e3ga::mv &glwindow::getCamPos()
 {
-    static e3ga pos;
+    static e3ga::mv pos;
     if (g_state && (g_state->m_globalScope->externalLookupVariable("campos", 1, pos) == 0))
     {
         // nothing to do...
     }
     else
-        pos = -11.0 * e3ga::e3;
+        pos = -11.0 * e3ga::e3<double>();
     return pos;
     /*	static e3ga def(GRADE1, 0.0, 0.0, -11.0);
         consoleVariable *cv;
@@ -141,7 +141,7 @@ e3ga &glwindow::getCamPos()
         return def;*/
 }
 
-void glwindow::setCamPos(const e3ga &t)
+void glwindow::setCamPos(const e3ga::mv &t)
 {
     if (g_state)
     {
@@ -511,11 +511,11 @@ int glwindow::handle(int event)
 {
     static int firstx, firsty;
     static int inside; // non-zero if first press inside sphere
-    static e3ga firstRot;
+    static e3ga::mv firstRot;
     static int lastx = 0;
     static int lasty = 0;
     GAIM_FLOAT motionX, motionY;
-    e3ga rx, ry, rz;
+    e3ga::mv rx, ry, rz;
     GAIM_FLOAT ax, ay;
 
     if ((event == FL_PUSH) || (event == FL_RELEASE) || (event == FL_MOVE) || (event == FL_DRAG))
@@ -636,9 +636,9 @@ int glwindow::handle(int event)
                 {
                     // trackball orbiter using GA
                     ax = mul * -motionX / 100.0f / 2.0f;
-                    rx = cos(ax) + sin(ax) * ((e3ga)e3ga::e2 << (e3ga)e3ga::I);
+                    rx = cos(ax) + sin(ax) * ga::lcont(e3ga::e2<double>(), e3ga::I<double>());
                     ay = mul * -motionY / 100.0f / 2.0f;
-                    ry = cos(ay) + sin(ay) * ((e3ga)e3ga::e1 << (e3ga)e3ga::I);
+                    ry = cos(ay) + sin(ay) * ga::lcont(e3ga::e1<double>(), e3ga::I<double>());
                     setCamOri(rx * ry * firstRot);
                 }
                 else
@@ -646,12 +646,11 @@ int glwindow::handle(int event)
                     motionX = mul * (float)(Fl::event_x() - lastx);
                     motionY = mul * (float)(Fl::event_y() - lasty);
 
-                    e3ga v1(GRADE1, motionX, -motionY, 0.0); // motion vector
-                    e3ga v2(GRADE1, Fl::event_x() - 0.5 * w(), -Fl::event_y() + 0.5 * h(),
-                            0.0); // vector from window center to mouse
-                    e3ga B(v1 ^ v2 / (0.3 * w() * h()));
-                    e3ga R(cos(B[GRADE2][E3GA_E1_E2]) + sin(fabs(B[GRADE2][E3GA_E1_E2])) * B.normal()); // R = B.exp();
-                    R = B.exp();
+                    e3ga::mv v1 = e3ga::vector(motionX, -motionY, 0.0); // motion vector
+                    e3ga::mv v2 = e3ga::vector(Fl::event_x() - 0.5 * w(), -Fl::event_y() + 0.5 * h(),
+                                               0.0); // vector from window center to mouse
+                    e3ga::mv B(v1 ^ (v2 * (1.0 / (0.3 * w() * h()))));
+                    e3ga::mv R = ga::exp(B);
                     setCamOri(R * getCamOri());
                 }
             }
@@ -659,19 +658,19 @@ int glwindow::handle(int event)
             {
                 motionX = mul * (float)(Fl::event_x() - lastx);
                 motionY = mul * (float)(Fl::event_y() - lasty);
-                e3ga pos(getCamPos());
-                setCamPos(pos - (motionX * pos[GRADE1][E3GA_E3] / 1000.0f) * e3ga::e1 +
-                          (motionY * pos[GRADE1][E3GA_E3] / 1000.0f) * e3ga::e2);
+                e3ga::mv pos(getCamPos());
+                setCamPos(pos - (motionX * pos[e3ga::E3] / 1000.0f) * e3ga::e1<double>() +
+                          (motionY * pos[e3ga::E3] / 1000.0f) * e3ga::e2<double>());
             }
             if (m_mouseButtons & FL_BUTTON3)
             {
                 motionX = mul * (float)(Fl::event_x() - lastx);
                 motionY = mul * (float)(Fl::event_y() - lasty);
-                e3ga pos(getCamPos() + (motionY / 10.0f) * e3ga::e3);
-                if (pos[GRADE1][E3GA_E3] < 1.0f)
-                    pos += (1.0f - pos[GRADE1][E3GA_E3]) * e3ga::e3;
-                if (pos[GRADE1][E3GA_E3] > 100.0f)
-                    pos += (100.0f - pos[GRADE1][E3GA_E3]) * e3ga::e3;
+                e3ga::mv pos(getCamPos() + (motionY / 10.0f) * e3ga::e3<double>());
+                if (pos[e3ga::E3] < 1.0f)
+                    pos += (1.0f - pos[e3ga::E3]) * e3ga::e3<double>();
+                if (pos[e3ga::E3] > 100.0f)
+                    pos += (100.0f - pos[e3ga::E3]) * e3ga::e3<double>();
                 setCamPos(pos);
             }
             redraw();
@@ -708,11 +707,10 @@ void glwindow::setupEyeTransform()
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     //	m_pos.print("pos: ");
-    e3ga pos(getCamPos());
-    const GAIM_FLOAT *c = pos[GRADE1];
-    glTranslated(-c[0], -c[1], -c[2]);
+    e3ga::mv pos(getCamPos());
+    glTranslated(-pos[e3ga::E1], -pos[e3ga::E2], -pos[e3ga::E3]);
     float rotM[16];
-    e3ga R(getCamOri());
+    e3ga::mv R(getCamOri());
     e3gaRotorToOpenGLMatrix(R, rotM);
     glMultMatrixf(rotM);
 }
@@ -743,7 +741,7 @@ void glwindow::disableClippingPlanes() {
         glDisable(GL_CLIP_PLANE0 + i);
 }*/
 
-int glwindow::vectorAtDepth(double depth, double vx, double vy, e3ga &v)
+int glwindow::vectorAtDepth(double depth, double vx, double vy, e3ga::mv &v)
 {
     if ((m_frustumWidth <= 0) || (m_frustumHeight <= 0) || (m_frustumNear <= 0) || (m_frustumFar <= 0))
     {
@@ -751,11 +749,11 @@ int glwindow::vectorAtDepth(double depth, double vx, double vy, e3ga &v)
         return -1;
     }
 
-    e3ga tmp((depth * (double)vx * m_frustumWidth) / (w() * m_frustumNear) * e3ga::e1 +
-             (depth * (double)vy * m_frustumHeight) / (h() * m_frustumNear) * e3ga::e2);
+    e3ga::mv tmp((depth * (double)vx * m_frustumWidth) / (w() * m_frustumNear) * e3ga::e1<double>() +
+             (depth * (double)vy * m_frustumHeight) / (h() * m_frustumNear) * e3ga::e2<double>());
 
-    e3ga R(getCamOri());
-    v = (R.inverse() * tmp * R)(GRADE1);
+    e3ga::mv R(getCamOri());
+    v = ga::takeGrade(e3ga::mv(ga::inverse(R) * tmp * R), GRADE1);
 
     return 0;
 }

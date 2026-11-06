@@ -341,7 +341,7 @@ void consoleControlBool::widgetModified(Fl_Widget *W)
     if (g_state)
     {
         GAIM_FLOAT val = (GAIM_FLOAT)m_checkButton->value();
-        g_state->m_globalScope->externalAssignVariable(name(), e3ga(val));
+        g_state->m_globalScope->externalAssignVariable(name(), e3ga::mv(val));
         g_state->updateDynStmts();
     }
 }
@@ -438,7 +438,7 @@ void consoleControlRange::widgetModified(Fl_Widget *W)
     if (g_state)
     {
         GAIM_FLOAT val = (GAIM_FLOAT)m_valueSlider->value();
-        g_state->m_globalScope->externalAssignVariable(name(), e3ga(val));
+        g_state->m_globalScope->externalAssignVariable(name(), e3ga::mv(val));
         //		g_state->m_globalScope->assignVariable(new consoleVariable(name(), e3ga(0.0)), new consoleVariable("",
         //e3ga(val)));
         g_state->updateDynStmts();
@@ -585,7 +585,7 @@ void consoleControlSelection::widgetModified(Fl_Widget *W)
     {
         int idx = (int)m_menuButton->value();
         m_menuButton->label(m_menuItems[idx].text);
-        g_state->m_globalScope->externalAssignVariable(name(), e3ga(m_menuValues[idx]));
+        g_state->m_globalScope->externalAssignVariable(name(), e3ga::mv(m_menuValues[idx]));
         // g_state->m_globalScope->assignVariable(new consoleVariable(name(), e3ga(0.0)), new consoleVariable("",
         // e3ga(m_menuValues[idx])));
         g_state->updateDynStmts();

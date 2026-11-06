@@ -23,7 +23,7 @@ multivector type MV (e.g. in ga/e3ga.h) with
     static constexpr int dimension;          // number of basis vectors
     static MV I();                           // the pseudoscalar
     static MV Iinv();                        // its inverse
-    static const std::array<displayBlade, 1 << dimension> displayBasis;
+    static std::array<displayBlade, 1 << dimension> displayBasis;
 
 A Garamon multivector addresses its coordinates by 'bitmap' (xor index: bit
 i set = basis vector i is a factor of the basis blade, e.g. e1^e3 = 0b101).
@@ -37,17 +37,23 @@ coordinate is the largest when two are equal), so they iterate in display
 order, as Gaigen did.
 */
 
+#include <string>
+
 namespace ga
 {
 
 struct displayBlade
 {
-    const char *name; // e.g. "e3^e1"
+    std::string name; // e.g. "e3^e1" (can be changed, see renameBasisVector())
     unsigned bitmap;  // Garamon bitmap (xor index) of the basis blade, e.g. 0b101 (e1^e3)
     double sign;      // display coordinate = sign * Garamon coordinate (+1 or -1)
 };
 
 template <class MV> struct algebraTraits; // specialized for every algebra
+
+// a Garamon multivector type (one with algebraTraits)
+template <class MV>
+concept garamonMV = requires { algebraTraits<MV>::dimension; };
 
 // the grade of a basis blade, given its bitmap
 constexpr int bitmapGrade(unsigned bitmap)

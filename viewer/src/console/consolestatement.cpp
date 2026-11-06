@@ -351,7 +351,7 @@ char *consoleDummyStmt::string(int cr /*= 0*/, int tl /* = 0 */)
 
 consoleVariable *consoleDummyStmt::execute(consoleScope *s)
 {
-    return new consoleVariable("", e3ga(0.0));
+    return new consoleVariable("", e3ga::mv(0.0));
 }
 
 void consoleDummyStmt::initToNothing()
@@ -433,7 +433,7 @@ consoleVariable *consoleVariableStmt::execute(consoleScope *s)
         {
             //			cprintf("Warning: variable '%s' does not exist. Assuming '%s = 0.0'\n", m_name, m_name);
         }
-        result = new consoleVariable(name, e3ga(0.0));
+        result = new consoleVariable(name, e3ga::mv(0.0));
         result->rhs(1);
         result->lhs(1);
     }
@@ -504,7 +504,7 @@ consoleVariable *consoleConstantScalarStmt::execute(consoleScope *s)
     // a scalar of the default model (e3ga if there is none)
     consoleVariable *result = NULL;
     if (!withConsoleAlgebra(s->getDefaultModel(), [&]<class MV>() { result = new consoleVariable(str, MV(m_value)); }))
-        result = new consoleVariable(str, e3ga(m_value));
+        result = new consoleVariable(str, e3ga::mv(m_value));
 
     result->rhs(1);
     result->lhs(0);
@@ -845,7 +845,7 @@ consoleVariable *consoleParExprStmt::execute(consoleScope *s)
     if (m_child[0])
         return m_child[0]->execute(s);
     else
-        return new consoleVariable("", e3ga(0.0));
+        return new consoleVariable("", e3ga::mv(0.0));
 }
 
 /* ******************************************************************* */
@@ -959,7 +959,7 @@ consoleVariable *consoleWhileStmt::execute(consoleScope *s_in)
 
     delete s;
 
-    return (result) ? result : new consoleVariable("", e3ga(0.0));
+    return (result) ? result : new consoleVariable("", e3ga::mv(0.0));
 }
 
 void consoleWhileStmt::initToNothing()
@@ -1121,7 +1121,7 @@ consoleVariable *consoleForStmt::execute(consoleScope *s_in)
 
     delete s;
 
-    return (cv) ? cv : new consoleVariable("", e3ga(0.0));
+    return (cv) ? cv : new consoleVariable("", e3ga::mv(0.0));
 }
 
 void consoleForStmt::initToNothing()
@@ -1214,7 +1214,7 @@ consoleVariable *consoleIfElseStmt::execute(consoleScope *s)
     if (e)
         return e->execute(s);
     else
-        return new consoleVariable("", e3ga(0.0));
+        return new consoleVariable("", e3ga::mv(0.0));
 }
 
 void consoleIfElseStmt::initToNothing()
@@ -1336,7 +1336,7 @@ consoleVariable *consoleSwitchStmt::execute(consoleScope *s)
 
     delete condCv;
 
-    return (result) ? result : new consoleVariable("", e3ga(0.0));
+    return (result) ? result : new consoleVariable("", e3ga::mv(0.0));
 }
 
 void consoleSwitchStmt::initToNothing()
@@ -1509,7 +1509,7 @@ char *consoleReturnStmt::string(int cr /*= 0*/, int tl /* = 0 */)
 consoleVariable *consoleReturnStmt::execute(consoleScope *s)
 {
     s->returnStmt(1);
-    return (m_child[0]) ? m_child[0]->execute(s) : new consoleVariable("", e3ga(0.0));
+    return (m_child[0]) ? m_child[0]->execute(s) : new consoleVariable("", e3ga::mv(0.0));
 }
 
 /* ******************************************************************* */
@@ -1613,7 +1613,7 @@ consoleVariable *consoleBreakStmt::execute(consoleScope *s)
         cprintf("Unknown break statement\n");
         break;
     }
-    return new consoleVariable("", e3ga(0.0));
+    return new consoleVariable("", e3ga::mv(0.0));
 }
 
 /* ******************************************************************* */
@@ -1791,19 +1791,19 @@ consoleVariable *consoleStmtListStmt::execute(consoleScope *s, int stmtIdx)
             {
                 s->addSuspendIdx(i);
                 delete result;
-                return new consoleVariable("", e3ga(0.0));
+                return new consoleVariable("", e3ga::mv(0.0));
             }
             else if (s->breakStmt() || s->continueStmt())
             {
                 delete result;
-                return new consoleVariable("", e3ga(0.0));
+                return new consoleVariable("", e3ga::mv(0.0));
             }
             else
                 delete result;
         }
     }
 
-    return new consoleVariable("", e3ga(0));
+    return new consoleVariable("", e3ga::mv(0));
 }
 
 /* ******************************************************************* */
@@ -1871,7 +1871,7 @@ char *consoleFuncDeclStmt::string(int cr /*= 0*/, int tl /* = 0 */)
 
 consoleVariable *consoleFuncDeclStmt::execute(consoleScope *s)
 {
-    return new consoleVariable("", e3ga(0.0));
+    return new consoleVariable("", e3ga::mv(0.0));
 }
 
 /* ******************************************************************* */
@@ -1975,7 +1975,7 @@ consoleVariable *consoleFuncStmt::execute(consoleScope *s, consoleVariable *arg[
     consoleVariable *result;
     while (spec = asl->argSpec(i))
     {
-        consoleVariable temp(spec->name(), e3ga(0.0));
+        consoleVariable temp(spec->name(), e3ga::mv(0.0));
         temp.functionArgument(1);
         result = s->assignVariable(&temp, arg[i]);
         delete result;
@@ -1984,7 +1984,7 @@ consoleVariable *consoleFuncStmt::execute(consoleScope *s, consoleVariable *arg[
 
     // execute function
     consoleStatement *stmt = stmtList();
-    return (stmt) ? stmt->execute(s) : new consoleVariable("", e3ga(0.0));
+    return (stmt) ? stmt->execute(s) : new consoleVariable("", e3ga::mv(0.0));
 }
 /*
 int consoleFuncStmt::usesVariable(const char *name, int global = 1) {
@@ -2245,7 +2245,7 @@ consoleVariable *consoleDynStmt::execute(consoleScope *s)
         g_state->addDynStmt(sl, m_workingDirectory, m_name);
     }
 
-    return (result) ? result : new consoleVariable("", e3ga(0.0));
+    return (result) ? result : new consoleVariable("", e3ga::mv(0.0));
 }
 
 char *consoleDynStmt::string(int cr /*= 0*/, int tl /*= 0*/)
@@ -2318,7 +2318,7 @@ consoleVariable *consoleSetStmt::execute(consoleScope *s)
         cprintf("consoleSetStmt::execute(): can not set '%s'\n", m_what.c_str());
     }
 
-    return new consoleVariable("", e3ga(0.0));
+    return new consoleVariable("", e3ga::mv(0.0));
 }
 
 char *consoleSetStmt::string(int cr /*= 0*/, int tl /*= 0*/)

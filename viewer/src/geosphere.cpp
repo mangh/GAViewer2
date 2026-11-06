@@ -15,9 +15,10 @@
 // Copyright 2002-2009, Daniel Fontijne, University of Amsterdam -- fontijne@science.uva.nl
 
 /*
-Some code for generating a geosphere, ported to use e3ga
+Some code for generating a geosphere (the vertices are plain 3D coordinates)
 instead of LA
 */
+#include <cmath>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
@@ -42,9 +43,9 @@ int gsEnsureVertices(geosphere *sphere, int nb)
     {
         sphere->maxVertices = (sphere->maxVertices * 4 > nb) ? sphere->maxVertices * 4 : nb;
         //		printf("->%d vertices\n", sphere->maxVertices);
-        e3ga *oldVertex = sphere->vertex;
+        gsVertex *oldVertex = sphere->vertex;
         int i;
-        if ((sphere->vertex = new e3ga[sphere->maxVertices]) == NULL)
+        if ((sphere->vertex = new gsVertex[sphere->maxVertices]) == NULL)
             return -1;
         for (i = 0; i < sphere->nbVertices; i++)
             sphere->vertex[i] = oldVertex[i];
@@ -70,18 +71,18 @@ int gsEnsureFaces(geosphere *sphere, int nb)
     }
 }
 
-int gsAddVertex(geosphere *sphere, e3ga &pos, int *v)
+int gsAddVertex(geosphere *sphere, const gsVertex &pos, int *v)
 {
     int i, res;
-    e3ga temp;
 
     *v = -1;
 
     // first check if vertex already exists
     for (i = 0; i < sphere->nbVertices; i++)
     {
-        temp = pos - sphere->vertex[i];
-        if (temp.norm_b() < 1e-5 * 1e-5)
+        const gsVertex &q = sphere->vertex[i];
+        const double dx = pos[0] - q[0], dy = pos[1] - q[1], dz = pos[2] - q[2];
+        if (dx * dx + dy * dy + dz * dz < 1e-5 * 1e-5)
         {
             *v = i;
             return 0;
@@ -101,7 +102,6 @@ int gsAddVertex(geosphere *sphere, e3ga &pos, int *v)
 
 int gsRefineFace(geosphere *sphere, int f, int depth)
 {
-    e3ga v1, v2;
     int v[3], res, i, n;
     geosphereFace *nf;
 
@@ -113,9 +113,15 @@ int gsRefineFace(geosphere *sphere, int f, int depth)
     // create 3 vertices
     for (i = 0; i < 3; i++)
     {
-        v1 = (sphere->vertex[sphere->face[f].v[(i + 0) % 3]] + sphere->vertex[sphere->face[f].v[(i + 1) % 3]]).normal();
+        // the midpoint of the edge, projected onto the unit sphere
+        const gsVertex &a = sphere->vertex[sphere->face[f].v[(i + 0) % 3]];
+        const gsVertex &b = sphere->vertex[sphere->face[f].v[(i + 1) % 3]];
+        gsVertex m = {a[0] + b[0], a[1] + b[1], a[2] + b[2]};
+        const double l = sqrt(m[0] * m[0] + m[1] * m[1] + m[2] * m[2]);
+        for (double &c : m)
+            c /= l;
 
-        if ((res = gsAddVertex(sphere, v1, v + i)) != 0)
+        if ((res = gsAddVertex(sphere, m, v + i)) != 0)
             return res;
     }
 
@@ -251,7 +257,7 @@ int gsCompute(geosphere **sPtr, int depth)
     sphere->nbFaces = sphere->nbPrimitives = inbFaces;
     for (i = 0; i < inbVertices; i++)
     {
-        sphere->vertex[i].setVector(iV[i]);
+        sphere->vertex[i] = {iV[i][0], iV[i][1], iV[i][2]};
         //		sphere->vertex[i] *= 0.
     }
     sphere->nbVertices = inbVertices;
@@ -287,7 +293,6 @@ int gsFree(geosphere **sPtr)
 void gsDraw(geosphere *sphere, int f, GAIM_FLOAT normal = 0.0)
 {
     int i;
-    e3ga v1;
 
     if (sphere->face[f].child[0] >= 0)
     {
@@ -300,8 +305,8 @@ void gsDraw(geosphere *sphere, int f, GAIM_FLOAT normal = 0.0)
         glBegin(GL_TRIANGLES);
         for (i = 0; i < 3; i++)
         {
-            glNormal3dv(sphere->vertex[sphere->face[f].v[i]][GRADE1]);
-            glVertex3dv((sphere->vertex[sphere->face[f].v[i]])[GRADE1]);
+            glNormal3dv(sphere->vertex[sphere->face[f].v[i]].data());
+            glVertex3dv(sphere->vertex[sphere->face[f].v[i]].data());
         }
         glEnd();
 
@@ -313,9 +318,10 @@ void gsDraw(geosphere *sphere, int f, GAIM_FLOAT normal = 0.0)
             glBegin(GL_LINES);
             for (i = 0; i < 3; i++)
             {
-                v1 = sphere->vertex[sphere->face[f].v[i]].normal();
-                glVertex3dv((sphere->vertex[sphere->face[f].v[i]])[GRADE1]);
-                glVertex3dv((sphere->vertex[sphere->face[f].v[i]] + v1 * normal)[GRADE1]);
+                const gsVertex &p = sphere->vertex[sphere->face[f].v[i]];
+                const double l = sqrt(p[0] * p[0] + p[1] * p[1] + p[2] * p[2]);
+                glVertex3dv(p.data());
+                glVertex3d(p[0] + p[0] / l * normal, p[1] + p[1] / l * normal, p[2] + p[2] / l * normal);
             }
             glEnd();
             if (l)

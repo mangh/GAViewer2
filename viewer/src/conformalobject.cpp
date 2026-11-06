@@ -52,7 +52,7 @@ int conformalObject::draw(glwindow *window)
 
     GAIM_FLOAT x, y, z, c, scale, scaleSign;
     int s;
-    e3ga e3gaR;
+    e3ga::mv e3gaR;
     float rotM[16];
 
     if (m_type == MVI_UNKNOWN)
@@ -169,7 +169,7 @@ int conformalObject::draw(glwindow *window)
             glTranslated(m_int.m_point[0][0], m_int.m_point[0][1], m_int.m_point[0][2]);
 
             // rotate e3 to line direction
-            e3gaRve3(e3gaR, e3ga(GRADE1, m_int.m_vector[0]));
+            e3gaRve3(e3gaR, e3ga::vector(m_int.m_vector[0]));
             e3gaRotorToOpenGLMatrix(e3gaR, rotM);
             glMultMatrixf(rotM);
 
@@ -420,7 +420,7 @@ int conformalObject::draw(glwindow *window)
             // glScaled(m_int.m_scalar[0], m_int.m_scalar[0], m_int.m_scalar[0]);
 
             // rotate e3 to plane normal
-            e3gaRve3(e3gaR, e3ga(GRADE1, m_int.m_vector[0][0], m_int.m_vector[0][1], m_int.m_vector[0][2]));
+            e3gaRve3(e3gaR, e3ga::vector(m_int.m_vector[0][0], m_int.m_vector[0][1], m_int.m_vector[0][2]));
             e3gaRotorToOpenGLMatrix(e3gaR, rotM);
             glMultMatrixf(rotM);
 

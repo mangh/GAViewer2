@@ -38,7 +38,10 @@ add_library(gaviewer_i2ga STATIC
   "${GAVR_SOURCE_DIR}/i2ga/i2ga.cpp"
   "${GAVR_SOURCE_DIR}/i2ga/i2ga_optc2.cpp"
 )
-set(algebra_targets gaviewer_e3ga gaviewer_p3ga gaviewer_c3ga gaviewer_c5ga gaviewer_i2ga)
+# (gaviewer_e3ga, the Gaigen e3ga, is only used by the differential test gadiff.e3ga:
+# GAViewer uses the Garamon e3ga, see gaviewer_ga below)
+target_include_directories(gaviewer_e3ga PUBLIC "${GAVR_SOURCE_DIR}")
+set(algebra_targets gaviewer_p3ga gaviewer_c3ga gaviewer_c5ga gaviewer_i2ga)
 foreach(lib ${algebra_targets})
   target_include_directories(${lib} PUBLIC "${GAVR_SOURCE_DIR}")
 endforeach()
@@ -53,6 +56,11 @@ set(ga "gaviewer_ga")
 add_library(${ga} INTERFACE)
 target_include_directories(${ga} INTERFACE "${GAVR_SOURCE_DIR}")
 target_link_libraries(${ga} INTERFACE garamon_e3ga)
+if (CMAKE_SYSTEM_NAME MATCHES "Windows")
+  # <windows.h> (included by FLTK and GL headers) defines the macros min and max,
+  # which break std::min/std::max in the Garamon headers
+  target_compile_definitions(${ga} INTERFACE NOMINMAX)
+endif()
 
 # Everything else except the entry point goes into a static library, so that
 # the GUI application and the headless regression harness (viewer/test) are
@@ -157,7 +165,7 @@ endif()
 # get a clearer picture of the compilation and spot more serious
 # issues (if any).
 
-foreach(tgt ${algebra_targets} ${core} ${target})
+foreach(tgt gaviewer_e3ga ${algebra_targets} ${core} ${target})
 
   if (CMAKE_CXX_COMPILER_FRONTEND_VARIANT MATCHES "MSVC")
 
@@ -223,6 +231,7 @@ endforeach()
 
 target_link_libraries(${core}
   PUBLIC ${algebras}
+  PUBLIC ${ga}
   PUBLIC fltk::png
   PUBLIC fltk::gl
   PUBLIC fltk::fltk

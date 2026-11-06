@@ -17,14 +17,19 @@
 #ifndef _GEOSPHERE_H_
 #define _GEOSPHERE_H_
 
+#include <array>
+
 #include "gaincludes.h"
+
+// a vertex of the sphere mesh (plain coordinates: the mesh needs no multivector arithmetic)
+using gsVertex = std::array<double, 3>;
 
 typedef struct geosphereFace_s
 {
     int v[3];
     int child[4];
 
-    e3ga plane;
+    // (no multivector members: the faces are allocated with realloc())
     GAIM_FLOAT d;
     int depth;
 
@@ -37,7 +42,7 @@ typedef struct geosphereFace_s
 typedef struct geosphere_s
 {
     int nbVertices, maxVertices;
-    e3ga *vertex;
+    gsVertex *vertex;
 
     int nbFaces, maxFaces;
     geosphereFace *face;

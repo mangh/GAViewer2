@@ -24,12 +24,18 @@
 #include "state.h"
 #include "util.h"
 
-int mvInt::interpret(const e3ga &amv, int creationFlags /* = 0*/)
+int mvInt::interpret(const e3ga::mv &amv, int creationFlags /* = 0*/)
 {
-    e3ga mv(amv);
+    e3ga::mv mv(amv);
     const GAIM_FLOAT epsilon = 10e-8, epsilon2 = epsilon * epsilon;
-    const GAIM_FLOAT *c;
-    e3ga tmp, rt, pe1, pe2, pe3;
+    e3ga::mv tmp, rt, pe1, pe2, pe3;
+
+    // sets m_vector[i] to the vector v
+    auto setVector = [this](int i, const e3ga::mv &v) {
+        m_vector[i][0] = v[e3ga::E1];
+        m_vector[i][1] = v[e3ga::E2];
+        m_vector[i][2] = v[e3ga::E3];
+    };
     GAIM_FLOAT scale;
 
     if (creationFlags == 0)
@@ -38,21 +44,21 @@ int mvInt::interpret(const e3ga &amv, int creationFlags /* = 0*/)
 
     m_type = MVI_E3GA;
 
-    int grade, type = mv.mvType(&grade), allGrades;
+    int grade, type = ga::mvType(mv, &grade), allGrades;
 
     if (m_creationFlags & OC_VERSOR)
-        type = GA_VERSOR; // force versor interpretation
+        type = ga::mvTypeVersor; // force versor interpretation
     if (m_creationFlags & OC_BLADE)
-        type = GA_BLADE; // force blade interpretation
+        type = ga::mvTypeBlade; // force blade interpretation
 
     allGrades = 0X1FF; // OC_GRADE0 | ... | OC_GRADE8
     if (m_creationFlags & allGrades)
     { // force grade X interpretation
         grade = m_creationFlags & allGrades;
-        mv = mv(grade);
+        mv = ga::takeGrade(mv, grade);
     }
 
-    if (type == GA_BLADE)
+    if (type == ga::mvTypeBlade)
     {
         switch (grade)
         {
@@ -61,7 +67,7 @@ int mvInt::interpret(const e3ga &amv, int creationFlags /* = 0*/)
             /*
             scalar 0: magnitude
             */
-            m_scalar[0] = mv.scalar();
+            m_scalar[0] = ga::scalar(mv);
             break;
         case GRADE1:
             m_type |= MVI_VECTOR;
@@ -69,14 +75,13 @@ int mvInt::interpret(const e3ga &amv, int creationFlags /* = 0*/)
             scalar 0: magnitude
             vector 0: direction
             */
-            m_scalar[0] = sqrt(mv.norm_a());
+            m_scalar[0] = sqrt(ga::norm_a(mv));
 
-            c = mv[GRADE1];
             if (fabs(m_scalar[0]) > 0.0)
             {
-                m_vector[0][0] = c[E3GA_E1] / m_scalar[0];
-                m_vector[0][1] = c[E3GA_E2] / m_scalar[0];
-                m_vector[0][2] = c[E3GA_E3] / m_scalar[0];
+                m_vector[0][0] = mv[e3ga::E1] / m_scalar[0];
+                m_vector[0][1] = mv[e3ga::E2] / m_scalar[0];
+                m_vector[0][2] = mv[e3ga::E3] / m_scalar[0];
             }
             else
             {
@@ -94,22 +99,19 @@ int mvInt::interpret(const e3ga &amv, int creationFlags /* = 0*/)
             vector 1: orthogonal to vector 0 and 2
             vector 2: orthogonal to vector 0 and 1
             */
-            m_scalar[0] = sqrt(mv.norm_a());
+            m_scalar[0] = sqrt(ga::norm_a(mv));
 
             // set vector 0 (normal)
-            tmp = mv.dual() / m_scalar[0];
-            c = tmp[GRADE1];
-            m_vector[0][0] = c[E3GA_E1];
-            m_vector[0][1] = c[E3GA_E2];
-            m_vector[0][2] = c[E3GA_E3];
+            tmp = ga::dual(mv) * (1.0 / m_scalar[0]);
+            setVector(0, tmp);
 
             // set vector 1 and 2 (orthogonal to normal)
-            if ((g_state->m_e3gaFactor[0].norm_a() > 0.0) && // user factorization
-                (g_state->m_e3gaFactor[1].norm_a() > 0.0))
+            if ((ga::norm_a(g_state->m_e3gaFactor[0]) > 0.0) && // user factorization
+                (ga::norm_a(g_state->m_e3gaFactor[1]) > 0.0))
             {
-                pe1 = ((g_state->m_e3gaFactor[0] << mv) << mv.inverse());
-                pe2 = ((g_state->m_e3gaFactor[1] << mv) << mv.inverse());
-                scale = (mv / (pe1 ^ pe2)).scalar();
+                pe1 = ga::lcont(ga::lcont(g_state->m_e3gaFactor[0], mv), ga::inverse(mv));
+                pe2 = ga::lcont(ga::lcont(g_state->m_e3gaFactor[1], mv), ga::inverse(mv));
+                scale = ga::scalar(ga::igp(mv, e3ga::mv(pe1 ^ pe2)));
                 // mv.print("target: ");
                 //(pe1 ^ pe2).print("1: ");
                 pe1 *= ((scale < 0.0) ? -1.0 : 1.0) * sqrt(fabs(scale));
@@ -119,17 +121,11 @@ int mvInt::interpret(const e3ga &amv, int creationFlags /* = 0*/)
             else
             { // auto factorization
                 e3gaRve3(rt, tmp);
-                pe1 = (rt * e3ga::e1 * rt.inverse())(GRADE1);
-                pe2 = (rt * e3ga::e2 * rt.inverse())(GRADE1);
+                pe1 = ga::takeGrade(e3ga::mv(rt * e3ga::e1<double>() * ga::inverse(rt)), GRADE1);
+                pe2 = ga::takeGrade(e3ga::mv(rt * e3ga::e2<double>() * ga::inverse(rt)), GRADE1);
             }
-            c = pe1[GRADE1];
-            m_vector[1][0] = c[E3GA_E1];
-            m_vector[1][1] = c[E3GA_E2];
-            m_vector[1][2] = c[E3GA_E3];
-            c = pe2[GRADE1];
-            m_vector[2][0] = c[E3GA_E1];
-            m_vector[2][1] = c[E3GA_E2];
-            m_vector[2][2] = c[E3GA_E3];
+            setVector(1, pe1);
+            setVector(2, pe2);
             break;
         case GRADE3: // pseudoscalar / trivector
             m_type |= MVI_TRIVECTOR;
@@ -138,11 +134,11 @@ int mvInt::interpret(const e3ga &amv, int creationFlags /* = 0*/)
             scalar 0: magnitude
             */
 
-            m_scalar[0] = mv[GRADE3][E3GA_I];
+            m_scalar[0] = mv[e3ga::E123];
 
             // factor into vector 0, 1, 2
-            if ((scale = (g_state->m_e3gaFactor[0] ^ g_state->m_e3gaFactor[1] ^ g_state->m_e3gaFactor[2]).norm_a()) >
-                0.0)
+            if ((scale = ga::norm_a(e3ga::mv(g_state->m_e3gaFactor[0] ^ g_state->m_e3gaFactor[1] ^
+                                             g_state->m_e3gaFactor[2]))) > 0.0)
             {
                 // factor using the presupplied factors
                 pe1 = g_state->m_e3gaFactor[0];
@@ -153,9 +149,9 @@ int mvInt::interpret(const e3ga &amv, int creationFlags /* = 0*/)
             else
             {
                 // factor using the basis vectors
-                pe1 = e3ga::e1;
-                pe2 = e3ga::e2;
-                pe3 = e3ga::e3;
+                pe1 = e3ga::e1<double>();
+                pe2 = e3ga::e2<double>();
+                pe3 = e3ga::e3<double>();
                 scale = 1.0;
             }
 
@@ -167,26 +163,17 @@ int mvInt::interpret(const e3ga &amv, int creationFlags /* = 0*/)
             pe3 *= 1.0 / scale;
 
             // set the factors
-            c = pe1[GRADE1];
-            m_vector[0][0] = c[E3GA_E1];
-            m_vector[0][1] = c[E3GA_E2];
-            m_vector[0][2] = c[E3GA_E3];
-            c = pe2[GRADE1];
-            m_vector[1][0] = c[E3GA_E1];
-            m_vector[1][1] = c[E3GA_E2];
-            m_vector[1][2] = c[E3GA_E3];
-            c = pe3[GRADE1];
-            m_vector[2][0] = c[E3GA_E1];
-            m_vector[2][1] = c[E3GA_E2];
-            m_vector[2][2] = c[E3GA_E3];
+            setVector(0, pe1);
+            setVector(1, pe2);
+            setVector(2, pe3);
 
             break;
         }
     }
-    else if (type == GA_VERSOR)
+    else if (type == ga::mvTypeVersor)
     {
-        GAIM_FLOAT odd = mv(GRADE1).norm_a() + mv(GRADE3).norm_a();
-        GAIM_FLOAT even = mv(GRADE0).norm_a() + mv(GRADE2).norm_a();
+        GAIM_FLOAT odd = ga::gradeNorm_a(mv, 1) + ga::gradeNorm_a(mv, 3);
+        GAIM_FLOAT even = ga::gradeNorm_a(mv, 0) + ga::gradeNorm_a(mv, 2);
         if (odd < even)
         { // even 3D versor = rotor
             m_type |= MVI_ROTOR;
@@ -202,16 +189,16 @@ int mvInt::interpret(const e3ga &amv, int creationFlags /* = 0*/)
             m_scalar[0] = even;
 
             // interpret the bivector part to retrieve plane
-            e3ga plane(m_scalar[0] * mv(GRADE2).normal());
+            e3ga::mv plane(m_scalar[0] * ga::normalize(ga::takeGrade(mv, GRADE2)));
             mvInt bivectorInt(plane, OC_BLADE | OC_GRADE2);
             memcpy(m_vector[0], bivectorInt.m_vector[0], sizeof(GAIM_FLOAT) * 3);
             memcpy(m_vector[1], bivectorInt.m_vector[1], sizeof(GAIM_FLOAT) * 3);
             memcpy(m_vector[2], bivectorInt.m_vector[2], sizeof(GAIM_FLOAT) * 3);
 
             // retrieve the angle
-            e3ga Rn(mv / even);
-            GAIM_FLOAT ca = Rn.scalar();
-            GAIM_FLOAT sa = sqrt(Rn(GRADE2).norm_a());
+            e3ga::mv Rn(mv * (1.0 / even));
+            GAIM_FLOAT ca = ga::scalar(Rn);
+            GAIM_FLOAT sa = sqrt(ga::gradeNorm_a(Rn, 2));
             if ((sa < epsilon) || (sin(acos(ca)) < epsilon))
                 m_scalar[1] = 0; // angle = 0
             else

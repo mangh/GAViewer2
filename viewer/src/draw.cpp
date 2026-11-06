@@ -38,7 +38,7 @@ int drawVector(const GAIM_FLOAT tail[3], const GAIM_FLOAT dir[3], GAIM_FLOAT sca
     GLboolean l;
     const GAIM_FLOAT rotStep = 2 * M_PI / 32;
     GAIM_FLOAT z;
-    e3ga rt, n, rti;
+    e3ga::mv rt, n, rti;
     float rotM[16];
 
     if (scale == 0.0)
@@ -86,7 +86,7 @@ int drawVector(const GAIM_FLOAT tail[3], const GAIM_FLOAT dir[3], GAIM_FLOAT sca
     }
 
     // rotate e3 to vector direction
-    e3gaRve3(rt, e3ga(GRADE1, dir[0], dir[1], dir[2]));
+    e3gaRve3(rt, e3ga::vector(dir[0], dir[1], dir[2]));
     e3gaRotorToOpenGLMatrix(rt, rotM);
     glMultMatrixf(rotM);
 
@@ -104,25 +104,25 @@ int drawVector(const GAIM_FLOAT tail[3], const GAIM_FLOAT dir[3], GAIM_FLOAT sca
         glEnd();*/
 
     // ---Otherwise:
-    rt = (-0.5 * rotStep * e3ga::e1 ^ e3ga::e2).exp();
-    rti = rt.inverse();
-    n = e3ga::e1;
+    rt = ga::exp(e3ga::mv(-0.5 * rotStep * e3ga::e1<double>() ^ e3ga::e2<double>()));
+    rti = ga::inverse(rt);
+    n = e3ga::e1<double>();
     glBegin(GL_QUADS);
     for (z = 0; z < 2 * M_PI; z += rotStep)
     {
-        glNormal3dv(n[GRADE1]);
+        glNormal3dv(e3ga::xyz(n).data());
         glVertex3d(0.1 * cos(z), 0.1 * sin(z), -0.25);
         glVertex3d(0.0, 0.0, 0.00);
-        n = (rt * n * rti)(GRADE1);
-        glNormal3dv(n[GRADE1]);
+        n = ga::takeGrade(e3ga::mv(rt * n * rti), GRADE1);
+        glNormal3dv(e3ga::xyz(n).data());
         glVertex3d(0.0, 0.0, 0.0);
         glVertex3d(0.1 * cos(z + rotStep), 0.1 * sin(z + rotStep), -0.25);
     }
     glEnd();
 
-    n = e3ga::e1;
+    n = e3ga::e1<double>();
     glBegin(GL_TRIANGLE_FAN);
-    glNormal3dv((-(e3ga &)e3ga::e3)[GRADE1]);
+    glNormal3dv(e3ga::xyz(-e3ga::e3<double>()).data());
     glVertex3d(0.0f, 0.0f, -0.25);
     for (z = 0; z <= 2 * M_PI + 1e-3; z += rotStep)
     {
@@ -155,7 +155,7 @@ int drawBivector(const GAIM_FLOAT base[3], const GAIM_FLOAT normal[3], const GAI
     TubeDraw &T = gui_state->m_tubeDraw;
     const GAIM_FLOAT rotStep = 2 * M_PI / 64;
     GAIM_FLOAT x, y;
-    e3ga rt;
+    e3ga::mv rt;
     float rotM[16];
 
     glMatrixMode(GL_MODELVIEW);
@@ -173,16 +173,16 @@ int drawBivector(const GAIM_FLOAT base[3], const GAIM_FLOAT normal[3], const GAI
         glScaled(scale, scale, scale);
 
         // rotate e3 to normal direction
-        e3gaRve3(rt, e3ga(GRADE1, normal[0], normal[1], normal[2]));
+        e3gaRve3(rt, e3ga::vector(normal[0], normal[1], normal[2]));
         e3gaRotorToOpenGLMatrix(rt, rotM);
         glMultMatrixf(rotM);
     }
     else
     {
-        e3ga o1(GRADE1, ortho1);
-        e3ga o2(GRADE1, ortho2);
+        e3ga::mv o1 = e3ga::vector(ortho1);
+        e3ga::mv o2 = e3ga::vector(ortho2);
         // scale is based on _circle_, re-scale for square:
-        double size = scale * scale * M_PI / sqrt((o1 ^ o2).norm_a());
+        double size = scale * scale * M_PI / sqrt(ga::norm_a(e3ga::mv(o1 ^ o2)));
         double _scale = sqrt(size);
         //		printf("Would scale by %f (scale = %f)\n", _scale, scale);
         //		printf("o1: %f %f %f\n", ortho1[0], ortho1[1], ortho1[2]);
@@ -435,11 +435,11 @@ int drawTriVector(const GAIM_FLOAT base[3], GAIM_FLOAT scale, GAIM_FLOAT vector[
             glBegin(GL_QUADS);
             for (i = 0; i < 6; i++)
             {
-                e3ga v1(GRADE1, vertex[polygon[i][0]]);
-                e3ga v2(GRADE1, vertex[polygon[i][1]]);
-                e3ga v3(GRADE1, vertex[polygon[i][3]]);
-                e3ga normal(scaleSign * ((v2 - v1) ^ (v3 - v1)).dual());
-                glNormal3dv(normal[GRADE1]);
+                e3ga::mv v1 = e3ga::vector(vertex[polygon[i][0]]);
+                e3ga::mv v2 = e3ga::vector(vertex[polygon[i][1]]);
+                e3ga::mv v3 = e3ga::vector(vertex[polygon[i][3]]);
+                e3ga::mv normal(scaleSign * ga::dual(e3ga::mv((v2 - v1) ^ (v3 - v1))));
+                glNormal3dv(e3ga::xyz(normal).data());
                 if (scale >= 0.0)
                     for (j = 0; j < 4; j++)
                         glVertex3dv(vertex[polygon[i][j]]);

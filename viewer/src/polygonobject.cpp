@@ -221,11 +221,10 @@ int polygonObject::drawPolygon(glwindow *window)
     int i;
 
     // compute the normal
-    e3ga n(((e3ga(GRADE1, getVertex(1)) - e3ga(GRADE1, getVertex(0))) ^
-            (e3ga(GRADE1, getVertex(2)) - e3ga(GRADE1, getVertex(0))))
-               .dual());
+    e3ga::mv n(ga::dual(e3ga::mv((e3ga::vector(getVertex(1)) - e3ga::vector(getVertex(0))) ^
+                                 (e3ga::vector(getVertex(2)) - e3ga::vector(getVertex(0))))));
 
-    glNormal3dv(n[GRADE1]);
+    glNormal3dv(e3ga::xyz(n).data());
 
     if (m_dmMenuIdx == DRAW_PG_FILLED)
     {
@@ -234,7 +233,7 @@ int polygonObject::drawPolygon(glwindow *window)
         for (i = 0; i < m_nbVertices; i++)
             glVertex3dv(getVertex(i));
         glEnd();
-        glNormal3dv((-n)[GRADE1]);
+        glNormal3dv(e3ga::xyz(-n).data());
         glBegin((m_drawMode & OD_ORI) ? GL_LINE_LOOP : GL_POLYGON);
         for (i = m_nbVertices - 1; i >= 0; i--)
             glVertex3dv(getVertex(i));
@@ -267,7 +266,7 @@ int polygonObject::drawSimplex(glwindow *window)
     int i;
     const GAIM_FLOAT *v1, *v2, *v3;
     GAIM_FLOAT tmp[3], l;
-    e3ga n, pt[3], hpt, ovc, apt;
+    e3ga::mv n, pt[3], hpt, ovc, apt;
 
     switch (m_nbVertices)
     {
@@ -314,14 +313,14 @@ int polygonObject::drawSimplex(glwindow *window)
         v3 = getVertex(2);
 
         // compute the normal
-        n = (((e3ga(GRADE1, v2) - e3ga(GRADE1, v1)) ^ (e3ga(GRADE1, v3) - e3ga(GRADE1, v1))).dual());
+        n = ga::dual(e3ga::mv((e3ga::vector(v2) - e3ga::vector(v1)) ^ (e3ga::vector(v3) - e3ga::vector(v1))));
 
-        glNormal3dv(n[GRADE1]);
+        glNormal3dv(e3ga::xyz(n).data());
         glBegin(GL_POLYGON);
         for (i = 0; i < m_nbVertices; i++)
             glVertex3dv(getVertex(i));
         glEnd();
-        glNormal3dv((-n)[GRADE1]);
+        glNormal3dv(e3ga::xyz(-n).data());
         glBegin(GL_POLYGON);
         for (i = m_nbVertices - 1; i >= 0; i--)
             glVertex3dv(getVertex(i));
@@ -340,15 +339,15 @@ int polygonObject::drawSimplex(glwindow *window)
             setOlColor();
             // e3ga n, pt[3], hpt, ovc, apt;
             for (i = 0; i < m_nbVertices; i++)
-                pt[i].setVector(getVertex(i));
+                pt[i] = e3ga::vector(getVertex(i));
             T.begin(GL_LINES);
             for (i = 0; i < m_nbVertices; i++)
             {
                 hpt = 0.5 * (pt[i] + pt[(i + 1) % m_nbVertices]);
-                ovc = ((pt[(i + 1) % m_nbVertices] - pt[i]) ^ n).dual().normal();
+                ovc = ga::normalize(ga::dual(e3ga::mv((pt[(i + 1) % m_nbVertices] - pt[i]) ^ n)));
                 apt = 0.7 * pt[i] + 0.3 * pt[(i + 1) % m_nbVertices] + 0.1 * ovc;
-                T.vertex3dv(hpt[GRADE1]);
-                T.vertex3dv(apt[GRADE1]);
+                T.vertex3dv(e3ga::xyz(hpt).data());
+                T.vertex3dv(e3ga::xyz(apt).data());
             }
             T.end();
         }

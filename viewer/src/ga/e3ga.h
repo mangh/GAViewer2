@@ -30,6 +30,28 @@ ga::algebraTraits.
 namespace e3ga
 {
 using mv = Mvec<double>; // the multivector type of e3ga in GAViewer
+
+// the vector x e1 + y e2 + z e3
+inline mv vector(double x, double y, double z)
+{
+    mv v;
+    v[E1] = x;
+    v[E2] = y;
+    v[E3] = z;
+    return v;
+}
+
+// the vector with the coordinates xyz[0], xyz[1], xyz[2]
+template <class F> mv vector(const F *xyz)
+{
+    return vector((double)xyz[0], (double)xyz[1], (double)xyz[2]);
+}
+
+// the coordinates of the vector part of 'v' (e1, e2, e3), e.g. for glVertex3dv(xyz(v).data())
+inline std::array<double, 3> xyz(const mv &v)
+{
+    return {v[E1], v[E2], v[E3]};
+}
 } // namespace e3ga
 
 template <> struct ga::algebraTraits<e3ga::mv>
@@ -46,7 +68,7 @@ template <> struct ga::algebraTraits<e3ga::mv>
     }
 
     // the basis of the Gaigen e3ga algebra
-    static inline const std::array<displayBlade, 8> displayBasis = {{
+    static inline std::array<displayBlade, 8> displayBasis = {{
         {"1", e3ga::scalar, 1.0},
         {"e1", e3ga::E1, 1.0},
         {"e2", e3ga::E2, 1.0},

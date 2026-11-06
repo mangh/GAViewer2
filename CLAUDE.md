@@ -35,8 +35,8 @@ GAViewer2
         ├───c3ga          ← c3ga algebra (most likely generated using Gaigen 1)
         ├───c5ga          ← c5ga algebra (most likely generated using Gaigen 1)
         ├───console       ← GAViewer console (language: consolelangparser.cpp = lexer + parser)
-        ├───e3ga          ← e3ga algebra (most likely generated using Gaigen 1)
-        ├───ga            ← Garamon based algebra layer: traits (display basis), Gaigen-compatible algorithms, text format/parse
+        ├───e3ga          ← the Gaigen e3ga, no longer used by GAViewer (only by the differential test gadiff.e3ga)
+        ├───ga            ← Garamon based algebra layer: e3ga::mv, traits (display basis), Gaigen-compatible algorithms, text format/parse
         ├───i2ga          ← i2ga algebra (most likely generated using Gaigen 1)
         ├───p3ga          ← p3ga algebra (most likely generated using Gaigen 1)
         └───typeset       ← text and font handling in the GUI
@@ -55,11 +55,12 @@ GAViewer2
 
 | Target | Contents |
 |--------|----------|
-| `gaviewer_e3ga`, `gaviewer_p3ga`, `gaviewer_c3ga`, `gaviewer_c5ga`, `gaviewer_i2ga` | one static library per algebra (Gaigen generated `src/<name>/*.cpp`), no dependencies on the rest of GAViewer; the unit to swap for a Garamon implementation |
-| `gaviewer_algebras` | interface library bundling the five algebras |
-| `garamon_<name>` (`garamon/CMakeLists.txt`) | header-only Garamon algebra generated at build time from `garamon/<name>.conf` by the fetched fork's `garamon_generator` (`#include <<name>/Mvec.hpp>`, needs Eigen, provided as `Eigen3::Eigen`); so far `garamon_e3ga`, used only by the smoke test `garamon.smoke_e3ga` |
-| `gaviewer_ga` | header-only algebra layer `src/ga` (`ga::algebraTraits<MV>`, `ga/algorithms.h`, `ga/format.h`) over the Garamon algebras; links `garamon_e3ga` |
-| `gaviewer_core` | everything else except `main.cpp` (console, objects, `mvInt`, GUI, …); links `gaviewer_algebras` and FLTK |
+| `gaviewer_p3ga`, `gaviewer_c3ga`, `gaviewer_c5ga`, `gaviewer_i2ga` | one static library per Gaigen algebra still in use (`src/<name>/*.cpp`), no dependencies on the rest of GAViewer; the unit to swap for a Garamon implementation |
+| `gaviewer_e3ga` | the Gaigen e3ga, used only by the differential test `gadiff.e3ga` (GAViewer uses the Garamon e3ga) |
+| `gaviewer_algebras` | interface library bundling the Gaigen algebras in use |
+| `garamon_<name>` (`garamon/CMakeLists.txt`) | header-only Garamon algebra generated at build time from `garamon/<name>.conf` by the fetched fork's `garamon_generator` (`#include <<name>/Mvec.hpp>`, needs Eigen, provided as `Eigen3::Eigen`); so far `garamon_e3ga` (smoke test `garamon.smoke_e3ga`) |
+| `gaviewer_ga` | header-only algebra layer `src/ga` (`ga::algebraTraits<MV>`, `ga/algorithms.h`, `ga/format.h`, transitional `ga/gaigencompat.h`) over the Garamon algebras; links `garamon_e3ga`, defines `NOMINMAX` on Windows |
+| `gaviewer_core` | everything else except `main.cpp` (console, objects, `mvInt`, GUI, …); links `gaviewer_algebras`, `gaviewer_ga` and FLTK |
 | `GAViewer2` | the GUI application: `main.cpp` + `gaviewer_core` |
 | `gaviewer_regress` | the headless regression harness (`viewer/test`) + `gaviewer_core` |
 
@@ -67,7 +68,8 @@ GAViewer2
 
 | Type | Role |
 |------|------|
-| `consoleVariable` (`console/consolevariable.h`) | a console value: name, flags, draw properties and the multivector, a `std::variant<std::monostate, e3ga, p3ga, c3ga, c5ga, i2ga>`; `mv<MV>()` (and `e()`, `p()`, `c()`, `c5()`, `i2()`) returns it as type `MV` (a static zero if of another model), `visitMV(f, none)` calls `f` with it as its actual type, `model()` is derived from it |
+| `e3ga::mv` (`ga/e3ga.h`) | the e3ga multivector: Garamon's `e3ga::Mvec<double>`; helpers `e3ga::vector(x, y, z)`, `e3ga::xyz(v)` (coordinates as `std::array<double, 3>`), basis `e3ga::e1<double>()`, ..., coordinates `v[e3ga::E1]`, `v[e3ga::E12]`, ... (Garamon basis: `E13` = `-e3^e1` of Gaigen) |
+| `consoleVariable` (`console/consolevariable.h`) | a console value: name, flags, draw properties and the multivector, a `std::variant<std::monostate, e3ga::mv, p3ga, c3ga, c5ga, i2ga>`; `mv<MV>()` (and `e()`, `p()`, `c()`, `c5()`, `i2()`) returns it as type `MV` (a static zero if of another model), `visitMV(f, none)` calls `f` with it as its actual type, `model()` is derived from it |
 | `modelId<MV>`, `modelName(model)` (`models.h`) | model id (`MVI_*`) of a multivector type, name ("e3ga", …) of a model id |
 | `consoleFunc` (`console/consolefunction.h`) | entry of the built-in function table: name, function pointer, argument specs (`CVF_*` flags + model id `MVI_*`); the table is `consoleBuiltinFunctions()` |
 | `consoleAlgebra<MV>` (`console/consolealgebra.h`) | the console's binding of a multivector type (`e3ga`, `p3ga`, `c3ga`, `c5ga`, `i2ga`) to its model id, cast, factor setter and object creation; `mv<MV>(cv)` accesses a variable's multivector; `forEachConsoleAlgebra` iterates the algebras, `withConsoleAlgebra(model, f)` calls `f.template operator()<MV>()` for a model id |
@@ -120,3 +122,16 @@ cmake --build build --target regress_update_golden              # regenerate gol
 ---
 
 ## Things to Avoid
+
+Garamon pitfalls (each of these compiles and silently computes something else than the Gaigen code it replaces):
+
+- `Mvec::dual()` and `!x` are `x _| I` in Garamon (Gaigen: `x I^-1`, opposite sign in e3ga): use `ga::dual(x)`.
+- `a / b` is `a * b.inv()` with an epsilon threshold: use `ga::igp(a, b)` (Gaigen's exact versor inverse).
+- `x.grade(k)` takes a grade number (Gaigen `x.grade(mask)` / `x(mask)` took a bitmask `GRADEk`): use `ga::takeGrade(x, mask)`; Garamon's `grade()` returns the highest grade (Gaigen: -1 if not homogeneous): use `ga::grade(x)`.
+- `isGrade(0)` is true for zero: use `ga::hasGrade()` / `ga::gradeUsage()`.
+- `Mvec` converts implicitly to `double` (its scalar part) and has an unconstrained implicit template constructor `Mvec(S)`: `fabs(mv)` compiles, and any argument type (e.g. `char *`) competes with other overloads (e.g. `std::string`).
+- `a < b` / `a > b` are the left / right contraction, not comparisons.
+- Every `Mvec` operation allocates (`std::list` of Eigen vectors): keep multivectors out of hot loops (e.g. `geosphere.cpp` uses plain `std::array<double, 3>`), and never put an `Mvec` in `malloc`/`realloc`'ed memory.
+- `<windows.h>` defines `min`/`max` macros that break Garamon: `gaviewer_ga` defines `NOMINMAX`.
+
+To check a conversion for the silent cases: temporarily add `static_assert(sizeof(T) == 0, ...)` to `Mvec::dual()`, `operator!`, `operator/(const Mvec&)` and `operator T()` in the generated `build/garamon/generated/garamon_<name>/src/<name>/Mvec.hpp` and rebuild: every use is then a compile error (restore the file afterwards).

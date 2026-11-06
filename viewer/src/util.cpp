@@ -15,37 +15,27 @@
 // Copyright 2002-2009, Daniel Fontijne, University of Amsterdam -- fontijne@science.uva.nl
 
 #include <cmath>
-#include <cstring>
+
+#include <array>
 
 #include "gaincludes.h"
 #include "osdep.h"
 #include "util.h"
 
-void e3gaRotorToOpenGLMatrix(const e3ga &rot, float rotM[16])
+void e3gaRotorToOpenGLMatrix(const e3ga::mv &rot, float rotM[16])
 {
-    e3ga_om om;
-    e3ga vi[3], ri = rot.inverse(); // vi = vector images; ri = rot inverse
-    vi[0] = (rot * e3ga::e1 * ri)(GRADE1);
-    vi[1] = (rot * e3ga::e2 * ri)(GRADE1);
-    vi[2] = (rot * e3ga::e3 * ri)(GRADE1);
-    om.initOuterMorphism(vi);
-    float rotM2[16] = {(float)om.c[1 + 0 * 3 + 0],
-                       (float)om.c[1 + 1 * 3 + 0],
-                       (float)om.c[1 + 2 * 3 + 0],
-                       0,
-                       (float)om.c[1 + 0 * 3 + 1],
-                       (float)om.c[1 + 1 * 3 + 1],
-                       (float)om.c[1 + 2 * 3 + 1],
-                       0,
-                       (float)om.c[1 + 0 * 3 + 2],
-                       (float)om.c[1 + 1 * 3 + 2],
-                       (float)om.c[1 + 2 * 3 + 2],
-                       0,
-                       0,
-                       0,
-                       0,
-                       1};
-    memcpy(rotM, rotM2, sizeof(float) * 16);
+    // the columns of the (column-major) OpenGL matrix are the images of e1, e2, e3
+    e3ga::mv ri = ga::inverse(rot);
+    const e3ga::mv basis[3] = {e3ga::e1<double>(), e3ga::e2<double>(), e3ga::e3<double>()};
+    for (int col = 0; col < 3; col++)
+    {
+        std::array<double, 3> image = e3ga::xyz(rot * basis[col] * ri);
+        for (int row = 0; row < 3; row++)
+            rotM[col * 4 + row] = (float)image[row];
+        rotM[col * 4 + 3] = 0.0f;
+    }
+    rotM[12] = rotM[13] = rotM[14] = 0.0f;
+    rotM[15] = 1.0f;
 }
 
 void GLmatrixVectorMul(const double m[16], const double v[4], double r[4])
@@ -59,11 +49,11 @@ void GLmatrixVectorMul(const double m[16], const double v[4], double r[4])
     }
 }
 
-int e3gaRve3(e3ga &R, const e3ga &v)
+int e3gaRve3(e3ga::mv &R, const e3ga::mv &v)
 {
-    R = 1.0 + v.normal() * e3ga::e3;
-    if (sqrt(R.norm_a()) < 1e-8)
-        R = e3ga::e3 ^ e3ga::e1; // any 180 degree rot in a plane containing e3?
+    R = 1.0 + ga::normalize(v) * e3ga::e3<double>();
+    if (sqrt(ga::norm_a(R)) < 1e-8)
+        R = e3ga::e3<double>() ^ e3ga::e1<double>(); // any 180 degree rot in a plane containing e3?
     return 0;
 }
 
@@ -83,14 +73,14 @@ int c3gaRve3(c3ga &R, const c3ga &v)
     return 0;
 }
 
-int rotor2Bivector(e3ga &B, const e3ga &R)
+int rotor2Bivector(e3ga::mv &B, const e3ga::mv &R)
 {
-    e3ga Rn(R / sqrt(R.norm_a()));
-    GAIM_FLOAT ca = Rn.scalar();
-    if ((Rn(GRADE2).norm_a() < 1e-9) || (sin(acos(ca)) < 1e-9))
+    e3ga::mv Rn(R * (1.0 / sqrt(ga::norm_a(R))));
+    GAIM_FLOAT ca = ga::scalar(Rn);
+    if ((ga::gradeNorm_a(Rn, 2) < 1e-9) || (sin(acos(ca)) < 1e-9))
         B = 0;
     else
-        B = (acos(ca) * Rn / sin(acos(ca)))(GRADE2);
+        B = ga::takeGrade(e3ga::mv(acos(ca) * Rn * (1.0 / sin(acos(ca)))), GRADE2);
 
     return 0;
 }

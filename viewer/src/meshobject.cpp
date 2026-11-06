@@ -19,6 +19,7 @@
 #include <cstdlib>
 #include <string.h> // NOLINT(modernize-deprecated-headers): strdup() is POSIX, not in <cstring>
 
+#include <array>
 #include <string>
 
 #include "gl_includes.h"
@@ -555,7 +556,7 @@ int meshObject::computeNormals(state *s)
     int v, f;
     struct face *fc;
     //	static const GAIM_FLOAT null[3] = {0.0f, 0.0f, 0.0f};
-    e3ga v1, v2, v3, nl;
+    e3ga::mv v1, v2, v3, nl;
     GAIM_FLOAT l;
 
     // first of all check the faces / vertices?
@@ -599,11 +600,13 @@ int meshObject::computeNormals(state *s)
         {
             fc = m_face + f;
 
-            v1.setVector(m_vertex[fc->vtxIdx[0]].pos);
-            v2.setVector(m_vertex[fc->vtxIdx[1]].pos);
-            v3.setVector(m_vertex[fc->vtxIdx[2]].pos);
-            nl = ((v2 - v1) ^ (v3 - v1)).dual().normal();
-            memcpy(fc->nl, nl[GRADE1], 3 * sizeof(GAIM_FLOAT));
+            v1 = e3ga::vector(m_vertex[fc->vtxIdx[0]].pos);
+            v2 = e3ga::vector(m_vertex[fc->vtxIdx[1]].pos);
+            v3 = e3ga::vector(m_vertex[fc->vtxIdx[2]].pos);
+            nl = ga::normalize(ga::dual(e3ga::mv((v2 - v1) ^ (v3 - v1))));
+            std::array<double, 3> c = e3ga::xyz(nl);
+            for (int k = 0; k < 3; k++)
+                fc->nl[k] = c[k];
         }
     }
 

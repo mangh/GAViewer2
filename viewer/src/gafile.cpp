@@ -573,12 +573,12 @@ int GAfile::parseLine(state *s)
     char str[nbStr][256];
     char *strPtr[nbStr] = {str[0], str[1], str[2], str[3], str[4], str[5], str[6], str[7]};
 
-    e3ga e3gaMv;
+    e3ga::mv e3gaMv;
     p3ga p3gaMv;
     c3ga c3gaMv;
     c5ga c5gaMv;
-    e3ga_ben eBen('[', ']');
-    eBen.addName("I3", e3ga::I);
+    ga::basisNames<e3ga::mv> eBen('[', ']');
+    eBen.add("I3", e3ga::I<double>());
     p3ga_ben pBen('[', ']');
     c3ga_ben cBen('[', ']');
     cBen.addName("einf", c3ga::ni);
@@ -669,7 +669,7 @@ int GAfile::parseLine(state *s)
         err = 0;
         if (e3gaO)
         {
-            if ((n = e3gaMv.parseString(line + idx, &eBen)) < 0)
+            if ((n = ga::parse(line + idx, e3gaMv, eBen)) < 0)
                 err = -1;
         }
         else if (p3gaO)
@@ -728,7 +728,7 @@ int GAfile::parseLine(state *s)
         // parse either multivector coordinates, or a string
         pointName[0] = 0;
         e3gaMv = 0.0;
-        if ((n = e3gaMv.parseString(line + idx, &eBen)) < 0)
+        if ((n = ga::parse(line + idx, e3gaMv, eBen)) < 0)
         {
             // no coordinates, thus first name must be refering to a point
             if (((idx = readString(line, idx, pointName)) < 0) || ((o = s->getObjectPtrByName(pointName)) == NULL))
@@ -760,7 +760,7 @@ int GAfile::parseLine(state *s)
         }
 
         if (pointName[0])
-            s->addTextObject(text, pointName, name, labelMode, w);
+            s->addTextObject(text, std::string(pointName), name, labelMode, w);
         else
             s->addTextObject(text, e3gaMv, name, labelMode, w);
     }
@@ -854,11 +854,11 @@ int GAfile::parseLine(state *s)
     else if ((!strcmpnc(entryname, "eyepos")) || (!strcmpnc(entryname, "campos")))
     { // eyepos *********************
         // retrieve coordinates, built up multivector
-        if ((n = e3gaMv.parseString(line + strlen("eyepos"), &eBen)) < 0)
+        if ((n = ga::parse(line + strlen("eyepos"), e3gaMv, eBen)) < 0)
             return n;
         if (gui_state && gui_state->m_glWindow)
         {
-            gui_state->m_glWindow->setCamPos(e3gaMv(GRADE1));
+            gui_state->m_glWindow->setCamPos(ga::takeGrade(e3gaMv, GRADE1));
             gui_state->m_glWindow->redraw();
         }
     }
@@ -882,19 +882,19 @@ int GAfile::parseLine(state *s)
             return 0;
 
         // retrieve coordinates, built up multivector
-        if ((n = e3gaMv.parseString(line + idx, &eBen)) < 0)
+        if ((n = ga::parse(line + idx, e3gaMv, eBen)) < 0)
             return n;
-        e3gaMv = e3gaMv(GRADE1);
+        e3gaMv = ga::takeGrade(e3gaMv, GRADE1);
         s->setTrl(e3gaMv, f1);
     }
     else if ((!strcmpnc(entryname, "eyeori")) || (!strcmpnc(entryname, "camori")))
     { // eyeori *********************
         // retrieve coordinates, built up multivector
-        if ((n = e3gaMv.parseString(line + strlen("eyepos"), &eBen)) < 0)
+        if ((n = ga::parse(line + strlen("eyepos"), e3gaMv, eBen)) < 0)
             return n;
         if (gui_state && gui_state->m_glWindow)
         {
-            gui_state->m_glWindow->setCamOri((-e3gaMv(GRADE2)).exp());
+            gui_state->m_glWindow->setCamOri(ga::exp(e3ga::mv(-ga::takeGrade(e3gaMv, GRADE2))));
             gui_state->m_glWindow->redraw();
         }
     }
@@ -918,12 +918,12 @@ int GAfile::parseLine(state *s)
             return 0;
 
         // retrieve coordinates, built up multivector
-        if ((n = e3gaMv.parseString(line + idx, &eBen)) < 0)
+        if ((n = ga::parse(line + idx, e3gaMv, eBen)) < 0)
         {
             cprintf("warning: GAfile::parseLine(): file '%s': could not parse rotation\n", m_filename);
             return n;
         }
-        e3gaMv = e3gaMv(GRADE2);
+        e3gaMv = ga::takeGrade(e3gaMv, GRADE2);
 
         s->setRot(e3gaMv, f1);
     }
@@ -1111,8 +1111,8 @@ int GAfile::parseLine(state *s)
         err = 0;
         if (e3gaO)
         {
-            if ((i > 3) || ((n = e3gaMv.parseString(line + idx, &eBen)) < 0))
-                e3gaMv.null();
+            if ((i > 3) || ((n = ga::parse(line + idx, e3gaMv, eBen)) < 0))
+                e3gaMv = e3ga::mv();
             return s->setE3gaFactor(e3gaMv, i - 1);
         }
         else if (p3gaO)
@@ -1470,7 +1470,7 @@ int GAfile::parseLine(state *s)
         // read point multivector coordinates of point name
         pointName[0] = 0;
         e3gaMv = 0.0;
-        if ((n = e3gaMv.parseString(line + idx, &eBen)) < 0)
+        if ((n = ga::parse(line + idx, e3gaMv, eBen)) < 0)
         {
             // no coordinates, thus first name must be refering to a point
             if (((idx = readString(line, idx, pointName)) < 0) || ((o = s->getObjectPtrByName(pointName)) == NULL))
@@ -1490,14 +1490,14 @@ int GAfile::parseLine(state *s)
             if (pointName[0])
                 err = m->setVertexPos(i, pointName);
             else
-                err = m->setVertexPos(i, e3gaMv[GRADE1]);
+                err = m->setVertexPos(i, e3ga::xyz(e3gaMv).data());
         }
         else
         {
             if (pointName[0])
                 err = m->setVertexNormal(i, pointName);
             else
-                err = m->setVertexNormal(i, e3gaMv[GRADE1]);
+                err = m->setVertexNormal(i, e3ga::xyz(e3gaMv).data());
         }
     }
     else if (!strcmpnc(entryname, "meshface"))

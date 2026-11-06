@@ -51,7 +51,7 @@ Fl_Menu_Item gui_e3gaTrivectorDrawMethods[] = {
     {"Parallelepiped w.o. vectors", 0, NULL, (void *)DRAW_TV_PARALLELEPIPED_NO_VECTORS, 0},
     {0}};
 
-e3gaObject::e3gaObject(const e3ga &mv, const std::string &name /*= std::string("")*/, int drawMode /*= 0*/,
+e3gaObject::e3gaObject(const e3ga::mv &mv, const std::string &name /*= std::string("")*/, int drawMode /*= 0*/,
                        int creationFlags /*= 0*/, int forceFlags /*= 0*/)
     : object(OT_E3GA, name, drawMode, creationFlags, forceFlags)
 {
@@ -103,7 +103,7 @@ int e3gaObject::copy(const object *o, int &propertiesChanged, int forceFlags /*=
         return err;
     const e3gaObject *e3gaO = (const e3gaObject *)o;
 
-    if ((m_mv - e3gaO->m_mv).norm_a() != 0.0)
+    if (ga::norm_a(e3ga::mv(m_mv - e3gaO->m_mv)) != 0.0)
         propertiesChanged |= OP_DESCRIPTION;
     m_mv = e3gaO->m_mv;
     m_int.copy(&e3gaO->m_int);
@@ -117,7 +117,7 @@ int e3gaObject::pick(glwindow *window)
 
 int e3gaObject::translate(glwindow *window, double depth, double motionX, double motionY)
 {
-    e3ga v;
+    e3ga::mv v;
     GAIM_FLOAT m, mnew;
 
     int modified = 0;
@@ -131,11 +131,11 @@ int e3gaObject::translate(glwindow *window, double depth, double motionX, double
     case MVI_SCALAR:
     case MVI_BIVECTOR:
     case MVI_TRIVECTOR:
-        m = sqrt(m_mv.norm_a());
+        m = sqrt(ga::norm_a(m_mv));
         mnew = (m + (GAIM_FLOAT)(-motionX + motionY) / 30.0);
         if (mnew < 0.0001)
             mnew = m;
-        m_mv = (m_mv / m) * mnew;
+        m_mv = (m_mv * (1.0 / m)) * mnew;
         modified = 1;
         break;
     case MVI_ROTOR:
@@ -251,36 +251,36 @@ int e3gaObject::draw(glwindow *window)
 
             // draw 'angle of rotation'
             setOlColor();
-            e3ga v(GRADE1, m_int.m_vector[1]), R, b(GRADE1, m_int.m_vector[0]);
-            b = -b.dual();
-            v = v.normal() * 0.8 * scale;
+            e3ga::mv v = e3ga::vector(m_int.m_vector[1]), R, b = e3ga::vector(m_int.m_vector[0]);
+            b = -ga::dual(b);
+            v = ga::normalize(v) * 0.8 * scale;
 
             int nbSteps, i;
             const GAIM_FLOAT ainc = 0.05 * M_PI;
 
             {
                 T.begin(GL_LINE_STRIP);
-                T.vertex3dv(v[GRADE1]);
+                T.vertex3dv(e3ga::xyz(v).data());
 
                 nbSteps = (int)(m_int.m_scalar[1] / ainc) + 1;
-                R = (((0.5 * m_int.m_scalar[1]) / nbSteps) * b).exp();
+                R = ga::exp(e3ga::mv(((0.5 * m_int.m_scalar[1]) / nbSteps) * b));
                 for (i = 0; i < nbSteps; i++)
                 {
-                    v = (R * v / R)(GRADE1);
-                    T.vertex3dv(v[GRADE1]);
+                    v = ga::takeGrade(ga::igp(e3ga::mv(R * v), R), GRADE1);
+                    T.vertex3dv(e3ga::xyz(v).data());
                 }
                 T.end();
             }
 
             {
                 // add arrowhead
-                R = (0.01 * b).exp();
-                v = (R * v / R)(GRADE1);
+                R = ga::exp(e3ga::mv(0.01 * b));
+                v = ga::takeGrade(ga::igp(e3ga::mv(R * v), R), GRADE1);
                 //		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
                 T.begin(GL_LINE_STRIP);
-                T.vertex3dv((0.93 * v + 0.13 * (v << b))[GRADE1]);
-                T.vertex3dv(v[GRADE1]);
-                T.vertex3dv((1.05 * v + 0.15 * (v << b))[GRADE1]);
+                T.vertex3dv(e3ga::xyz(0.93 * v + 0.13 * ga::lcont(v, b)).data());
+                T.vertex3dv(e3ga::xyz(v).data());
+                T.vertex3dv(e3ga::xyz(1.05 * v + 0.15 * ga::lcont(v, b)).data());
                 T.end();
             }
         }
@@ -318,7 +318,7 @@ int e3gaObject::description(char *buf, int bufLen, int sl /* = 0 */)
 
         else
             sprintf(buf, "e3ga scalar%s\nMagnitude: %f\nCoordinates: %s", (m_int.dual()) ? " dual" : "",
-                    m_int.m_scalar[0], m_mv.string());
+                    m_int.m_scalar[0], ga::toString(m_mv).c_str());
         break;
     case MVI_VECTOR:
         /*
@@ -331,7 +331,7 @@ int e3gaObject::description(char *buf, int bufLen, int sl /* = 0 */)
         else
             sprintf(buf, "e3ga vector%s\nMagnitude: %f\nDirection: %2.2f %2.2f %2.2f\nCoordinates: %s",
                     (m_int.dual()) ? " dual" : "", m_int.m_scalar[0], m_int.m_vector[0][0], m_int.m_vector[0][1],
-                    m_int.m_vector[0][2], m_mv.string());
+                    m_int.m_vector[0][2], ga::toString(m_mv).c_str());
         break;
     case MVI_BIVECTOR:
         /*
@@ -346,7 +346,7 @@ int e3gaObject::description(char *buf, int bufLen, int sl /* = 0 */)
         else
             sprintf(buf, "e3ga bivector%s\nMagnitude: %f\nNormal: %2.2f %2.2f %2.2f\nCoordinates: %s",
                     (m_int.dual()) ? " dual" : "", m_int.m_scalar[0], m_int.m_vector[0][0], m_int.m_vector[0][1],
-                    m_int.m_vector[0][2], m_mv.string());
+                    m_int.m_vector[0][2], ga::toString(m_mv).c_str());
         break;
     case MVI_TRIVECTOR:
         /*
@@ -357,7 +357,7 @@ int e3gaObject::description(char *buf, int bufLen, int sl /* = 0 */)
 
         else
             sprintf(buf, "e3ga trivector%s\nMagnitude: %f\nCoordinates: %s", (m_int.dual()) ? " dual" : "",
-                    m_int.m_scalar[0], m_mv.string());
+                    m_int.m_scalar[0], ga::toString(m_mv).c_str());
         break;
     case MVI_ROTOR:
         /*
@@ -374,14 +374,14 @@ int e3gaObject::description(char *buf, int bufLen, int sl /* = 0 */)
         else
             sprintf(buf, "e3ga rotor%s\nAngle: %f\nMagnitude: %f\nNormal: %2.2f %2.2f %2.2f\nCoordinates: %s",
                     (m_int.dual()) ? " dual" : "", m_int.m_scalar[1], m_int.m_scalar[0], m_int.m_vector[0][0],
-                    m_int.m_vector[0][1], m_int.m_vector[0][2], m_mv.string());
+                    m_int.m_vector[0][1], m_int.m_vector[0][2], ga::toString(m_mv).c_str());
         break;
     default:
         if (sl)
             sprintf(buf, "%s: unknown e3ga object.", m_name.c_str());
 
         else
-            sprintf(buf, "Unknown e3ga object.\nCoordinates: %s", m_mv.string());
+            sprintf(buf, "Unknown e3ga object.\nCoordinates: %s", ga::toString(m_mv).c_str());
         break;
     }
 
@@ -390,5 +390,5 @@ int e3gaObject::description(char *buf, int bufLen, int sl /* = 0 */)
 
 std::string e3gaObject::toString(const char *floatPrec /* = "%e" */)
 {
-    return std::string("\"" + m_name + "\" = " + m_mv.string(floatPrec));
+    return std::string("\"" + m_name + "\" = " + ga::toString(m_mv, floatPrec));
 }

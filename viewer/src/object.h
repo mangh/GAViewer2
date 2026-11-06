@@ -267,7 +267,7 @@ class object
 class e3gaObject : public object
 {
   public:
-    e3gaObject(const e3ga &mv, const std::string &name = std::string(""), int drawMode = 0, int creationFlags = 0,
+    e3gaObject(const e3ga::mv &mv, const std::string &name = std::string(""), int drawMode = 0, int creationFlags = 0,
                int forceFlags = 0);
     virtual ~e3gaObject();
     void initToNothing();
@@ -281,7 +281,7 @@ class e3gaObject : public object
     virtual int translate(glwindow *window, double depth, double motionX, double motionY);
     virtual std::string toString(const char *floatPrec = "%e");
 
-    e3ga m_mv;
+    e3ga::mv m_mv;
     mvInt m_int;
 };
 
@@ -390,7 +390,7 @@ class i2gaObject : public object
 class textObject : public object
 {
   public:
-    textObject(const char *text, const e3ga &pos, const std::string &name = std::string(""), int creationFlags = 0,
+    textObject(const char *text, const e3ga::mv &pos, const std::string &name = std::string(""), int creationFlags = 0,
                int labelFlags = 0, int width = -1);
     textObject(const char *text, const std::string &pointName, const std::string &name = std::string(""),
                int creationFlags = 0, int labelFlags = 0, int width = -1);
@@ -409,7 +409,10 @@ class textObject : public object
 
     char *m_text;
     std::string m_pointName;
-    e3ga m_pos;
+    e3ga::mv m_pos;
+    // the coordinates of m_pos (refreshed and returned by posXYZ(), for object::getPoint())
+    GAIM_FLOAT m_posXYZ[3];
+    const GAIM_FLOAT *posXYZ();
     int m_flags;
 
   protected:

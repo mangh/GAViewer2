@@ -136,6 +136,20 @@ void dumpMv(std::ostringstream &out, const MV &mv, char *const *names, const int
     }
 }
 
+// Garamon multivector: dumped in the display basis (the basis of the Gaigen algebra
+// it replaces, see ga/traits.h), so that the dump is the same as with Gaigen.
+template <ga::garamonMV MV> void dumpMv(std::ostringstream &out, const MV &mv)
+{
+    out << "  mv\n";
+    const auto &basis = ga::algebraTraits<MV>::displayBasis;
+    for (std::size_t i = 0; i < basis.size(); i++)
+    {
+        double c = ga::coordinate(mv, i);
+        if (num(c) != "0")
+            out << "    " << basis[i].name << " " << num(c) << "\n";
+    }
+}
+
 void dumpInt(std::ostringstream &out, const mvInt &I)
 {
     out << "  int type=" << hex(I.m_type) << " valid=" << I.m_valid << "\n";
@@ -189,7 +203,7 @@ std::string dumpObjects()
         {
         case OT_E3GA: {
             auto *eo = static_cast<e3gaObject *>(o);
-            dumpMv(out, eo->m_mv, e3gai_basisElementNames, e3gai_gradeSize, 4);
+            dumpMv(out, eo->m_mv);
             dumpInt(out, eo->m_int);
             break;
         }
@@ -225,7 +239,7 @@ std::string dumpObjects()
             if (!to->m_pointName.empty())
                 out << "  at " << to->m_pointName << "\n";
             else
-                dumpMv(out, to->m_pos, e3gai_basisElementNames, e3gai_gradeSize, 4);
+                dumpMv(out, to->m_pos);
             break;
         }
         case OT_POLYGON: {
