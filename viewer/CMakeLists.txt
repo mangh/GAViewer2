@@ -56,11 +56,6 @@ set(ga "gaviewer_ga")
 add_library(${ga} INTERFACE)
 target_include_directories(${ga} INTERFACE "${GAVR_SOURCE_DIR}")
 target_link_libraries(${ga} INTERFACE garamon_e3ga)
-if (CMAKE_SYSTEM_NAME MATCHES "Windows")
-  # <windows.h> (included by FLTK and GL headers) defines the macros min and max,
-  # which break std::min/std::max in the Garamon headers
-  target_compile_definitions(${ga} INTERFACE NOMINMAX)
-endif()
 
 # Everything else except the entry point goes into a static library, so that
 # the GUI application and the headless regression harness (viewer/test) are

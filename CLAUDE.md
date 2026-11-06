@@ -59,7 +59,7 @@ GAViewer2
 | `gaviewer_e3ga` | the Gaigen e3ga, used only by the differential test `gadiff.e3ga` (GAViewer uses the Garamon e3ga) |
 | `gaviewer_algebras` | interface library bundling the Gaigen algebras in use |
 | `garamon_<name>` (`garamon/CMakeLists.txt`) | header-only Garamon algebra generated at build time from `garamon/<name>.conf` by the fetched fork's `garamon_generator` (`#include <<name>/Mvec.hpp>`, needs Eigen, provided as `Eigen3::Eigen`); so far `garamon_e3ga` (smoke test `garamon.smoke_e3ga`) |
-| `gaviewer_ga` | header-only algebra layer `src/ga` (`ga::algebraTraits<MV>`, `ga/algorithms.h`, `ga/format.h`, transitional `ga/gaigencompat.h`) over the Garamon algebras; links `garamon_e3ga`, defines `NOMINMAX` on Windows |
+| `gaviewer_ga` | header-only algebra layer `src/ga` (`ga::algebraTraits<MV>`, `ga/algorithms.h`, `ga/format.h`, transitional `ga/gaigencompat.h`) over the Garamon algebras; links `garamon_e3ga` |
 | `gaviewer_core` | everything else except `main.cpp` (console, objects, `mvInt`, GUI, …); links `gaviewer_algebras`, `gaviewer_ga` and FLTK |
 | `GAViewer2` | the GUI application: `main.cpp` + `gaviewer_core` |
 | `gaviewer_regress` | the headless regression harness (`viewer/test`) + `gaviewer_core` |
@@ -129,9 +129,8 @@ Garamon pitfalls (each of these compiles and silently computes something else th
 - `a / b` is `a * b.inv()` with an epsilon threshold: use `ga::igp(a, b)` (Gaigen's exact versor inverse).
 - `x.grade(k)` takes a grade number (Gaigen `x.grade(mask)` / `x(mask)` took a bitmask `GRADEk`): use `ga::takeGrade(x, mask)`; Garamon's `grade()` returns the highest grade (Gaigen: -1 if not homogeneous): use `ga::grade(x)`.
 - `isGrade(0)` is true for zero: use `ga::hasGrade()` / `ga::gradeUsage()`.
-- `Mvec` converts implicitly to `double` (its scalar part) and has an unconstrained implicit template constructor `Mvec(S)`: `fabs(mv)` compiles, and any argument type (e.g. `char *`) competes with other overloads (e.g. `std::string`).
+- `Mvec` converts to its scalar part by an explicit cast only (`double(mv)`), and is implicitly constructed from arithmetic types only (since the fork's commit 6ee8c11; before, `fabs(mv)` compiled silently and e.g. a `char *` argument competed with `std::string` overloads).
 - `a < b` / `a > b` are the left / right contraction, not comparisons.
 - Every `Mvec` operation allocates (`std::list` of Eigen vectors): keep multivectors out of hot loops (e.g. `geosphere.cpp` uses plain `std::array<double, 3>`), and never put an `Mvec` in `malloc`/`realloc`'ed memory.
-- `<windows.h>` defines `min`/`max` macros that break Garamon: `gaviewer_ga` defines `NOMINMAX`.
 
-To check a conversion for the silent cases: temporarily add `static_assert(sizeof(T) == 0, ...)` to `Mvec::dual()`, `operator!`, `operator/(const Mvec&)` and `operator T()` in the generated `build/garamon/generated/garamon_<name>/src/<name>/Mvec.hpp` and rebuild: every use is then a compile error (restore the file afterwards).
+To check a conversion for the silent cases: temporarily add `static_assert(sizeof(T) == 0, ...)` to `Mvec::dual()`, `operator!` and `operator/(const Mvec&)` in the generated `build/garamon/generated/garamon_<name>/src/<name>/Mvec.hpp` and rebuild: every use is then a compile error (restore the file afterwards).
