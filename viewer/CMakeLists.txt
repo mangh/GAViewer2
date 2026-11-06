@@ -46,6 +46,14 @@ endforeach()
 add_library(${algebras} INTERFACE)
 target_link_libraries(${algebras} INTERFACE ${algebra_targets})
 
+# The Garamon based algebra layer (src/ga, header-only): the Garamon generated
+# algebras (garamon_<name>, see garamon/CMakeLists.txt) plus the operations
+# GAViewer needs and Garamon does not provide.
+set(ga "gaviewer_ga")
+add_library(${ga} INTERFACE)
+target_include_directories(${ga} INTERFACE "${GAVR_SOURCE_DIR}")
+target_link_libraries(${ga} INTERFACE garamon_e3ga)
+
 # Everything else except the entry point goes into a static library, so that
 # the GUI application and the headless regression harness (viewer/test) are
 # built from exactly the same object code:

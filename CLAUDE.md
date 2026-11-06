@@ -36,6 +36,7 @@ GAViewer2
         ├───c5ga          ← c5ga algebra (most likely generated using Gaigen 1)
         ├───console       ← GAViewer console (language: consolelangparser.cpp = lexer + parser)
         ├───e3ga          ← e3ga algebra (most likely generated using Gaigen 1)
+        ├───ga            ← Garamon based algebra layer: traits (display basis), Gaigen-compatible algorithms, text format/parse
         ├───i2ga          ← i2ga algebra (most likely generated using Gaigen 1)
         ├───p3ga          ← p3ga algebra (most likely generated using Gaigen 1)
         └───typeset       ← text and font handling in the GUI
@@ -57,6 +58,7 @@ GAViewer2
 | `gaviewer_e3ga`, `gaviewer_p3ga`, `gaviewer_c3ga`, `gaviewer_c5ga`, `gaviewer_i2ga` | one static library per algebra (Gaigen generated `src/<name>/*.cpp`), no dependencies on the rest of GAViewer; the unit to swap for a Garamon implementation |
 | `gaviewer_algebras` | interface library bundling the five algebras |
 | `garamon_<name>` (`garamon/CMakeLists.txt`) | header-only Garamon algebra generated at build time from `garamon/<name>.conf` by the fetched fork's `garamon_generator` (`#include <<name>/Mvec.hpp>`, needs Eigen, provided as `Eigen3::Eigen`); so far `garamon_e3ga`, used only by the smoke test `garamon.smoke_e3ga` |
+| `gaviewer_ga` | header-only algebra layer `src/ga` (`ga::algebraTraits<MV>`, `ga/algorithms.h`, `ga/format.h`) over the Garamon algebras; links `garamon_e3ga` |
 | `gaviewer_core` | everything else except `main.cpp` (console, objects, `mvInt`, GUI, …); links `gaviewer_algebras` and FLTK |
 | `GAViewer2` | the GUI application: `main.cpp` + `gaviewer_core` |
 | `gaviewer_regress` | the headless regression harness (`viewer/test`) + `gaviewer_core` |
@@ -102,6 +104,7 @@ cmake --build build --target regress_update_golden              # regenerate gol
 ```
 
 - Test scripts `viewer/test/scripts/<name>.g` (tests `script.<name>`, golden `golden/<name>.txt`): each defines a console function `<name>()`. `algebra_functions` calls every built-in per-algebra function and operator in all five models (results printed with `print(x, "1.8e")`), `algebra_objects` creates typical blades/versors of every model as objects. A new script is picked up on the next CMake configure; create its golden file with `regress_update_golden` or `gaviewer_regress -I viewer/test/scripts -g viewer/test/golden/<name>.txt -u "<name>();"`.
+- Differential test `gadiff.e3ga` (`viewer/test/gadiff`): every operation of the `ga` layer on Garamon e3ga vs. the same operation of the Gaigen e3ga, on 37 multivectors and all their pairs (~26000 results, tolerance 1e-9). The Gaigen and Garamon e3ga cannot be in one translation unit (class vs. namespace `e3ga`): `gaigen_side.cpp` and `garamon_side.cpp` each provide an adapter for the shared `gadiff::run<A>()`.
 - Failing test → actual output in `<build>/viewer/test/actual/FIG_x_y.txt`; diff it against the golden file.
 - Run one figure by hand: `gaviewer_regress -I <figs-src> "FIG_2_2();"` (dump to stdout).
 - Code reachable from console functions or GA-file commands must check `gui_state` for NULL (the harness has no GUI).
