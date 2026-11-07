@@ -1,6 +1,6 @@
 // gadiff: the Garamon side (viewer/src/ga), the test inputs and the comparison.
 //
-//   gadiff <algebra> [-v]     (algebra: e3ga, p3ga; -v: print every result line, not only the mismatches)
+//   gadiff <algebra> [-v]     (algebra: e3ga, p3ga, c3ga; -v: print every result line, not only the mismatches)
 
 #include <cmath>
 #include <cstdio>
@@ -11,6 +11,7 @@
 #include <vector>
 
 #include "ga/algorithms.h"
+#include "ga/c3ga.h"
 #include "ga/e3ga.h"
 #include "ga/format.h"
 #include "ga/p3ga.h"
@@ -291,9 +292,29 @@ void splitLine(const std::string &line, std::string &label, std::vector<std::str
         tokens.push_back(t);
 }
 
-bool tokensMatch(const std::string &a, const std::string &b, double tol)
+// the largest absolute value of the numbers among 'tokens' (at least 1); a scale hint
+// "~<number>" (see gadiff::run()) counts as such a number
+double tokensScale(const std::vector<std::string> &tokens)
+{
+    double scale = 1.0;
+    for (const std::string &t : tokens)
+    {
+        char *e;
+        double x = std::strtod(t.c_str() + ((!t.empty() && (t[0] == '~')) ? 1 : 0), &e);
+        if (!*e && std::isfinite(x))
+            scale = std::fmax(scale, std::fabs(x));
+    }
+    return scale;
+}
+
+// Two tokens match if they are equal, or both numbers that differ by at most tol * scale,
+// 'scale' being the magnitude of the whole result (the largest coordinate of a multivector):
+// rounding noise in a coordinate that should be 0 is relative to the result, not to itself.
+bool tokensMatch(const std::string &a, const std::string &b, double tol, double scale)
 {
     if (a == b)
+        return true;
+    if (!a.empty() && !b.empty() && (a[0] == '~') && (b[0] == '~')) // scale hints (not compared)
         return true;
     char *ea, *eb;
     double x = std::strtod(a.c_str(), &ea), y = std::strtod(b.c_str(), &eb);
@@ -301,7 +322,7 @@ bool tokensMatch(const std::string &a, const std::string &b, double tol)
         return false;
     if (std::isnan(x) || std::isnan(y)) // NaN equals NaN (whatever its sign)
         return std::isnan(x) && std::isnan(y);
-    return std::fabs(x - y) <= tol * std::fmax(1.0, std::fmax(std::fabs(x), std::fabs(y)));
+    return std::fabs(x - y) <= tol * scale;
 }
 
 } // namespace
@@ -324,9 +345,14 @@ int main(int argc, char *argv[])
         in = inputs<p3ga::mv>();
         actual = gadiff::run<garamonAdapter<p3ga::mv>>(in);
     }
+    else if (algebra == "c3ga")
+    {
+        in = inputs<c3ga::mv>();
+        actual = gadiff::run<garamonAdapter<c3ga::mv>>(in);
+    }
     else
     {
-        std::fprintf(stderr, "usage: gadiff <algebra> [-v]   (algebra: e3ga, p3ga)\n");
+        std::fprintf(stderr, "usage: gadiff <algebra> [-v]   (algebra: e3ga, p3ga, c3ga)\n");
         return 2;
     }
     std::vector<std::string> expected = gaigenResults(algebra, in);
@@ -346,8 +372,9 @@ int main(int argc, char *argv[])
         splitLine(expected[i], le, te);
         splitLine(actual[i], la, ta);
         bool match = (le == la) && (te.size() == ta.size());
+        const double scale = std::fmax(tokensScale(te), tokensScale(ta));
         for (std::size_t k = 0; match && k < te.size(); k++)
-            match = tokensMatch(te[k], ta[k], tol);
+            match = tokensMatch(te[k], ta[k], tol, scale);
         if (!match)
         {
             mismatches++;

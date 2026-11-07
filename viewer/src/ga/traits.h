@@ -21,6 +21,7 @@ multivector type itself: ga::algebraTraits<MV> is specialized for every
 multivector type MV (e.g. in ga/e3ga.h) with
 
     static constexpr int dimension;          // number of basis vectors
+    static constexpr bool euclideanMetric;   // true if the basis vectors are orthonormal
     static MV I();                           // the pseudoscalar
     static MV Iinv();                        // its inverse
     static std::array<displayBlade, 1 << dimension> displayBasis;

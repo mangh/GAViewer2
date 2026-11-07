@@ -57,6 +57,7 @@ inline std::array<double, 3> xyz(const mv &v)
 template <> struct ga::algebraTraits<e3ga::mv>
 {
     static constexpr int dimension = 3;
+    static constexpr bool euclideanMetric = true;
 
     static e3ga::mv I()
     {

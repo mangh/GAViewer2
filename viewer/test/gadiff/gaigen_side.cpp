@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 
+#include "c3ga/c3ga.h"
 #include "e3ga/e3ga.h"
 #include "gadiff.h"
 #include "p3ga/p3ga.h"
@@ -32,6 +33,18 @@ struct p3gaTypes
     static const int *gradeSize()
     {
         return p3gai_gradeSize;
+    }
+};
+
+struct c3gaTypes
+{
+    using MV = c3ga;
+    using base = c3gai;
+    using names = c3ga_ben;
+    [[maybe_unused]] static constexpr int nbGrades = 6; // (used by the adapter template)
+    static const int *gradeSize()
+    {
+        return c3gai_gradeSize;
     }
 };
 
@@ -283,5 +296,7 @@ std::vector<std::string> gaigenResults(const std::string &algebra, const std::ve
         return gadiff::run<gaigenAdapter<e3gaTypes>>(inputs);
     if (algebra == "p3ga")
         return gadiff::run<gaigenAdapter<p3gaTypes>>(inputs);
+    if (algebra == "c3ga")
+        return gadiff::run<gaigenAdapter<c3gaTypes>>(inputs);
     return {};
 }

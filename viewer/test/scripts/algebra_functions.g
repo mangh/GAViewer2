@@ -200,7 +200,7 @@ function algebra_functions()
     default_model(c3ga);
     test_model(1.5 + no + e1 - 0.5 e2 + 0.7 e2^ni - 0.3 no^e1 + 0.2 e1^e2^e3 - 0.1 no^e1^e2^ni,
                no + e1 + 2 e2 - 0.5 e3 + 2.625 ni, no + 0.3 e1 - e2 + 1.5 e3 + 1.67 ni,
-               -e1 + 0.4 e2 + 0.8 e3 + 0.5 ni,
+               -e1 + 0.4 e2 + 0.8 e3 + 0.7 ni, // (0.7: w.u != 0, so that w^u is invertible)
                exp(-0.3 e1^e2) exp(0.2 e2^e3) exp(-0.5 (e1 + e3)^ni), 0.6, 2.5);
 
     cprint("===== c5ga");

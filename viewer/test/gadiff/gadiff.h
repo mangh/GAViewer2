@@ -10,6 +10,7 @@
 #ifndef _GADIFF_H_
 #define _GADIFF_H_
 
+#include <cmath>
 #include <cstdio>
 #include <string>
 #include <vector>
@@ -109,33 +110,45 @@ template <class A> std::vector<std::string> run(const std::vector<coords> &input
         mvs(l + "parse [] value", parsed);
     }
 
-    // binary operations on all pairs of the first 'nb' inputs
-    const std::size_t nb = (in.size() < 40) ? in.size() : 40;
-    for (std::size_t i = 0; i < nb; i++)
-        for (std::size_t j = 0; j < nb; j++)
+    // binary operations on all pairs of inputs
+    for (std::size_t i = 0; i < in.size(); i++)
+        for (std::size_t j = 0; j < in.size(); j++)
         {
             const MV &a = in[i], &b = in[j];
             std::string l = "[" + std::to_string(i) + "," + std::to_string(j) + "] ";
-            mvs(l + "gp", A::gp(a, b));
-            mvs(l + "op", A::op(a, b));
-            mvs(l + "lcont", A::lcont(a, b));
-            mvs(l + "rcont", A::rcont(a, b));
-            mvs(l + "scp", A::scp(a, b));
-            mvs(l + "hip", A::hip(a, b));
-            mvs(l + "mhip", A::mhip(a, b));
+
+            // The rounding error of a bilinear product grows with the size of the operands: its
+            // result line starts with the scale hint "~<largest coordinate of a * of b>", which
+            // the comparison uses as the magnitude of the result (e.g. for a ^ a of a large blade
+            // a, whose coordinates are all rounding noise).
+            const std::string hint =
+                " ~" + str(std::fmax(1.0, A::largestCoordinate(a)) * std::fmax(1.0, A::largestCoordinate(b)));
+            auto bilinear = [&](const std::string &label, const MV &x) { put(label, hint + str(A::coordsOf(x))); };
+            bilinear(l + "gp", A::gp(a, b));
+            bilinear(l + "op", A::op(a, b));
+            bilinear(l + "lcont", A::lcont(a, b));
+            bilinear(l + "rcont", A::rcont(a, b));
+            bilinear(l + "scp", A::scp(a, b));
+            bilinear(l + "hip", A::hip(a, b));
+            bilinear(l + "mhip", A::mhip(a, b));
+            bilinear(l + "gpem", A::gpem(a, b));
+            bilinear(l + "lcem", A::lcem(a, b));
+            bilinear(l + "add", A::add(a, b));
+            bilinear(l + "sub", A::sub(a, b));
             mvs(l + "igp", A::igp(a, b));
-            mvs(l + "gpem", A::gpem(a, b));
-            mvs(l + "lcem", A::lcem(a, b));
-            mvs(l + "add", A::add(a, b));
-            mvs(l + "sub", A::sub(a, b));
             mvs(l + "project", A::project(a, b));
             mvs(l + "reject", A::reject(a, b));
+
             // The delta product (and so meet and join) keeps the highest grade with a coordinate
-            // above an absolute epsilon (1e-14, as in Gaigen): for large operands (coordinates
-            // ~1e3) the rounding noise of a vanishing grade part exceeds it, and the result is
-            // noise (differently rounded in Gaigen and Garamon), e.g. meet(B, B) of a large
-            // bivector B. These are compared for operands of moderate size only.
-            if ((A::norm_a(a) < 1e4) && (A::norm_a(b) < 1e4))
+            // above an absolute epsilon (1e-14, as in Gaigen): when a grade part vanishes, its
+            // rounding noise may or may not exceed it, and the result is noise (rounded
+            // differently in Gaigen and Garamon), e.g. meet(B, B) of a large bivector B, or the
+            // delta product of a versor with itself. Meet and join are defined for blades only:
+            // they are compared for blades (according to mvType, itself compared above) of
+            // moderate size.
+            int gradeMask;
+            const bool blades = (A::mvType(a, gradeMask) == 1) && (A::mvType(b, gradeMask) == 1);
+            if (blades && (A::norm_a(a) < 1e4) && (A::norm_a(b) < 1e4))
             {
                 mvs(l + "meet", A::meet(a, b));
                 mvs(l + "join", A::join(a, b));

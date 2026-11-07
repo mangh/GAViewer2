@@ -36,6 +36,7 @@
 #include <filesystem>
 #include <fstream>
 #include <ios>
+#include <map>
 #include <sstream>
 #include <string>
 #include <string_view>
@@ -332,10 +333,72 @@ std::vector<Token> tokenize(const std::string &line)
     return tokens;
 }
 
+// A printed multivector "<name> = <c>*<blade> + <c>*<blade> + ..." (or "<name> = 0"), as the
+// console prints it: parsed into 'name' and a map basis blade -> coefficient ("1" for the scalar).
+bool parseMvLine(const std::string &line, std::string &name, std::map<std::string, double> &terms)
+{
+    const std::string::size_type eq = line.find(" = ");
+    if (eq == std::string::npos)
+        return false;
+    name = line.substr(0, eq);
+    terms.clear();
+    const std::string rhs = line.substr(eq + 3);
+    if (rhs == "0")
+        return true;
+    std::string::size_type start = 0;
+    for (;;)
+    {
+        const std::string::size_type plus = rhs.find(" + ", start);
+        const std::string term = rhs.substr(start, (plus == std::string::npos) ? std::string::npos : plus - start);
+        const char *begin = term.c_str();
+        char *end = nullptr;
+        const double c = std::strtod(begin, &end);
+        if (end == begin)
+            return false;
+        std::string blade;
+        if (*end == 0)
+            blade = "1";
+        else if (*end == '*')
+            blade = end + 1;
+        else
+            return false;
+        if (blade.empty() || (blade.find(' ') != std::string::npos))
+            return false;
+        terms[blade] += c;
+        if (plus == std::string::npos)
+            return true;
+        start = plus + 3;
+    }
+}
+
 bool linesMatch(const std::string &expected, const std::string &actual, double tol)
 {
     if (expected == actual)
         return true;
+
+    // Printed multivectors are compared coefficient by coefficient, a missing term being 0, with a
+    // tolerance relative to the largest coefficient: a coordinate of rounding noise near the print
+    // threshold (1e-14, below which a term is not printed) may then be printed on one side only.
+    std::string ne, na;
+    std::map<std::string, double> me, ma;
+    if (parseMvLine(expected, ne, me) && parseMvLine(actual, na, ma) && (ne == na))
+    {
+        double scale = 1.0;
+        for (const auto &t : me)
+            scale = std::max(scale, std::fabs(t.second));
+        for (const auto &t : ma)
+            scale = std::max(scale, std::fabs(t.second));
+        for (const auto *m : {&me, &ma})
+            for (const auto &t : *m)
+            {
+                const double a = me.count(t.first) ? me.at(t.first) : 0.0;
+                const double b = ma.count(t.first) ? ma.at(t.first) : 0.0;
+                if (std::fabs(a - b) > tol * scale)
+                    return false;
+            }
+        return true;
+    }
+
     auto te = tokenize(expected), ta = tokenize(actual);
     if (te.size() != ta.size())
         return false;

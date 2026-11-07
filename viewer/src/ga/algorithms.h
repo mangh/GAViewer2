@@ -26,6 +26,11 @@ Garamon multivector type MV (with ga::algebraTraits<MV>, see traits.h).
 They reproduce the behaviour of the Gaigen 1 algebras GAViewer was built on,
 including their conventions:
 
+- in algebras with a non-Euclidean metric (c3ga, ...), some algorithms use the
+  Euclidean metric versions of the products (gpem, lcem, scpem, projectEM,
+  versorInverseEM: all basis vectors taken as orthonormal), exactly where Gaigen
+  does: the delta product (and so meet and join), factor and mvType,
+
 - dual(A) = A I^-1 (Garamon's Mvec::dual() is A _| I, of opposite sign in e3ga),
 - inverse(A) = versorInverse(A) = ~A / <A ~A>, zero if <A ~A> = 0,
 - norm_a(A) = sum of the squared coordinates (no square root!),
@@ -353,16 +358,69 @@ template <garamonMV MV> MV mhip(const MV &a, const MV &b)
     return detail::innerProduct(a, b, true);
 }
 
-// the products with the Euclidean metric (the same as gp and lcont in a
-// Euclidean algebra; algebras with another metric need their own version)
+namespace detail
+{
+// the sign of the product of the basis blades with bitmaps a and b (the number of
+// swaps that bring the factors of a b into the canonical order, i.e. ascending bits)
+constexpr double reorderingSign(unsigned a, unsigned b)
+{
+    a >>= 1;
+    int swaps = 0;
+    while (a)
+    {
+        swaps += bitmapGrade(a & b);
+        a >>= 1;
+    }
+    return (swaps & 1) ? -1.0 : 1.0;
+}
+
+// The geometric product (leftContraction = false) or the left contraction (true) of a
+// and b with the Euclidean metric (all basis vectors orthonormal), computed on the
+// basis blades of the Garamon algebra.
+template <garamonMV MV> MV euclideanProduct(const MV &a, const MV &b, bool leftContraction)
+{
+    constexpr unsigned N = 1u << dimensionOf<MV>();
+    MV r;
+    for (unsigned i = 0; i < N; i++)
+    {
+        const double ca = a[i];
+        if (ca == 0.0)
+            continue;
+        for (unsigned j = 0; j < N; j++)
+        {
+            const double cb = b[j];
+            if ((cb == 0.0) || (leftContraction && ((i & ~j) != 0))) // A _| B: the factors of A must be in B
+                continue;
+            r[i ^ j] += reorderingSign(i, j) * ca * cb;
+        }
+    }
+    return compress(r, 0.0); // (no null grade parts)
+}
+} // namespace detail
+
+// The products with the Euclidean metric: all basis vectors are taken as orthonormal
+// (e.g. no.no = 1, no.ni = 0 in c3ga), as Gaigen's gpem and lcem; in a Euclidean
+// algebra the same as gp and lcont.
 template <garamonMV MV> MV gpem(const MV &a, const MV &b)
 {
-    return gp(a, b);
+    if constexpr (algebraTraits<MV>::euclideanMetric)
+        return gp(a, b);
+    else
+        return detail::euclideanProduct(a, b, false);
 }
 
 template <garamonMV MV> MV lcem(const MV &a, const MV &b)
 {
-    return lcont(a, b);
+    if constexpr (algebraTraits<MV>::euclideanMetric)
+        return lcont(a, b);
+    else
+        return detail::euclideanProduct(a, b, true);
+}
+
+// the scalar product with the Euclidean metric
+template <garamonMV MV> MV scpem(const MV &a, const MV &b)
+{
+    return gpem(a, b).grade(0);
 }
 
 // ---------------------------------------------------------------------------
@@ -374,6 +432,18 @@ template <garamonMV MV> MV versorInverse(const MV &a, bool *ok = nullptr)
 {
     MV r = reverse(a);
     double s = scalar(scp(a, r));
+    if (ok)
+        *ok = (s != 0.0);
+    if (s == 0.0)
+        return MV();
+    return r * (1.0 / s);
+}
+
+// ~a / <a ~a> with the Euclidean metric; zero ('ok' false) if <a ~a> == 0
+template <garamonMV MV> MV versorInverseEM(const MV &a, bool *ok = nullptr)
+{
+    MV r = reverse(a);
+    double s = scalar(scpem(a, r));
     if (ok)
         *ok = (s != 0.0);
     if (s == 0.0)
@@ -498,7 +568,7 @@ template <garamonMV MV> int mvType(const MV &a, int *gradeMask = nullptr, double
 
     // versor inverse
     MV r = reverse(a);
-    double s = scalar(scp(a, r));
+    double s = scalar(scpem(a, r));
     if (s == 0.0)
         return mvTypeMultivector;
     MV ai = r * (1.0 / s);
@@ -513,7 +583,7 @@ template <garamonMV MV> int mvType(const MV &a, int *gradeMask = nullptr, double
         return (c >= 1.0 - epsilon) && (c <= 1.0 + epsilon);
     };
     // check if ai a = 1 and a ai = 1
-    if (!isOne(compress(MV(ai * a), epsilon)) || !isOne(compress(MV(a * ai), epsilon)))
+    if (!isOne(compress(gpem(ai, a), epsilon)) || !isOne(compress(gpem(a, ai), epsilon)))
         return mvTypeMultivector;
 
     // test if ai x a is of the same grade as x for all basis vectors x
@@ -523,7 +593,7 @@ template <garamonMV MV> int mvType(const MV &a, int *gradeMask = nullptr, double
             continue;
         MV x;
         x[b.bitmap] = 1.0;
-        if (gradeUsage(compress(MV(ai * x * a), epsilon)) & ~2u)
+        if (gradeUsage(compress(gpem(gpem(ai, x), a), epsilon)) & ~2u)
             return mvTypeMultivector;
     }
 
@@ -547,6 +617,12 @@ template <garamonMV MV> int mvType(const MV &a, int *gradeMask = nullptr, double
 template <garamonMV MV> MV project(const MV &blade, const MV &a)
 {
     return lcont(lcont(a, blade), versorInverse(blade));
+}
+
+// (a _| blade) _| blade^-1 with the Euclidean metric
+template <garamonMV MV> MV projectEM(const MV &blade, const MV &a)
+{
+    return lcem(lcem(a, blade), versorInverseEM(blade));
 }
 
 // blade^-1 _| (blade ^ a)
@@ -603,11 +679,11 @@ template <garamonMV MV> int factor(const MV &a, std::vector<MV> &factors, bool v
     MV ca(a);
     for (std::size_t i = 0; ga > 1; ga--, i++)
     {
-        MV f = project(ca, vectors[i]) * mul;
+        MV f = projectEM(ca, vectors[i]) * mul;
         factors.push_back(f);
         // remove the factor from the blade
-        MV fi = versorInverse(f);
-        ca = versor ? gp(fi, ca) : lcont(fi, ca);
+        MV fi = versorInverseEM(f);
+        ca = versor ? gpem(fi, ca) : lcem(fi, ca);
     }
     factors.push_back(takeGrade(ca, 2u)); // the last factor is the remaining vector
     return (int)factors.size();
@@ -616,7 +692,7 @@ template <garamonMV MV> int factor(const MV &a, std::vector<MV> &factors, bool v
 // the highest grade part of a b ('d'); returns its grade
 template <garamonMV MV> int deltaProduct(const MV &a, const MV &b, MV &d)
 {
-    return highestGrade(gp(a, b), d);
+    return highestGrade(gpem(a, b), d);
 }
 
 namespace detail
@@ -665,7 +741,7 @@ template <garamonMV MV> MV join(const MV &a, const MV &b)
             continue;
         MV be;
         be[bb.bitmap] = bb.sign;
-        MV t = op(b1, project(b2, be));
+        MV t = op(b1, projectEM(b2, be));
         double nm = norm_a(t);
         if (nm > largestNorm)
         {
@@ -688,7 +764,7 @@ template <garamonMV MV> MV meet(const MV &a, const MV &b)
     MV jinv = versorInverse(join(ca, cb), &ok);
     if (!ok)
         return MV();
-    return lcont(d, jinv);
+    return lcem(d, jinv);
 }
 
 } // namespace ga
