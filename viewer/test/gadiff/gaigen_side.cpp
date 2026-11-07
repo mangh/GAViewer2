@@ -7,6 +7,7 @@
 #include "c5ga/c5ga.h"
 #include "e3ga/e3ga.h"
 #include "gadiff.h"
+#include "i2ga/i2ga.h"
 #include "p3ga/p3ga.h"
 
 namespace
@@ -58,6 +59,18 @@ struct c5gaTypes
     static const int *gradeSize()
     {
         return c5gai_gradeSize;
+    }
+};
+
+struct i2gaTypes
+{
+    using MV = i2ga;
+    using base = i2gai;
+    using names = i2ga_ben;
+    [[maybe_unused]] static constexpr int nbGrades = 7; // (used by the adapter template)
+    static const int *gradeSize()
+    {
+        return i2gai_gradeSize;
     }
 };
 
@@ -314,5 +327,7 @@ std::vector<std::string> gaigenResults(const std::string &algebra, const std::ve
         return gadiff::run<gaigenAdapter<c3gaTypes>>(inputs, pairStride);
     if (algebra == "c5ga")
         return gadiff::run<gaigenAdapter<c5gaTypes>>(inputs, pairStride);
+    if (algebra == "i2ga")
+        return gadiff::run<gaigenAdapter<i2gaTypes>>(inputs, pairStride);
     return {};
 }

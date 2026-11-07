@@ -61,6 +61,7 @@ garamon_add_algebra(e3ga)
 garamon_add_algebra(p3ga) # Euclidean metric, unlike the fork's conf/p3ga.conf (see p3ga.conf)
 garamon_add_algebra(c3ga) # basis order e1 e2 e3 no ni, as in Gaigen (see c3ga.conf)
 garamon_add_algebra(c5ga) # basis order e1 ... e5 no ni, as in Gaigen (see c5ga.conf)
+garamon_add_algebra(i2ga) # basis e1 e2 no ni go gi, as in Gaigen (see i2ga.conf)
 
 if(GAVIEWER_BUILD_TESTS)
   add_executable(garamon_smoke_e3ga "${CMAKE_CURRENT_SOURCE_DIR}/smoke_e3ga.cpp")

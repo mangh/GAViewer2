@@ -1,11 +1,13 @@
 // gadiff: the Garamon side (viewer/src/ga), the test inputs and the comparison.
 //
 //   gadiff <algebra> [-v] [-all]
-//     algebra: e3ga, p3ga, c3ga, c5ga
+//     algebra: e3ga, p3ga, c3ga, c5ga, i2ga
 //     -v:   print every result line, not only the mismatches
-//     -all: all pairs of inputs for the binary operations also in c5ga (by default every 11th
-//           pair there: the ~30000 pairs of its ~170 inputs take minutes in a debug build)
+//     -all: all pairs of inputs for the binary operations also in c5ga and i2ga (by default every
+//           11th / 3rd pair there: the ~30000 / ~10000 pairs of their ~170 / ~100 inputs take
+//           minutes in a debug build)
 
+#include <algorithm>
 #include <cmath>
 #include <cstdio>
 #include <cstdlib>
@@ -17,6 +19,7 @@
 #include "ga/algorithms.h"
 #include "ga/c3ga.h"
 #include "ga/c5ga.h"
+#include "ga/i2ga.h"
 #include "ga/e3ga.h"
 #include "ga/format.h"
 #include "ga/p3ga.h"
@@ -275,9 +278,15 @@ template <class MV> std::vector<coords> inputs()
         v.push_back(ga::fromCoordinates<MV>(c));
     }
 
+    // (an input that is not finite is left out: e.g. exp() of a large bivector with a positive
+    // square overflows)
     std::vector<coords> result;
     for (const MV &x : v)
-        result.push_back(ga::coordinates(x));
+    {
+        coords c = ga::coordinates(x);
+        if (std::all_of(c.begin(), c.end(), [](double d) { return std::isfinite(d); }))
+            result.push_back(c);
+    }
     return result;
 }
 
@@ -367,9 +376,15 @@ int main(int argc, char *argv[])
         pairStride = all ? 1 : 11;
         actual = gadiff::run<garamonAdapter<c5ga::mv>>(in, pairStride);
     }
+    else if (algebra == "i2ga")
+    {
+        in = inputs<i2ga::mv>();
+        pairStride = all ? 1 : 3;
+        actual = gadiff::run<garamonAdapter<i2ga::mv>>(in, pairStride);
+    }
     else
     {
-        std::fprintf(stderr, "usage: gadiff <algebra> [-v] [-all]   (algebra: e3ga, p3ga, c3ga, c5ga)\n");
+        std::fprintf(stderr, "usage: gadiff <algebra> [-v] [-all]   (algebra: e3ga, p3ga, c3ga, c5ga, i2ga)\n");
         return 2;
     }
     std::vector<std::string> expected = gaigenResults(algebra, in, pairStride);
