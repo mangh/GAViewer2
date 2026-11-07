@@ -694,18 +694,19 @@ int state::addC5gaObject(const c5ga::mv &mv, const std::string &name, int drawMo
     return 0;
 }
 
-int state::addI2gaObject(const i2ga &mv, const std::string &name, int drawMode /* = 0 */, int creationFlags /* = 0 */,
+int state::addI2gaObject(const i2ga::mv &mv, const std::string &name, int drawMode /* = 0 */, int creationFlags /* = 0 */,
                          int forceFlags /* = 0 */)
 {
 
     i2gaObject *o = new i2gaObject(mv, name, drawMode, creationFlags, forceFlags);
     if (!o->m_int.m_valid)
     {
-        if (mv.norm_a() > 1e-5)
+        if (ga::norm_a(mv) > 1e-5)
         {
             if (!m_globalScope->supressWarnings())
             {
-                cprintf("Interpretation of object '%s' with coordinates %s failed.\n", name.c_str(), mv.string());
+                cprintf("Interpretation of object '%s' with coordinates %s failed.\n", name.c_str(),
+                        ga::toString(mv).c_str());
             }
         }
     }
@@ -954,7 +955,7 @@ int state::setTrl(e3ga::mv &trl, double dIn)
     if ((gui_state == NULL) || (duration < 0.0))
         return -1;
 
-    trl = ga::takeGrade(trl, GRADE1);
+    trl = ga::takeGrade(trl, ga::GRADE1);
 
     duration *= m_playbackSpeed;
     if (duration == 0.0)
@@ -1001,7 +1002,7 @@ int state::setRot(e3ga::mv &rot, double dIn)
     if ((gui_state == NULL) || (duration < 0.0))
         return -1;
 
-    rot = -ga::takeGrade(rot, GRADE2);
+    rot = -ga::takeGrade(rot, ga::GRADE2);
 
     duration *= m_playbackSpeed;
     if (duration == 0.0)
@@ -1147,7 +1148,7 @@ int state::setE3gaFactor(const e3ga::mv &mv, int idx)
         printf("state::setE3gaFactor(): invalid index %d\n", idx);
         return -1;
     }
-    m_e3gaFactor[idx] = ga::takeGrade(mv, GRADE1);
+    m_e3gaFactor[idx] = ga::takeGrade(mv, ga::GRADE1);
 
     return 0;
 }
@@ -1159,7 +1160,7 @@ int state::setP3gaFactor(const p3ga::mv &mv, int idx)
         printf("state::setP3gaFactor(): invalid index %d\n", idx);
         return -1;
     }
-    m_p3gaFactor[idx] = ga::takeGrade(mv, GRADE1);
+    m_p3gaFactor[idx] = ga::takeGrade(mv, ga::GRADE1);
 
     return 0;
 }
@@ -1171,7 +1172,7 @@ int state::setC3gaFactor(const c3ga::mv &mv, int idx)
         printf("state::setE3gaFactor(): invalid index %d\n", idx);
         return -1;
     }
-    m_c3gaFactor[idx] = ga::takeGrade(mv, GRADE1);
+    m_c3gaFactor[idx] = ga::takeGrade(mv, ga::GRADE1);
 
     return 0;
 }

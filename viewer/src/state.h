@@ -202,7 +202,7 @@ class state
                       int forceFlags = 0);
     int addC5gaObject(const c5ga::mv &mv, const std::string &name, int drawMode = 0, int creationFlags = 0,
                       int forceFlags = 0);
-    int addI2gaObject(const i2ga &mv, const std::string &name, int drawMode = 0, int creationFlags = 0,
+    int addI2gaObject(const i2ga::mv &mv, const std::string &name, int drawMode = 0, int creationFlags = 0,
                       int forceFlags = 0);
     int addTextObject(const char *text, const std::string &pointName, const std::string &name, int labelFlags,
                       int width);
@@ -337,7 +337,7 @@ class state
     int setE3gaFactor(const e3ga::mv &mv, int idx);
     int setP3gaFactor(const p3ga::mv &mv, int idx);
     int setC3gaFactor(const c3ga::mv &mv, int idx);
-    inline int setI2gaFactor(const i2ga &mv, int idx)
+    inline int setI2gaFactor(const i2ga::mv &mv, int idx)
     {
         return -1;
     } // todo

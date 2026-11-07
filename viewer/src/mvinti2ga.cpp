@@ -18,7 +18,7 @@
 #include "models.h"
 #include "mvint.h"
 
-int mvInt::interpret(const i2ga &X, int creationFlags /* = 0*/)
+int mvInt::interpret(const i2ga::mv &X, int creationFlags /* = 0*/)
 {
     m_type = MVI_I2GA;
     // no interpretation yet

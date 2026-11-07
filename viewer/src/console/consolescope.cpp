@@ -603,6 +603,7 @@ static e3ga::mv s_e(2.7182818284590452353602874713527);
 static p3ga::mv s_e0 = p3ga::e0<double>();
 static c3ga::mv s_no = c3ga::eo<double>(), s_ni = c3ga::ei<double>();
 static c5ga::mv s_e4 = c5ga::e4<double>(), s_e5 = c5ga::e5<double>();
+static i2ga::mv s_go = i2ga::eO<double>(), s_gi = i2ga::eI<double>();
 static struct
 {
     char *name;
@@ -610,7 +611,7 @@ static struct
     p3ga::mv *p;
     c3ga::mv *c;
     c5ga::mv *c5;
-    i2ga *i2;
+    i2ga::mv *i2;
     bool nameAlloced;
 } s_constant[] = {{(char *)"e1", &s_e1, NULL, NULL, NULL, NULL, false},
                   {(char *)"e2", &s_e2, NULL, NULL, NULL, NULL, false},
@@ -620,8 +621,8 @@ static struct
                   {(char *)"e0", NULL, &s_e0, NULL, NULL, NULL, false},
                   {(char *)"no", NULL, NULL, &s_no, NULL, NULL, false},
                   {(char *)"ni", NULL, NULL, &s_ni, NULL, NULL, false},
-                  {(char *)"go", NULL, NULL, NULL, NULL, (i2ga *)&(i2ga::go), false},
-                  {(char *)"gi", NULL, NULL, NULL, NULL, (i2ga *)&(i2ga::gi), false},
+                  {(char *)"go", NULL, NULL, NULL, NULL, &s_go, false},
+                  {(char *)"gi", NULL, NULL, NULL, NULL, &s_gi, false},
                   {(char *)"einf", NULL, NULL, &s_ni, NULL, NULL, false},
                   {(char *)"pi", &s_pi, NULL, NULL, NULL, NULL, false},
                   {(char *)"e_", &s_e, NULL, NULL, NULL, NULL, false},
@@ -707,7 +708,7 @@ void consoleGlobalScope::renameBuiltinConstant(const std::string &oldName, const
             else if (s_constant[i].c)
                 ga::renameBasisVector<c3ga::mv>(oldName, newName);
             else if (s_constant[i].i2)
-                i2ga::renameBasisVector(oldName.c_str(), newName.c_str());
+                ga::renameBasisVector<i2ga::mv>(oldName, newName);
 
             if (s_constant[i].nameAlloced)
                 free(s_constant[i].name);

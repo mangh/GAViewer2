@@ -62,7 +62,7 @@ mvInt::mvInt(const c5ga::mv &mv, int creationFlags /*= 0 */)
     interpret(mv, creationFlags);
 }
 
-mvInt::mvInt(const i2ga &mv, int creationFlags /*= 0 */)
+mvInt::mvInt(const i2ga::mv &mv, int creationFlags /*= 0 */)
 {
     initToNothing();
     interpret(mv, creationFlags);

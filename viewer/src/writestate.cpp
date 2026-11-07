@@ -261,7 +261,7 @@ int i2gaObject::writeToGeoFile(FILE *F)
 {
     object::writeToGeoFile(F);
 
-    fprintf(F, "i2ga \"%s\" [%s] ", m_name.c_str(), m_mv.string("%2.20e"));
+    fprintf(F, "i2ga \"%s\" [%s] ", m_name.c_str(), ga::toString(m_mv, "%2.20e").c_str());
     writeToGeoFileProperties(F);
     fprintf(F, "\n");
     return 0;

@@ -109,19 +109,19 @@ template <> struct consoleAlgebra<c5ga::mv>
     }
 };
 
-template <> struct consoleAlgebra<i2ga>
+template <> struct consoleAlgebra<i2ga::mv>
 {
-    static constexpr int model = modelId<i2ga>;
+    static constexpr int model = modelId<i2ga::mv>;
     static constexpr const char *castName = "cast_i2ga";
     static consoleVariable *castTo(const consoleVariable *cv)
     {
         return cv->castToI2ga();
     }
-    static int setFactor(const i2ga &mv, int idx)
+    static int setFactor(const i2ga::mv &mv, int idx)
     {
         return g_state->setI2gaFactor(mv, idx);
     }
-    static int addObject(const i2ga &mv, const std::string &name, int drawMode, int creationFlags, int forceFlags)
+    static int addObject(const i2ga::mv &mv, const std::string &name, int drawMode, int creationFlags, int forceFlags)
     {
         return g_state->addI2gaObject(mv, name, drawMode, creationFlags, forceFlags);
     }
@@ -152,7 +152,7 @@ template <class F> inline bool withConsoleAlgebra(int model, F &&f)
         f.template operator()<c5ga::mv>();
         return true;
     case MVI_I2GA:
-        f.template operator()<i2ga>();
+        f.template operator()<i2ga::mv>();
         return true;
     default:
         return false;
@@ -168,7 +168,7 @@ template <class F> inline void forEachConsoleAlgebra(F &&f)
     f.template operator()<p3ga::mv>();
     f.template operator()<c3ga::mv>();
     f.template operator()<c5ga::mv>();
-    f.template operator()<i2ga>();
+    f.template operator()<i2ga::mv>();
 }
 
 #endif /* _CONSOLE_ALGEBRA_H_ */

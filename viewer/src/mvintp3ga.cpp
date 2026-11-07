@@ -249,8 +249,8 @@ int mvInt::p3gaFactorBivector(const p3ga::mv &B, double *normal, double *factor1
     else
     { // auto factorization
         p3gaRve3(rt, nl);
-        pe1 = ga::takeGrade(p3ga::mv(rt * p3ga::e1<double>() * ga::inverse(rt)), GRADE1);
-        pe2 = ga::takeGrade(p3ga::mv(rt * p3ga::e2<double>() * ga::inverse(rt)), GRADE1);
+        pe1 = ga::takeGrade(p3ga::mv(rt * p3ga::e1<double>() * ga::inverse(rt)), ga::GRADE1);
+        pe2 = ga::takeGrade(p3ga::mv(rt * p3ga::e2<double>() * ga::inverse(rt)), ga::GRADE1);
     }
 
     // if the bivector wasn't unit, adjust factors

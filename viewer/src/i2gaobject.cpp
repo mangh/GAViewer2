@@ -26,7 +26,7 @@
 #include "state.h"
 #include "uistate.h"
 
-i2gaObject::i2gaObject(const i2ga &mv, const std::string &name /*= std::string("")*/, int drawMode /*= 0*/,
+i2gaObject::i2gaObject(const i2ga::mv &mv, const std::string &name /*= std::string("")*/, int drawMode /*= 0*/,
                        int creationFlags /*= 0*/, int forceFlags /*= 0*/)
     : object(OT_I2GA, name, drawMode, creationFlags)
 {
@@ -89,7 +89,7 @@ int i2gaObject::copy(const object *o, int &propertiesChanged, int forceFlags /*=
         return err;
     const i2gaObject *i2gaO = (const i2gaObject *)o;
 
-    if ((m_mv - i2gaO->m_mv).norm_a() != 0.0)
+    if (ga::norm_a(i2ga::mv(m_mv - i2gaO->m_mv)) != 0.0)
         propertiesChanged |= OP_DESCRIPTION;
     m_mv = i2gaO->m_mv;
     m_int.copy(&i2gaO->m_int);
@@ -123,7 +123,7 @@ int i2gaObject::description(char *buf, int bufLen, int sl /* = 0 */)
         if (sl)
             sprintf(buf, "%s: unknown i2ga object", m_name.c_str());
         else
-            sprintf(buf, "Unknown i2ga object.\nCoordinates: %s", m_mv.string());
+            sprintf(buf, "Unknown i2ga object.\nCoordinates: %s", ga::toString(m_mv).c_str());
     }
 
     return 0;
@@ -136,5 +136,5 @@ float i2gaObject::drawSortValue()
 
 std::string i2gaObject::toString(const char *floatPrec /* = "%e" */)
 {
-    return std::string("\"" + m_name + "\" = " + m_mv.string(floatPrec));
+    return std::string("\"" + m_name + "\" = " + ga::toString(m_mv, floatPrec));
 }

@@ -788,7 +788,7 @@ void ui_menuCallback(Fl_Widget *W, void *Data)
         R = gui_state->m_glWindow->getCamOri();
         R = R * (1.0 / sqrt(ga::scalar(ga::lcont(R, R.reverse())))); // normalization (rotor seems to drift of unit manifold, todo: fix
                                                    // this in glwindow.cpp)
-        B = ga::takeGrade(R, GRADE2);
+        B = ga::takeGrade(R, ga::GRADE2);
         angle = atan2(sqrt(ga::norm_a(B)), ga::scalar(R));
         if (ga::norm_a(B) != 0.0)
             B = angle * ga::normalize(B);

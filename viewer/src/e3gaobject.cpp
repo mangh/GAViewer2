@@ -266,7 +266,7 @@ int e3gaObject::draw(glwindow *window)
                 R = ga::exp(e3ga::mv(((0.5 * m_int.m_scalar[1]) / nbSteps) * b));
                 for (i = 0; i < nbSteps; i++)
                 {
-                    v = ga::takeGrade(ga::igp(e3ga::mv(R * v), R), GRADE1);
+                    v = ga::takeGrade(ga::igp(e3ga::mv(R * v), R), ga::GRADE1);
                     T.vertex3dv(e3ga::xyz(v).data());
                 }
                 T.end();
@@ -275,7 +275,7 @@ int e3gaObject::draw(glwindow *window)
             {
                 // add arrowhead
                 R = ga::exp(e3ga::mv(0.01 * b));
-                v = ga::takeGrade(ga::igp(e3ga::mv(R * v), R), GRADE1);
+                v = ga::takeGrade(ga::igp(e3ga::mv(R * v), R), ga::GRADE1);
                 //		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
                 T.begin(GL_LINE_STRIP);
                 T.vertex3dv(e3ga::xyz(0.93 * v + 0.13 * ga::lcont(v, b)).data());

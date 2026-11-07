@@ -22,7 +22,6 @@
 #include <type_traits>
 #include <variant>
 
-#include "../ga/gaigencompat.h" // the ga:: operations also for the Gaigen algebras
 #include "../gaincludes.h"
 #include "../models.h"
 #include "../mvint.h"
@@ -76,7 +75,7 @@ consoleVariable::consoleVariable(const std::string &name, const c5ga::mv *mv)
     set(name, mv);
 }
 
-consoleVariable::consoleVariable(const std::string &name, const i2ga *mv)
+consoleVariable::consoleVariable(const std::string &name, const i2ga::mv *mv)
 {
     initToNothing();
     set(name, mv);
@@ -106,7 +105,7 @@ consoleVariable::consoleVariable(const std::string &name, const c5ga::mv &mv)
     set(name, &mv);
 }
 
-consoleVariable::consoleVariable(const std::string &name, const i2ga &mv)
+consoleVariable::consoleVariable(const std::string &name, const i2ga::mv &mv)
 {
     initToNothing();
     set(name, &mv);
@@ -195,7 +194,7 @@ int consoleVariable::set(const std::string &pname, const c5ga::mv *mv)
     return setMV(pname, *mv);
 }
 
-int consoleVariable::set(const std::string &pname, const i2ga *mv)
+int consoleVariable::set(const std::string &pname, const i2ga::mv *mv)
 {
     return setMV(pname, *mv);
 }
@@ -718,13 +717,13 @@ void consoleVariable::castC5gaToC3ga(const c5ga::mv &vc, c3ga::mv &vp)
     vp = ga::scalar(vc);
 
     // grade 1
-    if (ga::gradeUsage(vc) & GRADE1)
+    if (ga::gradeUsage(vc) & ga::GRADE1)
     {
         vp += vc[c5ga::E1] * c3ga::e1<double>() + vc[c5ga::E2] * c3ga::e2<double>() + vc[c5ga::E3] * c3ga::e3<double>() +
               vc[c5ga::Eo] * c3ga::eo<double>() + vc[c5ga::Ei] * c3ga::ei<double>();
     }
     // grade 2
-    if (ga::gradeUsage(vc) & GRADE2)
+    if (ga::gradeUsage(vc) & ga::GRADE2)
     {
         vp += vc[c5ga::E12] * (c3ga::e1<double>() ^ c3ga::e2<double>()) + vc[c5ga::E13] * (c3ga::e1<double>() ^ c3ga::e3<double>()) +
               vc[c5ga::E23] * (c3ga::e2<double>() ^ c3ga::e3<double>()) + vc[c5ga::E1o] * (c3ga::e1<double>() ^ c3ga::eo<double>()) +
@@ -733,7 +732,7 @@ void consoleVariable::castC5gaToC3ga(const c5ga::mv &vc, c3ga::mv &vp)
               vc[c5ga::E3i] * (c3ga::e3<double>() ^ c3ga::ei<double>()) + vc[c5ga::Eoi] * (c3ga::eo<double>() ^ c3ga::ei<double>());
     }
     // grade 3
-    if (ga::gradeUsage(vc) & GRADE3)
+    if (ga::gradeUsage(vc) & ga::GRADE3)
     {
         vp += vc[c5ga::E123] * (c3ga::e1<double>() ^ c3ga::e2<double>() ^ c3ga::e3<double>()) +
               vc[c5ga::E12o] * (c3ga::e1<double>() ^ c3ga::e2<double>() ^ c3ga::eo<double>()) +
@@ -747,7 +746,7 @@ void consoleVariable::castC5gaToC3ga(const c5ga::mv &vc, c3ga::mv &vp)
               vc[c5ga::E3oi] * (c3ga::e3<double>() ^ c3ga::eo<double>() ^ c3ga::ei<double>());
     }
     // grade 4
-    if (ga::gradeUsage(vc) & GRADE4)
+    if (ga::gradeUsage(vc) & ga::GRADE4)
     {
         vp += vc[c5ga::E123o] * (c3ga::e1<double>() ^ c3ga::e2<double>() ^ c3ga::e3<double>() ^ c3ga::eo<double>()) +
               vc[c5ga::E123i] * (c3ga::e1<double>() ^ c3ga::e2<double>() ^ c3ga::e3<double>() ^ c3ga::ei<double>()) +
@@ -756,7 +755,7 @@ void consoleVariable::castC5gaToC3ga(const c5ga::mv &vc, c3ga::mv &vp)
               vc[c5ga::E23oi] * (c3ga::e2<double>() ^ c3ga::e3<double>() ^ c3ga::eo<double>() ^ c3ga::ei<double>());
     }
     // grade 5
-    if (ga::gradeUsage(vc) & GRADE5)
+    if (ga::gradeUsage(vc) & ga::GRADE5)
     {
         vp += vc[c5ga::E123oi] * (c3ga::e1<double>() ^ c3ga::e2<double>() ^ c3ga::e3<double>() ^ c3ga::eo<double>() ^ c3ga::ei<double>());
     }
@@ -770,20 +769,20 @@ consoleVariable *consoleVariable::castC3gaToC5ga() const
     const c3ga::mv &vc = c();
 
     // grade 0
-    if (ga::gradeUsage(vc) & GRADE0)
+    if (ga::gradeUsage(vc) & ga::GRADE0)
     {
         vp += ga::scalar(vc);
     }
 
     // grade 1
-    if (ga::gradeUsage(vc) & GRADE1)
+    if (ga::gradeUsage(vc) & ga::GRADE1)
     {
         vp += vc[c3ga::E1] * c5ga::e1<double>() + vc[c3ga::E2] * c5ga::e2<double>() + vc[c3ga::E3] * c5ga::e3<double>() +
               vc[c3ga::Eo] * c5ga::eo<double>() + vc[c3ga::Ei] * c5ga::ei<double>();
     }
 
     // grade 2
-    if (ga::gradeUsage(vc) & GRADE2)
+    if (ga::gradeUsage(vc) & ga::GRADE2)
     {
         vp += vc[c3ga::E12] * (c5ga::e1<double>() ^ c5ga::e2<double>()) + vc[c3ga::E13] * (c5ga::e1<double>() ^ c5ga::e3<double>()) +
               vc[c3ga::E23] * (c5ga::e2<double>() ^ c5ga::e3<double>()) + vc[c3ga::E1o] * (c5ga::e1<double>() ^ c5ga::eo<double>()) +
@@ -793,7 +792,7 @@ consoleVariable *consoleVariable::castC3gaToC5ga() const
     }
 
     // grade 3
-    if (ga::gradeUsage(vc) & GRADE3)
+    if (ga::gradeUsage(vc) & ga::GRADE3)
     {
         vp += vc[c3ga::E123] * (c5ga::e1<double>() ^ c5ga::e2<double>() ^ c5ga::e3<double>()) +
               vc[c3ga::E12o] * (c5ga::e1<double>() ^ c5ga::e2<double>() ^ c5ga::eo<double>()) +
@@ -808,7 +807,7 @@ consoleVariable *consoleVariable::castC3gaToC5ga() const
     }
 
     // grade 4
-    if (ga::gradeUsage(vc) & GRADE4)
+    if (ga::gradeUsage(vc) & ga::GRADE4)
     {
         vp += vc[c3ga::E123o] * (c5ga::e1<double>() ^ c5ga::e2<double>() ^ c5ga::e3<double>() ^ c5ga::eo<double>()) +
               vc[c3ga::E123i] * (c5ga::e1<double>() ^ c5ga::e2<double>() ^ c5ga::e3<double>() ^ c5ga::ei<double>()) +
@@ -818,7 +817,7 @@ consoleVariable *consoleVariable::castC3gaToC5ga() const
     }
 
     // grade 5
-    if (ga::gradeUsage(vc) & GRADE5)
+    if (ga::gradeUsage(vc) & ga::GRADE5)
     {
         vp += vc[c3ga::E123oi] * (c5ga::e1<double>() ^ c5ga::e2<double>() ^ c5ga::e3<double>() ^ c5ga::eo<double>() ^ c5ga::ei<double>());
     }
@@ -829,7 +828,7 @@ consoleVariable *consoleVariable::castC3gaToC5ga() const
 
 consoleVariable *consoleVariable::castE3gaToI2ga() const
 {
-    i2ga vi2;
+    i2ga::mv vi2;
     const e3ga::mv &ve = e();
 
     // only e1, e2 are preserved
@@ -837,17 +836,17 @@ consoleVariable *consoleVariable::castE3gaToI2ga() const
         // grade 0
         ga::scalar(ve) +
         // grade 1
-        ve[e3ga::E1] * i2ga::e1 + ve[e3ga::E2] * i2ga::e2 +
+        ve[e3ga::E1] * i2ga::e1<double>() + ve[e3ga::E2] * i2ga::e2<double>() +
         // grade 2
-        ve[e3ga::E12] * (i2ga::e1 ^ i2ga::e2);
+        ve[e3ga::E12] * (i2ga::e1<double>() ^ i2ga::e2<double>());
 
-    vi2.compress();
+    vi2 = ga::compress(vi2);
     return new consoleVariable("", vi2);
 }
 
 consoleVariable *consoleVariable::castP3gaToI2ga() const
 {
-    i2ga vi2;
+    i2ga::mv vi2;
     const p3ga::mv &vp = p();
 
     // e1, e2, e0 (-> no) are preserved
@@ -855,22 +854,22 @@ consoleVariable *consoleVariable::castP3gaToI2ga() const
         // grade 0
         ga::scalar(vp) +
         // grade 1
-        vp[p3ga::E1] * i2ga::e1 + vp[p3ga::E2] * i2ga::e2 + vp[p3ga::E0] * i2ga::no +
+        vp[p3ga::E1] * i2ga::e1<double>() + vp[p3ga::E2] * i2ga::e2<double>() + vp[p3ga::E0] * i2ga::eo<double>() +
         // grade 2
-        vp[p3ga::E12] * (i2ga::e1 ^ i2ga::e2) + vp[p3ga::E10] * (i2ga::e1 ^ i2ga::no) +
-        vp[p3ga::E20] * (i2ga::e2 ^ i2ga::no) +
+        vp[p3ga::E12] * (i2ga::e1<double>() ^ i2ga::e2<double>()) + vp[p3ga::E10] * (i2ga::e1<double>() ^ i2ga::eo<double>()) +
+        vp[p3ga::E20] * (i2ga::e2<double>() ^ i2ga::eo<double>()) +
         // grade 3
         // NOTE: inherited bug, kept as is: the Gaigen code read the grade-3 coordinate e1^e2^e0 from
         // grade 2 (vp[GRADE2][P3GA_E1_E2_E0]), i.e. the e1^e2 coordinate; should be vp[p3ga::E120]
-        vp[p3ga::E12] * (i2ga::e1 ^ i2ga::e2 ^ i2ga::no);
+        vp[p3ga::E12] * (i2ga::e1<double>() ^ i2ga::e2<double>() ^ i2ga::eo<double>());
 
-    vi2.compress();
+    vi2 = ga::compress(vi2);
     return new consoleVariable("", vi2);
 }
 
 consoleVariable *consoleVariable::castC3gaToI2ga() const
 {
-    i2ga vi2;
+    i2ga::mv vi2;
     const c3ga::mv &vc = c();
 
     // e1, e2, ni, no are preserved
@@ -878,30 +877,30 @@ consoleVariable *consoleVariable::castC3gaToI2ga() const
         // grade 0
         ga::scalar(vc) +
         // grade 1
-        vc[c3ga::E1] * i2ga::e1 + vc[c3ga::E2] * i2ga::e2 + vc[c3ga::Eo] * i2ga::no +
-        vc[c3ga::Ei] * i2ga::ni +
+        vc[c3ga::E1] * i2ga::e1<double>() + vc[c3ga::E2] * i2ga::e2<double>() + vc[c3ga::Eo] * i2ga::eo<double>() +
+        vc[c3ga::Ei] * i2ga::ei<double>() +
         // grade 2
-        vc[c3ga::E12] * (i2ga::e1 ^ i2ga::e2) + vc[c3ga::E1o] * (i2ga::e1 ^ i2ga::no) +
-        vc[c3ga::E2o] * (i2ga::e2 ^ i2ga::no) + vc[c3ga::E1i] * (i2ga::e1 ^ i2ga::ni) +
-        vc[c3ga::E2i] * (i2ga::e2 ^ i2ga::ni) + vc[c3ga::Eoi] * (i2ga::no ^ i2ga::ni) +
+        vc[c3ga::E12] * (i2ga::e1<double>() ^ i2ga::e2<double>()) + vc[c3ga::E1o] * (i2ga::e1<double>() ^ i2ga::eo<double>()) +
+        vc[c3ga::E2o] * (i2ga::e2<double>() ^ i2ga::eo<double>()) + vc[c3ga::E1i] * (i2ga::e1<double>() ^ i2ga::ei<double>()) +
+        vc[c3ga::E2i] * (i2ga::e2<double>() ^ i2ga::ei<double>()) + vc[c3ga::Eoi] * (i2ga::eo<double>() ^ i2ga::ei<double>()) +
         // NOTE: inherited bug, kept as is: the Gaigen code read the grade 3 and 4 coordinates below from
         // grade 2 (vc[GRADE2][C3GA_E1_E2_NO], ...), i.e. the coordinates of other (grade 2) blades; they
         // should be vc[c3ga::E12o], vc[c3ga::E12i], vc[c3ga::E1oi], vc[c3ga::E2oi] and vc[c3ga::E12oi]
         // grade 3
-        vc[c3ga::E13] * (i2ga::e1 ^ i2ga::e2 ^ i2ga::no) +
-        vc[c3ga::E2o] * (i2ga::e1 ^ i2ga::e2 ^ i2ga::ni) +
-        vc[c3ga::E2i] * (i2ga::e1 ^ i2ga::no ^ i2ga::ni) +
-        vc[c3ga::E3i] * (i2ga::e2 ^ i2ga::no ^ i2ga::ni) +
+        vc[c3ga::E13] * (i2ga::e1<double>() ^ i2ga::e2<double>() ^ i2ga::eo<double>()) +
+        vc[c3ga::E2o] * (i2ga::e1<double>() ^ i2ga::e2<double>() ^ i2ga::ei<double>()) +
+        vc[c3ga::E2i] * (i2ga::e1<double>() ^ i2ga::eo<double>() ^ i2ga::ei<double>()) +
+        vc[c3ga::E3i] * (i2ga::e2<double>() ^ i2ga::eo<double>() ^ i2ga::ei<double>()) +
         // grade 4
-        vc[c3ga::E23] * (i2ga::e1 ^ i2ga::e2 ^ i2ga::no ^ i2ga::ni);
+        vc[c3ga::E23] * (i2ga::e1<double>() ^ i2ga::e2<double>() ^ i2ga::eo<double>() ^ i2ga::ei<double>());
 
-    vi2.compress();
+    vi2 = ga::compress(vi2);
     return new consoleVariable("", vi2);
 }
 
 consoleVariable *consoleVariable::castC5gaToI2ga() const
 {
-    i2ga vi2;
+    i2ga::mv vi2;
     const c5ga::mv &vc = c5();
 
     // e1, e2, ni, no are preserved
@@ -909,12 +908,12 @@ consoleVariable *consoleVariable::castC5gaToI2ga() const
         // grade 0
         ga::scalar(vc) +
         // grade 1
-        vc[c5ga::E1] * i2ga::e1 + vc[c5ga::E2] * i2ga::e2 + vc[c5ga::Eo] * i2ga::no +
-        vc[c5ga::Ei] * i2ga::ni +
+        vc[c5ga::E1] * i2ga::e1<double>() + vc[c5ga::E2] * i2ga::e2<double>() + vc[c5ga::Eo] * i2ga::eo<double>() +
+        vc[c5ga::Ei] * i2ga::ei<double>() +
         // grade 2
-        vc[c5ga::E12] * (i2ga::e1 ^ i2ga::e2) + vc[c5ga::E1o] * (i2ga::e1 ^ i2ga::no) +
-        vc[c5ga::E2o] * (i2ga::e2 ^ i2ga::no) + vc[c5ga::E1i] * (i2ga::e1 ^ i2ga::ni) +
-        vc[c5ga::E2i] * (i2ga::e2 ^ i2ga::ni) + vc[c5ga::Eoi] * (i2ga::no ^ i2ga::ni) +
+        vc[c5ga::E12] * (i2ga::e1<double>() ^ i2ga::e2<double>()) + vc[c5ga::E1o] * (i2ga::e1<double>() ^ i2ga::eo<double>()) +
+        vc[c5ga::E2o] * (i2ga::e2<double>() ^ i2ga::eo<double>()) + vc[c5ga::E1i] * (i2ga::e1<double>() ^ i2ga::ei<double>()) +
+        vc[c5ga::E2i] * (i2ga::e2<double>() ^ i2ga::ei<double>()) + vc[c5ga::Eoi] * (i2ga::eo<double>() ^ i2ga::ei<double>()) +
         // NOTE: inherited bug, kept as far as defined: the Gaigen code read the grade 3 and 4
         // coordinates from grade 2 (vc[GRADE2][C5GA_E1_E2_NO], ...): the first two below are the
         // coordinates of other (grade 2) blades; the e1^no^ni, e2^no^ni and e1^e2^no^ni terms
@@ -923,25 +922,25 @@ consoleVariable *consoleVariable::castC5gaToI2ga() const
         // They should be vc[c5ga::E12o], vc[c5ga::E12i], vc[c5ga::E1oi], vc[c5ga::E2oi] and
         // vc[c5ga::E12oi].
         // grade 3
-        vc[c5ga::E1o] * (i2ga::e1 ^ i2ga::e2 ^ i2ga::no) + vc[c5ga::Eoi] * (i2ga::e1 ^ i2ga::e2 ^ i2ga::ni);
+        vc[c5ga::E1o] * (i2ga::e1<double>() ^ i2ga::e2<double>() ^ i2ga::eo<double>()) + vc[c5ga::Eoi] * (i2ga::e1<double>() ^ i2ga::e2<double>() ^ i2ga::ei<double>());
 
-    vi2.compress();
+    vi2 = ga::compress(vi2);
     return new consoleVariable("", vi2);
 }
 
 consoleVariable *consoleVariable::castI2gaToE3ga() const
 {
     e3ga::mv ve;
-    const i2ga &vi2 = i2();
+    const i2ga::mv &vi2 = i2();
 
     // only e1, e2 are preserved
     ve =
         // grade 0
-        vi2.scalar() +
+        ga::scalar(vi2) +
         // grade 1
-        vi2[GRADE1][I2GA_E1] * e3ga::e1<double>() + vi2[GRADE1][I2GA_E2] * e3ga::e2<double>() +
+        vi2[i2ga::E1] * e3ga::e1<double>() + vi2[i2ga::E2] * e3ga::e2<double>() +
         // grade 2
-        vi2[GRADE2][I2GA_E1_E2] * (e3ga::e1<double>() ^ e3ga::e2<double>());
+        vi2[i2ga::E12] * (e3ga::e1<double>() ^ e3ga::e2<double>());
 
     ve = ga::compress(ve);
     return new consoleVariable("", ve);
@@ -950,19 +949,21 @@ consoleVariable *consoleVariable::castI2gaToE3ga() const
 consoleVariable *consoleVariable::castI2gaToP3ga() const
 {
     p3ga::mv vp;
-    const i2ga &vi2 = i2();
+    const i2ga::mv &vi2 = i2();
 
     // e1, e2, e0 (-> no) are preserved
     vp =
         // grade 0
-        vi2.scalar() +
+        ga::scalar(vi2) +
         // grade 1
-        vi2[GRADE1][I2GA_E1] * p3ga::e1<double>() + vi2[GRADE1][I2GA_E2] * p3ga::e2<double>() + vi2[GRADE1][I2GA_NO] * p3ga::e0<double>() +
+        vi2[i2ga::E1] * p3ga::e1<double>() + vi2[i2ga::E2] * p3ga::e2<double>() + vi2[i2ga::Eo] * p3ga::e0<double>() +
         // grade 2
-        vi2[GRADE2][I2GA_E1_E2] * (p3ga::e1<double>() ^ p3ga::e2<double>()) + vi2[GRADE2][I2GA_E1_NO] * (p3ga::e1<double>() ^ p3ga::e0<double>()) +
-        vi2[GRADE2][I2GA_E2_NO] * (p3ga::e2<double>() ^ p3ga::e0<double>()) +
+        vi2[i2ga::E12] * (p3ga::e1<double>() ^ p3ga::e2<double>()) + vi2[i2ga::E1o] * (p3ga::e1<double>() ^ p3ga::e0<double>()) +
+        vi2[i2ga::E2o] * (p3ga::e2<double>() ^ p3ga::e0<double>()) +
+        // NOTE: inherited bug, kept as is: the Gaigen code read the grade 3 coordinate below from grade 2
+        // (vi2[GRADE2][I2GA_E1_E2_NO]), i.e. the coordinate of e1^e2; it should be vi2[i2ga::E12o]
         // grade 3
-        vi2[GRADE2][I2GA_E1_E2_NO] * (p3ga::e1<double>() ^ p3ga::e2<double>() ^ p3ga::e0<double>());
+        vi2[i2ga::E12] * (p3ga::e1<double>() ^ p3ga::e2<double>() ^ p3ga::e0<double>());
 
     vp = ga::compress(vp);
     return new consoleVariable("", vp);
@@ -971,26 +972,29 @@ consoleVariable *consoleVariable::castI2gaToP3ga() const
 consoleVariable *consoleVariable::castI2gaToC3ga() const
 {
     c3ga::mv vc;
-    const i2ga &vi2 = i2();
+    const i2ga::mv &vi2 = i2();
 
     // e1, e2, ni, no are preserved
     vc =
         // grade 0
-        vi2.scalar() +
+        ga::scalar(vi2) +
         // grade 1
-        vi2[GRADE1][I2GA_E1] * c3ga::e1<double>() + vi2[GRADE1][I2GA_E2] * c3ga::e2<double>() + vi2[GRADE1][I2GA_NO] * c3ga::eo<double>() +
-        vi2[GRADE1][I2GA_NI] * c3ga::ei<double>() +
+        vi2[i2ga::E1] * c3ga::e1<double>() + vi2[i2ga::E2] * c3ga::e2<double>() + vi2[i2ga::Eo] * c3ga::eo<double>() +
+        vi2[i2ga::Ei] * c3ga::ei<double>() +
         // grade 2
-        vi2[GRADE2][I2GA_E1_E2] * (c3ga::e1<double>() ^ c3ga::e2<double>()) + vi2[GRADE2][I2GA_E1_NO] * (c3ga::e1<double>() ^ c3ga::eo<double>()) +
-        vi2[GRADE2][I2GA_E2_NO] * (c3ga::e2<double>() ^ c3ga::eo<double>()) + vi2[GRADE2][I2GA_E1_NI] * (c3ga::e1<double>() ^ c3ga::ei<double>()) +
-        vi2[GRADE2][I2GA_E2_NI] * (c3ga::e2<double>() ^ c3ga::ei<double>()) + vi2[GRADE2][I2GA_NO_NI] * (c3ga::eo<double>() ^ c3ga::ei<double>()) +
+        vi2[i2ga::E12] * (c3ga::e1<double>() ^ c3ga::e2<double>()) + vi2[i2ga::E1o] * (c3ga::e1<double>() ^ c3ga::eo<double>()) +
+        vi2[i2ga::E2o] * (c3ga::e2<double>() ^ c3ga::eo<double>()) + vi2[i2ga::E1i] * (c3ga::e1<double>() ^ c3ga::ei<double>()) +
+        vi2[i2ga::E2i] * (c3ga::e2<double>() ^ c3ga::ei<double>()) + vi2[i2ga::Eoi] * (c3ga::eo<double>() ^ c3ga::ei<double>()) +
+        // NOTE: inherited bug, kept as is: the Gaigen code read the grade 3 and 4 coordinates below from
+        // grade 2 (vi2[GRADE2][I2GA_E1_E2_NO], ...), i.e. the coordinates of other (grade 2) blades; they
+        // should be vi2[i2ga::E12o], vi2[i2ga::E12i], vi2[i2ga::E1oi], vi2[i2ga::E2oi] and vi2[i2ga::E12oi]
         // grade 3
-        vi2[GRADE2][I2GA_E1_E2_NO] * (c3ga::e1<double>() ^ c3ga::e2<double>() ^ c3ga::eo<double>()) +
-        vi2[GRADE2][I2GA_E1_E2_NI] * (c3ga::e1<double>() ^ c3ga::e2<double>() ^ c3ga::ei<double>()) +
-        vi2[GRADE2][I2GA_E1_NO_NI] * (c3ga::e1<double>() ^ c3ga::eo<double>() ^ c3ga::ei<double>()) +
-        vi2[GRADE2][I2GA_E2_NO_NI] * (c3ga::e2<double>() ^ c3ga::eo<double>() ^ c3ga::ei<double>()) +
+        vi2[i2ga::E12] * (c3ga::e1<double>() ^ c3ga::e2<double>() ^ c3ga::eo<double>()) +
+        vi2[i2ga::E1o] * (c3ga::e1<double>() ^ c3ga::e2<double>() ^ c3ga::ei<double>()) +
+        vi2[i2ga::E2o] * (c3ga::e1<double>() ^ c3ga::eo<double>() ^ c3ga::ei<double>()) +
+        vi2[i2ga::E1i] * (c3ga::e2<double>() ^ c3ga::eo<double>() ^ c3ga::ei<double>()) +
         // grade 4
-        vi2[GRADE2][I2GA_E1_E2_NO_NI] * (c3ga::e1<double>() ^ c3ga::e2<double>() ^ c3ga::eo<double>() ^ c3ga::ei<double>());
+        vi2[i2ga::E12] * (c3ga::e1<double>() ^ c3ga::e2<double>() ^ c3ga::eo<double>() ^ c3ga::ei<double>());
 
     vc = ga::compress(vc);
     return new consoleVariable("", vc);
@@ -999,26 +1003,29 @@ consoleVariable *consoleVariable::castI2gaToC3ga() const
 consoleVariable *consoleVariable::castI2gaToC5ga() const
 {
     c5ga::mv vc;
-    const i2ga &vi2 = i2();
+    const i2ga::mv &vi2 = i2();
 
     // e1, e2, ni, no are preserved
     vc =
         // grade 0
-        vi2.scalar() +
+        ga::scalar(vi2) +
         // grade 1
-        vi2[GRADE1][I2GA_E1] * c5ga::e1<double>() + vi2[GRADE1][I2GA_E2] * c5ga::e2<double>() + vi2[GRADE1][I2GA_NO] * c5ga::eo<double>() +
-        vi2[GRADE1][I2GA_NI] * c5ga::ei<double>() +
+        vi2[i2ga::E1] * c5ga::e1<double>() + vi2[i2ga::E2] * c5ga::e2<double>() + vi2[i2ga::Eo] * c5ga::eo<double>() +
+        vi2[i2ga::Ei] * c5ga::ei<double>() +
         // grade 2
-        vi2[GRADE2][I2GA_E1_E2] * (c5ga::e1<double>() ^ c5ga::e2<double>()) + vi2[GRADE2][I2GA_E1_NO] * (c5ga::e1<double>() ^ c5ga::eo<double>()) +
-        vi2[GRADE2][I2GA_E2_NO] * (c5ga::e2<double>() ^ c5ga::eo<double>()) + vi2[GRADE2][I2GA_E1_NI] * (c5ga::e1<double>() ^ c5ga::ei<double>()) +
-        vi2[GRADE2][I2GA_E2_NI] * (c5ga::e2<double>() ^ c5ga::ei<double>()) + vi2[GRADE2][I2GA_NO_NI] * (c5ga::eo<double>() ^ c5ga::ei<double>()) +
+        vi2[i2ga::E12] * (c5ga::e1<double>() ^ c5ga::e2<double>()) + vi2[i2ga::E1o] * (c5ga::e1<double>() ^ c5ga::eo<double>()) +
+        vi2[i2ga::E2o] * (c5ga::e2<double>() ^ c5ga::eo<double>()) + vi2[i2ga::E1i] * (c5ga::e1<double>() ^ c5ga::ei<double>()) +
+        vi2[i2ga::E2i] * (c5ga::e2<double>() ^ c5ga::ei<double>()) + vi2[i2ga::Eoi] * (c5ga::eo<double>() ^ c5ga::ei<double>()) +
+        // NOTE: inherited bug, kept as is: the Gaigen code read the grade 3 and 4 coordinates below from
+        // grade 2 (vi2[GRADE2][I2GA_E1_E2_NO], ...), i.e. the coordinates of other (grade 2) blades; they
+        // should be vi2[i2ga::E12o], vi2[i2ga::E12i], vi2[i2ga::E1oi], vi2[i2ga::E2oi] and vi2[i2ga::E12oi]
         // grade 3
-        vi2[GRADE2][I2GA_E1_E2_NO] * (c5ga::e1<double>() ^ c5ga::e2<double>() ^ c5ga::eo<double>()) +
-        vi2[GRADE2][I2GA_E1_E2_NI] * (c5ga::e1<double>() ^ c5ga::e2<double>() ^ c5ga::ei<double>()) +
-        vi2[GRADE2][I2GA_E1_NO_NI] * (c5ga::e1<double>() ^ c5ga::eo<double>() ^ c5ga::ei<double>()) +
-        vi2[GRADE2][I2GA_E2_NO_NI] * (c5ga::e2<double>() ^ c5ga::eo<double>() ^ c5ga::ei<double>()) +
+        vi2[i2ga::E12] * (c5ga::e1<double>() ^ c5ga::e2<double>() ^ c5ga::eo<double>()) +
+        vi2[i2ga::E1o] * (c5ga::e1<double>() ^ c5ga::e2<double>() ^ c5ga::ei<double>()) +
+        vi2[i2ga::E2o] * (c5ga::e1<double>() ^ c5ga::eo<double>() ^ c5ga::ei<double>()) +
+        vi2[i2ga::E1i] * (c5ga::e2<double>() ^ c5ga::eo<double>() ^ c5ga::ei<double>()) +
         // grade 4
-        vi2[GRADE2][I2GA_E1_E2_NO_NI] * (c5ga::e1<double>() ^ c5ga::e2<double>() ^ c5ga::eo<double>() ^ c5ga::ei<double>());
+        vi2[i2ga::E12] * (c5ga::e1<double>() ^ c5ga::e2<double>() ^ c5ga::eo<double>() ^ c5ga::ei<double>());
 
     vc = ga::compress(vc);
     return new consoleVariable("", vc);

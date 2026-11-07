@@ -65,6 +65,16 @@ constexpr int bitmapGrade(unsigned bitmap)
     return g;
 }
 
+// grade masks (as gradeUsage() returns them and takeGrade() takes them): bit k = grade k
+inline constexpr unsigned GRADE0 = 1u << 0;
+inline constexpr unsigned GRADE1 = 1u << 1;
+inline constexpr unsigned GRADE2 = 1u << 2;
+inline constexpr unsigned GRADE3 = 1u << 3;
+inline constexpr unsigned GRADE4 = 1u << 4;
+inline constexpr unsigned GRADE5 = 1u << 5;
+inline constexpr unsigned GRADE6 = 1u << 6;
+inline constexpr unsigned GRADE7 = 1u << 7;
+
 } // namespace ga
 
 #endif /* _GA_TRAITS_H_ */

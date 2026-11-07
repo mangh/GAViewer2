@@ -80,7 +80,7 @@ int rotor2Bivector(e3ga::mv &B, const e3ga::mv &R)
     if ((ga::gradeNorm_a(Rn, 2) < 1e-9) || (sin(acos(ca)) < 1e-9))
         B = 0;
     else
-        B = ga::takeGrade(e3ga::mv(acos(ca) * Rn * (1.0 / sin(acos(ca)))), GRADE2);
+        B = ga::takeGrade(e3ga::mv(acos(ca) * Rn * (1.0 / sin(acos(ca)))), ga::GRADE2);
 
     return 0;
 }

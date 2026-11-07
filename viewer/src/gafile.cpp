@@ -858,7 +858,7 @@ int GAfile::parseLine(state *s)
             return n;
         if (gui_state && gui_state->m_glWindow)
         {
-            gui_state->m_glWindow->setCamPos(ga::takeGrade(e3gaMv, GRADE1));
+            gui_state->m_glWindow->setCamPos(ga::takeGrade(e3gaMv, ga::GRADE1));
             gui_state->m_glWindow->redraw();
         }
     }
@@ -884,7 +884,7 @@ int GAfile::parseLine(state *s)
         // retrieve coordinates, built up multivector
         if ((n = ga::parse(line + idx, e3gaMv, eBen)) < 0)
             return n;
-        e3gaMv = ga::takeGrade(e3gaMv, GRADE1);
+        e3gaMv = ga::takeGrade(e3gaMv, ga::GRADE1);
         s->setTrl(e3gaMv, f1);
     }
     else if ((!strcmpnc(entryname, "eyeori")) || (!strcmpnc(entryname, "camori")))
@@ -894,7 +894,7 @@ int GAfile::parseLine(state *s)
             return n;
         if (gui_state && gui_state->m_glWindow)
         {
-            gui_state->m_glWindow->setCamOri(ga::exp(e3ga::mv(-ga::takeGrade(e3gaMv, GRADE2))));
+            gui_state->m_glWindow->setCamOri(ga::exp(e3ga::mv(-ga::takeGrade(e3gaMv, ga::GRADE2))));
             gui_state->m_glWindow->redraw();
         }
     }
@@ -923,7 +923,7 @@ int GAfile::parseLine(state *s)
             cprintf("warning: GAfile::parseLine(): file '%s': could not parse rotation\n", m_filename);
             return n;
         }
-        e3gaMv = ga::takeGrade(e3gaMv, GRADE2);
+        e3gaMv = ga::takeGrade(e3gaMv, ga::GRADE2);
 
         s->setRot(e3gaMv, f1);
     }

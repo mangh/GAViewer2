@@ -62,14 +62,14 @@ int mvInt::interpret(const e3ga::mv &amv, int creationFlags /* = 0*/)
     {
         switch (grade)
         {
-        case GRADE0: // scalar
+        case ga::GRADE0: // scalar
             m_type |= MVI_SCALAR;
             /*
             scalar 0: magnitude
             */
             m_scalar[0] = ga::scalar(mv);
             break;
-        case GRADE1:
+        case ga::GRADE1:
             m_type |= MVI_VECTOR;
             /*
             scalar 0: magnitude
@@ -91,7 +91,7 @@ int mvInt::interpret(const e3ga::mv &amv, int creationFlags /* = 0*/)
             m_point[0][1] = m_vector[0][1] * m_scalar[0];
             m_point[0][2] = m_vector[0][2] * m_scalar[0];
             break;
-        case GRADE2:
+        case ga::GRADE2:
             m_type |= MVI_BIVECTOR;
             /*
             scalar 0: magnitude
@@ -121,13 +121,13 @@ int mvInt::interpret(const e3ga::mv &amv, int creationFlags /* = 0*/)
             else
             { // auto factorization
                 e3gaRve3(rt, tmp);
-                pe1 = ga::takeGrade(e3ga::mv(rt * e3ga::e1<double>() * ga::inverse(rt)), GRADE1);
-                pe2 = ga::takeGrade(e3ga::mv(rt * e3ga::e2<double>() * ga::inverse(rt)), GRADE1);
+                pe1 = ga::takeGrade(e3ga::mv(rt * e3ga::e1<double>() * ga::inverse(rt)), ga::GRADE1);
+                pe2 = ga::takeGrade(e3ga::mv(rt * e3ga::e2<double>() * ga::inverse(rt)), ga::GRADE1);
             }
             setVector(1, pe1);
             setVector(2, pe2);
             break;
-        case GRADE3: // pseudoscalar / trivector
+        case ga::GRADE3: // pseudoscalar / trivector
             m_type |= MVI_TRIVECTOR;
 
             /*
@@ -189,7 +189,7 @@ int mvInt::interpret(const e3ga::mv &amv, int creationFlags /* = 0*/)
             m_scalar[0] = even;
 
             // interpret the bivector part to retrieve plane
-            e3ga::mv plane(m_scalar[0] * ga::normalize(ga::takeGrade(mv, GRADE2)));
+            e3ga::mv plane(m_scalar[0] * ga::normalize(ga::takeGrade(mv, ga::GRADE2)));
             mvInt bivectorInt(plane, OC_BLADE | OC_GRADE2);
             memcpy(m_vector[0], bivectorInt.m_vector[0], sizeof(double) * 3);
             memcpy(m_vector[1], bivectorInt.m_vector[1], sizeof(double) * 3);

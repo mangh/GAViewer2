@@ -36,8 +36,9 @@ id of MV.
 
 #include "../mt19937-2.h"
 #include "../state.h"
+#include "../ga/algorithms.h"
 #include "../ga/format.h"
-#include "../ga/gaigencompat.h"
+#include "../gaincludes.h"
 #include "consolealgebra.h"
 #include "consolefunction.h"
 #include "consolescope.h"
@@ -365,7 +366,7 @@ template <class MV> consoleVariable *cf_acosh(consoleScope *s, consoleVariable *
 // ********************************* ASINH *********************************
 template <class MV> consoleVariable *cf_asinh(consoleScope *s, consoleVariable *arg[])
 {
-    MV B = ga::takeGrade(mv<MV>(arg[0]), GRADE2);
+    MV B = ga::takeGrade(mv<MV>(arg[0]), ga::GRADE2);
     if (ga::norm_a(B) != 0.0)
     {
         double B2 = ga::scalar(ga::gp(B, B));

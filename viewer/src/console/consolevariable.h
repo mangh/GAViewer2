@@ -48,12 +48,12 @@ class consoleVariable
     consoleVariable(const std::string &name, const p3ga::mv &mv);
     consoleVariable(const std::string &name, const c3ga::mv &mv);
     consoleVariable(const std::string &name, const c5ga::mv &mv);
-    consoleVariable(const std::string &name, const i2ga &mv);
+    consoleVariable(const std::string &name, const i2ga::mv &mv);
     consoleVariable(const std::string &name, const e3ga::mv *mv);
     consoleVariable(const std::string &name, const p3ga::mv *mv);
     consoleVariable(const std::string &name, const c3ga::mv *mv);
     consoleVariable(const std::string &name, const c5ga::mv *mv);
-    consoleVariable(const std::string &name, const i2ga *mv);
+    consoleVariable(const std::string &name, const i2ga::mv *mv);
     consoleVariable(const consoleVariable &cv);
     ~consoleVariable();
 
@@ -65,7 +65,7 @@ class consoleVariable
     int set(const std::string &name, const p3ga::mv *mv);
     int set(const std::string &name, const c3ga::mv *mv);
     int set(const std::string &name, const c5ga::mv *mv);
-    int set(const std::string &name, const i2ga *mv);
+    int set(const std::string &name, const i2ga::mv *mv);
     void set(const consoleVariable &cv);
 
     /*int constant(int c); // set constant to true or false
@@ -119,9 +119,9 @@ class consoleVariable
     {
         return mv<c5ga::mv>();
     }
-    i2ga &i2() const
+    i2ga::mv &i2() const
     {
-        return mv<i2ga>();
+        return mv<i2ga::mv>();
     }
 
     // Calls f(mv) with the multivector of the variable (as its actual type:
@@ -186,7 +186,7 @@ class consoleVariable
   protected:
     std::string m_name;
     // the multivector (mutable: e(), p(), ... of a const variable return a modifiable multivector)
-    mutable std::variant<std::monostate, e3ga::mv, p3ga::mv, c3ga::mv, c5ga::mv, i2ga> m_mv;
+    mutable std::variant<std::monostate, e3ga::mv, p3ga::mv, c3ga::mv, c5ga::mv, i2ga::mv> m_mv;
     int m_op; // operator (as in consoleoperators.h)
 
     int getFlag(int flag) const;

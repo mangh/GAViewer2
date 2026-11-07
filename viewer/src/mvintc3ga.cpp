@@ -487,8 +487,8 @@ int mvInt::c3gaFactorBivector(const c3ga::mv &B, double *normal, double *factor1
     else
     { // auto factorization
         c3gaRve3(rt, nl);
-        pe1 = ga::takeGrade(c3ga::mv(rt * c3ga::e1<double>() * ga::inverse(rt)), GRADE1);
-        pe2 = ga::takeGrade(c3ga::mv(rt * c3ga::e2<double>() * ga::inverse(rt)), GRADE1);
+        pe1 = ga::takeGrade(c3ga::mv(rt * c3ga::e1<double>() * ga::inverse(rt)), ga::GRADE1);
+        pe2 = ga::takeGrade(c3ga::mv(rt * c3ga::e2<double>() * ga::inverse(rt)), ga::GRADE1);
     }
 
     // if the bivector wasn't unit, adjust factors

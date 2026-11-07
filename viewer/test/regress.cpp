@@ -120,23 +120,6 @@ std::string hex(int x)
     return buf;
 }
 
-// Gaigen 1 multivector: coordinates are stored per grade, basis element names
-// are listed in the same (grade-major) order.
-template <class MV>
-void dumpMv(std::ostringstream &out, const MV &mv, char *const *names, const int *gradeSize, int nbGrades)
-{
-    out << "  mv\n";
-    int ia = 0;
-    for (int g = 0; g < nbGrades; g++)
-    {
-        const double *c = mv.coordinates(1 << g);
-        for (int j = 0; j < gradeSize[g]; j++)
-            if (num(c[j]) != "0")
-                out << "    " << names[ia + j] << " " << num(c[j]) << "\n";
-        ia += gradeSize[g];
-    }
-}
-
 // Garamon multivector: dumped in the display basis (the basis of the Gaigen algebra
 // it replaces, see ga/traits.h), so that the dump is the same as with Gaigen.
 template <ga::garamonMV MV> void dumpMv(std::ostringstream &out, const MV &mv)
@@ -228,7 +211,7 @@ std::string dumpObjects()
         }
         case OT_I2GA: {
             auto *io = static_cast<i2gaObject *>(o);
-            dumpMv(out, io->m_mv, i2gai_basisElementNames, i2gai_gradeSize, 7);
+            dumpMv(out, io->m_mv);
             dumpInt(out, io->m_int);
             break;
         }

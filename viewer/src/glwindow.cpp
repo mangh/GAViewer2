@@ -753,7 +753,7 @@ int glwindow::vectorAtDepth(double depth, double vx, double vy, e3ga::mv &v)
              (depth * (double)vy * m_frustumHeight) / (h() * m_frustumNear) * e3ga::e2<double>());
 
     e3ga::mv R(getCamOri());
-    v = ga::takeGrade(e3ga::mv(ga::inverse(R) * tmp * R), GRADE1);
+    v = ga::takeGrade(e3ga::mv(ga::inverse(R) * tmp * R), ga::GRADE1);
 
     return 0;
 }
