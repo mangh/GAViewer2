@@ -86,6 +86,18 @@ foreach(algebra e3ga p3ga c3ga)
   set_tests_properties(gadiff.${algebra} PROPERTIES TIMEOUT 120 LABELS "gadiff")
 endforeach()
 
+# The plain 3D drawing geometry (viewer/src/tubegeometry.h) vs. the multivector
+# expressions it replaces.
+add_executable(tubegeometry_check "${CMAKE_CURRENT_SOURCE_DIR}/tubegeometry/check.cpp")
+target_link_libraries(tubegeometry_check PRIVATE gaviewer_ga)
+if (CMAKE_CXX_COMPILER_FRONTEND_VARIANT MATCHES "MSVC")
+  target_compile_options(tubegeometry_check PRIVATE -W3)
+elseif (CMAKE_CXX_COMPILER_FRONTEND_VARIANT MATCHES "GNU")
+  target_compile_options(tubegeometry_check PRIVATE -Wall)
+endif()
+add_test(NAME tubegeometry COMMAND tubegeometry_check)
+set_tests_properties(tubegeometry PROPERTIES TIMEOUT 120 LABELS "drawing")
+
 # Test scripts (viewer/test/scripts/<name>.g): each defines a console function
 # <name>() that exercises a part of the console language (e.g. all the built-in
 # per-algebra functions in every model).

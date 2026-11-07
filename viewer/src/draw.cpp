@@ -38,7 +38,7 @@ int drawVector(const GAIM_FLOAT tail[3], const GAIM_FLOAT dir[3], GAIM_FLOAT sca
     GLboolean l;
     const GAIM_FLOAT rotStep = 2 * M_PI / 32;
     GAIM_FLOAT z;
-    e3ga::mv rt, n, rti;
+    e3ga::mv rt;
     float rotM[16];
 
     if (scale == 0.0)
@@ -104,23 +104,21 @@ int drawVector(const GAIM_FLOAT tail[3], const GAIM_FLOAT dir[3], GAIM_FLOAT sca
         glEnd();*/
 
     // ---Otherwise:
-    rt = ga::exp(e3ga::mv(-0.5 * rotStep * e3ga::e1<double>() ^ e3ga::e2<double>()));
-    rti = ga::inverse(rt);
-    n = e3ga::e1<double>();
+    // (the normals: e1 rotated over z in the e1^e2 plane, i.e. what the rotor exp(-0.5 * rotStep
+    // e1^e2) applied once per step gave, computed directly: this runs for every vector on every
+    // repaint, and a Garamon multivector product is slow)
     glBegin(GL_QUADS);
     for (z = 0; z < 2 * M_PI; z += rotStep)
     {
-        glNormal3dv(e3ga::xyz(n).data());
+        glNormal3d(cos(z), sin(z), 0.0);
         glVertex3d(0.1 * cos(z), 0.1 * sin(z), -0.25);
         glVertex3d(0.0, 0.0, 0.00);
-        n = ga::takeGrade(e3ga::mv(rt * n * rti), GRADE1);
-        glNormal3dv(e3ga::xyz(n).data());
+        glNormal3d(cos(z + rotStep), sin(z + rotStep), 0.0);
         glVertex3d(0.0, 0.0, 0.0);
         glVertex3d(0.1 * cos(z + rotStep), 0.1 * sin(z + rotStep), -0.25);
     }
     glEnd();
 
-    n = e3ga::e1<double>();
     glBegin(GL_TRIANGLE_FAN);
     glNormal3dv(e3ga::xyz(-e3ga::e3<double>()).data());
     glVertex3d(0.0f, 0.0f, -0.25);

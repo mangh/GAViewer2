@@ -19,7 +19,6 @@
 #include <cstdlib>
 #include <string.h> // NOLINT(modernize-deprecated-headers): strdup() is POSIX, not in <cstring>
 
-#include <array>
 #include <string>
 
 #include "gl_includes.h"
@@ -29,6 +28,7 @@
 #include "glwindow.h"
 #include "object.h"
 #include "state.h"
+#include "tubegeometry.h"
 #include "uistate.h"
 
 /*
@@ -556,7 +556,6 @@ int meshObject::computeNormals(state *s)
     int v, f;
     struct face *fc;
     //	static const GAIM_FLOAT null[3] = {0.0f, 0.0f, 0.0f};
-    e3ga::mv v1, v2, v3, nl;
     GAIM_FLOAT l;
 
     // first of all check the faces / vertices?
@@ -600,11 +599,16 @@ int meshObject::computeNormals(state *s)
         {
             fc = m_face + f;
 
-            v1 = e3ga::vector(m_vertex[fc->vtxIdx[0]].pos);
-            v2 = e3ga::vector(m_vertex[fc->vtxIdx[1]].pos);
-            v3 = e3ga::vector(m_vertex[fc->vtxIdx[2]].pos);
-            nl = ga::normalize(ga::dual(e3ga::mv((v2 - v1) ^ (v3 - v1))));
-            std::array<double, 3> c = e3ga::xyz(nl);
+            // the normalized dual of (v2 - v1) ^ (v3 - v1), i.e. of the cross product (plain 3D
+            // arithmetic: a dynamic mesh recomputes this on every repaint)
+            const tubegeometry::vec3 p1 = {m_vertex[fc->vtxIdx[0]].pos[0], m_vertex[fc->vtxIdx[0]].pos[1],
+                                           m_vertex[fc->vtxIdx[0]].pos[2]};
+            const tubegeometry::vec3 p2 = {m_vertex[fc->vtxIdx[1]].pos[0], m_vertex[fc->vtxIdx[1]].pos[1],
+                                           m_vertex[fc->vtxIdx[1]].pos[2]};
+            const tubegeometry::vec3 p3 = {m_vertex[fc->vtxIdx[2]].pos[0], m_vertex[fc->vtxIdx[2]].pos[1],
+                                           m_vertex[fc->vtxIdx[2]].pos[2]};
+            const tubegeometry::vec3 c = tubegeometry::normalize(
+                tubegeometry::cross(tubegeometry::operator-(p2, p1), tubegeometry::operator-(p3, p1)));
             for (int k = 0; k < 3; k++)
                 fc->nl[k] = c[k];
         }

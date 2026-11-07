@@ -17,8 +17,9 @@
 #ifndef _TUBE_DRAW_H_
 #define _TUBE_DRAW_H_
 
-#include "ga/e3ga.h"
 #include <vector>
+
+#include "tubegeometry.h"
 
 /// substitute to draw OpenGL lines as '3D tubes'
 class TubeDraw
@@ -48,7 +49,7 @@ class TubeDraw
 
   protected:
     /// vertices are collected here (they are not drawn until 'end()' is called)
-    std::vector<e3ga::mv> m_vertices;
+    std::vector<tubegeometry::vec3> m_vertices;
 
     /// what to draw (argument to begin(...), GL_LINES, GL_LINE_STRIP or GL_LINE_LOOP)
     int m_what;
@@ -64,8 +65,8 @@ class TubeDraw
     */
     bool m_useOpenGL;
 
-    void drawTubeSegment(int i, const std::vector<e3ga::mv> &vertices);
-    void drawTubeCap(int vIdx, const std::vector<e3ga::mv> &vertices, bool endCap);
+    void drawTubeSegment(int i, const std::vector<tubegeometry::vec3> &vertices);
+    void drawTubeCap(int vIdx, const std::vector<tubegeometry::vec3> &vertices, bool endCap);
 };
 
 #endif /* _TUBE_DRAW_H_ */
