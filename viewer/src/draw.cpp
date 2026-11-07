@@ -31,13 +31,13 @@
 #include "uistate.h"
 #include "util.h"
 
-int drawVector(const GAIM_FLOAT tail[3], const GAIM_FLOAT dir[3], GAIM_FLOAT scale)
+int drawVector(const double tail[3], const double dir[3], double scale)
 {
     TubeDraw &T = gui_state->m_tubeDraw;
 
     GLboolean l;
-    const GAIM_FLOAT rotStep = 2 * M_PI / 32;
-    GAIM_FLOAT z;
+    const double rotStep = 2 * M_PI / 32;
+    double z;
     e3ga::mv rt;
     float rotM[16];
 
@@ -146,13 +146,13 @@ int drawVector(const GAIM_FLOAT tail[3], const GAIM_FLOAT dir[3], GAIM_FLOAT sca
     return 0;
 }
 
-int drawBivector(const GAIM_FLOAT base[3], const GAIM_FLOAT normal[3], const GAIM_FLOAT ortho1[3],
-                 const GAIM_FLOAT ortho2[3], GAIM_FLOAT scale, int method /*= DRAW_BV_CIRCLE*/, int flags /* = 0 */,
+int drawBivector(const double base[3], const double normal[3], const double ortho1[3],
+                 const double ortho2[3], double scale, int method /*= DRAW_BV_CIRCLE*/, int flags /* = 0 */,
                  object *o /*= NULL*/)
 {
     TubeDraw &T = gui_state->m_tubeDraw;
-    const GAIM_FLOAT rotStep = 2 * M_PI / 64;
-    GAIM_FLOAT x, y;
+    const double rotStep = 2 * M_PI / 64;
+    double x, y;
     e3ga::mv rt;
     float rotM[16];
 
@@ -345,12 +345,12 @@ int drawBivector(const GAIM_FLOAT base[3], const GAIM_FLOAT normal[3], const GAI
     return 0;
 }
 
-int drawTriVector(const GAIM_FLOAT base[3], GAIM_FLOAT scale, GAIM_FLOAT vector[][3], int method /*= DRAW_TV_SPHERE*/,
+int drawTriVector(const double base[3], double scale, double vector[][3], int method /*= DRAW_TV_SPHERE*/,
                   int flags /*= 0*/, object *o /*= NULL*/)
 {
     TubeDraw &T = gui_state->m_tubeDraw;
 
-    GAIM_FLOAT scaleSign = (scale < 0.0) ? -1.0 : 1.0;
+    double scaleSign = (scale < 0.0) ? -1.0 : 1.0;
     if ((method == DRAW_TV_PARALLELEPIPED) || (method == DRAW_TV_PARALLELEPIPED_NO_VECTORS))
     {
         if (vector == NULL)
@@ -368,8 +368,8 @@ int drawTriVector(const GAIM_FLOAT base[3], GAIM_FLOAT scale, GAIM_FLOAT vector[
     //	printf("Draw scale: %f\n", scale);
 
     int i, j, vtxIdx;
-    GAIM_FLOAT z, s = (scale < 0.0) ? -1.0 : 1.0, f;
-    const GAIM_FLOAT zMax = 4 * M_PI;
+    double z, s = (scale < 0.0) ? -1.0 : 1.0, f;
+    const double zMax = 4 * M_PI;
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
 
@@ -405,7 +405,7 @@ int drawTriVector(const GAIM_FLOAT base[3], GAIM_FLOAT scale, GAIM_FLOAT vector[
 
         // maybe define vertices of the 'cube'
         {
-            GAIM_FLOAT vertex[8][3];
+            double vertex[8][3];
             int vertexVectors[8][3] = {{-1, -1, -1}, // -
                                        {0, -1, -1},  // 0
                                        {0, 1, -1},   // 0 + 1

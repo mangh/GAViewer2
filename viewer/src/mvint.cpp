@@ -77,11 +77,11 @@ void mvInt::initToNothing()
 {
     int i;
     for (i = 0; i < MVINT_NB_POINTS; i++)
-        m_point[i][0] = m_point[i][1] = m_point[i][2] = (GAIM_FLOAT)0.0;
+        m_point[i][0] = m_point[i][1] = m_point[i][2] = (double)0.0;
     for (i = 0; i < MVINT_NB_VECTORS; i++)
-        m_vector[i][0] = m_vector[i][1] = m_vector[i][2] = (GAIM_FLOAT)0.0;
+        m_vector[i][0] = m_vector[i][1] = m_vector[i][2] = (double)0.0;
     for (i = 0; i < MVINT_NB_SCALAR; i++)
-        m_scalar[i] = (GAIM_FLOAT)0.0;
+        m_scalar[i] = (double)0.0;
     m_type = MVI_NONE;
     m_valid = 0;
     m_creationFlags = 0;

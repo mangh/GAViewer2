@@ -79,7 +79,7 @@ class consoleControl
     {
         m_selfModify = m;
     }
-    GAIM_FLOAT lookupValue() const;
+    double lookupValue() const;
     int lookupValueBool() const;
 
     /// calls m_callbackFuncName in global scope, no arguments.
@@ -122,8 +122,8 @@ class consoleControlBool : public consoleControl
 class consoleControlRange : public consoleControl
 {
   public:
-    consoleControlRange(const std::string &name, GAIM_FLOAT minValue, GAIM_FLOAT maxValue, GAIM_FLOAT value,
-                        GAIM_FLOAT step, const std::string &callbackFunctionName);
+    consoleControlRange(const std::string &name, double minValue, double maxValue, double value,
+                        double step, const std::string &callbackFunctionName);
     virtual ~consoleControlRange();
 
     virtual int setWidgetWY(int w, int y);
@@ -142,8 +142,8 @@ class consoleControlRange : public consoleControl
 class consoleControlSelection : public consoleControl
 {
   public:
-    consoleControlSelection(const std::string &name, GAIM_FLOAT value,
-                            const std::vector<std::pair<std::string, GAIM_FLOAT>> &options,
+    consoleControlSelection(const std::string &name, double value,
+                            const std::vector<std::pair<std::string, double>> &options,
                             const std::string &callbackFunctionName);
     virtual ~consoleControlSelection();
 
@@ -156,7 +156,7 @@ class consoleControlSelection : public consoleControl
   protected:
     Fl_Menu_Button *m_menuButton;
     Fl_Menu_Item *m_menuItems;
-    GAIM_FLOAT *m_menuValues;
+    double *m_menuValues;
     Fl_Widget *m_label;
     char *m_labelText;
 

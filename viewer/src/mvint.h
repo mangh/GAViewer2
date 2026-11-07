@@ -154,28 +154,28 @@ class mvInt
 
     // All multivectors are analyzed into points, vectors and scalar,
     // stored in these arrays:
-    GAIM_FLOAT m_point[MVINT_NB_POINTS][3];   // vector from the origin to the point
-    GAIM_FLOAT m_vector[MVINT_NB_VECTORS][3]; // vectors
-    GAIM_FLOAT m_scalar[MVINT_NB_SCALAR];
+    double m_point[MVINT_NB_POINTS][3];   // vector from the origin to the point
+    double m_vector[MVINT_NB_VECTORS][3]; // vectors
+    double m_scalar[MVINT_NB_SCALAR];
 
     int m_valid; // true if the interpretation of the object succeeded
 
   protected:
-    int c3gaFreeFlat(const c3ga::mv &X, int grade, const c3ga::mv &ori, GAIM_FLOAT size2);
-    int c3gaBoundFlat(const c3ga::mv &X, int grade, const c3ga::mv &ori, const c3ga::mv &pos, GAIM_FLOAT size2);
-    int c3gaBoundTangent(const c3ga::mv &X, int grade, const c3ga::mv &ori, const c3ga::mv &pos, GAIM_FLOAT size2);
-    int c3gaRound(const c3ga::mv &X, int grade, const c3ga::mv &ori, const c3ga::mv &pos, GAIM_FLOAT size2);
+    int c3gaFreeFlat(const c3ga::mv &X, int grade, const c3ga::mv &ori, double size2);
+    int c3gaBoundFlat(const c3ga::mv &X, int grade, const c3ga::mv &ori, const c3ga::mv &pos, double size2);
+    int c3gaBoundTangent(const c3ga::mv &X, int grade, const c3ga::mv &ori, const c3ga::mv &pos, double size2);
+    int c3gaRound(const c3ga::mv &X, int grade, const c3ga::mv &ori, const c3ga::mv &pos, double size2);
     // Factors 'B' into factor 1 and factor 2, taking into account possible user factorization (g_state->m_c3gaFactor[0]
     // & g_state->m_c3gaFactor[1]) Also returns the unit normal vector. If {normal, factor1, factor2} is NULL, it isn't
     // set
-    int c3gaFactorBivector(const c3ga::mv &B, GAIM_FLOAT *normal, GAIM_FLOAT *factor1, GAIM_FLOAT *factor2);
+    int c3gaFactorBivector(const c3ga::mv &B, double *normal, double *factor1, double *factor2);
 
-    int p3gaEuclideanSubspace(const p3ga::mv &X, int grade, const p3ga::mv &ori, GAIM_FLOAT size2);
-    int p3gaHomogeneousSubspace(const p3ga::mv &X, int grade, const p3ga::mv &ori, const p3ga::mv &pos, GAIM_FLOAT size2);
+    int p3gaEuclideanSubspace(const p3ga::mv &X, int grade, const p3ga::mv &ori, double size2);
+    int p3gaHomogeneousSubspace(const p3ga::mv &X, int grade, const p3ga::mv &ori, const p3ga::mv &pos, double size2);
     // Factors 'B' into factor 1 and factor 2, taking into account possible user factorization (g_state->m_p3gaFactor[0]
     // & g_state->m_p3gaFactor[1]) Also returns the unit normal vector. If {normal, factor1, factor2} is NULL, it isn't
     // set
-    int p3gaFactorBivector(const p3ga::mv &B, GAIM_FLOAT *normal, GAIM_FLOAT *factor1, GAIM_FLOAT *factor2);
+    int p3gaFactorBivector(const p3ga::mv &B, double *normal, double *factor1, double *factor2);
 
     int m_creationFlags;
 };

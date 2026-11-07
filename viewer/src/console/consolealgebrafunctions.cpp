@@ -271,7 +271,7 @@ template <class MV> consoleVariable *cf_grade_nb(consoleScope *s, consoleVariabl
     else
         grade = -1;
 
-    return new consoleVariable("", MV((GAIM_FLOAT)grade));
+    return new consoleVariable("", MV((double)grade));
 }
 
 // ********************************* VERSOR PARITY *********************************
@@ -283,13 +283,13 @@ template <class MV> consoleVariable *cf_versor_parity(consoleScope *s, consoleVa
     else
         grade = -1;
 
-    return new consoleVariable("", MV((GAIM_FLOAT)grade));
+    return new consoleVariable("", MV((double)grade));
 }
 
 // ********************************* NORM *********************************
 template <class MV> consoleVariable *cf_norm(consoleScope *s, consoleVariable *arg[])
 {
-    GAIM_FLOAT n = ga::norm_b(mv<MV>(arg[0]));
+    double n = ga::norm_b(mv<MV>(arg[0]));
     n = sqrt(fabs(n)) * ((n < 0) ? -1.0 : 1.0);
     return new consoleVariable("", MV(n));
 }
@@ -308,7 +308,7 @@ template <class MV> consoleVariable *cf_norm_r(consoleScope *s, consoleVariable 
 // ********************************* NORMALIZE *********************************
 template <class MV> consoleVariable *cf_normalize(consoleScope *s, consoleVariable *arg[])
 {
-    GAIM_FLOAT n = sqrt(fabs(ga::norm_b(mv<MV>(arg[0]))));
+    double n = sqrt(fabs(ga::norm_b(mv<MV>(arg[0]))));
     return new consoleVariable("", MV(mv<MV>(arg[0]) * ((n == 0.0) ? 0.0 : (1.0 / n))));
 }
 
@@ -407,14 +407,14 @@ template <class MV> consoleVariable *cf_atan2(consoleScope *s, consoleVariable *
 // ********************************* MAX *********************************
 template <class MV> consoleVariable *cf_max(consoleScope *s, consoleVariable *arg[])
 {
-    GAIM_FLOAT val = (arg[0]->scalar() > arg[1]->scalar()) ? arg[0]->scalar() : arg[1]->scalar();
+    double val = (arg[0]->scalar() > arg[1]->scalar()) ? arg[0]->scalar() : arg[1]->scalar();
     return new consoleVariable("", MV(val));
 }
 
 // ********************************* MIN *********************************
 template <class MV> consoleVariable *cf_min(consoleScope *s, consoleVariable *arg[])
 {
-    GAIM_FLOAT val = (arg[0]->scalar() < arg[1]->scalar()) ? arg[0]->scalar() : arg[1]->scalar();
+    double val = (arg[0]->scalar() < arg[1]->scalar()) ? arg[0]->scalar() : arg[1]->scalar();
     return new consoleVariable("", MV(val));
 }
 

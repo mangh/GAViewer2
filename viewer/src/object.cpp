@@ -316,7 +316,7 @@ int object::show()
     return 0;
 }
 
-const GAIM_FLOAT *object::getPoint(int idx)
+const double *object::getPoint(int idx)
 {
     if (m_type == OT_E3GA)
         return ((e3gaObject *)this)->m_int.m_point[idx];
@@ -343,7 +343,7 @@ const GAIM_FLOAT *object::getPoint(int idx)
         return NULL;
 }
 
-const GAIM_FLOAT *object::getNormal(int idx)
+const double *object::getNormal(int idx)
 {
     if (m_type == OT_E3GA)
         return ((e3gaObject *)this)->m_int.m_vector[idx];

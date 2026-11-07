@@ -202,8 +202,8 @@ class object
     };
 
     // returns the first point from the mv interpretation (if this is a multivector object)
-    const GAIM_FLOAT *getPoint(int idx);
-    const GAIM_FLOAT *getNormal(int idx);
+    const double *getPoint(int idx);
+    const double *getNormal(int idx);
 
     Fl_Menu_Item *m_dmMenu;
     int m_dmMenuIdx;
@@ -411,8 +411,8 @@ class textObject : public object
     std::string m_pointName;
     e3ga::mv m_pos;
     // the coordinates of m_pos (refreshed and returned by posXYZ(), for object::getPoint())
-    GAIM_FLOAT m_posXYZ[3];
-    const GAIM_FLOAT *posXYZ();
+    double m_posXYZ[3];
+    const double *posXYZ();
     int m_flags;
 
   protected:
@@ -493,10 +493,10 @@ class polygonObject : public object
 
     int freeAllVertices();
     int addVertex(const char *name);
-    const GAIM_FLOAT *getVertex(int idx);
+    const double *getVertex(int idx);
     int m_nbVertices;
     char **m_vertexName;  // name of vertex 'idx'
-    GAIM_FLOAT *m_vertex; // coordinates of vertex 'idx'
+    double *m_vertex; // coordinates of vertex 'idx'
 
     /*
     If a polygon is dynamic, the coordinates of the vertices will be
@@ -528,8 +528,8 @@ class meshObject : public object
         int createParaboloid(); //(change to 'create paraboloid)*/
 
     // vertices & faces
-    int setVertexPos(int idx, const GAIM_FLOAT p[3]);
-    int setVertexNormal(int idx, const GAIM_FLOAT n[3]);
+    int setVertexPos(int idx, const double p[3]);
+    int setVertexNormal(int idx, const double n[3]);
     int setVertexPos(int idx, const char *name);
     int setVertexNormal(int idx, const char *name);
     int addFace(int nbVtx, const int *vtxIdx);
@@ -543,8 +543,8 @@ class meshObject : public object
     int m_nbVertices, m_maxVertices;
     struct vertex
     {
-        GAIM_FLOAT pos[3]; // static position
-        GAIM_FLOAT nl[3];  // static or computed normal
+        double pos[3]; // static position
+        double nl[3];  // static or computed normal
         char *posName;     // dynamic position
         char *nlName;      // dynamic normal
     } *m_vertex;
@@ -554,7 +554,7 @@ class meshObject : public object
     {
         int nbVtx;
         int *vtxIdx;
-        GAIM_FLOAT nl[3]; // flat shaded normal
+        double nl[3]; // flat shaded normal
     } *m_face;
 
     int ensureFaces(int nbFaces);
@@ -565,15 +565,15 @@ class meshObject : public object
 
     int drawMesh(state *s);
 
-    const GAIM_FLOAT *getVertexPos(const char *name);
-    const GAIM_FLOAT *getVertexNormal(const char *name);
+    const double *getVertexPos(const char *name);
+    const double *getVertexNormal(const char *name);
     /*
         int freeAllVertices();
         int addVertex(const char *name);
-        const GAIM_FLOAT *getVertex(int idx);
+        const double *getVertex(int idx);
         int m_nbVertices;
         char **m_vertexName; // name of vertex 'idx'
-        GAIM_FLOAT *m_vertex; // coordinates of vertex 'idx'
+        double *m_vertex; // coordinates of vertex 'idx'
     */
     int m_mode; // dynamic (OC_DYNAMIC) or static (0)
 };

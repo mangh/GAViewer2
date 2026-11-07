@@ -667,7 +667,7 @@ void ui_menuCallback(Fl_Widget *W, void *Data)
     int item = (int)((unsigned char *)Data - (unsigned char *)NULL);
     int mi = 0, d = 1;
     e3ga::mv B, R;
-    GAIM_FLOAT angle;
+    double angle;
     state::OI oi;
 
     while (d)

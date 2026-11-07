@@ -35,7 +35,7 @@ The head of the vector will be at 'tail' + scale * 'dir'.
 
 The arrow will scale with 'scale'
 */
-int drawVector(const GAIM_FLOAT tail[3], const GAIM_FLOAT dir[3], GAIM_FLOAT scale);
+int drawVector(const double tail[3], const double dir[3], double scale);
 
 #define DRAW_BV_CIRCLE 0
 #define DRAW_BV_PARALLELOGRAM 1
@@ -63,8 +63,8 @@ the appropriate colors (i.e. foreground, outline)
 Currently:
 0x01: draw something related to the orientation (if possible)
 */
-int drawBivector(const GAIM_FLOAT base[3], const GAIM_FLOAT normal[3], const GAIM_FLOAT factor1[3],
-                 const GAIM_FLOAT factor2[3], GAIM_FLOAT scale, int method = DRAW_BV_CIRCLE, int flags = 0,
+int drawBivector(const double base[3], const double normal[3], const double factor1[3],
+                 const double factor2[3], double scale, int method = DRAW_BV_CIRCLE, int flags = 0,
                  object *o = NULL);
 
 #define DRAW_TV_SPHERE 0
@@ -88,9 +88,9 @@ the appropriate colors (i.e. foreground, outline)
 Currently:
 0x01: draw something related to the orientation (if possible)
 */
-// int drawTriVector(const GAIM_FLOAT base[3], GAIM_FLOAT scale, int method = DRAW_TV_SPHERE, int flags = 0, object *o =
+// int drawTriVector(const double base[3], double scale, int method = DRAW_TV_SPHERE, int flags = 0, object *o =
 // NULL);
-int drawTriVector(const GAIM_FLOAT base[3], GAIM_FLOAT scale, GAIM_FLOAT vector[][3], int method = DRAW_TV_SPHERE,
+int drawTriVector(const double base[3], double scale, double vector[][3], int method = DRAW_TV_SPHERE,
                   int flags = 0, object *o = NULL);
 
 #endif /* _DRAW_FUNCTIONS_H_ */

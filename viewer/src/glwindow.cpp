@@ -514,9 +514,9 @@ int glwindow::handle(int event)
     static e3ga::mv firstRot;
     static int lastx = 0;
     static int lasty = 0;
-    GAIM_FLOAT motionX, motionY;
+    double motionX, motionY;
     e3ga::mv rx, ry, rz;
-    GAIM_FLOAT ax, ay;
+    double ax, ay;
 
     if ((event == FL_PUSH) || (event == FL_RELEASE) || (event == FL_MOVE) || (event == FL_DRAG))
     {

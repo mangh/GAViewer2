@@ -67,7 +67,7 @@ consoleVariable *cf_p3ga_point1(consoleScope *s, consoleVariable *arg[])
 
 consoleVariable *cf_c3ga_point3(consoleScope *s, consoleVariable *arg[])
 {
-    GAIM_FLOAT e1c = ga::scalar(arg[0]->e()), e2c = ga::scalar(arg[1]->e()), e3c = ga::scalar(arg[2]->e());
+    double e1c = ga::scalar(arg[0]->e()), e2c = ga::scalar(arg[1]->e()), e3c = ga::scalar(arg[2]->e());
     c3ga::mv pt = c3ga::vector(e1c, e2c, e3c, 1.0, 0.5 * (e1c * e1c + e2c * e2c + e3c * e3c));
     return new consoleVariable("", pt);
 }
@@ -75,7 +75,7 @@ consoleVariable *cf_c3ga_point3(consoleScope *s, consoleVariable *arg[])
 consoleVariable *cf_c3ga_point1(consoleScope *s, consoleVariable *arg[])
 {
     const std::array<double, 3> c = e3ga::xyz(arg[0]->e());
-    GAIM_FLOAT e1c = c[0], e2c = c[1], e3c = c[2];
+    double e1c = c[0], e2c = c[1], e3c = c[2];
     c3ga::mv pt = c3ga::vector(e1c, e2c, e3c, 1.0, 0.5 * (e1c * e1c + e2c * e2c + e3c * e3c));
     return new consoleVariable("", pt);
 }
@@ -83,8 +83,8 @@ consoleVariable *cf_c3ga_point1(consoleScope *s, consoleVariable *arg[])
 consoleVariable *cf_c3ga_pointP1(consoleScope *s, consoleVariable *arg[])
 {
     const std::array<double, 4> c = p3ga::xyzw(arg[0]->p());
-    GAIM_FLOAT e0c = c[3];
-    GAIM_FLOAT e1c, e2c, e3c;
+    double e0c = c[3];
+    double e1c, e2c, e3c;
     if (e0c != 0.0)
     {
         e1c = c[0] / e0c;
@@ -104,7 +104,7 @@ consoleVariable *cf_c3ga_pointP1(consoleScope *s, consoleVariable *arg[])
 
 consoleVariable *cf_translation_versor3(consoleScope *s, consoleVariable *arg[])
 {
-    GAIM_FLOAT e1c = ga::scalar(arg[0]->e()), e2c = ga::scalar(arg[1]->e()), e3c = ga::scalar(arg[2]->e());
+    double e1c = ga::scalar(arg[0]->e()), e2c = ga::scalar(arg[1]->e()), e3c = ga::scalar(arg[2]->e());
     c3ga::mv t = c3ga::vector(e1c, e2c, e3c, 0.0, 0.0);
     c3ga::mv tv = 1 - 0.5 * (t ^ c3ga::ei<double>());
     return new consoleVariable("", tv);
@@ -113,7 +113,7 @@ consoleVariable *cf_translation_versor3(consoleScope *s, consoleVariable *arg[])
 consoleVariable *cf_translation_versor1(consoleScope *s, consoleVariable *arg[])
 {
     const std::array<double, 3> c = e3ga::xyz(arg[0]->e());
-    GAIM_FLOAT e1c = c[0], e2c = c[1], e3c = c[2];
+    double e1c = c[0], e2c = c[1], e3c = c[2];
     c3ga::mv t = c3ga::vector(e1c, e2c, e3c, 0.0, 0.0);
     c3ga::mv tv = 1 - 0.5 * (t ^ c3ga::ei<double>());
     return new consoleVariable("", tv);
@@ -487,88 +487,88 @@ consoleVariable *cf_get_color(consoleScope *s, consoleVariable *arg[])
 
 consoleVariable *cf_get_alpha(consoleScope *s, consoleVariable *arg[])
 {
-    return new consoleVariable("", e3ga::mv((GAIM_FLOAT)arg[0]->alpha()));
+    return new consoleVariable("", e3ga::mv((double)arg[0]->alpha()));
 }
 
 consoleVariable *cf_get_stipple(consoleScope *s, consoleVariable *arg[])
 {
-    return new consoleVariable("", e3ga::mv((GAIM_FLOAT)((arg[0]->drawMode() & OD_STIPPLE) != 0)));
+    return new consoleVariable("", e3ga::mv((double)((arg[0]->drawMode() & OD_STIPPLE) != 0)));
 }
 consoleVariable *cf_get_wireframe(consoleScope *s, consoleVariable *arg[])
 {
-    return new consoleVariable("", e3ga::mv((GAIM_FLOAT)((arg[0]->drawMode() & OD_WIREFRAME) != 0)));
+    return new consoleVariable("", e3ga::mv((double)((arg[0]->drawMode() & OD_WIREFRAME) != 0)));
 }
 consoleVariable *cf_get_outline(consoleScope *s, consoleVariable *arg[])
 {
-    return new consoleVariable("", e3ga::mv((GAIM_FLOAT)((arg[0]->drawMode() & OD_OUTLINE) != 0)));
+    return new consoleVariable("", e3ga::mv((double)((arg[0]->drawMode() & OD_OUTLINE) != 0)));
 }
 consoleVariable *cf_get_weight(consoleScope *s, consoleVariable *arg[])
 {
-    return new consoleVariable("", e3ga::mv((GAIM_FLOAT)((arg[0]->drawMode() & OD_MAGNITUDE) != 0)));
+    return new consoleVariable("", e3ga::mv((double)((arg[0]->drawMode() & OD_MAGNITUDE) != 0)));
 }
 consoleVariable *cf_get_ori(consoleScope *s, consoleVariable *arg[])
 {
-    return new consoleVariable("", e3ga::mv((GAIM_FLOAT)((arg[0]->drawMode() & OD_ORI) != 0)));
+    return new consoleVariable("", e3ga::mv((double)((arg[0]->drawMode() & OD_ORI) != 0)));
 }
 consoleVariable *cf_get_hide(consoleScope *s, consoleVariable *arg[])
 {
-    return new consoleVariable("", e3ga::mv((GAIM_FLOAT)((arg[0]->drawMode() & OD_HIDE) != 0)));
+    return new consoleVariable("", e3ga::mv((double)((arg[0]->drawMode() & OD_HIDE) != 0)));
 }
 
 consoleVariable *cf_bit_not(consoleScope *s, consoleVariable *arg[])
 {
-    GAIM_FLOAT s1 = arg[0]->scalar();
+    double s1 = arg[0]->scalar();
     s1 += (s1 >= 0.0) ? 0.5 : -0.5;
     unsigned int i1 = (unsigned int)(s1 + ((s1 >= 0.0) ? 0.5 : -0.5));
     i1 = (unsigned int)0xFFFFFFFF ^ i1;
-    return new consoleVariable("", e3ga::mv((GAIM_FLOAT)i1));
+    return new consoleVariable("", e3ga::mv((double)i1));
 }
 
 consoleVariable *cf_bit_and(consoleScope *s, consoleVariable *arg[])
 {
-    GAIM_FLOAT s1 = arg[0]->scalar();
+    double s1 = arg[0]->scalar();
     unsigned int i1 = (unsigned int)(s1 + ((s1 >= 0.0) ? 0.5 : -0.5));
 
-    GAIM_FLOAT s2 = arg[1]->scalar();
+    double s2 = arg[1]->scalar();
     unsigned int i2 = (unsigned int)(s2 + ((s2 >= 0.0) ? 0.5 : -0.5));
 
-    return new consoleVariable("", e3ga::mv((GAIM_FLOAT)(i1 & i2)));
+    return new consoleVariable("", e3ga::mv((double)(i1 & i2)));
 }
 
 consoleVariable *cf_bit_or(consoleScope *s, consoleVariable *arg[])
 {
-    GAIM_FLOAT s1 = arg[0]->scalar();
+    double s1 = arg[0]->scalar();
     unsigned int i1 = (unsigned int)(s1 + ((s1 >= 0.0) ? 0.5 : -0.5));
 
-    GAIM_FLOAT s2 = arg[1]->scalar();
+    double s2 = arg[1]->scalar();
     unsigned int i2 = (unsigned int)(s2 + ((s2 >= 0.0) ? 0.5 : -0.5));
 
-    return new consoleVariable("", e3ga::mv((GAIM_FLOAT)(i1 | i2)));
+    return new consoleVariable("", e3ga::mv((double)(i1 | i2)));
 }
 
 consoleVariable *cf_bit_xor(consoleScope *s, consoleVariable *arg[])
 {
-    GAIM_FLOAT s1 = arg[0]->scalar();
+    double s1 = arg[0]->scalar();
     unsigned int i1 = (unsigned int)(s1 + ((s1 >= 0.0) ? 0.5 : -0.5));
 
-    GAIM_FLOAT s2 = arg[1]->scalar();
+    double s2 = arg[1]->scalar();
     unsigned int i2 = (unsigned int)(s2 + ((s2 >= 0.0) ? 0.5 : -0.5));
 
-    return new consoleVariable("", e3ga::mv((GAIM_FLOAT)(i1 ^ i2)));
+    return new consoleVariable("", e3ga::mv((double)(i1 ^ i2)));
 }
 
 consoleVariable *cf_bit_shift(consoleScope *s, consoleVariable *arg[])
 {
-    GAIM_FLOAT s1 = arg[0]->scalar();
+    double s1 = arg[0]->scalar();
     unsigned int i1 = (unsigned int)(s1 + ((s1 >= 0.0) ? 0.5 : -0.5));
 
-    GAIM_FLOAT s2 = arg[1]->scalar();
+    double s2 = arg[1]->scalar();
     int i2 = (int)(s2 + ((s2 >= 0.0) ? 0.5 : -0.5));
 
     if (i2 < 0)
-        return new consoleVariable("", e3ga::mv((GAIM_FLOAT)(i1 >> (-i2))));
+        return new consoleVariable("", e3ga::mv((double)(i1 >> (-i2))));
     else
-        return new consoleVariable("", e3ga::mv((GAIM_FLOAT)(i1 << (i2))));
+        return new consoleVariable("", e3ga::mv((double)(i1 << (i2))));
 }
 
 // ********************************* CREATE POLYGON  *********************************
@@ -1053,7 +1053,7 @@ consoleVariable *cf_camrotfunc(consoleScope *s, consoleVariable *arg[])
 // ********************************* GET DRAW FLAGS *********************************
 consoleVariable *cf_get_draw_flags(consoleScope *s, consoleVariable *arg[])
 {
-    return new consoleVariable("", e3ga::mv((GAIM_FLOAT)arg[0]->forceFlags()));
+    return new consoleVariable("", e3ga::mv((double)arg[0]->forceFlags()));
 }
 
 // ********************************* GET INTERPRETATION *********************************
@@ -1063,7 +1063,7 @@ consoleVariable *cf_get_interpretation(consoleScope *s, consoleVariable *arg[])
     int interpretation = (mvi && mvi->m_valid) ? mvi->m_type : 0;
     if (mvi)
         delete mvi;
-    return new consoleVariable("", e3ga::mv((GAIM_FLOAT)interpretation));
+    return new consoleVariable("", e3ga::mv((double)interpretation));
 }
 
 // ********************************* AUTO COLOR *********************************
@@ -1200,8 +1200,8 @@ consoleVariable *cf_console_ctrl_bool_with_callback(consoleScope *s, consoleVari
 
 consoleVariable *cf_console_ctrl_range_cb(consoleScope *s, consoleVariable *arg[], bool callback)
 {
-    GAIM_FLOAT minValue = arg[1]->scalar();
-    GAIM_FLOAT maxValue = arg[2]->scalar();
+    double minValue = arg[1]->scalar();
+    double maxValue = arg[2]->scalar();
 
     double step = (maxValue - minValue) / 200;
     // 'round' step
@@ -1230,9 +1230,9 @@ consoleVariable *cf_console_ctrl_range_with_callback(consoleScope *s, consoleVar
 
 consoleVariable *cf_console_ctrl_range_step_cb(consoleScope *s, consoleVariable *arg[], bool callback)
 {
-    GAIM_FLOAT minValue = arg[1]->scalar();
-    GAIM_FLOAT maxValue = arg[2]->scalar();
-    GAIM_FLOAT step = arg[3]->scalar();
+    double minValue = arg[1]->scalar();
+    double maxValue = arg[2]->scalar();
+    double step = arg[3]->scalar();
 
     std::string callbackName = (callback) ? arg[4]->name() : "";
 
@@ -1253,7 +1253,7 @@ consoleVariable *cf_console_ctrl_range_step_with_callback(consoleScope *s, conso
 
 consoleVariable *cf_console_ctrl_selectionN_cb(consoleScope *s, consoleVariable *arg[], int nbSelection, bool callback)
 {
-    std::vector<std::pair<std::string, GAIM_FLOAT>> options;
+    std::vector<std::pair<std::string, double>> options;
     int i;
 
     for (i = 1; i <= nbSelection; i++)

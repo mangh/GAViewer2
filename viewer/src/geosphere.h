@@ -30,7 +30,7 @@ typedef struct geosphereFace_s
     int child[4];
 
     // (no multivector members: the faces are allocated with realloc())
-    GAIM_FLOAT d;
+    double d;
     int depth;
 
     int neighbour[3]; // the neighbours of each edge
@@ -60,6 +60,6 @@ int gsCompute(geosphere **sPtr, int depth);
 int gsFree(geosphere **sPtr);
 
 // normal: draw (scaled) normal (> 0.0) or not
-void gsDraw(geosphere *sphere, GAIM_FLOAT normal = 0.0);
+void gsDraw(geosphere *sphere, double normal = 0.0);
 
 #endif // _GEOSPHERE_H_

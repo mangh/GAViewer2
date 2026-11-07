@@ -134,7 +134,7 @@ int polygonObject::copy(const object *o, int &propertiesChanged, int forceFlags 
         }
         else
         {
-            if ((m_vertex == NULL) || memcmp(m_vertex, pO->m_vertex, sizeof(GAIM_FLOAT) * 3 * pO->m_nbVertices))
+            if ((m_vertex == NULL) || memcmp(m_vertex, pO->m_vertex, sizeof(double) * 3 * pO->m_nbVertices))
                 propertiesChanged |= OP_DESCRIPTION;
         }
     }
@@ -154,8 +154,8 @@ int polygonObject::copy(const object *o, int &propertiesChanged, int forceFlags 
     }
     else
     {
-        m_vertex = (GAIM_FLOAT *)calloc(sizeof(GAIM_FLOAT) * 3, pO->m_nbVertices);
-        memcpy(m_vertex, pO->m_vertex, sizeof(GAIM_FLOAT) * 3 * pO->m_nbVertices);
+        m_vertex = (double *)calloc(sizeof(double) * 3, pO->m_nbVertices);
+        memcpy(m_vertex, pO->m_vertex, sizeof(double) * 3 * pO->m_nbVertices);
     }
     m_nbVertices = pO->m_nbVertices;
 
@@ -264,8 +264,8 @@ int polygonObject::drawSimplex(glwindow *window)
 {
     TubeDraw &T = gui_state->m_tubeDraw;
     int i;
-    const GAIM_FLOAT *v1, *v2, *v3;
-    GAIM_FLOAT tmp[3], l;
+    const double *v1, *v2, *v3;
+    double tmp[3], l;
     e3ga::mv n, pt[3], hpt, ovc, apt;
 
     switch (m_nbVertices)
@@ -397,9 +397,9 @@ int polygonObject::description(char *buf, int bufLen, int sl /* = 0 */)
     return 0;
 }
 
-const GAIM_FLOAT *polygonObject::getVertex(int idx)
+const double *polygonObject::getVertex(int idx)
 {
-    static const GAIM_FLOAT null[3] = {0.0, 0.0, 0.0};
+    static const double null[3] = {0.0, 0.0, 0.0};
 
     if ((idx < 0) || (idx >= m_nbVertices))
         return null;
@@ -429,14 +429,14 @@ int polygonObject::addVertex(const char *name)
     }
     else
     {
-        m_vertex = (GAIM_FLOAT *)realloc(m_vertex, sizeof(GAIM_FLOAT) * 3 * (m_nbVertices + 1));
+        m_vertex = (double *)realloc(m_vertex, sizeof(double) * 3 * (m_nbVertices + 1));
         if (m_vertex == NULL)
             return -1;
-        const GAIM_FLOAT *p = o->getPoint(0);
+        const double *p = o->getPoint(0);
         if (p)
-            memcpy(m_vertex + m_nbVertices * 3, p, 3 * sizeof(GAIM_FLOAT));
+            memcpy(m_vertex + m_nbVertices * 3, p, 3 * sizeof(double));
         else
-            memset(m_vertex + m_nbVertices * 3, 0, 3 * sizeof(GAIM_FLOAT));
+            memset(m_vertex + m_nbVertices * 3, 0, 3 * sizeof(double));
     }
     m_nbVertices++;
     return 0;

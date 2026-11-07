@@ -132,7 +132,7 @@ int meshObject::copy(const object *o, int &propertiesChanged, int forceFlags /*=
     for (f = 0; f < pO->m_nbFaces; f++)
     {
         m_face[f].nbVtx = pO->m_face[f].nbVtx;
-        memcpy(m_face[f].nl, pO->m_face[f].nl, sizeof(GAIM_FLOAT) * 3);
+        memcpy(m_face[f].nl, pO->m_face[f].nl, sizeof(double) * 3);
         if ((m_face[f].vtxIdx = (int *)calloc(sizeof(int), m_face[f].nbVtx)) == NULL)
             return -1;
         memcpy(m_face[f].vtxIdx, pO->m_face[f].vtxIdx, sizeof(int) * m_face[f].nbVtx);
@@ -458,7 +458,7 @@ int meshObject::freeVertices()
     return 0;
 }
 
-int meshObject::setVertexPos(int idx, const GAIM_FLOAT p[3])
+int meshObject::setVertexPos(int idx, const double p[3])
 {
     int err;
     if (m_mode & OC_DYNAMIC)
@@ -467,7 +467,7 @@ int meshObject::setVertexPos(int idx, const GAIM_FLOAT p[3])
         return err;
 
     meshChanged();
-    memcpy(m_vertex[idx].pos, p, sizeof(GAIM_FLOAT) * 3);
+    memcpy(m_vertex[idx].pos, p, sizeof(double) * 3);
     m_nbVertices = (m_nbVertices > (idx + 1)) ? m_nbVertices : (idx + 1);
 
     //	printf("setVertexPos(%d, %f %f %f)\n", idx, m_vertex[idx].pos[0], m_vertex[idx].pos[1], m_vertex[idx].pos[2]);
@@ -492,7 +492,7 @@ int meshObject::setVertexPos(int idx, const char *name)
     return 0;
 }
 
-int meshObject::setVertexNormal(int idx, const GAIM_FLOAT n[3])
+int meshObject::setVertexNormal(int idx, const double n[3])
 {
     int err;
     if (m_mode & OC_DYNAMIC)
@@ -501,7 +501,7 @@ int meshObject::setVertexNormal(int idx, const GAIM_FLOAT n[3])
         return err;
 
     meshChanged();
-    memcpy(m_vertex[idx].nl, n, sizeof(GAIM_FLOAT) * 3);
+    memcpy(m_vertex[idx].nl, n, sizeof(double) * 3);
     m_nbVertices = (m_nbVertices > (idx + 1)) ? m_nbVertices : (idx + 1);
     return 0;
 }
@@ -555,8 +555,8 @@ int meshObject::computeNormals(state *s)
 {
     int v, f;
     struct face *fc;
-    //	static const GAIM_FLOAT null[3] = {0.0f, 0.0f, 0.0f};
-    GAIM_FLOAT l;
+    //	static const double null[3] = {0.0f, 0.0f, 0.0f};
+    double l;
 
     // first of all check the faces / vertices?
     m_faceType = 0; // nb of vertices for each face is constant? if so, this will be >= 3
@@ -586,9 +586,9 @@ int meshObject::computeNormals(state *s)
     {
         for (v = 0; v < m_nbVertices; v++)
         {
-            memcpy(m_vertex[v].pos, getVertexPos(m_vertex[v].posName), 3 * sizeof(GAIM_FLOAT));
+            memcpy(m_vertex[v].pos, getVertexPos(m_vertex[v].posName), 3 * sizeof(double));
             if (m_mode & OC_SPECIFY_NORMALS)
-                memcpy(m_vertex[v].nl, getVertexNormal(m_vertex[v].nlName), 3 * sizeof(GAIM_FLOAT));
+                memcpy(m_vertex[v].nl, getVertexNormal(m_vertex[v].nlName), 3 * sizeof(double));
         }
     }
 
@@ -619,7 +619,7 @@ int meshObject::computeNormals(state *s)
         // set all vtx normals to 0
         for (v = 0; v < m_nbVertices; v++)
         {
-            memset(m_vertex[v].nl, 0, 3 * sizeof(GAIM_FLOAT));
+            memset(m_vertex[v].nl, 0, 3 * sizeof(double));
         }
 
         // compute vertex normals
@@ -657,17 +657,17 @@ int meshObject::meshChanged()
     return freeDisplayList();
 }
 
-const GAIM_FLOAT *meshObject::getVertexPos(const char *name)
+const double *meshObject::getVertexPos(const char *name)
 {
-    static const GAIM_FLOAT null[3] = {0.0, 0.0, 0.0};
+    static const double null[3] = {0.0, 0.0, 0.0};
 
     object *o = g_state->getObjectPtrByName(name);
     return (o) ? o->getPoint(0) : null;
 }
 
-const GAIM_FLOAT *meshObject::getVertexNormal(const char *name)
+const double *meshObject::getVertexNormal(const char *name)
 {
-    static const GAIM_FLOAT null[3] = {0.0, 0.0, 0.0};
+    static const double null[3] = {0.0, 0.0, 0.0};
 
     object *o = g_state->getObjectPtrByName(name);
     return (o) ? o->getNormal(0) : null;

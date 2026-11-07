@@ -52,15 +52,15 @@ int state::addConsoleControlBool(const std::string &name, int value)
     return addConsoleControlBool(name, value, callbackFunctionName);
 }
 
-int state::addConsoleControlRange(const std::string &name, GAIM_FLOAT value, GAIM_FLOAT minValue, GAIM_FLOAT maxValue,
-                                  GAIM_FLOAT step)
+int state::addConsoleControlRange(const std::string &name, double value, double minValue, double maxValue,
+                                  double step)
 {
     std::string callbackFunctionName = "";
     return addConsoleControlRange(name, value, minValue, maxValue, step, callbackFunctionName);
 }
 
-int state::addConsoleControlSelection(const std::string &name, GAIM_FLOAT value,
-                                      const std::vector<std::pair<std::string, GAIM_FLOAT>> &options)
+int state::addConsoleControlSelection(const std::string &name, double value,
+                                      const std::vector<std::pair<std::string, double>> &options)
 {
     std::string callbackFunctionName = "";
     return addConsoleControlSelection(name, value, options, callbackFunctionName);
@@ -71,14 +71,14 @@ int state::addConsoleControlBool(const std::string &name, int value, const std::
     return addConsoleControl(new consoleControlBool(name, value, callbackFunctionName));
 }
 
-int state::addConsoleControlRange(const std::string &name, GAIM_FLOAT value, GAIM_FLOAT minValue, GAIM_FLOAT maxValue,
-                                  GAIM_FLOAT step, const std::string &callbackFunctionName)
+int state::addConsoleControlRange(const std::string &name, double value, double minValue, double maxValue,
+                                  double step, const std::string &callbackFunctionName)
 {
     return addConsoleControl(new consoleControlRange(name, value, minValue, maxValue, step, callbackFunctionName));
 }
 
-int state::addConsoleControlSelection(const std::string &name, GAIM_FLOAT value,
-                                      const std::vector<std::pair<std::string, GAIM_FLOAT>> &options,
+int state::addConsoleControlSelection(const std::string &name, double value,
+                                      const std::vector<std::pair<std::string, double>> &options,
                                       const std::string &callbackFunctionName)
 {
     return addConsoleControl(new consoleControlSelection(name, value, options, callbackFunctionName));
@@ -257,9 +257,9 @@ void consoleControl::execCallbackFunc()
     }
 }
 
-GAIM_FLOAT consoleControl::lookupValue() const
+double consoleControl::lookupValue() const
 {
-    GAIM_FLOAT value = 0.0;
+    double value = 0.0;
     consoleVariable *cv;
     if (g_state && (g_state->m_globalScope->lookupVariable(name(), 1, &cv) == 0))
     {
@@ -340,7 +340,7 @@ void consoleControlBool::widgetModified(Fl_Widget *W)
 {
     if (g_state)
     {
-        GAIM_FLOAT val = (GAIM_FLOAT)m_checkButton->value();
+        double val = (double)m_checkButton->value();
         g_state->m_globalScope->externalAssignVariable(name(), e3ga::mv(val));
         g_state->updateDynStmts();
     }
@@ -365,15 +365,15 @@ void consoleControlBool::initToNothing()
 
 /******************************* consoleControlRange ******************************/
 
-consoleControlRange::consoleControlRange(const std::string &nm, GAIM_FLOAT value, GAIM_FLOAT minValue,
-                                         GAIM_FLOAT maxValue, GAIM_FLOAT step, const std::string &callbackFunctionName)
+consoleControlRange::consoleControlRange(const std::string &nm, double value, double minValue,
+                                         double maxValue, double step, const std::string &callbackFunctionName)
     : consoleControl(nm, callbackFunctionName)
 {
     initToNothing();
 
     if (minValue > maxValue)
     {
-        GAIM_FLOAT tmp = minValue;
+        double tmp = minValue;
         minValue = maxValue;
         maxValue = tmp;
     }
@@ -437,7 +437,7 @@ void consoleControlRange::widgetModified(Fl_Widget *W)
 {
     if (g_state)
     {
-        GAIM_FLOAT val = (GAIM_FLOAT)m_valueSlider->value();
+        double val = (double)m_valueSlider->value();
         g_state->m_globalScope->externalAssignVariable(name(), e3ga::mv(val));
         //		g_state->m_globalScope->assignVariable(new consoleVariable(name(), e3ga(0.0)), new consoleVariable("",
         //e3ga(val)));
@@ -467,8 +467,8 @@ void consoleControlRange::initToNothing()
 
 // ctrl_select(s = 1, a = 2, b = 1);
 
-consoleControlSelection::consoleControlSelection(const std::string &nm, GAIM_FLOAT value,
-                                                 const std::vector<std::pair<std::string, GAIM_FLOAT>> &options,
+consoleControlSelection::consoleControlSelection(const std::string &nm, double value,
+                                                 const std::vector<std::pair<std::string, double>> &options,
                                                  const std::string &callbackFunctionName)
     : consoleControl(nm, callbackFunctionName)
 {
@@ -493,7 +493,7 @@ consoleControlSelection::consoleControlSelection(const std::string &nm, GAIM_FLO
     m_menuButton = new Fl_Menu_Button(x, 0, 1, 20, name());
 
     m_menuItems = new Fl_Menu_Item[options.size() + 1];
-    m_menuValues = new GAIM_FLOAT[options.size() + 1];
+    m_menuValues = new double[options.size() + 1];
     memset(m_menuItems, 0, (options.size() + 1) * sizeof(Fl_Menu_Item));
     v = 0;
     for (i = 0; i < (int)options.size(); i++)
@@ -597,7 +597,7 @@ void consoleControlSelection::consoleVariableModified()
 
     // printf("consoleControlSelection::consoleVariableModified() %s\n", name());
 
-    GAIM_FLOAT val = lookupValue();
+    double val = lookupValue();
     int newValue = 0;
     int i = 0;
     while (m_menuItems[i].text)

@@ -76,7 +76,7 @@ int c3gaRve3(c3ga::mv &R, const c3ga::mv &v)
 int rotor2Bivector(e3ga::mv &B, const e3ga::mv &R)
 {
     e3ga::mv Rn(R * (1.0 / sqrt(ga::norm_a(R))));
-    GAIM_FLOAT ca = ga::scalar(Rn);
+    double ca = ga::scalar(Rn);
     if ((ga::gradeNorm_a(Rn, 2) < 1e-9) || (sin(acos(ca)) < 1e-9))
         B = 0;
     else

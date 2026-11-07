@@ -118,7 +118,7 @@ int e3gaObject::pick(glwindow *window)
 int e3gaObject::translate(glwindow *window, double depth, double motionX, double motionY)
 {
     e3ga::mv v;
-    GAIM_FLOAT m, mnew;
+    double m, mnew;
 
     int modified = 0;
     switch (m_int.type())
@@ -132,7 +132,7 @@ int e3gaObject::translate(glwindow *window, double depth, double motionX, double
     case MVI_BIVECTOR:
     case MVI_TRIVECTOR:
         m = sqrt(ga::norm_a(m_mv));
-        mnew = (m + (GAIM_FLOAT)(-motionX + motionY) / 30.0);
+        mnew = (m + (double)(-motionX + motionY) / 30.0);
         if (mnew < 0.0001)
             mnew = m;
         m_mv = (m_mv * (1.0 / m)) * mnew;
@@ -169,7 +169,7 @@ int e3gaObject::draw(glwindow *window)
 {
     TubeDraw &T = gui_state->m_tubeDraw;
 
-    GAIM_FLOAT scale, scaleSign;
+    double scale, scaleSign;
 
     if (m_type == MVI_UNKNOWN)
         return 0;
@@ -256,7 +256,7 @@ int e3gaObject::draw(glwindow *window)
             v = ga::normalize(v) * 0.8 * scale;
 
             int nbSteps, i;
-            const GAIM_FLOAT ainc = 0.05 * M_PI;
+            const double ainc = 0.05 * M_PI;
 
             {
                 T.begin(GL_LINE_STRIP);

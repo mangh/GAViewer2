@@ -72,7 +72,7 @@ textObject::textObject(const char *text, const std::string &pointName, const std
     else
     {
         object *o = g_state->getObjectPtrByName(pointName);
-        const GAIM_FLOAT *pos = o->getPoint(0), null[3] = {0.0, 0.0, 0.0};
+        const double *pos = o->getPoint(0), null[3] = {0.0, 0.0, 0.0};
         m_pos = e3ga::vector((pos) ? pos : null);
     }
 
@@ -218,7 +218,7 @@ int textObject::freeImage()
     return 0;
 }
 
-const GAIM_FLOAT *textObject::posXYZ()
+const double *textObject::posXYZ()
 {
     m_posXYZ[0] = m_pos[e3ga::E1];
     m_posXYZ[1] = m_pos[e3ga::E2];
@@ -380,8 +380,8 @@ int textObject::draw(glwindow *window)
     if (m_flags & LABEL_DYNAMIC)
     {
         object *o = g_state->getObjectPtrByName(m_pointName);
-        const GAIM_FLOAT null[3] = {0.0, 0.0, 0.0};
-        const GAIM_FLOAT *pos = (o == NULL) ? NULL : o->getPoint(0);
+        const double null[3] = {0.0, 0.0, 0.0};
+        const double *pos = (o == NULL) ? NULL : o->getPoint(0);
         m_pos = e3ga::vector((pos) ? pos : null);
     }
 
@@ -672,7 +672,7 @@ int textObject::pick(glwindow *window)
 
 float textObject::drawSortValue()
 {
-    GAIM_FLOAT v = ((fgColor(3) + bgColor(3) + olColor(3)) > 2.99) ? 1.0 : 2.0;
+    double v = ((fgColor(3) + bgColor(3) + olColor(3)) > 2.99) ? 1.0 : 2.0;
     if (g_state->m_labelsAlwaysOnTop)
         v += 2.0;
 
@@ -722,8 +722,8 @@ int textObject::translate(glwindow *window, double depth, double motionX, double
     }
     else if (m_flags & LABEL_2D)
     {
-        m_pos -= ((m_flags & LABEL_NX) ? -1.0 : 1.0) * (GAIM_FLOAT)motionX * e3ga::e1<double>() +
-                 ((m_flags & LABEL_NY) ? -1.0 : 1.0) * (GAIM_FLOAT)motionY * e3ga::e2<double>();
+        m_pos -= ((m_flags & LABEL_NX) ? -1.0 : 1.0) * (double)motionX * e3ga::e1<double>() +
+                 ((m_flags & LABEL_NY) ? -1.0 : 1.0) * (double)motionY * e3ga::e2<double>();
     }
     else
     {

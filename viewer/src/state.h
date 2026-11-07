@@ -174,15 +174,15 @@ class state
     std::vector<consoleControl *> m_consoleControls;
     int addConsoleControl(consoleControl *cc);
     int addConsoleControlBool(const std::string &name, int value);
-    int addConsoleControlRange(const std::string &name, GAIM_FLOAT value, GAIM_FLOAT minValue, GAIM_FLOAT maxValue,
-                               GAIM_FLOAT step);
-    int addConsoleControlSelection(const std::string &name, GAIM_FLOAT value,
-                                   const std::vector<std::pair<std::string, GAIM_FLOAT>> &options);
+    int addConsoleControlRange(const std::string &name, double value, double minValue, double maxValue,
+                               double step);
+    int addConsoleControlSelection(const std::string &name, double value,
+                                   const std::vector<std::pair<std::string, double>> &options);
     int addConsoleControlBool(const std::string &name, int value, const std::string &callbackFunctionName);
-    int addConsoleControlRange(const std::string &name, GAIM_FLOAT value, GAIM_FLOAT minValue, GAIM_FLOAT maxValue,
-                               GAIM_FLOAT step, const std::string &callbackFunctionName);
-    int addConsoleControlSelection(const std::string &name, GAIM_FLOAT value,
-                                   const std::vector<std::pair<std::string, GAIM_FLOAT>> &options,
+    int addConsoleControlRange(const std::string &name, double value, double minValue, double maxValue,
+                               double step, const std::string &callbackFunctionName);
+    int addConsoleControlSelection(const std::string &name, double value,
+                                   const std::vector<std::pair<std::string, double>> &options,
                                    const std::string &callbackFunctionName);
     int removeConsoleControl(const std::string &name);
     int removeAllConsoleControls();

@@ -232,7 +232,7 @@ int gsCompute(geosphere **sPtr, int depth)
                                  {1, 5, 2}, {1, 2, 3}, {1, 3, 4}, {1, 4, 5}};
 
     const int inbVertices = 6;
-    const GAIM_FLOAT iV[inbVertices][3] = {
+    const double iV[inbVertices][3] = {
         {0.0f, -1.0f, 0.0f},     {0.0f, 1.0f, 0.0f},       {0.707f, 0.0f, 0.707f},
         {0.707f, 0.0f, -0.707f}, {-0.707f, 0.0f, -0.707f}, {-0.707f, 0.0f, 0.707f},
     };
@@ -290,7 +290,7 @@ int gsFree(geosphere **sPtr)
     return 0;
 }
 
-void gsDraw(geosphere *sphere, int f, GAIM_FLOAT normal = 0.0)
+void gsDraw(geosphere *sphere, int f, double normal = 0.0)
 {
     int i;
 
@@ -330,7 +330,7 @@ void gsDraw(geosphere *sphere, int f, GAIM_FLOAT normal = 0.0)
     }
 }
 
-void gsDraw(geosphere *sphere, GAIM_FLOAT normal /*= 0.0*/)
+void gsDraw(geosphere *sphere, double normal /*= 0.0*/)
 {
     int i;
     for (i = 0; i < sphere->nbPrimitives; i++)

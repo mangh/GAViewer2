@@ -155,7 +155,7 @@ following:
 int p3gaObject::draw(glwindow *window)
 {
     TubeDraw &T = gui_state->m_tubeDraw;
-    GAIM_FLOAT x, y, z, c, scale, scaleSign;
+    double x, y, z, c, scale, scaleSign;
     int s;
     e3ga::mv e3gaR;
     float rotM[16];
@@ -201,9 +201,9 @@ int p3gaObject::draw(glwindow *window)
     }
 
     glMatrixMode(GL_MODELVIEW);
-    GAIM_FLOAT stepSize = 0.1;
-    GAIM_FLOAT scaleConst = g_state->m_clipDistance * sqrt(2.0);
-    GAIM_FLOAT scaleMag = 1.0;
+    double stepSize = 0.1;
+    double scaleConst = g_state->m_clipDistance * sqrt(2.0);
+    double scaleMag = 1.0;
     if (m_int.blade())
     {
         /*		if (m_int.type() == MVI_FREE_BIVECTOR)
@@ -421,7 +421,7 @@ int p3gaObject::draw(glwindow *window)
 int p3gaObject::translate(glwindow *window, double depth, double motionX, double motionY)
 {
     e3ga::mv v;
-    GAIM_FLOAT m, mnew;
+    double m, mnew;
     window->vectorAtDepth(depth, motionX, -motionY, v);
     p3ga::mv t = p3ga::vector(v[e3ga::E1], v[e3ga::E2], v[e3ga::E3], 0);
 
@@ -436,7 +436,7 @@ int p3gaObject::translate(glwindow *window, double depth, double motionX, double
     case MVI_BIVECTOR:
     case MVI_TRIVECTOR:
         m = sqrt(ga::norm_a(m_mv));
-        mnew = (m + (GAIM_FLOAT)(-motionX + motionY) / 30.0);
+        mnew = (m + (double)(-motionX + motionY) / 30.0);
         if (mnew < 0.0001)
             mnew = m;
         m_mv = (m_mv * (1.0 / m)) * mnew;

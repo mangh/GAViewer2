@@ -245,9 +245,9 @@ int consoleVariable::isTrue() const
     return visitMV([](const auto &mv) { return (int)(ga::norm_a(mv) != 0.0); }, 0);
 }
 
-GAIM_FLOAT consoleVariable::scalar() const
+double consoleVariable::scalar() const
 {
-    return visitMV([](const auto &mv) { return (GAIM_FLOAT)ga::scalar(mv); }, (GAIM_FLOAT)0);
+    return visitMV([](const auto &mv) { return (double)ga::scalar(mv); }, (double)0);
 }
 
 int consoleVariable::name(const std::string &name)

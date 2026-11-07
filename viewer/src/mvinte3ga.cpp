@@ -27,7 +27,7 @@
 int mvInt::interpret(const e3ga::mv &amv, int creationFlags /* = 0*/)
 {
     e3ga::mv mv(amv);
-    const GAIM_FLOAT epsilon = 10e-8, epsilon2 = epsilon * epsilon;
+    const double epsilon = 10e-8, epsilon2 = epsilon * epsilon;
     e3ga::mv tmp, rt, pe1, pe2, pe3;
 
     // sets m_vector[i] to the vector v
@@ -36,7 +36,7 @@ int mvInt::interpret(const e3ga::mv &amv, int creationFlags /* = 0*/)
         m_vector[i][1] = v[e3ga::E2];
         m_vector[i][2] = v[e3ga::E3];
     };
-    GAIM_FLOAT scale;
+    double scale;
 
     if (creationFlags == 0)
         creationFlags = m_creationFlags;
@@ -172,8 +172,8 @@ int mvInt::interpret(const e3ga::mv &amv, int creationFlags /* = 0*/)
     }
     else if (type == ga::mvTypeVersor)
     {
-        GAIM_FLOAT odd = ga::gradeNorm_a(mv, 1) + ga::gradeNorm_a(mv, 3);
-        GAIM_FLOAT even = ga::gradeNorm_a(mv, 0) + ga::gradeNorm_a(mv, 2);
+        double odd = ga::gradeNorm_a(mv, 1) + ga::gradeNorm_a(mv, 3);
+        double even = ga::gradeNorm_a(mv, 0) + ga::gradeNorm_a(mv, 2);
         if (odd < even)
         { // even 3D versor = rotor
             m_type |= MVI_ROTOR;
@@ -191,14 +191,14 @@ int mvInt::interpret(const e3ga::mv &amv, int creationFlags /* = 0*/)
             // interpret the bivector part to retrieve plane
             e3ga::mv plane(m_scalar[0] * ga::normalize(ga::takeGrade(mv, GRADE2)));
             mvInt bivectorInt(plane, OC_BLADE | OC_GRADE2);
-            memcpy(m_vector[0], bivectorInt.m_vector[0], sizeof(GAIM_FLOAT) * 3);
-            memcpy(m_vector[1], bivectorInt.m_vector[1], sizeof(GAIM_FLOAT) * 3);
-            memcpy(m_vector[2], bivectorInt.m_vector[2], sizeof(GAIM_FLOAT) * 3);
+            memcpy(m_vector[0], bivectorInt.m_vector[0], sizeof(double) * 3);
+            memcpy(m_vector[1], bivectorInt.m_vector[1], sizeof(double) * 3);
+            memcpy(m_vector[2], bivectorInt.m_vector[2], sizeof(double) * 3);
 
             // retrieve the angle
             e3ga::mv Rn(mv * (1.0 / even));
-            GAIM_FLOAT ca = ga::scalar(Rn);
-            GAIM_FLOAT sa = sqrt(ga::gradeNorm_a(Rn, 2));
+            double ca = ga::scalar(Rn);
+            double sa = sqrt(ga::gradeNorm_a(Rn, 2));
             if ((sa < epsilon) || (sin(acos(ca)) < epsilon))
                 m_scalar[1] = 0; // angle = 0
             else

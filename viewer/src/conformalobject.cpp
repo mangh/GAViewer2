@@ -50,7 +50,7 @@ int conformalObject::draw(glwindow *window)
 {
     TubeDraw &T = gui_state->m_tubeDraw;
 
-    GAIM_FLOAT x, y, z, c, scale, scaleSign;
+    double x, y, z, c, scale, scaleSign;
     int s;
     e3ga::mv e3gaR;
     float rotM[16];
@@ -96,9 +96,9 @@ int conformalObject::draw(glwindow *window)
     }
 
     glMatrixMode(GL_MODELVIEW);
-    GAIM_FLOAT stepSize = 0.1;
-    GAIM_FLOAT scaleConst = g_state->m_clipDistance * sqrt(2.0);
-    GAIM_FLOAT scaleMag = 1.0;
+    double stepSize = 0.1;
+    double scaleConst = g_state->m_clipDistance * sqrt(2.0);
+    double scaleMag = 1.0;
     if (m_int.blade())
     {
         /*		if (m_int.type() == MVI_FREE_BIVECTOR)
@@ -400,8 +400,8 @@ int conformalObject::draw(glwindow *window)
 
                 if (m_drawMode & OD_ORI)
                 {
-                    GAIM_FLOAT dir[3];
-                    GAIM_FLOAT l =
+                    double dir[3];
+                    double l =
                         sqrt(m_int.m_vector[1][0] * m_int.m_vector[1][0] + m_int.m_vector[1][1] * m_int.m_vector[1][1] +
                              m_int.m_vector[1][2] * m_int.m_vector[1][2]);
                     dir[0] = m_int.m_vector[1][0] / l;

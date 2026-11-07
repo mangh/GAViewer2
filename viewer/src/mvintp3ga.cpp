@@ -28,7 +28,7 @@ int mvInt::interpret(const p3ga::mv &X, int creationFlags /* = 0*/)
     p3ga::mv I(p3ga::e1<double>() ^ p3ga::e2<double>() ^ p3ga::e3<double>());
     p3ga::mv e0(p3ga::e0<double>());
 
-    const GAIM_FLOAT epsilon = 1e-6; // rather arbitrary limit on fp-noise
+    const double epsilon = 1e-6; // rather arbitrary limit on fp-noise
     p3ga::mv Xd, tmp;
 
     initToNothing();
@@ -66,7 +66,7 @@ int mvInt::interpret(const p3ga::mv &X, int creationFlags /* = 0*/)
     { // ************************************* all blades *************************************
         p3ga::mv ipe0X(ga::lcont(e0, X));
         p3ga::mv ori, pos;
-        GAIM_FLOAT size2;
+        double size2;
         int ipe0Xzero = (ga::norm_a(ipe0X) < epsilon);
 
         if (ipe0Xzero)
@@ -98,7 +98,7 @@ int mvInt::interpret(const p3ga::mv &X, int creationFlags /* = 0*/)
     return 0;
 }
 
-int mvInt::p3gaEuclideanSubspace(const p3ga::mv &X, int grade, const p3ga::mv &ori, GAIM_FLOAT size2)
+int mvInt::p3gaEuclideanSubspace(const p3ga::mv &X, int grade, const p3ga::mv &ori, double size2)
 {
     m_valid = 1;
     p3ga::mv normal, o, pe1, pe2, rt;
@@ -157,7 +157,7 @@ int mvInt::p3gaEuclideanSubspace(const p3ga::mv &X, int grade, const p3ga::mv &o
     return 0;
 }
 
-int mvInt::p3gaHomogeneousSubspace(const p3ga::mv &X, int grade, const p3ga::mv &ori, const p3ga::mv &pos, GAIM_FLOAT size2)
+int mvInt::p3gaHomogeneousSubspace(const p3ga::mv &X, int grade, const p3ga::mv &ori, const p3ga::mv &pos, double size2)
 {
     m_valid = 1;
     p3ga::mv normal, o, pe1, pe2, rt;
@@ -223,10 +223,10 @@ int mvInt::p3gaHomogeneousSubspace(const p3ga::mv &X, int grade, const p3ga::mv 
     return 0;
 }
 
-int mvInt::p3gaFactorBivector(const p3ga::mv &B, GAIM_FLOAT *normal, GAIM_FLOAT *factor1, GAIM_FLOAT *factor2)
+int mvInt::p3gaFactorBivector(const p3ga::mv &B, double *normal, double *factor1, double *factor2)
 {
     // get normal
-    GAIM_FLOAT scale;
+    double scale;
     p3ga::mv nl(ga::normalize(
         ga::lcont(B, ga::inverse(p3ga::mv(p3ga::e1<double>() ^ p3ga::e2<double>() ^ p3ga::e3<double>())))));
     p3ga::mv pe1, pe2, rt;

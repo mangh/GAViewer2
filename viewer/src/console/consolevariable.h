@@ -178,7 +178,7 @@ class consoleVariable
     int modifiedShade();
 
     int isTrue() const;        // return this != 0.0
-    GAIM_FLOAT scalar() const; // return the scalar part of this
+    double scalar() const; // return the scalar part of this
 
     int print(const char *str) const;
     std::string string() const;

@@ -41,7 +41,7 @@ int e3gaRve3(e3ga::mv &R, const e3ga::mv &v);
 int p3gaRve3(p3ga::mv &R, const p3ga::mv &v);
 int c3gaRve3(c3ga::mv &R, const c3ga::mv &v);
 
-inline void c3gaConstructPoint(c3ga::mv &p, GAIM_FLOAT e1c, GAIM_FLOAT e2c, GAIM_FLOAT e3c)
+inline void c3gaConstructPoint(c3ga::mv &p, double e1c, double e2c, double e3c)
 {
     p = c3ga::vector(e1c, e2c, e3c, 1.0, -0.5 * (e1c * e1c + e2c * e2c + e3c * e3c));
 }

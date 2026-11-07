@@ -30,7 +30,7 @@ int mvInt::interpret(const c3ga::mv &X, int creationFlags /* = 0*/)
     c3ga::mv no(c3ga::eo<double>()), ni(c3ga::ei<double>());
     c3ga::mv nino(ni ^ no), noni(no ^ ni);
 
-    const GAIM_FLOAT epsilon = 1e-6; // rather arbitrary limit on fp-noise
+    const double epsilon = 1e-6; // rather arbitrary limit on fp-noise
     c3ga::mv Xd, tmp;
 
     initToNothing();
@@ -68,7 +68,7 @@ int mvInt::interpret(const c3ga::mv &X, int creationFlags /* = 0*/)
 
     if (type == ga::mvTypeBlade)
     { // ************************************* all blades *************************************
-        GAIM_FLOAT X2 = ga::scalar(ga::gp(X, X)), weight2;
+        double X2 = ga::scalar(ga::gp(X, X)), weight2;
         c3ga::mv opniX(ni ^ X), ipniX(ga::lcont(ni, X));
         c3ga::mv attitude, pos;
 
@@ -112,7 +112,7 @@ int mvInt::interpret(const c3ga::mv &X, int creationFlags /* = 0*/)
         else if ((!opniXzero) && (!ipniXzero) && (!X2zero))
         { // *********************** (dual or non-dual) round *******************************
             c3ga::mv niX(ni ^ X);
-            GAIM_FLOAT niX2 = ga::scalar(ga::gp(niX, niX));
+            double niX2 = ga::scalar(ga::gp(niX, niX));
             //			attitude = no << (ni ^ X);
             attitude = ga::lcont(nino, c3ga::mv(ni ^ X)); // this is what you want...
             pos = (X * ni * X) * (1.0 / (2.0 * niX2));
@@ -136,7 +136,7 @@ int mvInt::interpret(const c3ga::mv &X, int creationFlags /* = 0*/)
     return 0;
 }
 
-int mvInt::c3gaFreeFlat(const c3ga::mv &X, int grade, const c3ga::mv &attitude, GAIM_FLOAT weight2)
+int mvInt::c3gaFreeFlat(const c3ga::mv &X, int grade, const c3ga::mv &attitude, double weight2)
 {
     m_valid = 1;
     c3ga::mv normal, o, pe1, pe2, rt;
@@ -193,7 +193,7 @@ int mvInt::c3gaFreeFlat(const c3ga::mv &X, int grade, const c3ga::mv &attitude, 
     return 0;
 }
 
-int mvInt::c3gaBoundFlat(const c3ga::mv &X, int grade, const c3ga::mv &attitude, const c3ga::mv &pos, GAIM_FLOAT weight2)
+int mvInt::c3gaBoundFlat(const c3ga::mv &X, int grade, const c3ga::mv &attitude, const c3ga::mv &pos, double weight2)
 {
     c3ga::mv o;
 
@@ -270,7 +270,7 @@ int mvInt::c3gaBoundFlat(const c3ga::mv &X, int grade, const c3ga::mv &attitude,
     return 0;
 }
 
-int mvInt::c3gaBoundTangent(const c3ga::mv &X, int grade, const c3ga::mv &attitude, const c3ga::mv &pos, GAIM_FLOAT weight2)
+int mvInt::c3gaBoundTangent(const c3ga::mv &X, int grade, const c3ga::mv &attitude, const c3ga::mv &pos, double weight2)
 {
     c3ga::mv o;
 
@@ -342,7 +342,7 @@ int mvInt::c3gaBoundTangent(const c3ga::mv &X, int grade, const c3ga::mv &attitu
     return 0;
 }
 
-int mvInt::c3gaRound(const c3ga::mv &X, int grade, const c3ga::mv &attitude, const c3ga::mv &pos, GAIM_FLOAT weight2)
+int mvInt::c3gaRound(const c3ga::mv &X, int grade, const c3ga::mv &attitude, const c3ga::mv &pos, double weight2)
 {
     if (grade == 1)
     { // filter out dual spheres
@@ -354,9 +354,9 @@ int mvInt::c3gaRound(const c3ga::mv &X, int grade, const c3ga::mv &attitude, con
 
     // compute some basic properties
     c3ga::mv nX;
-    GAIM_FLOAT r = sqrt(fabs(weight2));
+    double r = sqrt(fabs(weight2));
     c3ga::mv o(attitude * (1.0 / r)), pt1, pt2, v1, v2, v3;
-    GAIM_FLOAT sr = r * ((weight2 > 0.0) ? 1.0 : -1.0), n;
+    double sr = r * ((weight2 > 0.0) ? 1.0 : -1.0), n;
 
     /*
     For all types:
@@ -369,7 +369,7 @@ int mvInt::c3gaRound(const c3ga::mv &X, int grade, const c3ga::mv &attitude, con
     scalar 1: signed weight
     */
     c3ga::mv leoAtt = -0.5 * c3ga::ei<double>() * X * c3ga::ei<double>();
-    GAIM_FLOAT leoSqWeight = ga::norm_b(ga::lcont(c3ga::eo<double>(), leoAtt));
+    double leoSqWeight = ga::norm_b(ga::lcont(c3ga::eo<double>(), leoAtt));
     m_scalar[1] = sqrt(fabs(leoSqWeight)) * ((leoSqWeight < 0.0) ? -1.0 : 1.0);
 
     /*
@@ -461,10 +461,10 @@ int mvInt::c3gaRound(const c3ga::mv &X, int grade, const c3ga::mv &attitude, con
     return 0;
 }
 
-int mvInt::c3gaFactorBivector(const c3ga::mv &B, GAIM_FLOAT *normal, GAIM_FLOAT *factor1, GAIM_FLOAT *factor2)
+int mvInt::c3gaFactorBivector(const c3ga::mv &B, double *normal, double *factor1, double *factor2)
 {
     // get normal
-    GAIM_FLOAT scale;
+    double scale;
     c3ga::mv nl(ga::normalize(
         ga::lcont(B, ga::inverse(c3ga::mv(c3ga::e1<double>() ^ c3ga::e2<double>() ^ c3ga::e3<double>())))));
     c3ga::mv pe1, pe2, rt;
