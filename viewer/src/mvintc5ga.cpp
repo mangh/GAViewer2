@@ -20,7 +20,7 @@
 #include "mvint.h"
 #include "state.h"
 
-int mvInt::interpret(const c5ga &X, int creationFlags /* = 0*/)
+int mvInt::interpret(const c5ga::mv &X, int creationFlags /* = 0*/)
 {
     // use c3ga to interpret
     c3ga::mv X3ga;

@@ -47,12 +47,12 @@ class consoleVariable
     consoleVariable(const std::string &name, const e3ga::mv &mv);
     consoleVariable(const std::string &name, const p3ga::mv &mv);
     consoleVariable(const std::string &name, const c3ga::mv &mv);
-    consoleVariable(const std::string &name, const c5ga &mv);
+    consoleVariable(const std::string &name, const c5ga::mv &mv);
     consoleVariable(const std::string &name, const i2ga &mv);
     consoleVariable(const std::string &name, const e3ga::mv *mv);
     consoleVariable(const std::string &name, const p3ga::mv *mv);
     consoleVariable(const std::string &name, const c3ga::mv *mv);
-    consoleVariable(const std::string &name, const c5ga *mv);
+    consoleVariable(const std::string &name, const c5ga::mv *mv);
     consoleVariable(const std::string &name, const i2ga *mv);
     consoleVariable(const consoleVariable &cv);
     ~consoleVariable();
@@ -64,7 +64,7 @@ class consoleVariable
     int set(const std::string &name, const e3ga::mv *mv);
     int set(const std::string &name, const p3ga::mv *mv);
     int set(const std::string &name, const c3ga::mv *mv);
-    int set(const std::string &name, const c5ga *mv);
+    int set(const std::string &name, const c5ga::mv *mv);
     int set(const std::string &name, const i2ga *mv);
     void set(const consoleVariable &cv);
 
@@ -86,7 +86,7 @@ class consoleVariable
     consoleVariable *next();
     consoleVariable *m_next;
 
-    static void castC5gaToC3ga(const c5ga &vc, c3ga::mv &vp);
+    static void castC5gaToC3ga(const c5ga::mv &vc, c3ga::mv &vp);
 
     consoleVariable *castToE3ga() const;
     consoleVariable *castToP3ga() const;
@@ -115,9 +115,9 @@ class consoleVariable
     {
         return mv<c3ga::mv>();
     }
-    c5ga &c5() const
+    c5ga::mv &c5() const
     {
-        return mv<c5ga>();
+        return mv<c5ga::mv>();
     }
     i2ga &i2() const
     {
@@ -186,7 +186,7 @@ class consoleVariable
   protected:
     std::string m_name;
     // the multivector (mutable: e(), p(), ... of a const variable return a modifiable multivector)
-    mutable std::variant<std::monostate, e3ga::mv, p3ga::mv, c3ga::mv, c5ga, i2ga> m_mv;
+    mutable std::variant<std::monostate, e3ga::mv, p3ga::mv, c3ga::mv, c5ga::mv, i2ga> m_mv;
     int m_op; // operator (as in consoleoperators.h)
 
     int getFlag(int flag) const;

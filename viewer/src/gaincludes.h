@@ -22,9 +22,9 @@
 #include "ga/e3ga.h"       // Garamon
 #include "ga/p3ga.h"       // Garamon
 #include "ga/c3ga.h"       // Garamon
+#include "ga/c5ga.h"       // Garamon
 #include "ga/algorithms.h" // the operations on the Garamon algebras
 #include "ga/format.h"
-#include "c5ga/c5ga.h"
 #include "i2ga/i2ga.h"
 // IWYU pragma: end_exports
 

@@ -349,7 +349,7 @@ class c3gaObject : public conformalObject
 class c5gaObject : public conformalObject
 {
   public:
-    c5gaObject(const c5ga &mv, const std::string &name = std::string(""), int drawMode = 0, int creationFlags = 0,
+    c5gaObject(const c5ga::mv &mv, const std::string &name = std::string(""), int drawMode = 0, int creationFlags = 0,
                int forceFlags = 0);
     virtual ~c5gaObject();
     void initToNothing();
@@ -363,7 +363,7 @@ class c5gaObject : public conformalObject
     virtual int translate(glwindow *window, double depth, double motionX, double motionY);
     virtual std::string toString(const char *floatPrec = "%e");
 
-    c5ga m_mv;
+    c5ga::mv m_mv;
 };
 
 class i2gaObject : public object

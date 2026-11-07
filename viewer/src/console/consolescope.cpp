@@ -602,20 +602,21 @@ static e3ga::mv s_e1 = e3ga::e1<double>(), s_e2 = e3ga::e2<double>(), s_e3 = e3g
 static e3ga::mv s_e(2.7182818284590452353602874713527);
 static p3ga::mv s_e0 = p3ga::e0<double>();
 static c3ga::mv s_no = c3ga::eo<double>(), s_ni = c3ga::ei<double>();
+static c5ga::mv s_e4 = c5ga::e4<double>(), s_e5 = c5ga::e5<double>();
 static struct
 {
     char *name;
     e3ga::mv *e;
     p3ga::mv *p;
     c3ga::mv *c;
-    c5ga *c5;
+    c5ga::mv *c5;
     i2ga *i2;
     bool nameAlloced;
 } s_constant[] = {{(char *)"e1", &s_e1, NULL, NULL, NULL, NULL, false},
                   {(char *)"e2", &s_e2, NULL, NULL, NULL, NULL, false},
                   {(char *)"e3", &s_e3, NULL, NULL, NULL, NULL, false},
-                  {(char *)"e4", NULL, NULL, NULL, (c5ga *)&(c5ga::e4), NULL, false},
-                  {(char *)"e5", NULL, NULL, NULL, (c5ga *)&(c5ga::e5), NULL, false},
+                  {(char *)"e4", NULL, NULL, NULL, &s_e4, NULL, false},
+                  {(char *)"e5", NULL, NULL, NULL, &s_e5, NULL, false},
                   {(char *)"e0", NULL, &s_e0, NULL, NULL, NULL, false},
                   {(char *)"no", NULL, NULL, &s_no, NULL, NULL, false},
                   {(char *)"ni", NULL, NULL, &s_ni, NULL, NULL, false},

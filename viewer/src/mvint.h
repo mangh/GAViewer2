@@ -109,7 +109,7 @@ class mvInt
     mvInt(const e3ga::mv &mv, int creationFlags = 0);
     mvInt(const p3ga::mv &mv, int creationFlags = 0);
     mvInt(const c3ga::mv &mv, int creationFlags = 0);
-    mvInt(const c5ga &mv, int creationFlags = 0);
+    mvInt(const c5ga::mv &mv, int creationFlags = 0);
     mvInt(const i2ga &mv, int creationFlags = 0);
     ~mvInt();
     void initToNothing();
@@ -120,7 +120,7 @@ class mvInt
     int interpret(const e3ga::mv &mv, int creationFlags = 0);
     int interpret(const p3ga::mv &mv, int creationFlags = 0);
     int interpret(const c3ga::mv &mv, int creationFlags = 0);
-    int interpret(const c5ga &mv, int creationFlags = 0);
+    int interpret(const c5ga::mv &mv, int creationFlags = 0);
     int interpret(const i2ga &mv, int creationFlags = 0);
 
     int m_type;

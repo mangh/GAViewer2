@@ -57,7 +57,7 @@ Fl_Menu_Item gui_c5gaPointPairDrawMethods[] = {
     {"Line segment", 0, NULL, (void *)DRAW_PP_LINE_SEGMENT, 0},
     {0}};
 
-c5gaObject::c5gaObject(const c5ga &mv, const std::string &name /*= std::string("")*/, int drawMode /*= 0*/,
+c5gaObject::c5gaObject(const c5ga::mv &mv, const std::string &name /*= std::string("")*/, int drawMode /*= 0*/,
                        int creationFlags /*= 0*/, int forceFlags /*= 0*/)
     : conformalObject(OT_C5GA, name, drawMode, creationFlags)
 {
@@ -131,7 +131,7 @@ int c5gaObject::copy(const object *o, int &propertiesChanged, int forceFlags /*=
         return err;
     const c5gaObject *c5gaO = (const c5gaObject *)o;
 
-    if ((m_mv - c5gaO->m_mv).norm_a() != 0.0)
+    if (ga::norm_a(c5ga::mv(m_mv - c5gaO->m_mv)) != 0.0)
         propertiesChanged |= OP_DESCRIPTION;
     m_mv = c5gaO->m_mv;
     m_int.copy(&c5gaO->m_int);
@@ -148,8 +148,8 @@ int c5gaObject::translate(glwindow *window, double depth, double motionX, double
 {
     e3ga::mv v;
     window->vectorAtDepth(depth, motionX, -motionY, v);
-    c5ga t(GRADE1, v[e3ga::E1], v[e3ga::E2], v[e3ga::E3], 0, 0, 0, 0);
-    c5ga tv(1 - 0.5 * (t ^ c5ga::ni));
+    c5ga::mv t = c5ga::vector(v[e3ga::E1], v[e3ga::E2], v[e3ga::E3], 0, 0, 0, 0);
+    c5ga::mv tv(1 - 0.5 * (t ^ c5ga::ei<double>()));
 
     int modified = 0;
     if (m_int.blade())
@@ -171,12 +171,12 @@ int c5gaObject::translate(glwindow *window, double depth, double motionX, double
         case MVI_POINT_PAIR:
         case MVI_CIRCLE:
         case MVI_SPHERE:
-            m_mv = tv.inverse() * m_mv * tv;
+            m_mv = ga::inverse(tv) * m_mv * tv;
             modified = 1;
             break;
         case MVI_FREE_VECTOR:
             //(c5ga::no << m_mv).print("Inter: ");
-            m_mv = ((c5ga::no << m_mv) - t) ^ c5ga::ni;
+            m_mv = (ga::lcont(c5ga::eo<double>(), m_mv) - t) ^ c5ga::ei<double>();
             modified = 1;
             break;
         }
@@ -206,5 +206,5 @@ float c5gaObject::drawSortValue()
 
 std::string c5gaObject::toString(const char *floatPrec /* = "%e" */)
 {
-    return std::string("\"" + m_name + "\" = " + m_mv.string(floatPrec));
+    return std::string("\"" + m_name + "\" = " + ga::toString(m_mv, floatPrec));
 }

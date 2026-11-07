@@ -222,7 +222,7 @@ std::string dumpObjects()
         }
         case OT_C5GA: {
             auto *co = static_cast<c5gaObject *>(o);
-            dumpMv(out, co->m_mv, c5gai_basisElementNames, c5gai_gradeSize, 8);
+            dumpMv(out, co->m_mv);
             dumpInt(out, co->m_int);
             break;
         }

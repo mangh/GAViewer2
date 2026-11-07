@@ -200,7 +200,7 @@ class state
                       int forceFlags = 0);
     int addC3gaObject(const c3ga::mv &mv, const std::string &name, int drawMode = 0, int creationFlags = 0,
                       int forceFlags = 0);
-    int addC5gaObject(const c5ga &mv, const std::string &name, int drawMode = 0, int creationFlags = 0,
+    int addC5gaObject(const c5ga::mv &mv, const std::string &name, int drawMode = 0, int creationFlags = 0,
                       int forceFlags = 0);
     int addI2gaObject(const i2ga &mv, const std::string &name, int drawMode = 0, int creationFlags = 0,
                       int forceFlags = 0);
@@ -341,7 +341,7 @@ class state
     {
         return -1;
     } // todo
-    inline int setC5gaFactor(const c5ga &mv, int idx)
+    inline int setC5gaFactor(const c5ga::mv &mv, int idx)
     {
         return -1;
     } // todo

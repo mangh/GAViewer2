@@ -576,7 +576,7 @@ int GAfile::parseLine(state *s)
     e3ga::mv e3gaMv;
     p3ga::mv p3gaMv;
     c3ga::mv c3gaMv;
-    c5ga c5gaMv;
+    c5ga::mv c5gaMv;
     ga::basisNames<e3ga::mv> eBen('[', ']');
     eBen.add("I3", e3ga::I<double>());
     ga::basisNames<p3ga::mv> pBen('[', ']');
@@ -584,9 +584,9 @@ int GAfile::parseLine(state *s)
     cBen.add("einf", c3ga::ei<double>());
     cBen.add("e0", c3ga::eo<double>());
 
-    c5ga_ben c5Ben('[', ']');
-    c5Ben.addName("einf", c5ga::ni);
-    c5Ben.addName("e0", c5ga::no);
+    ga::basisNames<c5ga::mv> c5Ben('[', ']');
+    c5Ben.add("einf", c5ga::ei<double>());
+    c5Ben.add("e0", c5ga::eo<double>());
 
     // first get rid of crap at the end of the line, plus spaces and tabs at the beginning
     n = strlen(line);
@@ -684,7 +684,7 @@ int GAfile::parseLine(state *s)
         }
         else if (c5gaO)
         {
-            if ((n = c5gaMv.parseString(line + idx, &c5Ben)) < 0)
+            if ((n = ga::parse(line + idx, c5gaMv, c5Ben)) < 0)
                 err = -1;
         }
         if (err < 0)

@@ -672,18 +672,19 @@ int state::addC3gaObject(const c3ga::mv &mv, const std::string &name, int drawMo
     return 0;
 }
 
-int state::addC5gaObject(const c5ga &mv, const std::string &name, int drawMode /* = 0 */, int creationFlags /*= 0*/,
+int state::addC5gaObject(const c5ga::mv &mv, const std::string &name, int drawMode /* = 0 */, int creationFlags /*= 0*/,
                          int forceFlags /* = 0 */)
 {
 
     c5gaObject *o = new c5gaObject(mv, name, drawMode, creationFlags, forceFlags);
     if (!o->m_int.m_valid)
     {
-        if (mv.norm_a() > 1e-5)
+        if (ga::norm_a(mv) > 1e-5)
         {
             if (!m_globalScope->supressWarnings())
             {
-                cprintf("Interpretation of object '%s' with coordinates %s failed.\n", name.c_str(), mv.string());
+                cprintf("Interpretation of object '%s' with coordinates %s failed.\n", name.c_str(),
+                        ga::toString(mv).c_str());
             }
         }
     }
