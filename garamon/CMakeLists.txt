@@ -58,6 +58,7 @@ function(garamon_add_algebra name)
 endfunction()
 
 garamon_add_algebra(e3ga)
+garamon_add_algebra(p3ga) # Euclidean metric, unlike the fork's conf/p3ga.conf (see p3ga.conf)
 
 if(GAVIEWER_BUILD_TESTS)
   add_executable(garamon_smoke_e3ga "${CMAKE_CURRENT_SOURCE_DIR}/smoke_e3ga.cpp")

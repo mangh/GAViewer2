@@ -68,20 +68,23 @@ foreach(figure_file ${figure_files})
 endforeach()
 
 # Differential test of the Garamon based algebra layer (viewer/src/ga) against
-# the Gaigen algebra it replaces (same operations on the same multivectors).
-add_executable(gadiff_e3ga
+# the Gaigen algebras it replaces (same operations on the same multivectors):
+# one test per algebra, gadiff.<algebra>.
+add_executable(gadiff
   "${CMAKE_CURRENT_SOURCE_DIR}/gadiff/gaigen_side.cpp"
   "${CMAKE_CURRENT_SOURCE_DIR}/gadiff/garamon_side.cpp"
 )
-target_link_libraries(gadiff_e3ga PRIVATE gaviewer_e3ga gaviewer_ga)
+target_link_libraries(gadiff PRIVATE gaviewer_e3ga gaviewer_p3ga gaviewer_ga)
 if (CMAKE_CXX_COMPILER_FRONTEND_VARIANT MATCHES "MSVC")
-  target_compile_definitions(gadiff_e3ga PRIVATE _CRT_SECURE_NO_WARNINGS)
-  target_compile_options(gadiff_e3ga PRIVATE -W3)
+  target_compile_definitions(gadiff PRIVATE _CRT_SECURE_NO_WARNINGS)
+  target_compile_options(gadiff PRIVATE -W3)
 elseif (CMAKE_CXX_COMPILER_FRONTEND_VARIANT MATCHES "GNU")
-  target_compile_options(gadiff_e3ga PRIVATE -Wall)
+  target_compile_options(gadiff PRIVATE -Wall)
 endif()
-add_test(NAME gadiff.e3ga COMMAND gadiff_e3ga)
-set_tests_properties(gadiff.e3ga PROPERTIES TIMEOUT 120 LABELS "gadiff")
+foreach(algebra e3ga p3ga)
+  add_test(NAME gadiff.${algebra} COMMAND gadiff ${algebra})
+  set_tests_properties(gadiff.${algebra} PROPERTIES TIMEOUT 120 LABELS "gadiff")
+endforeach()
 
 # Test scripts (viewer/test/scripts/<name>.g): each defines a console function
 # <name>() that exercises a part of the console language (e.g. all the built-in

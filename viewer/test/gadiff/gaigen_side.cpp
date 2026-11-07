@@ -1,42 +1,70 @@
-// gadiff: the Gaigen side (the e3ga algebra GAViewer was built on).
+// gadiff: the Gaigen side (the algebras GAViewer was built on).
 
 #include <string>
 #include <vector>
 
 #include "e3ga/e3ga.h"
 #include "gadiff.h"
+#include "p3ga/p3ga.h"
 
 namespace
 {
 
-struct gaigenE3ga
+// what the adapter needs to know about a Gaigen algebra
+struct e3gaTypes
 {
     using MV = e3ga;
-    using base = e3gai; // e3ga hides some e3gai overloads (e.g. grade(), versorInverse(a))
+    using base = e3gai; // the Gaigen class hides some e3gai overloads (e.g. grade(), versorInverse(a))
+    using names = e3ga_ben;
+    [[maybe_unused]] static constexpr int nbGrades = 4; // (used by the adapter template)
+    static const int *gradeSize()
+    {
+        return e3gai_gradeSize;
+    }
+};
 
-    static constexpr int nbGrades = 4;
+struct p3gaTypes
+{
+    using MV = p3ga;
+    using base = p3gai;
+    using names = p3ga_ben;
+    [[maybe_unused]] static constexpr int nbGrades = 5; // (used by the adapter template)
+    static const int *gradeSize()
+    {
+        return p3gai_gradeSize;
+    }
+};
+
+template <class T> struct gaigenAdapter
+{
+    using MV = typename T::MV;
+    using base = typename T::base;
 
     static int gradeStart(int g)
     {
         int s = 0;
         for (int k = 0; k < g; k++)
-            s += e3gai_gradeSize[k];
+            s += T::gradeSize()[k];
         return s;
+    }
+    static int nbCoordinates()
+    {
+        return gradeStart(T::nbGrades);
     }
 
     static MV make(const coords &c)
     {
         int usage = 0;
         std::vector<double> packed;
-        for (int g = 0; g < nbGrades; g++)
+        for (int g = 0; g < T::nbGrades; g++)
         {
             bool used = false;
-            for (int k = 0; k < e3gai_gradeSize[g]; k++)
+            for (int k = 0; k < T::gradeSize()[g]; k++)
                 used = used || (c[gradeStart(g) + k] != 0.0);
             if (!used)
                 continue;
             usage |= 1 << g;
-            for (int k = 0; k < e3gai_gradeSize[g]; k++)
+            for (int k = 0; k < T::gradeSize()[g]; k++)
                 packed.push_back(c[gradeStart(g) + k]);
         }
         MV x;
@@ -47,12 +75,12 @@ struct gaigenE3ga
 
     static coords coordsOf(const MV &x)
     {
-        coords c(8, 0.0);
-        for (int g = 0; g < nbGrades; g++)
+        coords c(nbCoordinates(), 0.0);
+        for (int g = 0; g < T::nbGrades; g++)
             if (x.gradeUsage() & (1 << g))
             {
                 const double *p = x.coordinates(1 << g);
-                for (int k = 0; k < e3gai_gradeSize[g]; k++)
+                for (int k = 0; k < T::gradeSize()[g]; k++)
                     c[gradeStart(g) + k] = p[k];
             }
         return c;
@@ -156,7 +184,7 @@ struct gaigenE3ga
     }
     static int factor(const MV &a, std::vector<MV> &factors)
     {
-        MV f[5];
+        MV f[8];
         int n = a.factor(f);
         factors.assign(f, f + n);
         return n;
@@ -167,7 +195,7 @@ struct gaigenE3ga
     }
     static int parse(const char *str, MV &result, bool delimiters)
     {
-        e3ga_ben names('[', ']');
+        typename T::names names('[', ']');
         if (!delimiters)
             names.setDelimiters(0, 0);
         return result.parseString(str, &names);
@@ -249,7 +277,11 @@ struct gaigenE3ga
 
 } // namespace
 
-std::vector<std::string> gaigenResults(const std::vector<coords> &inputs)
+std::vector<std::string> gaigenResults(const std::string &algebra, const std::vector<coords> &inputs)
 {
-    return gadiff::run<gaigenE3ga>(inputs);
+    if (algebra == "e3ga")
+        return gadiff::run<gaigenAdapter<e3gaTypes>>(inputs);
+    if (algebra == "p3ga")
+        return gadiff::run<gaigenAdapter<p3gaTypes>>(inputs);
+    return {};
 }

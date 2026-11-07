@@ -1,9 +1,9 @@
 // Differential test of the Garamon based algebra layer (viewer/src/ga) against
-// the Gaigen algebra it replaces: both compute the same operations on the same
+// the Gaigen algebras it replaces: both compute the same operations on the same
 // multivectors; the results (as text) are compared with a tolerance.
 //
-// The Gaigen class 'e3ga' and the Garamon namespace 'e3ga' cannot be used in
-// the same translation unit: each side is compiled in its own file
+// A Gaigen class (e.g. 'e3ga') and the Garamon namespace of the same name cannot
+// be used in the same translation unit: each side is compiled in its own file
 // (gaigen_side.cpp, garamon_side.cpp) and provides an "adapter" for
 // gadiffRun(), which performs all operations in the same order on both sides.
 
@@ -16,8 +16,9 @@
 
 using coords = std::vector<double>; // coordinates in display (Gaigen) basis order
 
-// the results of all operations on 'inputs', computed with Gaigen
-std::vector<std::string> gaigenResults(const std::vector<coords> &inputs);
+// the results of all operations on 'inputs', computed with the Gaigen algebra
+// 'algebra' ("e3ga", "p3ga", ...; empty if unknown)
+std::vector<std::string> gaigenResults(const std::string &algebra, const std::vector<coords> &inputs);
 
 namespace gadiff
 {
@@ -129,11 +130,19 @@ template <class A> std::vector<std::string> run(const std::vector<coords> &input
             mvs(l + "sub", A::sub(a, b));
             mvs(l + "project", A::project(a, b));
             mvs(l + "reject", A::reject(a, b));
-            mvs(l + "meet", A::meet(a, b));
-            mvs(l + "join", A::join(a, b));
-            MV d;
-            put(l + "deltaProduct", " " + std::to_string(A::deltaProduct(a, b, d)));
-            mvs(l + "deltaProduct value", d);
+            // The delta product (and so meet and join) keeps the highest grade with a coordinate
+            // above an absolute epsilon (1e-14, as in Gaigen): for large operands (coordinates
+            // ~1e3) the rounding noise of a vanishing grade part exceeds it, and the result is
+            // noise (differently rounded in Gaigen and Garamon), e.g. meet(B, B) of a large
+            // bivector B. These are compared for operands of moderate size only.
+            if ((A::norm_a(a) < 1e4) && (A::norm_a(b) < 1e4))
+            {
+                mvs(l + "meet", A::meet(a, b));
+                mvs(l + "join", A::join(a, b));
+                MV d;
+                put(l + "deltaProduct", " " + std::to_string(A::deltaProduct(a, b, d)));
+                mvs(l + "deltaProduct value", d);
+            }
         }
     return out;
 }

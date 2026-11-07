@@ -1,6 +1,6 @@
 // gadiff: the Garamon side (viewer/src/ga), the test inputs and the comparison.
 //
-//   gadiff_e3ga [-v]     (-v: print every result line, not only the mismatches)
+//   gadiff <algebra> [-v]     (algebra: e3ga, p3ga; -v: print every result line, not only the mismatches)
 
 #include <cmath>
 #include <cstdio>
@@ -13,14 +13,15 @@
 #include "ga/algorithms.h"
 #include "ga/e3ga.h"
 #include "ga/format.h"
+#include "ga/p3ga.h"
 #include "gadiff.h"
 
 namespace
 {
 
-struct garamonE3ga
+template <class MV_> struct garamonAdapter
 {
-    using MV = e3ga::mv;
+    using MV = MV_;
 
     static MV make(const coords &c)
     {
@@ -205,38 +206,64 @@ struct garamonE3ga
 
 // The test multivectors (deterministic): special values, basis blades, blades,
 // versors and general multivectors of several magnitudes.
-std::vector<coords> inputs()
+template <class MV> std::vector<coords> inputs()
 {
-    using MV = e3ga::mv;
+    constexpr int n = ga::algebraTraits<MV>::dimension;
+    constexpr std::size_t N = std::size_t(1) << n;
+    const auto &basis = ga::algebraTraits<MV>::displayBasis;
     std::vector<MV> v;
 
-    v.push_back(MV());     // zero
-    v.push_back(MV(2.5));  // scalars
+    v.push_back(MV());    // zero
+    v.push_back(MV(2.5)); // scalars
     v.push_back(MV(-1.0));
-    for (std::size_t i = 1; i < 8; i++)
+    for (std::size_t i = 1; i < N; i++)
         v.push_back(ga::basisBlade<MV>(i));
-    // ties between the coordinates, and 'e1 + e2^e3' (which Gaigen takes for a versor)
-    v.push_back(ga::fromCoordinates<MV>({0, 0, 0, 0, 1, 1, 0, 0}));
-    v.push_back(ga::fromCoordinates<MV>({0, 1, 1, 1, 0, 0, 0, 0}));
-    v.push_back(ga::fromCoordinates<MV>({0, 1, 0, 0, 1, 0, 0, 0}));
+
+    // ties between the coordinates (the first two bivectors, all vectors), and
+    // 'e1 + <first bivector>' (e.g. 'e1 + e2^e3', which Gaigen takes for a versor)
+    std::vector<std::size_t> grade1, grade2;
+    for (std::size_t i = 0; i < N; i++)
+    {
+        if (ga::bitmapGrade(basis[i].bitmap) == 1)
+            grade1.push_back(i);
+        if (ga::bitmapGrade(basis[i].bitmap) == 2)
+            grade2.push_back(i);
+    }
+    coords c(N, 0.0);
+    c[grade2[0]] = c[grade2[1]] = 1;
+    v.push_back(ga::fromCoordinates<MV>(c));
+    c.assign(N, 0.0);
+    for (std::size_t i : grade1)
+        c[i] = 1;
+    v.push_back(ga::fromCoordinates<MV>(c));
+    c.assign(N, 0.0);
+    c[grade1[0]] = c[grade2[0]] = 1;
+    v.push_back(ga::fromCoordinates<MV>(c));
 
     std::mt19937 rng(20261106);
     std::uniform_real_distribution<double> u(-2.0, 2.0);
     auto vec = [&](double scale) {
-        return ga::fromCoordinates<MV>({0, scale * u(rng), scale * u(rng), scale * u(rng), 0, 0, 0, 0});
+        MV r;
+        for (int i = 0; i < n; i++)
+            r += ga::basisVector<MV>(i) * (scale * u(rng));
+        return r;
     };
     for (double scale : {1.0, 1e-6, 1e3})
     {
-        v.push_back(vec(scale));                             // vector
-        v.push_back(vec(scale) ^ vec(1.0));                  // bivector (blade)
-        v.push_back(vec(scale) ^ vec(1.0) ^ vec(1.0));       // trivector
+        MV blade = vec(scale);
+        v.push_back(blade); // vector
+        for (int g = 2; g <= n; g++)
+        {
+            blade = blade ^ vec(1.0);
+            v.push_back(blade); // blades of grade 2 ... n
+        }
         v.push_back(vec(scale) * vec(1.0));                  // even versor
         v.push_back(vec(scale) * vec(1.0) * vec(1.0));       // odd versor
         v.push_back(ga::exp(MV(vec(1.0) ^ vec(scale)), 12)); // rotor
     }
     for (int k = 0; k < 6; k++) // general multivectors
     {
-        coords c(8);
+        c.assign(N, 0.0);
         for (double &x : c)
             x = u(rng);
         v.push_back(ga::fromCoordinates<MV>(c));
@@ -281,12 +308,28 @@ bool tokensMatch(const std::string &a, const std::string &b, double tol)
 
 int main(int argc, char *argv[])
 {
-    bool verbose = (argc > 1) && (std::string(argv[1]) == "-v");
+    const std::string algebra = (argc > 1) ? argv[1] : "";
+    bool verbose = (argc > 2) && (std::string(argv[2]) == "-v");
     const double tol = 1e-9;
 
-    std::vector<coords> in = inputs();
-    std::vector<std::string> expected = gaigenResults(in);
-    std::vector<std::string> actual = gadiff::run<garamonE3ga>(in);
+    std::vector<coords> in;
+    std::vector<std::string> actual;
+    if (algebra == "e3ga")
+    {
+        in = inputs<e3ga::mv>();
+        actual = gadiff::run<garamonAdapter<e3ga::mv>>(in);
+    }
+    else if (algebra == "p3ga")
+    {
+        in = inputs<p3ga::mv>();
+        actual = gadiff::run<garamonAdapter<p3ga::mv>>(in);
+    }
+    else
+    {
+        std::fprintf(stderr, "usage: gadiff <algebra> [-v]   (algebra: e3ga, p3ga)\n");
+        return 2;
+    }
+    std::vector<std::string> expected = gaigenResults(algebra, in);
 
     if (expected.size() != actual.size())
     {
@@ -314,6 +357,7 @@ int main(int argc, char *argv[])
         else if (verbose)
             std::printf("%s\n", actual[i].c_str());
     }
-    std::printf("%zu inputs, %zu results, %d mismatches\n", in.size(), expected.size(), mismatches);
+    std::printf("%s: %zu inputs, %zu results, %d mismatches\n", algebra.c_str(), in.size(), expected.size(),
+                mismatches);
     return (mismatches == 0) ? 0 : 1;
 }
