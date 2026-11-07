@@ -74,16 +74,17 @@ add_executable(gadiff
   "${CMAKE_CURRENT_SOURCE_DIR}/gadiff/gaigen_side.cpp"
   "${CMAKE_CURRENT_SOURCE_DIR}/gadiff/garamon_side.cpp"
 )
-target_link_libraries(gadiff PRIVATE gaviewer_e3ga gaviewer_p3ga gaviewer_c3ga gaviewer_ga)
+target_link_libraries(gadiff PRIVATE gaviewer_e3ga gaviewer_p3ga gaviewer_c3ga gaviewer_c5ga gaviewer_ga)
 if (CMAKE_CXX_COMPILER_FRONTEND_VARIANT MATCHES "MSVC")
   target_compile_definitions(gadiff PRIVATE _CRT_SECURE_NO_WARNINGS)
   target_compile_options(gadiff PRIVATE -W3)
 elseif (CMAKE_CXX_COMPILER_FRONTEND_VARIANT MATCHES "GNU")
   target_compile_options(gadiff PRIVATE -Wall)
 endif()
-foreach(algebra e3ga p3ga c3ga)
+# (gadiff.c5ga takes over a minute in a debug build, even with its pairs sampled)
+foreach(algebra e3ga p3ga c3ga c5ga)
   add_test(NAME gadiff.${algebra} COMMAND gadiff ${algebra})
-  set_tests_properties(gadiff.${algebra} PROPERTIES TIMEOUT 120 LABELS "gadiff")
+  set_tests_properties(gadiff.${algebra} PROPERTIES TIMEOUT 300 LABELS "gadiff")
 endforeach()
 
 # The plain 3D drawing geometry (viewer/src/tubegeometry.h) vs. the multivector

@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "c3ga/c3ga.h"
+#include "c5ga/c5ga.h"
 #include "e3ga/e3ga.h"
 #include "gadiff.h"
 #include "p3ga/p3ga.h"
@@ -45,6 +46,18 @@ struct c3gaTypes
     static const int *gradeSize()
     {
         return c3gai_gradeSize;
+    }
+};
+
+struct c5gaTypes
+{
+    using MV = c5ga;
+    using base = c5gai;
+    using names = c5ga_ben;
+    [[maybe_unused]] static constexpr int nbGrades = 8; // (used by the adapter template)
+    static const int *gradeSize()
+    {
+        return c5gai_gradeSize;
     }
 };
 
@@ -290,13 +303,16 @@ template <class T> struct gaigenAdapter
 
 } // namespace
 
-std::vector<std::string> gaigenResults(const std::string &algebra, const std::vector<coords> &inputs)
+std::vector<std::string> gaigenResults(const std::string &algebra, const std::vector<coords> &inputs,
+                                       std::size_t pairStride)
 {
     if (algebra == "e3ga")
-        return gadiff::run<gaigenAdapter<e3gaTypes>>(inputs);
+        return gadiff::run<gaigenAdapter<e3gaTypes>>(inputs, pairStride);
     if (algebra == "p3ga")
-        return gadiff::run<gaigenAdapter<p3gaTypes>>(inputs);
+        return gadiff::run<gaigenAdapter<p3gaTypes>>(inputs, pairStride);
     if (algebra == "c3ga")
-        return gadiff::run<gaigenAdapter<c3gaTypes>>(inputs);
+        return gadiff::run<gaigenAdapter<c3gaTypes>>(inputs, pairStride);
+    if (algebra == "c5ga")
+        return gadiff::run<gaigenAdapter<c5gaTypes>>(inputs, pairStride);
     return {};
 }

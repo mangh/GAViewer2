@@ -17,9 +17,10 @@
 
 using coords = std::vector<double>; // coordinates in display (Gaigen) basis order
 
-// the results of all operations on 'inputs', computed with the Gaigen algebra
-// 'algebra' ("e3ga", "p3ga", ...; empty if unknown)
-std::vector<std::string> gaigenResults(const std::string &algebra, const std::vector<coords> &inputs);
+// the results of all operations on 'inputs' (pairs: see run()), computed with the Gaigen
+// algebra 'algebra' ("e3ga", "p3ga", ...; empty if unknown)
+std::vector<std::string> gaigenResults(const std::string &algebra, const std::vector<coords> &inputs,
+                                       std::size_t pairStride);
 
 namespace gadiff
 {
@@ -40,8 +41,9 @@ inline std::string str(const coords &c)
 }
 
 // Runs all operations; adapter A provides the multivector type A::MV and the
-// operations (see gaigen_side.cpp / garamon_side.cpp).
-template <class A> std::vector<std::string> run(const std::vector<coords> &inputs)
+// operations (see gaigen_side.cpp / garamon_side.cpp). The binary operations are
+// computed for every 'pairStride'-th pair of inputs (in row-major order).
+template <class A> std::vector<std::string> run(const std::vector<coords> &inputs, std::size_t pairStride = 1)
 {
     using MV = typename A::MV;
     std::vector<std::string> out;
@@ -85,12 +87,18 @@ template <class A> std::vector<std::string> run(const std::vector<coords> &input
             mvs(l + "normalize(2)", A::normalize(a, 2));
         mvs(l + "exp(9)", A::exp(a, 9));
         mvs(l + "exp(12)", A::exp(a, 12));
-        mvs(l + "compress(1e-3)", A::compress(a, 1e-3));
+        // Gaigen's compress(epsilon) also removes every grade above 5 (a bug of its code
+        // generator, not reproduced by the ga layer), and so does its mvType(), which compresses:
+        // these are compared for multivectors without grades above 5 only.
+        const bool aboveGrade5 = (A::gradeUsage(a) >> 6) != 0;
+        if (!aboveGrade5)
+            mvs(l + "compress(1e-3)", A::compress(a, 1e-3));
         for (unsigned mask : {1u, 2u, 4u, 6u, 9u})
             mvs(l + "takeGrade(" + std::to_string(mask) + ")", A::takeGrade(a, mask));
         int gradeMask = -1;
         int type = A::mvType(a, gradeMask);
-        put(l + "mvType", " " + std::to_string(type) + " " + std::to_string(gradeMask));
+        if (!aboveGrade5)
+            put(l + "mvType", " " + std::to_string(type) + " " + std::to_string(gradeMask));
         std::vector<MV> factors;
         int nf = A::factor(a, factors);
         put(l + "factor", " " + std::to_string(nf));
@@ -114,6 +122,8 @@ template <class A> std::vector<std::string> run(const std::vector<coords> &input
     for (std::size_t i = 0; i < in.size(); i++)
         for (std::size_t j = 0; j < in.size(); j++)
         {
+            if ((i * in.size() + j) % pairStride != 0)
+                continue;
             const MV &a = in[i], &b = in[j];
             std::string l = "[" + std::to_string(i) + "," + std::to_string(j) + "] ";
 
@@ -145,13 +155,18 @@ template <class A> std::vector<std::string> run(const std::vector<coords> &input
             // differently in Gaigen and Garamon), e.g. meet(B, B) of a large bivector B, or the
             // delta product of a versor with itself. Meet and join are defined for blades only:
             // they are compared for blades (according to mvType, itself compared above) of
-            // moderate size.
+            // moderate size. The meet (delta product / join) is compared only if the join is
+            // well conditioned: not rounding noise itself (e.g. for nested blades, whose delta
+            // product vanishes) and not a null blade (its versor inverse divides by its square).
             int gradeMask;
             const bool blades = (A::mvType(a, gradeMask) == 1) && (A::mvType(b, gradeMask) == 1);
             if (blades && (A::norm_a(a) < 1e4) && (A::norm_a(b) < 1e4))
             {
-                mvs(l + "meet", A::meet(a, b));
-                mvs(l + "join", A::join(a, b));
+                const MV j = A::join(a, b);
+                const double jn = A::norm_a(j), jj = std::fabs(A::coordsOf(A::scp(j, j))[0]);
+                if ((jn > 1e-9 * std::fmax(1.0, A::norm_a(a) * A::norm_a(b))) && (jj > 1e-9 * jn * jn))
+                    mvs(l + "meet", A::meet(a, b));
+                mvs(l + "join", j);
                 MV d;
                 put(l + "deltaProduct", " " + std::to_string(A::deltaProduct(a, b, d)));
                 mvs(l + "deltaProduct value", d);

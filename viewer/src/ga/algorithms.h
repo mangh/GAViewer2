@@ -234,6 +234,8 @@ template <garamonMV MV> int highestGrade(const MV &a, MV &part, double epsilon =
 }
 
 // removes the grades whose coordinates are all <= epsilon (in absolute value)
+// (Gaigen's compress(epsilon) also removed every grade above 5, a bug of its code generator
+// that mattered in c5ga and i2ga only, e.g. for mvType() of a grade 6 blade: not reproduced)
 template <garamonMV MV> MV compress(const MV &a, double epsilon = defaultEpsilon)
 {
     MV r(a);

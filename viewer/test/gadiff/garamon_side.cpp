@@ -1,6 +1,10 @@
 // gadiff: the Garamon side (viewer/src/ga), the test inputs and the comparison.
 //
-//   gadiff <algebra> [-v]     (algebra: e3ga, p3ga, c3ga; -v: print every result line, not only the mismatches)
+//   gadiff <algebra> [-v] [-all]
+//     algebra: e3ga, p3ga, c3ga, c5ga
+//     -v:   print every result line, not only the mismatches
+//     -all: all pairs of inputs for the binary operations also in c5ga (by default every 11th
+//           pair there: the ~30000 pairs of its ~170 inputs take minutes in a debug build)
 
 #include <cmath>
 #include <cstdio>
@@ -12,6 +16,7 @@
 
 #include "ga/algorithms.h"
 #include "ga/c3ga.h"
+#include "ga/c5ga.h"
 #include "ga/e3ga.h"
 #include "ga/format.h"
 #include "ga/p3ga.h"
@@ -330,7 +335,13 @@ bool tokensMatch(const std::string &a, const std::string &b, double tol, double 
 int main(int argc, char *argv[])
 {
     const std::string algebra = (argc > 1) ? argv[1] : "";
-    bool verbose = (argc > 2) && (std::string(argv[2]) == "-v");
+    bool verbose = false, all = false;
+    for (int k = 2; k < argc; k++)
+    {
+        verbose = verbose || (std::string(argv[k]) == "-v");
+        all = all || (std::string(argv[k]) == "-all");
+    }
+    std::size_t pairStride = 1;
     const double tol = 1e-9;
 
     std::vector<coords> in;
@@ -350,12 +361,18 @@ int main(int argc, char *argv[])
         in = inputs<c3ga::mv>();
         actual = gadiff::run<garamonAdapter<c3ga::mv>>(in);
     }
+    else if (algebra == "c5ga")
+    {
+        in = inputs<c5ga::mv>();
+        pairStride = all ? 1 : 11;
+        actual = gadiff::run<garamonAdapter<c5ga::mv>>(in, pairStride);
+    }
     else
     {
-        std::fprintf(stderr, "usage: gadiff <algebra> [-v]   (algebra: e3ga, p3ga, c3ga)\n");
+        std::fprintf(stderr, "usage: gadiff <algebra> [-v] [-all]   (algebra: e3ga, p3ga, c3ga, c5ga)\n");
         return 2;
     }
-    std::vector<std::string> expected = gaigenResults(algebra, in);
+    std::vector<std::string> expected = gaigenResults(algebra, in, pairStride);
 
     if (expected.size() != actual.size())
     {
