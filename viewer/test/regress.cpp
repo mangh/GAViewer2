@@ -216,7 +216,7 @@ std::string dumpObjects()
         }
         case OT_C3GA: {
             auto *co = static_cast<c3gaObject *>(o);
-            dumpMv(out, co->m_mv, c3gai_basisElementNames, c3gai_gradeSize, 6);
+            dumpMv(out, co->m_mv);
             dumpInt(out, co->m_int);
             break;
         }

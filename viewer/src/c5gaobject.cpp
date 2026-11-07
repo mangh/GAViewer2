@@ -194,7 +194,7 @@ int c5gaObject::translate(glwindow *window, double depth, double motionX, double
 int c5gaObject::description(char *buf, int bufLen, int sl /* = 0 */)
 {
     int dim = 5;
-    c3ga tmp;
+    c3ga::mv tmp;
     consoleVariable::castC5gaToC3ga(m_mv, tmp);
     return conformalObject::description(tmp, dim, buf, bufLen, sl);
 }

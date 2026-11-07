@@ -65,11 +65,11 @@ int p3gaRve3(p3ga::mv &R, const p3ga::mv &v)
     return 0;
 }
 
-int c3gaRve3(c3ga &R, const c3ga &v)
+int c3gaRve3(c3ga::mv &R, const c3ga::mv &v)
 {
-    R = 1.0 + v.normal() * c3ga::e3;
-    if (sqrt(R.norm_a()) < 1e-8)
-        R = c3ga::e3 ^ c3ga::e1; // any 180 degree rot in a plane containing e3?
+    R = 1.0 + ga::normalize(v) * c3ga::e3<double>();
+    if (sqrt(ga::norm_a(R)) < 1e-8)
+        R = c3ga::e3<double>() ^ c3ga::e1<double>(); // any 180 degree rot in a plane containing e3?
     return 0;
 }
 

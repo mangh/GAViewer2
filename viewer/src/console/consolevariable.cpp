@@ -64,7 +64,7 @@ consoleVariable::consoleVariable(const std::string &name, const p3ga::mv *mv)
     set(name, mv);
 }
 
-consoleVariable::consoleVariable(const std::string &name, const c3ga *mv)
+consoleVariable::consoleVariable(const std::string &name, const c3ga::mv *mv)
 {
     initToNothing();
     set(name, mv);
@@ -94,7 +94,7 @@ consoleVariable::consoleVariable(const std::string &name, const p3ga::mv &mv)
     set(name, &mv);
 }
 
-consoleVariable::consoleVariable(const std::string &name, const c3ga &mv)
+consoleVariable::consoleVariable(const std::string &name, const c3ga::mv &mv)
 {
     initToNothing();
     set(name, &mv);
@@ -185,7 +185,7 @@ int consoleVariable::set(const std::string &pname, const p3ga::mv *mv)
     return setMV(pname, *mv);
 }
 
-int consoleVariable::set(const std::string &pname, const c3ga *mv)
+int consoleVariable::set(const std::string &pname, const c3ga::mv *mv)
 {
     return setMV(pname, *mv);
 }
@@ -506,20 +506,20 @@ consoleVariable *consoleVariable::castE3gaToP3ga() const
 
 consoleVariable *consoleVariable::castE3gaToC3ga() const
 {
-    c3ga vc;
+    c3ga::mv vc;
     const e3ga::mv &ve = e();
     vc =
         // grade 0
         ga::scalar(ve) +
         // grade 1
-        ve[e3ga::E1] * c3ga::e1 + ve[e3ga::E2] * c3ga::e2 + ve[e3ga::E3] * c3ga::e3 +
+        ve[e3ga::E1] * c3ga::e1<double>() + ve[e3ga::E2] * c3ga::e2<double>() + ve[e3ga::E3] * c3ga::e3<double>() +
         // grade 2
-        ve[e3ga::E12] * (c3ga::e1 ^ c3ga::e2) + ve[e3ga::E23] * (c3ga::e2 ^ c3ga::e3) +
-        (-ve[e3ga::E13]) * (c3ga::e3 ^ c3ga::e1) +
+        ve[e3ga::E12] * (c3ga::e1<double>() ^ c3ga::e2<double>()) + ve[e3ga::E23] * (c3ga::e2<double>() ^ c3ga::e3<double>()) +
+        (-ve[e3ga::E13]) * (c3ga::e3<double>() ^ c3ga::e1<double>()) +
         // grade 3
-        ve[e3ga::E123] * (c3ga::e1 ^ c3ga::e2 ^ c3ga::e3);
+        ve[e3ga::E123] * (c3ga::e1<double>() ^ c3ga::e2<double>() ^ c3ga::e3<double>());
 
-    vc.compress();
+    vc = ga::compress(vc);
     return new consoleVariable("", vc);
 }
 
@@ -544,27 +544,27 @@ consoleVariable *consoleVariable::castE3gaToC5ga() const
 
 consoleVariable *consoleVariable::castP3gaToC3ga() const
 {
-    c3ga vc;
+    c3ga::mv vc;
     const p3ga::mv &vp = p();
     vc =
         // grade 0
         ga::scalar(vp) +
         // grade 1
-        vp[p3ga::E1] * c3ga::e1 + vp[p3ga::E2] * c3ga::e2 + vp[p3ga::E3] * c3ga::e3 +
-        vp[p3ga::E0] * c3ga::no +
+        vp[p3ga::E1] * c3ga::e1<double>() + vp[p3ga::E2] * c3ga::e2<double>() + vp[p3ga::E3] * c3ga::e3<double>() +
+        vp[p3ga::E0] * c3ga::eo<double>() +
         // grade 2
-        vp[p3ga::E12] * (c3ga::e1 ^ c3ga::e2) + vp[p3ga::E23] * (c3ga::e2 ^ c3ga::e3) +
-        (-vp[p3ga::E13]) * (c3ga::e3 ^ c3ga::e1) + vp[p3ga::E10] * (c3ga::e1 ^ c3ga::no) +
-        vp[p3ga::E20] * (c3ga::e2 ^ c3ga::no) + vp[p3ga::E30] * (c3ga::e3 ^ c3ga::no) +
+        vp[p3ga::E12] * (c3ga::e1<double>() ^ c3ga::e2<double>()) + vp[p3ga::E23] * (c3ga::e2<double>() ^ c3ga::e3<double>()) +
+        (-vp[p3ga::E13]) * (c3ga::e3<double>() ^ c3ga::e1<double>()) + vp[p3ga::E10] * (c3ga::e1<double>() ^ c3ga::eo<double>()) +
+        vp[p3ga::E20] * (c3ga::e2<double>() ^ c3ga::eo<double>()) + vp[p3ga::E30] * (c3ga::e3<double>() ^ c3ga::eo<double>()) +
         // grade 3
-        vp[p3ga::E230] * (c3ga::e2 ^ c3ga::e3 ^ c3ga::no) +
-        (-vp[p3ga::E130]) * (c3ga::e3 ^ c3ga::e1 ^ c3ga::no) +
-        vp[p3ga::E120] * (c3ga::e1 ^ c3ga::e2 ^ c3ga::no) +
-        vp[p3ga::E123] * (c3ga::e1 ^ c3ga::e2 ^ c3ga::e3) +
+        vp[p3ga::E230] * (c3ga::e2<double>() ^ c3ga::e3<double>() ^ c3ga::eo<double>()) +
+        (-vp[p3ga::E130]) * (c3ga::e3<double>() ^ c3ga::e1<double>() ^ c3ga::eo<double>()) +
+        vp[p3ga::E120] * (c3ga::e1<double>() ^ c3ga::e2<double>() ^ c3ga::eo<double>()) +
+        vp[p3ga::E123] * (c3ga::e1<double>() ^ c3ga::e2<double>() ^ c3ga::e3<double>()) +
         // grade 4
-        vp[p3ga::E1230] * (c3ga::e1 ^ c3ga::e2 ^ c3ga::e3 ^ c3ga::no);
+        vp[p3ga::E1230] * (c3ga::e1<double>() ^ c3ga::e2<double>() ^ c3ga::e3<double>() ^ c3ga::eo<double>());
 
-    vc.compress();
+    vc = ga::compress(vc);
     return new consoleVariable("", vc);
 }
 consoleVariable *consoleVariable::castP3gaToC5ga() const
@@ -615,17 +615,17 @@ consoleVariable *consoleVariable::castP3gaToE3ga() const
 consoleVariable *consoleVariable::castC3gaToE3ga() const
 {
     e3ga::mv ve;
-    const c3ga &vc = c();
+    const c3ga::mv &vc = c();
     ve =
         // grade 0
-        vc.scalar() +
+        ga::scalar(vc) +
         // grade 1
-        vc[GRADE1][C3GA_E1] * e3ga::e1<double>() + vc[GRADE1][C3GA_E2] * e3ga::e2<double>() + vc[GRADE1][C3GA_E3] * e3ga::e3<double>() +
+        vc[c3ga::E1] * e3ga::e1<double>() + vc[c3ga::E2] * e3ga::e2<double>() + vc[c3ga::E3] * e3ga::e3<double>() +
         // grade 2
-        vc[GRADE2][C3GA_E1_E2] * (e3ga::e1<double>() ^ e3ga::e2<double>()) + vc[GRADE2][C3GA_E2_E3] * (e3ga::e2<double>() ^ e3ga::e3<double>()) +
-        vc[GRADE2][C3GA_E1_E3] * (e3ga::e1<double>() ^ e3ga::e3<double>()) +
+        vc[c3ga::E12] * (e3ga::e1<double>() ^ e3ga::e2<double>()) + vc[c3ga::E23] * (e3ga::e2<double>() ^ e3ga::e3<double>()) +
+        vc[c3ga::E13] * (e3ga::e1<double>() ^ e3ga::e3<double>()) +
         // grade 3
-        vc[GRADE3][C3GA_E1_E2_E3] * (e3ga::e1<double>() ^ e3ga::e2<double>() ^ e3ga::e3<double>());
+        vc[c3ga::E123] * (e3ga::e1<double>() ^ e3ga::e2<double>() ^ e3ga::e3<double>());
 
     ve = ga::compress(ve);
     return new consoleVariable("", ve);
@@ -653,24 +653,25 @@ consoleVariable *consoleVariable::castC5gaToE3ga() const
 consoleVariable *consoleVariable::castC3gaToP3ga() const
 {
     p3ga::mv vp;
-    const c3ga &vc = c();
+    const c3ga::mv &vc = c();
     vp =
         // grade 0
-        vc.scalar() +
+        ga::scalar(vc) +
         // grade 1
-        vc[GRADE1][C3GA_E1] * p3ga::e1<double>() + vc[GRADE1][C3GA_E2] * p3ga::e2<double>() + vc[GRADE1][C3GA_E3] * p3ga::e3<double>() +
-        vc[GRADE1][C3GA_NO] * p3ga::e0<double>() +
+        vc[c3ga::E1] * p3ga::e1<double>() + vc[c3ga::E2] * p3ga::e2<double>() + vc[c3ga::E3] * p3ga::e3<double>() +
+        vc[c3ga::Eo] * p3ga::e0<double>() +
         // grade 2
-        vc[GRADE2][C3GA_E1_E2] * (p3ga::e1<double>() ^ p3ga::e2<double>()) + vc[GRADE2][C3GA_E2_E3] * (p3ga::e2<double>() ^ p3ga::e3<double>()) +
-        vc[GRADE2][C3GA_E1_E2] * (p3ga::e1<double>() ^ p3ga::e2<double>()) + vc[GRADE2][C3GA_E1_NO] * (p3ga::e1<double>() ^ p3ga::e0<double>()) +
-        vc[GRADE2][C3GA_E2_NO] * (p3ga::e2<double>() ^ p3ga::e0<double>()) + vc[GRADE2][C3GA_E3_NO] * (p3ga::e3<double>() ^ p3ga::e0<double>()) +
+        // NOTE: inherited bug, kept as is: the e1^e2 term is added twice and the e1^e3 term is missing
+        vc[c3ga::E12] * (p3ga::e1<double>() ^ p3ga::e2<double>()) + vc[c3ga::E23] * (p3ga::e2<double>() ^ p3ga::e3<double>()) +
+        vc[c3ga::E12] * (p3ga::e1<double>() ^ p3ga::e2<double>()) + vc[c3ga::E1o] * (p3ga::e1<double>() ^ p3ga::e0<double>()) +
+        vc[c3ga::E2o] * (p3ga::e2<double>() ^ p3ga::e0<double>()) + vc[c3ga::E3o] * (p3ga::e3<double>() ^ p3ga::e0<double>()) +
         // grade 3
-        vc[GRADE3][C3GA_E2_E3_NO] * (p3ga::e2<double>() ^ p3ga::e3<double>() ^ p3ga::e0<double>()) +
-        vc[GRADE3][C3GA_E1_E3_NO] * (p3ga::e1<double>() ^ p3ga::e3<double>() ^ p3ga::e0<double>()) +
-        vc[GRADE3][C3GA_E1_E2_NO] * (p3ga::e1<double>() ^ p3ga::e2<double>() ^ p3ga::e0<double>()) +
-        vc[GRADE3][C3GA_E1_E2_E3] * (p3ga::e1<double>() ^ p3ga::e2<double>() ^ p3ga::e3<double>()) +
+        vc[c3ga::E23o] * (p3ga::e2<double>() ^ p3ga::e3<double>() ^ p3ga::e0<double>()) +
+        vc[c3ga::E13o] * (p3ga::e1<double>() ^ p3ga::e3<double>() ^ p3ga::e0<double>()) +
+        vc[c3ga::E12o] * (p3ga::e1<double>() ^ p3ga::e2<double>() ^ p3ga::e0<double>()) +
+        vc[c3ga::E123] * (p3ga::e1<double>() ^ p3ga::e2<double>() ^ p3ga::e3<double>()) +
         // grade 4
-        vc[GRADE4][C3GA_E1_E2_E3_NO] * (p3ga::e1<double>() ^ p3ga::e2<double>() ^ p3ga::e3<double>() ^ p3ga::e0<double>());
+        vc[c3ga::E123o] * (p3ga::e1<double>() ^ p3ga::e2<double>() ^ p3ga::e3<double>() ^ p3ga::e0<double>());
 
     vp = ga::compress(vp);
     return new consoleVariable("", vp);
@@ -687,6 +688,7 @@ consoleVariable *consoleVariable::castC5gaToP3ga() const
         vc[GRADE1][C5GA_E1] * p3ga::e1<double>() + vc[GRADE1][C5GA_E2] * p3ga::e2<double>() + vc[GRADE1][C5GA_E3] * p3ga::e3<double>() +
         vc[GRADE1][C5GA_NO] * p3ga::e0<double>() +
         // grade 2
+        // NOTE: inherited bug, kept as is: the e1^e2 term is added twice and the e1^e3 term is missing
         vc[GRADE2][C5GA_E1_E2] * (p3ga::e1<double>() ^ p3ga::e2<double>()) + vc[GRADE2][C5GA_E2_E3] * (p3ga::e2<double>() ^ p3ga::e3<double>()) +
         vc[GRADE2][C5GA_E1_E2] * (p3ga::e1<double>() ^ p3ga::e2<double>()) + vc[GRADE2][C5GA_E1_NO] * (p3ga::e1<double>() ^ p3ga::e0<double>()) +
         vc[GRADE2][C5GA_E2_NO] * (p3ga::e2<double>() ^ p3ga::e0<double>()) + vc[GRADE2][C5GA_E3_NO] * (p3ga::e3<double>() ^ p3ga::e0<double>()) +
@@ -704,13 +706,13 @@ consoleVariable *consoleVariable::castC5gaToP3ga() const
 
 consoleVariable *consoleVariable::castC5gaToC3ga() const
 {
-    c3ga vp;
+    c3ga::mv vp;
     castC5gaToC3ga(c5(), vp);
 
     return new consoleVariable("", vp);
 }
 
-void consoleVariable::castC5gaToC3ga(const c5ga &vc, c3ga &vp)
+void consoleVariable::castC5gaToC3ga(const c5ga &vc, c3ga::mv &vp)
 {
     // grade 0
     vp = vc.scalar();
@@ -718,107 +720,107 @@ void consoleVariable::castC5gaToC3ga(const c5ga &vc, c3ga &vp)
     // grade 1
     if (vc.gradeUsage() & GRADE1)
     {
-        vp += vc[GRADE1][C5GA_E1] * c3ga::e1 + vc[GRADE1][C5GA_E2] * c3ga::e2 + vc[GRADE1][C5GA_E3] * c3ga::e3 +
-              vc[GRADE1][C5GA_NO] * c3ga::no + vc[GRADE1][C5GA_NI] * c3ga::ni;
+        vp += vc[GRADE1][C5GA_E1] * c3ga::e1<double>() + vc[GRADE1][C5GA_E2] * c3ga::e2<double>() + vc[GRADE1][C5GA_E3] * c3ga::e3<double>() +
+              vc[GRADE1][C5GA_NO] * c3ga::eo<double>() + vc[GRADE1][C5GA_NI] * c3ga::ei<double>();
     }
     // grade 2
     if (vc.gradeUsage() & GRADE2)
     {
-        vp += vc[GRADE2][C5GA_E1_E2] * (c3ga::e1 ^ c3ga::e2) + vc[GRADE2][C5GA_E1_E3] * (c3ga::e1 ^ c3ga::e3) +
-              vc[GRADE2][C5GA_E2_E3] * (c3ga::e2 ^ c3ga::e3) + vc[GRADE2][C5GA_E1_NO] * (c3ga::e1 ^ c3ga::no) +
-              vc[GRADE2][C5GA_E2_NO] * (c3ga::e2 ^ c3ga::no) + vc[GRADE2][C5GA_E3_NO] * (c3ga::e3 ^ c3ga::no) +
-              vc[GRADE2][C5GA_E1_NI] * (c3ga::e1 ^ c3ga::ni) + vc[GRADE2][C5GA_E2_NI] * (c3ga::e2 ^ c3ga::ni) +
-              vc[GRADE2][C5GA_E3_NI] * (c3ga::e3 ^ c3ga::ni) + vc[GRADE2][C5GA_NO_NI] * (c3ga::no ^ c3ga::ni);
+        vp += vc[GRADE2][C5GA_E1_E2] * (c3ga::e1<double>() ^ c3ga::e2<double>()) + vc[GRADE2][C5GA_E1_E3] * (c3ga::e1<double>() ^ c3ga::e3<double>()) +
+              vc[GRADE2][C5GA_E2_E3] * (c3ga::e2<double>() ^ c3ga::e3<double>()) + vc[GRADE2][C5GA_E1_NO] * (c3ga::e1<double>() ^ c3ga::eo<double>()) +
+              vc[GRADE2][C5GA_E2_NO] * (c3ga::e2<double>() ^ c3ga::eo<double>()) + vc[GRADE2][C5GA_E3_NO] * (c3ga::e3<double>() ^ c3ga::eo<double>()) +
+              vc[GRADE2][C5GA_E1_NI] * (c3ga::e1<double>() ^ c3ga::ei<double>()) + vc[GRADE2][C5GA_E2_NI] * (c3ga::e2<double>() ^ c3ga::ei<double>()) +
+              vc[GRADE2][C5GA_E3_NI] * (c3ga::e3<double>() ^ c3ga::ei<double>()) + vc[GRADE2][C5GA_NO_NI] * (c3ga::eo<double>() ^ c3ga::ei<double>());
     }
     // grade 3
     if (vc.gradeUsage() & GRADE3)
     {
-        vp += vc[GRADE3][C5GA_E1_E2_E3] * (c3ga::e1 ^ c3ga::e2 ^ c3ga::e3) +
-              vc[GRADE3][C5GA_E1_E2_NO] * (c3ga::e1 ^ c3ga::e2 ^ c3ga::no) +
-              vc[GRADE3][C5GA_E1_E3_NO] * (c3ga::e1 ^ c3ga::e3 ^ c3ga::no) +
-              vc[GRADE3][C5GA_E2_E3_NO] * (c3ga::e2 ^ c3ga::e3 ^ c3ga::no) +
-              vc[GRADE3][C5GA_E1_E2_NI] * (c3ga::e1 ^ c3ga::e2 ^ c3ga::ni) +
-              vc[GRADE3][C5GA_E1_E3_NI] * (c3ga::e1 ^ c3ga::e3 ^ c3ga::ni) +
-              vc[GRADE3][C5GA_E2_E3_NI] * (c3ga::e2 ^ c3ga::e3 ^ c3ga::ni) +
-              vc[GRADE3][C5GA_E1_NO_NI] * (c3ga::e1 ^ c3ga::no ^ c3ga::ni) +
-              vc[GRADE3][C5GA_E2_NO_NI] * (c3ga::e2 ^ c3ga::no ^ c3ga::ni) +
-              vc[GRADE3][C5GA_E3_NO_NI] * (c3ga::e3 ^ c3ga::no ^ c3ga::ni);
+        vp += vc[GRADE3][C5GA_E1_E2_E3] * (c3ga::e1<double>() ^ c3ga::e2<double>() ^ c3ga::e3<double>()) +
+              vc[GRADE3][C5GA_E1_E2_NO] * (c3ga::e1<double>() ^ c3ga::e2<double>() ^ c3ga::eo<double>()) +
+              vc[GRADE3][C5GA_E1_E3_NO] * (c3ga::e1<double>() ^ c3ga::e3<double>() ^ c3ga::eo<double>()) +
+              vc[GRADE3][C5GA_E2_E3_NO] * (c3ga::e2<double>() ^ c3ga::e3<double>() ^ c3ga::eo<double>()) +
+              vc[GRADE3][C5GA_E1_E2_NI] * (c3ga::e1<double>() ^ c3ga::e2<double>() ^ c3ga::ei<double>()) +
+              vc[GRADE3][C5GA_E1_E3_NI] * (c3ga::e1<double>() ^ c3ga::e3<double>() ^ c3ga::ei<double>()) +
+              vc[GRADE3][C5GA_E2_E3_NI] * (c3ga::e2<double>() ^ c3ga::e3<double>() ^ c3ga::ei<double>()) +
+              vc[GRADE3][C5GA_E1_NO_NI] * (c3ga::e1<double>() ^ c3ga::eo<double>() ^ c3ga::ei<double>()) +
+              vc[GRADE3][C5GA_E2_NO_NI] * (c3ga::e2<double>() ^ c3ga::eo<double>() ^ c3ga::ei<double>()) +
+              vc[GRADE3][C5GA_E3_NO_NI] * (c3ga::e3<double>() ^ c3ga::eo<double>() ^ c3ga::ei<double>());
     }
     // grade 4
     if (vc.gradeUsage() & GRADE4)
     {
-        vp += vc[GRADE4][C5GA_E1_E2_E3_NO] * (c3ga::e1 ^ c3ga::e2 ^ c3ga::e3 ^ c3ga::no) +
-              vc[GRADE4][C5GA_E1_E2_E3_NI] * (c3ga::e1 ^ c3ga::e2 ^ c3ga::e3 ^ c3ga::ni) +
-              vc[GRADE4][C5GA_E1_E2_NO_NI] * (c3ga::e1 ^ c3ga::e2 ^ c3ga::no ^ c3ga::ni) +
-              vc[GRADE4][C5GA_E1_E3_NO_NI] * (c3ga::e1 ^ c3ga::e3 ^ c3ga::no ^ c3ga::ni) +
-              vc[GRADE4][C5GA_E2_E3_NO_NI] * (c3ga::e2 ^ c3ga::e3 ^ c3ga::no ^ c3ga::ni);
+        vp += vc[GRADE4][C5GA_E1_E2_E3_NO] * (c3ga::e1<double>() ^ c3ga::e2<double>() ^ c3ga::e3<double>() ^ c3ga::eo<double>()) +
+              vc[GRADE4][C5GA_E1_E2_E3_NI] * (c3ga::e1<double>() ^ c3ga::e2<double>() ^ c3ga::e3<double>() ^ c3ga::ei<double>()) +
+              vc[GRADE4][C5GA_E1_E2_NO_NI] * (c3ga::e1<double>() ^ c3ga::e2<double>() ^ c3ga::eo<double>() ^ c3ga::ei<double>()) +
+              vc[GRADE4][C5GA_E1_E3_NO_NI] * (c3ga::e1<double>() ^ c3ga::e3<double>() ^ c3ga::eo<double>() ^ c3ga::ei<double>()) +
+              vc[GRADE4][C5GA_E2_E3_NO_NI] * (c3ga::e2<double>() ^ c3ga::e3<double>() ^ c3ga::eo<double>() ^ c3ga::ei<double>());
     }
     // grade 5
     if (vc.gradeUsage() & GRADE5)
     {
-        vp += vc[GRADE5][C5GA_E1_E2_E3_NO_NI] * (c3ga::e1 ^ c3ga::e2 ^ c3ga::e3 ^ c3ga::no ^ c3ga::ni);
+        vp += vc[GRADE5][C5GA_E1_E2_E3_NO_NI] * (c3ga::e1<double>() ^ c3ga::e2<double>() ^ c3ga::e3<double>() ^ c3ga::eo<double>() ^ c3ga::ei<double>());
     }
 
-    vp.compress();
+    vp = ga::compress(vp);
 }
 
 consoleVariable *consoleVariable::castC3gaToC5ga() const
 {
     c5ga vp;
-    const c3ga &vc = c();
+    const c3ga::mv &vc = c();
 
     // grade 0
-    if (vc.gradeUsage() & GRADE0)
+    if (ga::gradeUsage(vc) & GRADE0)
     {
-        vp += vc.scalar();
+        vp += ga::scalar(vc);
     }
 
     // grade 1
-    if (vc.gradeUsage() & GRADE1)
+    if (ga::gradeUsage(vc) & GRADE1)
     {
-        vp += vc[GRADE1][C3GA_E1] * c5ga::e1 + vc[GRADE1][C3GA_E2] * c5ga::e2 + vc[GRADE1][C3GA_E3] * c5ga::e3 +
-              vc[GRADE1][C3GA_NO] * c5ga::no + vc[GRADE1][C3GA_NI] * c5ga::ni;
+        vp += vc[c3ga::E1] * c5ga::e1 + vc[c3ga::E2] * c5ga::e2 + vc[c3ga::E3] * c5ga::e3 +
+              vc[c3ga::Eo] * c5ga::no + vc[c3ga::Ei] * c5ga::ni;
     }
 
     // grade 2
-    if (vc.gradeUsage() & GRADE2)
+    if (ga::gradeUsage(vc) & GRADE2)
     {
-        vp += vc[GRADE2][C3GA_E1_E2] * (c5ga::e1 ^ c5ga::e2) + vc[GRADE2][C3GA_E1_E3] * (c5ga::e1 ^ c5ga::e3) +
-              vc[GRADE2][C3GA_E2_E3] * (c5ga::e2 ^ c5ga::e3) + vc[GRADE2][C3GA_E1_NO] * (c5ga::e1 ^ c5ga::no) +
-              vc[GRADE2][C3GA_E2_NO] * (c5ga::e2 ^ c5ga::no) + vc[GRADE2][C3GA_E3_NO] * (c5ga::e3 ^ c5ga::no) +
-              vc[GRADE2][C3GA_E1_NI] * (c5ga::e1 ^ c5ga::ni) + vc[GRADE2][C3GA_E2_NI] * (c5ga::e2 ^ c5ga::ni) +
-              vc[GRADE2][C3GA_E3_NI] * (c5ga::e3 ^ c5ga::ni) + vc[GRADE2][C3GA_NO_NI] * (c5ga::no ^ c5ga::ni);
+        vp += vc[c3ga::E12] * (c5ga::e1 ^ c5ga::e2) + vc[c3ga::E13] * (c5ga::e1 ^ c5ga::e3) +
+              vc[c3ga::E23] * (c5ga::e2 ^ c5ga::e3) + vc[c3ga::E1o] * (c5ga::e1 ^ c5ga::no) +
+              vc[c3ga::E2o] * (c5ga::e2 ^ c5ga::no) + vc[c3ga::E3o] * (c5ga::e3 ^ c5ga::no) +
+              vc[c3ga::E1i] * (c5ga::e1 ^ c5ga::ni) + vc[c3ga::E2i] * (c5ga::e2 ^ c5ga::ni) +
+              vc[c3ga::E3i] * (c5ga::e3 ^ c5ga::ni) + vc[c3ga::Eoi] * (c5ga::no ^ c5ga::ni);
     }
 
     // grade 3
-    if (vc.gradeUsage() & GRADE3)
+    if (ga::gradeUsage(vc) & GRADE3)
     {
-        vp += vc[GRADE3][C3GA_E1_E2_E3] * (c5ga::e1 ^ c5ga::e2 ^ c5ga::e3) +
-              vc[GRADE3][C3GA_E1_E2_NO] * (c5ga::e1 ^ c5ga::e2 ^ c5ga::no) +
-              vc[GRADE3][C3GA_E1_E3_NO] * (c5ga::e1 ^ c5ga::e3 ^ c5ga::no) +
-              vc[GRADE3][C3GA_E2_E3_NO] * (c5ga::e2 ^ c5ga::e3 ^ c5ga::no) +
-              vc[GRADE3][C3GA_E1_E2_NI] * (c5ga::e1 ^ c5ga::e2 ^ c5ga::ni) +
-              vc[GRADE3][C3GA_E1_E3_NI] * (c5ga::e1 ^ c5ga::e3 ^ c5ga::ni) +
-              vc[GRADE3][C3GA_E2_E3_NI] * (c5ga::e2 ^ c5ga::e3 ^ c5ga::ni) +
-              vc[GRADE3][C3GA_E1_NO_NI] * (c5ga::e1 ^ c5ga::no ^ c5ga::ni) +
-              vc[GRADE3][C3GA_E2_NO_NI] * (c5ga::e2 ^ c5ga::no ^ c5ga::ni) +
-              vc[GRADE3][C3GA_E3_NO_NI] * (c5ga::e3 ^ c5ga::no ^ c5ga::ni);
+        vp += vc[c3ga::E123] * (c5ga::e1 ^ c5ga::e2 ^ c5ga::e3) +
+              vc[c3ga::E12o] * (c5ga::e1 ^ c5ga::e2 ^ c5ga::no) +
+              vc[c3ga::E13o] * (c5ga::e1 ^ c5ga::e3 ^ c5ga::no) +
+              vc[c3ga::E23o] * (c5ga::e2 ^ c5ga::e3 ^ c5ga::no) +
+              vc[c3ga::E12i] * (c5ga::e1 ^ c5ga::e2 ^ c5ga::ni) +
+              vc[c3ga::E13i] * (c5ga::e1 ^ c5ga::e3 ^ c5ga::ni) +
+              vc[c3ga::E23i] * (c5ga::e2 ^ c5ga::e3 ^ c5ga::ni) +
+              vc[c3ga::E1oi] * (c5ga::e1 ^ c5ga::no ^ c5ga::ni) +
+              vc[c3ga::E2oi] * (c5ga::e2 ^ c5ga::no ^ c5ga::ni) +
+              vc[c3ga::E3oi] * (c5ga::e3 ^ c5ga::no ^ c5ga::ni);
     }
 
     // grade 4
-    if (vc.gradeUsage() & GRADE4)
+    if (ga::gradeUsage(vc) & GRADE4)
     {
-        vp += vc[GRADE4][C3GA_E1_E2_E3_NO] * (c5ga::e1 ^ c5ga::e2 ^ c5ga::e3 ^ c5ga::no) +
-              vc[GRADE4][C3GA_E1_E2_E3_NI] * (c5ga::e1 ^ c5ga::e2 ^ c5ga::e3 ^ c5ga::ni) +
-              vc[GRADE4][C3GA_E1_E2_NO_NI] * (c5ga::e1 ^ c5ga::e2 ^ c5ga::no ^ c5ga::ni) +
-              vc[GRADE4][C3GA_E1_E3_NO_NI] * (c5ga::e1 ^ c5ga::e3 ^ c5ga::no ^ c5ga::ni) +
-              vc[GRADE4][C3GA_E2_E3_NO_NI] * (c5ga::e2 ^ c5ga::e3 ^ c5ga::no ^ c5ga::ni);
+        vp += vc[c3ga::E123o] * (c5ga::e1 ^ c5ga::e2 ^ c5ga::e3 ^ c5ga::no) +
+              vc[c3ga::E123i] * (c5ga::e1 ^ c5ga::e2 ^ c5ga::e3 ^ c5ga::ni) +
+              vc[c3ga::E12oi] * (c5ga::e1 ^ c5ga::e2 ^ c5ga::no ^ c5ga::ni) +
+              vc[c3ga::E13oi] * (c5ga::e1 ^ c5ga::e3 ^ c5ga::no ^ c5ga::ni) +
+              vc[c3ga::E23oi] * (c5ga::e2 ^ c5ga::e3 ^ c5ga::no ^ c5ga::ni);
     }
 
     // grade 5
-    if (vc.gradeUsage() & GRADE5)
+    if (ga::gradeUsage(vc) & GRADE5)
     {
-        vp += vc[GRADE5][C3GA_I] * (c5ga::e1 ^ c5ga::e2 ^ c5ga::e3 ^ c5ga::no ^ c5ga::ni);
+        vp += vc[c3ga::E123oi] * (c5ga::e1 ^ c5ga::e2 ^ c5ga::e3 ^ c5ga::no ^ c5ga::ni);
     }
 
     vp.compress();
@@ -869,26 +871,29 @@ consoleVariable *consoleVariable::castP3gaToI2ga() const
 consoleVariable *consoleVariable::castC3gaToI2ga() const
 {
     i2ga vi2;
-    const c3ga &vc = c();
+    const c3ga::mv &vc = c();
 
     // e1, e2, ni, no are preserved
     vi2 =
         // grade 0
-        vc.scalar() +
+        ga::scalar(vc) +
         // grade 1
-        vc[GRADE1][C3GA_E1] * i2ga::e1 + vc[GRADE1][C3GA_E2] * i2ga::e2 + vc[GRADE1][C3GA_NO] * i2ga::no +
-        vc[GRADE1][C3GA_NI] * i2ga::ni +
+        vc[c3ga::E1] * i2ga::e1 + vc[c3ga::E2] * i2ga::e2 + vc[c3ga::Eo] * i2ga::no +
+        vc[c3ga::Ei] * i2ga::ni +
         // grade 2
-        vc[GRADE2][C3GA_E1_E2] * (i2ga::e1 ^ i2ga::e2) + vc[GRADE2][C3GA_E1_NO] * (i2ga::e1 ^ i2ga::no) +
-        vc[GRADE2][C3GA_E2_NO] * (i2ga::e2 ^ i2ga::no) + vc[GRADE2][C3GA_E1_NI] * (i2ga::e1 ^ i2ga::ni) +
-        vc[GRADE2][C3GA_E2_NI] * (i2ga::e2 ^ i2ga::ni) + vc[GRADE2][C3GA_NO_NI] * (i2ga::no ^ i2ga::ni) +
+        vc[c3ga::E12] * (i2ga::e1 ^ i2ga::e2) + vc[c3ga::E1o] * (i2ga::e1 ^ i2ga::no) +
+        vc[c3ga::E2o] * (i2ga::e2 ^ i2ga::no) + vc[c3ga::E1i] * (i2ga::e1 ^ i2ga::ni) +
+        vc[c3ga::E2i] * (i2ga::e2 ^ i2ga::ni) + vc[c3ga::Eoi] * (i2ga::no ^ i2ga::ni) +
+        // NOTE: inherited bug, kept as is: the Gaigen code read the grade 3 and 4 coordinates below from
+        // grade 2 (vc[GRADE2][C3GA_E1_E2_NO], ...), i.e. the coordinates of other (grade 2) blades; they
+        // should be vc[c3ga::E12o], vc[c3ga::E12i], vc[c3ga::E1oi], vc[c3ga::E2oi] and vc[c3ga::E12oi]
         // grade 3
-        vc[GRADE2][C3GA_E1_E2_NO] * (i2ga::e1 ^ i2ga::e2 ^ i2ga::no) +
-        vc[GRADE2][C3GA_E1_E2_NI] * (i2ga::e1 ^ i2ga::e2 ^ i2ga::ni) +
-        vc[GRADE2][C3GA_E1_NO_NI] * (i2ga::e1 ^ i2ga::no ^ i2ga::ni) +
-        vc[GRADE2][C3GA_E2_NO_NI] * (i2ga::e2 ^ i2ga::no ^ i2ga::ni) +
+        vc[c3ga::E13] * (i2ga::e1 ^ i2ga::e2 ^ i2ga::no) +
+        vc[c3ga::E2o] * (i2ga::e1 ^ i2ga::e2 ^ i2ga::ni) +
+        vc[c3ga::E2i] * (i2ga::e1 ^ i2ga::no ^ i2ga::ni) +
+        vc[c3ga::E3i] * (i2ga::e2 ^ i2ga::no ^ i2ga::ni) +
         // grade 4
-        vc[GRADE2][C3GA_E1_E2_NO_NI] * (i2ga::e1 ^ i2ga::e2 ^ i2ga::no ^ i2ga::ni);
+        vc[c3ga::E23] * (i2ga::e1 ^ i2ga::e2 ^ i2ga::no ^ i2ga::ni);
 
     vi2.compress();
     return new consoleVariable("", vi2);
@@ -963,7 +968,7 @@ consoleVariable *consoleVariable::castI2gaToP3ga() const
 
 consoleVariable *consoleVariable::castI2gaToC3ga() const
 {
-    c3ga vc;
+    c3ga::mv vc;
     const i2ga &vi2 = i2();
 
     // e1, e2, ni, no are preserved
@@ -971,21 +976,21 @@ consoleVariable *consoleVariable::castI2gaToC3ga() const
         // grade 0
         vi2.scalar() +
         // grade 1
-        vi2[GRADE1][I2GA_E1] * c3ga::e1 + vi2[GRADE1][I2GA_E2] * c3ga::e2 + vi2[GRADE1][I2GA_NO] * c3ga::no +
-        vi2[GRADE1][I2GA_NI] * c3ga::ni +
+        vi2[GRADE1][I2GA_E1] * c3ga::e1<double>() + vi2[GRADE1][I2GA_E2] * c3ga::e2<double>() + vi2[GRADE1][I2GA_NO] * c3ga::eo<double>() +
+        vi2[GRADE1][I2GA_NI] * c3ga::ei<double>() +
         // grade 2
-        vi2[GRADE2][I2GA_E1_E2] * (c3ga::e1 ^ c3ga::e2) + vi2[GRADE2][I2GA_E1_NO] * (c3ga::e1 ^ c3ga::no) +
-        vi2[GRADE2][I2GA_E2_NO] * (c3ga::e2 ^ c3ga::no) + vi2[GRADE2][I2GA_E1_NI] * (c3ga::e1 ^ c3ga::ni) +
-        vi2[GRADE2][I2GA_E2_NI] * (c3ga::e2 ^ c3ga::ni) + vi2[GRADE2][I2GA_NO_NI] * (c3ga::no ^ c3ga::ni) +
+        vi2[GRADE2][I2GA_E1_E2] * (c3ga::e1<double>() ^ c3ga::e2<double>()) + vi2[GRADE2][I2GA_E1_NO] * (c3ga::e1<double>() ^ c3ga::eo<double>()) +
+        vi2[GRADE2][I2GA_E2_NO] * (c3ga::e2<double>() ^ c3ga::eo<double>()) + vi2[GRADE2][I2GA_E1_NI] * (c3ga::e1<double>() ^ c3ga::ei<double>()) +
+        vi2[GRADE2][I2GA_E2_NI] * (c3ga::e2<double>() ^ c3ga::ei<double>()) + vi2[GRADE2][I2GA_NO_NI] * (c3ga::eo<double>() ^ c3ga::ei<double>()) +
         // grade 3
-        vi2[GRADE2][I2GA_E1_E2_NO] * (c3ga::e1 ^ c3ga::e2 ^ c3ga::no) +
-        vi2[GRADE2][I2GA_E1_E2_NI] * (c3ga::e1 ^ c3ga::e2 ^ c3ga::ni) +
-        vi2[GRADE2][I2GA_E1_NO_NI] * (c3ga::e1 ^ c3ga::no ^ c3ga::ni) +
-        vi2[GRADE2][I2GA_E2_NO_NI] * (c3ga::e2 ^ c3ga::no ^ c3ga::ni) +
+        vi2[GRADE2][I2GA_E1_E2_NO] * (c3ga::e1<double>() ^ c3ga::e2<double>() ^ c3ga::eo<double>()) +
+        vi2[GRADE2][I2GA_E1_E2_NI] * (c3ga::e1<double>() ^ c3ga::e2<double>() ^ c3ga::ei<double>()) +
+        vi2[GRADE2][I2GA_E1_NO_NI] * (c3ga::e1<double>() ^ c3ga::eo<double>() ^ c3ga::ei<double>()) +
+        vi2[GRADE2][I2GA_E2_NO_NI] * (c3ga::e2<double>() ^ c3ga::eo<double>() ^ c3ga::ei<double>()) +
         // grade 4
-        vi2[GRADE2][I2GA_E1_E2_NO_NI] * (c3ga::e1 ^ c3ga::e2 ^ c3ga::no ^ c3ga::ni);
+        vi2[GRADE2][I2GA_E1_E2_NO_NI] * (c3ga::e1<double>() ^ c3ga::e2<double>() ^ c3ga::eo<double>() ^ c3ga::ei<double>());
 
-    vc.compress();
+    vc = ga::compress(vc);
     return new consoleVariable("", vc);
 }
 

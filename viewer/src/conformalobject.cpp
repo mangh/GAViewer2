@@ -492,7 +492,7 @@ int conformalObject::draw(glwindow *window)
     return 0;
 }
 
-int conformalObject::description(const c3ga &mv, int dim, char *buf, int bufLen, int sl /* = 0 */)
+int conformalObject::description(const c3ga::mv &mv, int dim, char *buf, int bufLen, int sl /* = 0 */)
 {
     buf[0] = 0;
 
@@ -502,7 +502,7 @@ int conformalObject::description(const c3ga &mv, int dim, char *buf, int bufLen,
             sprintf(buf, "%s: unknown c%dga object", m_name.c_str(), dim);
 
         else
-            sprintf(buf, "Unknown c%dga object.\nCoordinates: %s", dim, mv.string());
+            sprintf(buf, "Unknown c%dga object.\nCoordinates: %s", dim, ga::toString(mv).c_str());
     }
     else if (m_int.blade())
     {
@@ -518,7 +518,7 @@ int conformalObject::description(const c3ga &mv, int dim, char *buf, int bufLen,
 
             else
                 sprintf(buf, "c%dga free scalar%s\nWeight: %f\nCoordinates: %s", dim, (m_int.dual()) ? " dual" : "",
-                        m_int.m_scalar[0], mv.string());
+                        m_int.m_scalar[0], ga::toString(mv).c_str());
             break;
 
         case MVI_FREE_VECTOR:
@@ -532,7 +532,7 @@ int conformalObject::description(const c3ga &mv, int dim, char *buf, int bufLen,
             else
                 sprintf(buf, "c%dga free vector%s\nWeight: %f\nDirection: %2.2f %2.2f %2.2f\nCoordinates: %s", dim,
                         (m_int.dual()) ? " dual" : "", m_int.m_scalar[0], m_int.m_vector[0][0], m_int.m_vector[0][1],
-                        m_int.m_vector[0][2], mv.string());
+                        m_int.m_vector[0][2], ga::toString(mv).c_str());
             break;
         case MVI_FREE_BIVECTOR:
             /*
@@ -547,7 +547,7 @@ int conformalObject::description(const c3ga &mv, int dim, char *buf, int bufLen,
             else
                 sprintf(buf, "c%dga free bivector%s\nWeight: %f\nNormal: %2.2f %2.2f %2.2f\nCoordinates: %s", dim,
                         (m_int.dual()) ? " dual" : "", m_int.m_scalar[0], m_int.m_vector[0][0], m_int.m_vector[0][1],
-                        m_int.m_vector[0][2], mv.string());
+                        m_int.m_vector[0][2], ga::toString(mv).c_str());
             break;
         case MVI_FREE_TRIVECTOR:
             /*
@@ -558,7 +558,7 @@ int conformalObject::description(const c3ga &mv, int dim, char *buf, int bufLen,
 
             else
                 sprintf(buf, "c%dga free trivector%s\nWeight: %f\nCoordinates: %s", dim, (m_int.dual()) ? " dual" : "",
-                        m_int.m_scalar[0], mv.string());
+                        m_int.m_scalar[0], ga::toString(mv).c_str());
             break;
         case MVI_FLAT_POINT:
             /*
@@ -571,7 +571,7 @@ int conformalObject::description(const c3ga &mv, int dim, char *buf, int bufLen,
             else
                 sprintf(buf, "c%dga flat point%s\nWeight: %f\nPoint: %2.2f %2.2f %2.2f\nCoordinates: %s", dim,
                         (m_int.dual()) ? " dual" : "", m_int.m_scalar[0], m_int.m_point[0][0], m_int.m_point[0][1],
-                        m_int.m_point[0][2], mv.string());
+                        m_int.m_point[0][2], ga::toString(mv).c_str());
             break;
         case MVI_LINE:
             /*
@@ -588,7 +588,7 @@ int conformalObject::description(const c3ga &mv, int dim, char *buf, int bufLen,
                         "%2.2f\nCoordinates: %s",
                         dim, (m_int.dual()) ? " dual" : "", m_int.m_scalar[0], m_int.m_vector[0][0],
                         m_int.m_vector[0][1], m_int.m_vector[0][2], m_int.m_point[0][0], m_int.m_point[0][1],
-                        m_int.m_point[0][2], mv.string());
+                        m_int.m_point[0][2], ga::toString(mv).c_str());
 
             break;
         case MVI_PLANE:
@@ -608,7 +608,7 @@ int conformalObject::description(const c3ga &mv, int dim, char *buf, int bufLen,
                         "%2.2f\nCoordinates: %s",
                         dim, (m_int.dual()) ? " dual" : "", m_int.m_scalar[0], m_int.m_vector[0][0],
                         m_int.m_vector[0][1], m_int.m_vector[0][2], m_int.m_point[0][0], m_int.m_point[0][1],
-                        m_int.m_point[0][2], mv.string());
+                        m_int.m_point[0][2], ga::toString(mv).c_str());
             break;
 
         case MVI_POINT:
@@ -622,7 +622,7 @@ int conformalObject::description(const c3ga &mv, int dim, char *buf, int bufLen,
             else
                 sprintf(buf, "c%dga point%s\nWeight: %f\nPoint: %2.2f %2.2f %2.2f\nCoordinates: %s", dim,
                         (m_int.dual()) ? " dual" : "", m_int.m_scalar[0], m_int.m_point[0][0], m_int.m_point[0][1],
-                        m_int.m_point[0][2], mv.string());
+                        m_int.m_point[0][2], ga::toString(mv).c_str());
             break;
         case MVI_BOUND_TANGENT_VECTOR:
             /*
@@ -639,7 +639,7 @@ int conformalObject::description(const c3ga &mv, int dim, char *buf, int bufLen,
                         "%2.2f\nCoordinates: %s",
                         dim, (m_int.dual()) ? " dual" : "", m_int.m_scalar[0], m_int.m_point[0][0], m_int.m_point[0][1],
                         m_int.m_point[0][2], m_int.m_vector[0][0], m_int.m_vector[0][1], m_int.m_vector[0][2],
-                        mv.string());
+                        ga::toString(mv).c_str());
             break;
         case MVI_BOUND_TANGENT_BIVECTOR:
             /*
@@ -658,7 +658,7 @@ int conformalObject::description(const c3ga &mv, int dim, char *buf, int bufLen,
                         "%2.2f\nCoordinates: %s",
                         dim, (m_int.dual()) ? " dual" : "", m_int.m_scalar[0], m_int.m_point[0][0], m_int.m_point[0][1],
                         m_int.m_point[0][2], m_int.m_vector[0][0], m_int.m_vector[0][1], m_int.m_vector[0][2],
-                        mv.string());
+                        ga::toString(mv).c_str());
             break;
         case MVI_BOUND_TANGENT_TRIVECTOR:
             /*
@@ -671,7 +671,7 @@ int conformalObject::description(const c3ga &mv, int dim, char *buf, int bufLen,
             else
                 sprintf(buf, "c%dga tangent trivector%s\nWeight: %f\nPoint: %2.2f %2.2f %2.2f\nCoordinates: %s", dim,
                         (m_int.dual()) ? " dual" : "", m_int.m_scalar[0], m_int.m_point[0][0], m_int.m_point[0][1],
-                        m_int.m_point[0][2], mv.string());
+                        m_int.m_point[0][2], ga::toString(mv).c_str());
             break;
         case MVI_POINT_PAIR:
             /*
@@ -690,7 +690,7 @@ int conformalObject::description(const c3ga &mv, int dim, char *buf, int bufLen,
                         "%2.2f %2.2f\nCoordinates: %s",
                         dim, (m_int.dual()) ? " dual" : "", m_int.m_scalar[0], m_int.m_scalar[1], m_int.m_point[1][0],
                         m_int.m_point[1][1], m_int.m_point[1][2], m_int.m_point[2][0], m_int.m_point[2][1],
-                        m_int.m_point[2][2], mv.string());
+                        m_int.m_point[2][2], ga::toString(mv).c_str());
             break;
         case MVI_CIRCLE:
             /*
@@ -710,7 +710,7 @@ int conformalObject::description(const c3ga &mv, int dim, char *buf, int bufLen,
                         "%2.2f %2.2f %2.2f\nCoordinates: %s",
                         dim, (m_int.dual()) ? " dual" : "", m_int.m_scalar[0], m_int.m_scalar[1], m_int.m_point[0][0],
                         m_int.m_point[0][1], m_int.m_point[0][2], m_int.m_vector[0][0], m_int.m_vector[0][1],
-                        m_int.m_vector[0][2], mv.string());
+                        m_int.m_vector[0][2], ga::toString(mv).c_str());
             break;
         case MVI_SPHERE:
             /*
@@ -726,7 +726,7 @@ int conformalObject::description(const c3ga &mv, int dim, char *buf, int bufLen,
                         "c%dga sphere%s\nSigned radius: %2.2f\nWeight: %f\nCenter point: %2.2f %2.2f "
                         "%2.2f\nCoordinates: %s",
                         dim, (m_int.dual()) ? " dual" : "", m_int.m_scalar[0], m_int.m_scalar[1], m_int.m_point[0][0],
-                        m_int.m_point[0][1], m_int.m_point[0][2], mv.string());
+                        m_int.m_point[0][1], m_int.m_point[0][2], ga::toString(mv).c_str());
             break;
 
         default:
@@ -734,7 +734,7 @@ int conformalObject::description(const c3ga &mv, int dim, char *buf, int bufLen,
                 sprintf(buf, "%s: unknown c%dga blade", m_name.c_str(), dim);
 
             else
-                sprintf(buf, "Unknown c%dga blade.\nCoordinates: %s", dim, mv.string());
+                sprintf(buf, "Unknown c%dga blade.\nCoordinates: %s", dim, ga::toString(mv).c_str());
             break;
         }
     }
@@ -745,7 +745,7 @@ int conformalObject::description(const c3ga &mv, int dim, char *buf, int bufLen,
 
         else
             sprintf(buf, "c%dga versor\nTakes the origin to: %2.2f %2.2f %2.2f\nCoordinates: %s", dim,
-                    m_int.m_point[0][0], m_int.m_point[0][1], m_int.m_point[0][2], mv.string());
+                    m_int.m_point[0][0], m_int.m_point[0][1], m_int.m_point[0][2], ga::toString(mv).c_str());
     }
     else
     {
@@ -753,7 +753,7 @@ int conformalObject::description(const c3ga &mv, int dim, char *buf, int bufLen,
             sprintf(buf, "%s: unknown c%dga object", m_name.c_str(), dim);
 
         else
-            sprintf(buf, "Unknown c%dga object.\nCoordinates: %s", dim, mv.string());
+            sprintf(buf, "Unknown c%dga object.\nCoordinates: %s", dim, ga::toString(mv).c_str());
     }
 
     return 0;

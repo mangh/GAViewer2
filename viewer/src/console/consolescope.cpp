@@ -601,12 +601,13 @@ static e3ga::mv s_pi(3.1415926535897932384626433832795);
 static e3ga::mv s_e1 = e3ga::e1<double>(), s_e2 = e3ga::e2<double>(), s_e3 = e3ga::e3<double>();
 static e3ga::mv s_e(2.7182818284590452353602874713527);
 static p3ga::mv s_e0 = p3ga::e0<double>();
+static c3ga::mv s_no = c3ga::eo<double>(), s_ni = c3ga::ei<double>();
 static struct
 {
     char *name;
     e3ga::mv *e;
     p3ga::mv *p;
-    c3ga *c;
+    c3ga::mv *c;
     c5ga *c5;
     i2ga *i2;
     bool nameAlloced;
@@ -616,11 +617,11 @@ static struct
                   {(char *)"e4", NULL, NULL, NULL, (c5ga *)&(c5ga::e4), NULL, false},
                   {(char *)"e5", NULL, NULL, NULL, (c5ga *)&(c5ga::e5), NULL, false},
                   {(char *)"e0", NULL, &s_e0, NULL, NULL, NULL, false},
-                  {(char *)"no", NULL, NULL, (c3ga *)&(c3ga::no), NULL, NULL, false},
-                  {(char *)"ni", NULL, NULL, (c3ga *)&(c3ga::ni), NULL, NULL, false},
+                  {(char *)"no", NULL, NULL, &s_no, NULL, NULL, false},
+                  {(char *)"ni", NULL, NULL, &s_ni, NULL, NULL, false},
                   {(char *)"go", NULL, NULL, NULL, NULL, (i2ga *)&(i2ga::go), false},
                   {(char *)"gi", NULL, NULL, NULL, NULL, (i2ga *)&(i2ga::gi), false},
-                  {(char *)"einf", NULL, NULL, (c3ga *)&(c3ga::ni), NULL, NULL, false},
+                  {(char *)"einf", NULL, NULL, &s_ni, NULL, NULL, false},
                   {(char *)"pi", &s_pi, NULL, NULL, NULL, NULL, false},
                   {(char *)"e_", &s_e, NULL, NULL, NULL, NULL, false},
                   {NULL, NULL, NULL, NULL, NULL, NULL, false}};
@@ -703,7 +704,7 @@ void consoleGlobalScope::renameBuiltinConstant(const std::string &oldName, const
             else if (s_constant[i].p)
                 ga::renameBasisVector<p3ga::mv>(oldName, newName);
             else if (s_constant[i].c)
-                c3ga::renameBasisVector(oldName.c_str(), newName.c_str());
+                ga::renameBasisVector<c3ga::mv>(oldName, newName);
             else if (s_constant[i].i2)
                 i2ga::renameBasisVector(oldName.c_str(), newName.c_str());
 

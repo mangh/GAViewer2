@@ -39,11 +39,11 @@ void GLmatrixVectorMul(const double m[16], const double v[4], double r[4]);
 // create a rotor that rotates a vector 'v' to e3
 int e3gaRve3(e3ga::mv &R, const e3ga::mv &v);
 int p3gaRve3(p3ga::mv &R, const p3ga::mv &v);
-int c3gaRve3(c3ga &R, const c3ga &v);
+int c3gaRve3(c3ga::mv &R, const c3ga::mv &v);
 
-inline void c3gaConstructPoint(c3ga &p, GAIM_FLOAT e1c, GAIM_FLOAT e2c, GAIM_FLOAT e3c)
+inline void c3gaConstructPoint(c3ga::mv &p, GAIM_FLOAT e1c, GAIM_FLOAT e2c, GAIM_FLOAT e3c)
 {
-    p.set(GRADE1, e1c, e2c, e3c, 1.0, -0.5 * (e1c * e1c + e2c * e2c + e3c * e3c));
+    p = c3ga::vector(e1c, e2c, e3c, 1.0, -0.5 * (e1c * e1c + e2c * e2c + e3c * e3c));
 }
 
 int rotor2Bivector(e3ga::mv &B, const e3ga::mv &R);

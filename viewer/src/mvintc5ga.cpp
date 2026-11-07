@@ -23,7 +23,7 @@
 int mvInt::interpret(const c5ga &X, int creationFlags /* = 0*/)
 {
     // use c3ga to interpret
-    c3ga X3ga;
+    c3ga::mv X3ga;
     consoleVariable::castC5gaToC3ga(X, X3ga);
     m_type = (m_type ^ MVI_C3GA) | MVI_C5GA;
 

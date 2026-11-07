@@ -575,14 +575,14 @@ int GAfile::parseLine(state *s)
 
     e3ga::mv e3gaMv;
     p3ga::mv p3gaMv;
-    c3ga c3gaMv;
+    c3ga::mv c3gaMv;
     c5ga c5gaMv;
     ga::basisNames<e3ga::mv> eBen('[', ']');
     eBen.add("I3", e3ga::I<double>());
     ga::basisNames<p3ga::mv> pBen('[', ']');
-    c3ga_ben cBen('[', ']');
-    cBen.addName("einf", c3ga::ni);
-    cBen.addName("e0", c3ga::no);
+    ga::basisNames<c3ga::mv> cBen('[', ']');
+    cBen.add("einf", c3ga::ei<double>());
+    cBen.add("e0", c3ga::eo<double>());
 
     c5ga_ben c5Ben('[', ']');
     c5Ben.addName("einf", c5ga::ni);
@@ -679,7 +679,7 @@ int GAfile::parseLine(state *s)
         }
         else if (c3gaO)
         {
-            if ((n = c3gaMv.parseString(line + idx, &cBen)) < 0)
+            if ((n = ga::parse(line + idx, c3gaMv, cBen)) < 0)
                 err = -1;
         }
         else if (c5gaO)
@@ -1123,8 +1123,8 @@ int GAfile::parseLine(state *s)
         }
         else if (c3gaO)
         {
-            if ((i > 5) || ((n = c3gaMv.parseString(line + idx, &cBen)) < 0))
-                c3gaMv.null();
+            if ((i > 5) || ((n = ga::parse(line + idx, c3gaMv, cBen)) < 0))
+                c3gaMv = c3ga::mv();
             return s->setC3gaFactor(c3gaMv, i - 1);
         }
     }

@@ -321,7 +321,7 @@ class conformalObject : public object
 
     /// shared description between c3ga and c5ga
     using object::description;
-    int description(const c3ga &mv, int dim, char *buf, int bufLen, int sl);
+    int description(const c3ga::mv &mv, int dim, char *buf, int bufLen, int sl);
 
     mvInt m_int;
 };
@@ -329,7 +329,7 @@ class conformalObject : public object
 class c3gaObject : public conformalObject
 {
   public:
-    c3gaObject(const c3ga &mv, const std::string &name = std::string(""), int drawMode = 0, int creationFlags = 0,
+    c3gaObject(const c3ga::mv &mv, const std::string &name = std::string(""), int drawMode = 0, int creationFlags = 0,
                int forceFlags = 0);
     virtual ~c3gaObject();
     void initToNothing();
@@ -343,7 +343,7 @@ class c3gaObject : public conformalObject
     virtual int translate(glwindow *window, double depth, double motionX, double motionY);
     virtual std::string toString(const char *floatPrec = "%e");
 
-    c3ga m_mv;
+    c3ga::mv m_mv;
 };
 
 class c5gaObject : public conformalObject

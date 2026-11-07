@@ -68,7 +68,7 @@ consoleVariable *cf_p3ga_point1(consoleScope *s, consoleVariable *arg[])
 consoleVariable *cf_c3ga_point3(consoleScope *s, consoleVariable *arg[])
 {
     GAIM_FLOAT e1c = ga::scalar(arg[0]->e()), e2c = ga::scalar(arg[1]->e()), e3c = ga::scalar(arg[2]->e());
-    c3ga pt(GRADE1, e1c, e2c, e3c, 1.0, 0.5 * (e1c * e1c + e2c * e2c + e3c * e3c));
+    c3ga::mv pt = c3ga::vector(e1c, e2c, e3c, 1.0, 0.5 * (e1c * e1c + e2c * e2c + e3c * e3c));
     return new consoleVariable("", pt);
 }
 
@@ -76,7 +76,7 @@ consoleVariable *cf_c3ga_point1(consoleScope *s, consoleVariable *arg[])
 {
     const std::array<double, 3> c = e3ga::xyz(arg[0]->e());
     GAIM_FLOAT e1c = c[0], e2c = c[1], e3c = c[2];
-    c3ga pt(GRADE1, e1c, e2c, e3c, 1.0, 0.5 * (e1c * e1c + e2c * e2c + e3c * e3c));
+    c3ga::mv pt = c3ga::vector(e1c, e2c, e3c, 1.0, 0.5 * (e1c * e1c + e2c * e2c + e3c * e3c));
     return new consoleVariable("", pt);
 }
 
@@ -98,15 +98,15 @@ consoleVariable *cf_c3ga_pointP1(consoleScope *s, consoleVariable *arg[])
         e3c = c[2];
     }
 
-    c3ga pt(GRADE1, e1c, e2c, e3c, 1.0, 0.5 * (e1c * e1c + e2c * e2c + e3c * e3c));
+    c3ga::mv pt = c3ga::vector(e1c, e2c, e3c, 1.0, 0.5 * (e1c * e1c + e2c * e2c + e3c * e3c));
     return new consoleVariable("", pt);
 }
 
 consoleVariable *cf_translation_versor3(consoleScope *s, consoleVariable *arg[])
 {
     GAIM_FLOAT e1c = ga::scalar(arg[0]->e()), e2c = ga::scalar(arg[1]->e()), e3c = ga::scalar(arg[2]->e());
-    c3ga t(GRADE1, e1c, e2c, e3c, 0.0, 0.0);
-    c3ga tv = 1 - 0.5 * (t ^ c3ga::ni);
+    c3ga::mv t = c3ga::vector(e1c, e2c, e3c, 0.0, 0.0);
+    c3ga::mv tv = 1 - 0.5 * (t ^ c3ga::ei<double>());
     return new consoleVariable("", tv);
 }
 
@@ -114,8 +114,8 @@ consoleVariable *cf_translation_versor1(consoleScope *s, consoleVariable *arg[])
 {
     const std::array<double, 3> c = e3ga::xyz(arg[0]->e());
     GAIM_FLOAT e1c = c[0], e2c = c[1], e3c = c[2];
-    c3ga t(GRADE1, e1c, e2c, e3c, 0.0, 0.0);
-    c3ga tv = 1 - 0.5 * (t ^ c3ga::ni);
+    c3ga::mv t = c3ga::vector(e1c, e2c, e3c, 0.0, 0.0);
+    c3ga::mv tv = 1 - 0.5 * (t ^ c3ga::ei<double>());
     return new consoleVariable("", tv);
 }
 
@@ -623,14 +623,14 @@ consoleVariable *cf_create_arc(consoleScope *s, consoleVariable *arg[])
     // arg 2: point
     // arg 3: nb of segments
     const std::string &arcName = arg[0]->name();
-    c3ga V = arg[1]->c();
-    c3ga p = arg[2]->c();
+    c3ga::mv V = arg[1]->c();
+    c3ga::mv p = arg[2]->c();
     int nbSegments = arg[3]->scalar();
 
     int polyDrawMode = 0;
     polygonObject *PO = new polygonObject(arcName, polyDrawMode, OC_DM2); // OC_DM2 = strip
 
-    c3ga Vi = V.inverse();
+    c3ga::mv Vi = ga::inverse(V);
     for (int i = 0; i <= nbSegments; i++)
     {
         char pointName[1024];

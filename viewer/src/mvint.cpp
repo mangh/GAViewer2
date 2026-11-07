@@ -50,7 +50,7 @@ mvInt::mvInt(const p3ga::mv &mv, int creationFlags /*= 0 */)
     interpret(mv, creationFlags);
 }
 
-mvInt::mvInt(const c3ga &mv, int creationFlags /*= 0 */)
+mvInt::mvInt(const c3ga::mv &mv, int creationFlags /*= 0 */)
 {
     initToNothing();
     interpret(mv, creationFlags);

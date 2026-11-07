@@ -198,7 +198,7 @@ class state
                       int forceFlags = 0);
     int addP3gaObject(const p3ga::mv &mv, const std::string &name, int drawMode = 0, int creationFlags = 0,
                       int forceFlags = 0);
-    int addC3gaObject(const c3ga &mv, const std::string &name, int drawMode = 0, int creationFlags = 0,
+    int addC3gaObject(const c3ga::mv &mv, const std::string &name, int drawMode = 0, int creationFlags = 0,
                       int forceFlags = 0);
     int addC5gaObject(const c5ga &mv, const std::string &name, int drawMode = 0, int creationFlags = 0,
                       int forceFlags = 0);
@@ -336,7 +336,7 @@ class state
     // They are provided such that the user can override the default factorization
     int setE3gaFactor(const e3ga::mv &mv, int idx);
     int setP3gaFactor(const p3ga::mv &mv, int idx);
-    int setC3gaFactor(const c3ga &mv, int idx);
+    int setC3gaFactor(const c3ga::mv &mv, int idx);
     inline int setI2gaFactor(const i2ga &mv, int idx)
     {
         return -1;
@@ -347,7 +347,7 @@ class state
     } // todo
     e3ga::mv m_e3gaFactor[3];
     p3ga::mv m_p3gaFactor[4];
-    c3ga m_c3gaFactor[5];
+    c3ga::mv m_c3gaFactor[5];
 
     // typesetting labels...
     typesetState *m_typesetState;
