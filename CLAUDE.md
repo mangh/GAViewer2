@@ -38,7 +38,7 @@ GAViewer2
         ├───e3ga          ← the Gaigen e3ga, no longer used by GAViewer (only by the differential test gadiff.e3ga)
         ├───ga            ← Garamon based algebra layer: e3ga::mv, p3ga::mv, traits (display basis), Gaigen-compatible algorithms, text format/parse
         ├───i2ga          ← i2ga algebra (most likely generated using Gaigen 1)
-        ├───p3ga          ← p3ga algebra (most likely generated using Gaigen 1)
+        ├───p3ga          ← the Gaigen p3ga, no longer used by GAViewer (only by the differential test gadiff.p3ga)
         └───typeset       ← text and font handling in the GUI
 ```
 
@@ -55,8 +55,8 @@ GAViewer2
 
 | Target | Contents |
 |--------|----------|
-| `gaviewer_p3ga`, `gaviewer_c3ga`, `gaviewer_c5ga`, `gaviewer_i2ga` | one static library per Gaigen algebra still in use (`src/<name>/*.cpp`), no dependencies on the rest of GAViewer; the unit to swap for a Garamon implementation |
-| `gaviewer_e3ga` | the Gaigen e3ga, used only by the differential test `gadiff.e3ga` (GAViewer uses the Garamon e3ga) |
+| `gaviewer_c3ga`, `gaviewer_c5ga`, `gaviewer_i2ga` | one static library per Gaigen algebra still in use (`src/<name>/*.cpp`), no dependencies on the rest of GAViewer; the unit to swap for a Garamon implementation |
+| `gaviewer_e3ga`, `gaviewer_p3ga` | the Gaigen e3ga and p3ga, used only by the differential tests `gadiff.<algebra>` (GAViewer uses the Garamon algebras) |
 | `gaviewer_algebras` | interface library bundling the Gaigen algebras in use |
 | `garamon_<name>` (`garamon/CMakeLists.txt`) | header-only Garamon algebra generated at build time from `garamon/<name>.conf` by the fetched fork's `garamon_generator` (`#include <<name>/Mvec.hpp>`, needs Eigen, provided as `Eigen3::Eigen`); so far `garamon_e3ga` (smoke test `garamon.smoke_e3ga`) and `garamon_p3ga` (Euclidean metric like the Gaigen p3ga, unlike the fork's `conf/p3ga.conf`) |
 | `gaviewer_ga` | header-only algebra layer `src/ga` (`ga::algebraTraits<MV>`, `ga/algorithms.h`, `ga/format.h`, transitional `ga/gaigencompat.h`) over the Garamon algebras; links `garamon_e3ga`, `garamon_p3ga` |
@@ -69,7 +69,8 @@ GAViewer2
 | Type | Role |
 |------|------|
 | `e3ga::mv` (`ga/e3ga.h`) | the e3ga multivector: Garamon's `e3ga::Mvec<double>`; helpers `e3ga::vector(x, y, z)`, `e3ga::xyz(v)` (coordinates as `std::array<double, 3>`), basis `e3ga::e1<double>()`, ..., coordinates `v[e3ga::E1]`, `v[e3ga::E12]`, ... (Garamon basis: `E13` = `-e3^e1` of Gaigen) |
-| `consoleVariable` (`console/consolevariable.h`) | a console value: name, flags, draw properties and the multivector, a `std::variant<std::monostate, e3ga::mv, p3ga, c3ga, c5ga, i2ga>`; `mv<MV>()` (and `e()`, `p()`, `c()`, `c5()`, `i2()`) returns it as type `MV` (a static zero if of another model), `visitMV(f, none)` calls `f` with it as its actual type, `model()` is derived from it |
+| `p3ga::mv` (`ga/p3ga.h`) | the p3ga multivector: Garamon's `p3ga::Mvec<double>`, Euclidean metric (`e0.e0 = 1`, as in Gaigen), basis order e1, e2, e3, e0; helpers `p3ga::vector(x, y, z, w)`, `p3ga::xyzw(v)`; coordinates `v[p3ga::E10]` (= `e1^e0`), ... (`E13` = `-e3^e1`, `E130` = `-e3^e1^e0` of Gaigen) |
+| `consoleVariable` (`console/consolevariable.h`) | a console value: name, flags, draw properties and the multivector, a `std::variant<std::monostate, e3ga::mv, p3ga::mv, c3ga, c5ga, i2ga>`; `mv<MV>()` (and `e()`, `p()`, `c()`, `c5()`, `i2()`) returns it as type `MV` (a static zero if of another model), `visitMV(f, none)` calls `f` with it as its actual type, `model()` is derived from it |
 | `modelId<MV>`, `modelName(model)` (`models.h`) | model id (`MVI_*`) of a multivector type, name ("e3ga", …) of a model id |
 | `consoleFunc` (`console/consolefunction.h`) | entry of the built-in function table: name, function pointer, argument specs (`CVF_*` flags + model id `MVI_*`); the table is `consoleBuiltinFunctions()` |
 | `consoleAlgebra<MV>` (`console/consolealgebra.h`) | the console's binding of a multivector type (`e3ga`, `p3ga`, `c3ga`, `c5ga`, `i2ga`) to its model id, cast, factor setter and object creation; `mv<MV>(cv)` accesses a variable's multivector; `forEachConsoleAlgebra` iterates the algebras, `withConsoleAlgebra(model, f)` calls `f.template operator()<MV>()` for a model id |

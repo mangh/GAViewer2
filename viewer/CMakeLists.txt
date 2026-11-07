@@ -38,10 +38,13 @@ add_library(gaviewer_i2ga STATIC
   "${GAVR_SOURCE_DIR}/i2ga/i2ga.cpp"
   "${GAVR_SOURCE_DIR}/i2ga/i2ga_optc2.cpp"
 )
-# (gaviewer_e3ga, the Gaigen e3ga, is only used by the differential test gadiff.e3ga:
-# GAViewer uses the Garamon e3ga, see gaviewer_ga below)
-target_include_directories(gaviewer_e3ga PUBLIC "${GAVR_SOURCE_DIR}")
-set(algebra_targets gaviewer_p3ga gaviewer_c3ga gaviewer_c5ga gaviewer_i2ga)
+# (gaviewer_e3ga and gaviewer_p3ga, the Gaigen e3ga and p3ga, are only used by the
+# differential tests gadiff.<algebra>: GAViewer uses the Garamon algebras, see gaviewer_ga below)
+set(gaigen_only_targets gaviewer_e3ga gaviewer_p3ga)
+foreach(lib ${gaigen_only_targets})
+  target_include_directories(${lib} PUBLIC "${GAVR_SOURCE_DIR}")
+endforeach()
+set(algebra_targets gaviewer_c3ga gaviewer_c5ga gaviewer_i2ga)
 foreach(lib ${algebra_targets})
   target_include_directories(${lib} PUBLIC "${GAVR_SOURCE_DIR}")
 endforeach()
@@ -160,7 +163,7 @@ endif()
 # get a clearer picture of the compilation and spot more serious
 # issues (if any).
 
-foreach(tgt gaviewer_e3ga ${algebra_targets} ${core} ${target})
+foreach(tgt ${gaigen_only_targets} ${algebra_targets} ${core} ${target})
 
   if (CMAKE_CXX_COMPILER_FRONTEND_VARIANT MATCHES "MSVC")
 

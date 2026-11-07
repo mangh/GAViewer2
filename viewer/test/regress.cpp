@@ -209,7 +209,7 @@ std::string dumpObjects()
         }
         case OT_P3GA: {
             auto *po = static_cast<p3gaObject *>(o);
-            dumpMv(out, po->m_mv, p3gai_basisElementNames, p3gai_gradeSize, 5);
+            dumpMv(out, po->m_mv);
             dumpInt(out, po->m_int);
             break;
         }

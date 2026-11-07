@@ -60,7 +60,7 @@ Fl_Menu_Item gui_p3gaTrivectorDrawMethods[] = {{"Sphere", 0, NULL, (void *)DRAW_
                                                {"Curly tail", 0, NULL, (void *)DRAW_TV_CURLYTAIL, 0},
                                                {0}};
 
-p3gaObject::p3gaObject(const p3ga &mv, const std::string &name /*= std::string("")*/, int drawMode /*= 0*/,
+p3gaObject::p3gaObject(const p3ga::mv &mv, const std::string &name /*= std::string("")*/, int drawMode /*= 0*/,
                        int creationFlags /*= 0*/, int forceFlags /*= 0*/)
     : object(OT_P3GA, name, drawMode, creationFlags)
 {
@@ -127,7 +127,7 @@ int p3gaObject::copy(const object *o, int &propertiesChanged, int forceFlags /*=
         return err;
     const p3gaObject *p3gaO = (const p3gaObject *)o;
 
-    if ((m_mv - p3gaO->m_mv).norm_a() != 0.0)
+    if (ga::norm_a(p3ga::mv(m_mv - p3gaO->m_mv)) != 0.0)
         propertiesChanged |= OP_DESCRIPTION;
     m_mv = p3gaO->m_mv;
     m_int.copy(&p3gaO->m_int);
@@ -423,7 +423,7 @@ int p3gaObject::translate(glwindow *window, double depth, double motionX, double
     e3ga::mv v;
     GAIM_FLOAT m, mnew;
     window->vectorAtDepth(depth, motionX, -motionY, v);
-    p3ga t(GRADE1, v[e3ga::E1], v[e3ga::E2], v[e3ga::E3], 0);
+    p3ga::mv t = p3ga::vector(v[e3ga::E1], v[e3ga::E2], v[e3ga::E3], 0);
 
     int modified = 0;
     switch (m_int.type())
@@ -435,17 +435,17 @@ int p3gaObject::translate(glwindow *window, double depth, double motionX, double
     case MVI_SCALAR:
     case MVI_BIVECTOR:
     case MVI_TRIVECTOR:
-        m = sqrt(m_mv.norm_a());
+        m = sqrt(ga::norm_a(m_mv));
         mnew = (m + (GAIM_FLOAT)(-motionX + motionY) / 30.0);
         if (mnew < 0.0001)
             mnew = m;
-        m_mv = (m_mv / m) * mnew;
+        m_mv = (m_mv * (1.0 / m)) * mnew;
         modified = 1;
         break;
     case MVI_POINT:
     case MVI_LINE:
     case MVI_PLANE:
-        m_mv = m_mv - (t ^ (p3ga::e0 << m_mv));
+        m_mv = m_mv - (t ^ ga::lcont(p3ga::e0<double>(), m_mv));
         modified = 1;
         break;
     default:
@@ -471,7 +471,7 @@ int p3gaObject::description(char *buf, int bufLen, int sl /* = 0 */)
             sprintf(buf, "%s: unknown p3ga object.", m_name.c_str());
 
         else
-            sprintf(buf, "Unknown p3ga object.\nCoordinates: %s", m_mv.string());
+            sprintf(buf, "Unknown p3ga object.\nCoordinates: %s", ga::toString(m_mv).c_str());
     }
     else if (m_int.blade())
     {
@@ -487,7 +487,7 @@ int p3gaObject::description(char *buf, int bufLen, int sl /* = 0 */)
 
             else
                 sprintf(buf, "p3ga scalar%s\nMagnitude: %f\nCoordinates: %s", (m_int.dual()) ? " dual" : "",
-                        m_int.m_scalar[0], m_mv.string());
+                        m_int.m_scalar[0], ga::toString(m_mv).c_str());
             break;
 
         case MVI_VECTOR:
@@ -501,7 +501,7 @@ int p3gaObject::description(char *buf, int bufLen, int sl /* = 0 */)
             else
                 sprintf(buf, "p3ga vector%s\nMagnitude: %f\nDirection: %2.2f %2.2f %2.2f\nCoordinates: %s",
                         (m_int.dual()) ? " dual" : "", m_int.m_scalar[0], m_int.m_vector[0][0], m_int.m_vector[0][1],
-                        m_int.m_vector[0][2], m_mv.string());
+                        m_int.m_vector[0][2], ga::toString(m_mv).c_str());
             break;
         case MVI_BIVECTOR:
             /*
@@ -516,7 +516,7 @@ int p3gaObject::description(char *buf, int bufLen, int sl /* = 0 */)
             else
                 sprintf(buf, "p3ga bivector%s\nMagnitude: %f\nNormal: %2.2f %2.2f %2.2f\nCoordinates: %s",
                         (m_int.dual()) ? " dual" : "", m_int.m_scalar[0], m_int.m_vector[0][0], m_int.m_vector[0][1],
-                        m_int.m_vector[0][2], m_mv.string());
+                        m_int.m_vector[0][2], ga::toString(m_mv).c_str());
             break;
         case MVI_TRIVECTOR:
             /*
@@ -527,7 +527,7 @@ int p3gaObject::description(char *buf, int bufLen, int sl /* = 0 */)
 
             else
                 sprintf(buf, "p3ga trivector%s\nMagnitude: %f\nCoordinates: %s", (m_int.dual()) ? " dual" : "",
-                        m_int.m_scalar[0], m_mv.string());
+                        m_int.m_scalar[0], ga::toString(m_mv).c_str());
             break;
         case MVI_LINE:
             /*
@@ -544,7 +544,7 @@ int p3gaObject::description(char *buf, int bufLen, int sl /* = 0 */)
                         "%2.2f %2.2f\nCoordinates: %s",
                         (m_int.dual()) ? " dual" : "", m_int.m_scalar[0], m_int.m_vector[0][0], m_int.m_vector[0][1],
                         m_int.m_vector[0][2], m_int.m_point[0][0], m_int.m_point[0][1], m_int.m_point[0][2],
-                        m_mv.string());
+                        ga::toString(m_mv).c_str());
 
             break;
         case MVI_PLANE:
@@ -564,7 +564,7 @@ int p3gaObject::description(char *buf, int bufLen, int sl /* = 0 */)
                         "%2.2f\nCoordinates: %s",
                         (m_int.dual()) ? " dual" : "", m_int.m_scalar[0], m_int.m_vector[0][0], m_int.m_vector[0][1],
                         m_int.m_vector[0][2], m_int.m_point[0][0], m_int.m_point[0][1], m_int.m_point[0][2],
-                        m_mv.string());
+                        ga::toString(m_mv).c_str());
             break;
         case MVI_POINT:
             /*
@@ -577,14 +577,14 @@ int p3gaObject::description(char *buf, int bufLen, int sl /* = 0 */)
             else
                 sprintf(buf, "p3ga point%s\nMagnitude: %f\nPoint: %2.2f %2.2f %2.2f\nCoordinates: %s",
                         (m_int.dual()) ? " dual" : "", m_int.m_scalar[0], m_int.m_point[0][0], m_int.m_point[0][1],
-                        m_int.m_point[0][2], m_mv.string());
+                        m_int.m_point[0][2], ga::toString(m_mv).c_str());
             break;
         default:
             if (sl)
                 sprintf(buf, "%s: unknown p3ga blade.", m_name.c_str());
 
             else
-                sprintf(buf, "Unknown p3ga blade.\nCoordinates: %s", m_mv.string());
+                sprintf(buf, "Unknown p3ga blade.\nCoordinates: %s", ga::toString(m_mv).c_str());
             break;
         }
     }
@@ -594,7 +594,7 @@ int p3gaObject::description(char *buf, int bufLen, int sl /* = 0 */)
             sprintf(buf, "%s: p3ga versor", m_name.c_str());
 
         else
-            sprintf(buf, "p3ga versor\nCoordinates: %s", m_mv.string());
+            sprintf(buf, "p3ga versor\nCoordinates: %s", ga::toString(m_mv).c_str());
     }
     else
     {
@@ -602,7 +602,7 @@ int p3gaObject::description(char *buf, int bufLen, int sl /* = 0 */)
             sprintf(buf, "%s: unknown p3ga object.", m_name.c_str());
 
         else
-            sprintf(buf, "Unknown p3ga object.\nCoordinates: %s", m_mv.string());
+            sprintf(buf, "Unknown p3ga object.\nCoordinates: %s", ga::toString(m_mv).c_str());
     }
 
     return 0;
@@ -615,5 +615,5 @@ float p3gaObject::drawSortValue()
 
 std::string p3gaObject::toString(const char *floatPrec /* = "%e" */)
 {
-    return std::string("\"" + m_name + "\" = " + m_mv.string(floatPrec));
+    return std::string("\"" + m_name + "\" = " + ga::toString(m_mv, floatPrec));
 }

@@ -53,15 +53,15 @@ produced by the 'codegen' tool from consolecodetemplates.txt.)
 
 consoleVariable *cf_p3ga_point3(consoleScope *s, consoleVariable *arg[])
 {
-    p3ga pt(ga::scalar(arg[0]->e()) * p3ga::e1 + ga::scalar(arg[1]->e()) * p3ga::e2 + ga::scalar(arg[2]->e()) * p3ga::e3 +
-            p3ga::e0);
+    p3ga::mv pt(ga::scalar(arg[0]->e()) * p3ga::e1<double>() + ga::scalar(arg[1]->e()) * p3ga::e2<double>() + ga::scalar(arg[2]->e()) * p3ga::e3<double>() +
+            p3ga::e0<double>());
     return new consoleVariable("", pt);
 }
 
 consoleVariable *cf_p3ga_point1(consoleScope *s, consoleVariable *arg[])
 {
     const std::array<double, 3> c = e3ga::xyz(arg[0]->e());
-    p3ga pt(c[0] * p3ga::e1 + c[1] * p3ga::e2 + c[2] * p3ga::e3 + p3ga::e0);
+    p3ga::mv pt(c[0] * p3ga::e1<double>() + c[1] * p3ga::e2<double>() + c[2] * p3ga::e3<double>() + p3ga::e0<double>());
     return new consoleVariable("", pt);
 }
 
@@ -82,20 +82,20 @@ consoleVariable *cf_c3ga_point1(consoleScope *s, consoleVariable *arg[])
 
 consoleVariable *cf_c3ga_pointP1(consoleScope *s, consoleVariable *arg[])
 {
-    const GAIM_FLOAT *c = arg[0]->p()[GRADE1];
-    GAIM_FLOAT e0c = c[P3GA_E0];
+    const std::array<double, 4> c = p3ga::xyzw(arg[0]->p());
+    GAIM_FLOAT e0c = c[3];
     GAIM_FLOAT e1c, e2c, e3c;
     if (e0c != 0.0)
     {
-        e1c = c[P3GA_E1] / e0c;
-        e2c = c[P3GA_E2] / e0c;
-        e3c = c[P3GA_E3] / e0c;
+        e1c = c[0] / e0c;
+        e2c = c[1] / e0c;
+        e3c = c[2] / e0c;
     }
     else
     {
-        e1c = c[P3GA_E1];
-        e2c = c[P3GA_E2];
-        e3c = c[P3GA_E3];
+        e1c = c[0];
+        e2c = c[1];
+        e3c = c[2];
     }
 
     c3ga pt(GRADE1, e1c, e2c, e3c, 1.0, 0.5 * (e1c * e1c + e2c * e2c + e3c * e3c));

@@ -30,7 +30,11 @@ namespace e3ga // Garamon (see ga/e3ga.h)
 template <typename T> class Mvec;
 using mv = Mvec<double>;
 } // namespace e3ga
-class p3ga;
+namespace p3ga // Garamon (see ga/p3ga.h)
+{
+template <typename T> class Mvec;
+using mv = Mvec<double>;
+} // namespace p3ga
 class c3ga;
 class c5ga;
 class i2ga;
@@ -38,7 +42,7 @@ class i2ga;
 // the model id (MVI_XXX) of multivector type MV
 template <class MV> constexpr int modelId = 0; // (not an algebra)
 template <> inline constexpr int modelId<e3ga::mv> = MVI_E3GA;
-template <> inline constexpr int modelId<p3ga> = MVI_P3GA;
+template <> inline constexpr int modelId<p3ga::mv> = MVI_P3GA;
 template <> inline constexpr int modelId<c3ga> = MVI_C3GA;
 template <> inline constexpr int modelId<c5ga> = MVI_C5GA;
 template <> inline constexpr int modelId<i2ga> = MVI_I2GA;

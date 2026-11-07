@@ -107,7 +107,7 @@ class mvInt
     mvInt();
     mvInt(const mvInt *I);
     mvInt(const e3ga::mv &mv, int creationFlags = 0);
-    mvInt(const p3ga &mv, int creationFlags = 0);
+    mvInt(const p3ga::mv &mv, int creationFlags = 0);
     mvInt(const c3ga &mv, int creationFlags = 0);
     mvInt(const c5ga &mv, int creationFlags = 0);
     mvInt(const i2ga &mv, int creationFlags = 0);
@@ -118,7 +118,7 @@ class mvInt
 
     // interprets a multvector. Return 0 on success, -1 if the multivector can not be interpreted
     int interpret(const e3ga::mv &mv, int creationFlags = 0);
-    int interpret(const p3ga &mv, int creationFlags = 0);
+    int interpret(const p3ga::mv &mv, int creationFlags = 0);
     int interpret(const c3ga &mv, int creationFlags = 0);
     int interpret(const c5ga &mv, int creationFlags = 0);
     int interpret(const i2ga &mv, int creationFlags = 0);
@@ -170,12 +170,12 @@ class mvInt
     // set
     int c3gaFactorBivector(const c3ga &B, GAIM_FLOAT *normal, GAIM_FLOAT *factor1, GAIM_FLOAT *factor2);
 
-    int p3gaEuclideanSubspace(const p3ga &X, int grade, const p3ga &ori, GAIM_FLOAT size2);
-    int p3gaHomogeneousSubspace(const p3ga &X, int grade, const p3ga &ori, const p3ga &pos, GAIM_FLOAT size2);
+    int p3gaEuclideanSubspace(const p3ga::mv &X, int grade, const p3ga::mv &ori, GAIM_FLOAT size2);
+    int p3gaHomogeneousSubspace(const p3ga::mv &X, int grade, const p3ga::mv &ori, const p3ga::mv &pos, GAIM_FLOAT size2);
     // Factors 'B' into factor 1 and factor 2, taking into account possible user factorization (g_state->m_p3gaFactor[0]
     // & g_state->m_p3gaFactor[1]) Also returns the unit normal vector. If {normal, factor1, factor2} is NULL, it isn't
     // set
-    int p3gaFactorBivector(const p3ga &B, GAIM_FLOAT *normal, GAIM_FLOAT *factor1, GAIM_FLOAT *factor2);
+    int p3gaFactorBivector(const p3ga::mv &B, GAIM_FLOAT *normal, GAIM_FLOAT *factor1, GAIM_FLOAT *factor2);
 
     int m_creationFlags;
 };

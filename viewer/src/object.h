@@ -288,7 +288,7 @@ class e3gaObject : public object
 class p3gaObject : public object
 {
   public:
-    p3gaObject(const p3ga &mv, const std::string &name = std::string(""), int drawMode = 0, int creationFlags = 0,
+    p3gaObject(const p3ga::mv &mv, const std::string &name = std::string(""), int drawMode = 0, int creationFlags = 0,
                int forceFlags = 0);
     virtual ~p3gaObject();
     void initToNothing();
@@ -302,7 +302,7 @@ class p3gaObject : public object
     virtual int translate(glwindow *window, double depth, double motionX, double motionY);
     virtual std::string toString(const char *floatPrec = "%e");
 
-    p3ga m_mv;
+    p3ga::mv m_mv;
     mvInt m_int;
 };
 

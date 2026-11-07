@@ -22,7 +22,7 @@
 
 #include "gaincludes.h"
 #include "osdep.h"
-#include "p3ga/p3ga.h"
+#include "ga/p3ga.h"
 #include "tubedraw.h"
 
 e3ga::mv rotorFromVectorToVector(const e3ga::mv &v1, const e3ga::mv &v2)
@@ -197,31 +197,31 @@ void TubeDraw::end()
                     prevIdx = ((int)m_vertices.size()) - 2;
                 const e3ga::mv &td1 = tubeDirections[i];
                 const e3ga::mv &td2 = tubeDirections[prevIdx];
-                p3ga d1(GRADE1, td1[e3ga::E1], td1[e3ga::E2], td1[e3ga::E3], 0);
-                p3ga d2(GRADE1, td2[e3ga::E1], td2[e3ga::E2], td2[e3ga::E3], 0);
+                p3ga::mv d1 = p3ga::vector(td1[e3ga::E1], td1[e3ga::E2], td1[e3ga::E3], 0);
+                p3ga::mv d2 = p3ga::vector(td2[e3ga::E1], td2[e3ga::E2], td2[e3ga::E3], 0);
 
                 for (int s = 0; s < m_nbSegments; s++)
                 {
                     const e3ga::mv &tp1 = tubeVertices[i * m_nbSegments + s];
                     const e3ga::mv &tp2 = tubeVertices[prevIdx * m_nbSegments + s];
 
-                    p3ga p1(GRADE1, tp1[e3ga::E1], tp1[e3ga::E2], tp1[e3ga::E3], 1);
-                    p3ga p2(GRADE1, tp2[e3ga::E1], tp2[e3ga::E2], tp2[e3ga::E3], 1);
+                    p3ga::mv p1 = p3ga::vector(tp1[e3ga::E1], tp1[e3ga::E2], tp1[e3ga::E3], 1);
+                    p3ga::mv p2 = p3ga::vector(tp2[e3ga::E1], tp2[e3ga::E2], tp2[e3ga::E3], 1);
 
-                    p3ga L1 = p1 ^ d1;
-                    p3ga L2 = p2 ^ d2;
+                    p3ga::mv L1 = p1 ^ d1;
+                    p3ga::mv L2 = p2 ^ d2;
 
-                    if ((p1 ^ p2).norm_a() < 1e-7)
+                    if (ga::norm_a(p3ga::mv(p1 ^ p2)) < 1e-7)
                     {
                         avgTubeVertices[i * m_nbSegments + s] = tp1;
                     }
                     else
                     {
-                        p3ga P = p1 ^ d1 ^ p2;
-                        p3ga I = (L1 << P) << L2;
-                        GAIM_FLOAT Iw = I[GRADE1][3];
+                        p3ga::mv P = p1 ^ d1 ^ p2;
+                        p3ga::mv I = ga::lcont(ga::lcont(L1, P), L2);
+                        GAIM_FLOAT Iw = I[p3ga::E0];
                         avgTubeVertices[i * m_nbSegments + s] =
-                            e3ga::vector(I[GRADE1][0] / Iw, I[GRADE1][1] / Iw, I[GRADE1][2] / Iw);
+                            e3ga::vector(I[p3ga::E1] / Iw, I[p3ga::E2] / Iw, I[p3ga::E3] / Iw);
                     }
                 }
             }

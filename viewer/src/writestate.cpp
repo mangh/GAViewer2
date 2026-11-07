@@ -54,7 +54,7 @@ int state::writeStateToGeoFile(const char *filename)
     for (i = 0; i < 3; i++)
         fprintf(F, "factor e3ga %d [%s]\n", i + 1, ga::toString(m_e3gaFactor[i], "%2.15e").c_str());
     for (i = 0; i < 4; i++)
-        fprintf(F, "factor p3ga %d [%s]\n", i + 1, m_p3gaFactor[i].string("%2.15e"));
+        fprintf(F, "factor p3ga %d [%s]\n", i + 1, ga::toString(m_p3gaFactor[i], "%2.15e").c_str());
     for (i = 0; i < 5; i++)
         fprintf(F, "factor c3ga %d [%s]\n", i + 1, m_c3gaFactor[i].string("%2.15e"));
 
@@ -231,7 +231,7 @@ int p3gaObject::writeToGeoFile(FILE *F)
 {
     object::writeToGeoFile(F);
 
-    fprintf(F, "p3ga \"%s\" [%s] ", m_name.c_str(), m_mv.string("%2.20e"));
+    fprintf(F, "p3ga \"%s\" [%s] ", m_name.c_str(), ga::toString(m_mv, "%2.20e").c_str());
     writeToGeoFileProperties(F);
     fprintf(F, "\n");
     return 0;
