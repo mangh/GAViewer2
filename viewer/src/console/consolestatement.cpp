@@ -14,7 +14,6 @@
 
 // Copyright 2002-2009, Daniel Fontijne, University of Amsterdam -- fontijne@science.uva.nl
 
-#include <cctype>
 #include <cstdio>
 #include <cstdlib>
 #include <string.h> // NOLINT(modernize-deprecated-headers): strdup() is POSIX, not in <cstring>
@@ -98,12 +97,14 @@ return 1;
 
 int consoleStatement::quote(const char *str)
 {
-    int i = 0;
-    while (str[i])
+    // (the lexer's identifier: a letter or '_', then letters, digits or '_', all ASCII)
+    auto isIdStart = [](char c) { return ((c >= 'a') && (c <= 'z')) || ((c >= 'A') && (c <= 'Z')) || (c == '_'); };
+    if (!isIdStart(str[0]))
+        return 1; // (also the empty string)
+    for (int i = 1; str[i]; i++)
     {
-        if ((!isalnum(str[i])) && (str[i] != '_'))
+        if ((!isIdStart(str[i])) && ((str[i] < '0') || (str[i] > '9')))
             return 1;
-        i++;
     }
     return 0;
 }
@@ -385,6 +386,7 @@ consoleVariableStmt::consoleVariableStmt(const consoleVariableStmt &s) : console
 {
     m_name = strdup(s.m_name);
     m_global = s.m_global;
+    m_quoted = s.m_quoted;
 }
 
 consoleStatement *consoleVariableStmt::copy() const
@@ -401,12 +403,24 @@ consoleVariableStmt::~consoleVariableStmt()
 char *consoleVariableStmt::string(int cr /*= 0*/, int tl /* = 0 */)
 {
     char *arrayStr = ((m_nbChildren > 0) && m_child[0]) ? m_child[0]->string(cr, tl) : strdup("");
-    char *str = (char *)malloc(strlen(m_name) + strlen(arrayStr) + 10);
-    const char *quotes = (quote(m_name)) ? "\"" : "";
 
-    sprintf(str, "%s%s%s%s%s", (m_global) ? "::" : "", quotes, m_name, quotes, arrayStr);
+    std::string text = (m_global) ? "::" : "";
+    if (m_quoted || quote(m_name))
+    {
+        text += '"';
+        for (const char *c = m_name; *c; c++)
+        {
+            if (*c == '"')
+                text += '\\'; // (read back by the lexer as '"')
+            text += *c;
+        }
+        text += '"';
+    }
+    else
+        text += m_name;
+    text += arrayStr;
     free(arrayStr);
-    return str;
+    return strdup(text.c_str());
 }
 
 int consoleVariableStmt::getFullname(consoleScope *s, char *buf)
@@ -470,6 +484,7 @@ int consoleVariableStmt::usesVariable(const char *name, int global = 1) {
 void consoleVariableStmt::initToNothing()
 {
     m_global = 0;
+    m_quoted = false;
     m_op = 0;
     m_name = NULL;
 }

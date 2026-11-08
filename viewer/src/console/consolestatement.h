@@ -121,7 +121,9 @@ class consoleStatement
     int firstEval();
 
   protected:
-    int quote(const char *str); // return true if this name should be in quotes (contains tab, space, etc)
+    // return true if this name must be in quotes to be read back as the same identifier (it is not a
+    // plain identifier: empty, starts with a digit, contains a space, etc)
+    int quote(const char *str);
 
     int m_line, m_column; // position in file where the first token of this statement appeared
 
@@ -169,8 +171,16 @@ class consoleVariableStmt : public consoleStatement
     //	virtual int usesVariable(const char *name, int global = 1); // checks if global variable 'name' is used in this
     //statement ('global' indicates whether check is still in the global scope)
 
+    // the name was written in quotes (a string, e.g. the text of label(x, "...")): string() keeps the
+    // quotes, without them the name could be read back as a function name (e.g. "e1")
+    inline void quoted(bool q)
+    {
+        m_quoted = q;
+    }
+
   protected:
     int m_global;
+    bool m_quoted;
     char *m_name;
 
   private:

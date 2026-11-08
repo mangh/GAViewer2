@@ -253,6 +253,7 @@ struct Token
     std::string text;
     int line = 0;
     int column = 0;
+    bool quoted = false; // an identifier written in quotes (a string)
 };
 
 // A syntax (or lexical) error; the message is complete except for the position.
@@ -493,7 +494,7 @@ Token Lexer::identifier(int line, int column)
             take(text);
     }
 
-    Token t{Tok::Identifier, std::move(text), line, column};
+    Token t{Tok::Identifier, std::move(text), line, column, inQuotes};
     for (const Keyword &kw : c_keywords)
     {
         if (t.text == kw.text)
@@ -1015,8 +1016,10 @@ Ptr<consoleStatement> Parser::expr()
         Ptr<consoleArrayIdxListStmt> idx;
         if (LA(1) == Tok::SquareOpen)
             idx = arrayidxlist();
-        return std::make_unique<consoleVariableStmt>(first.line, first.column, name.text.c_str(), global,
-                                                     idx.release());
+        auto variable = std::make_unique<consoleVariableStmt>(first.line, first.column, name.text.c_str(), global,
+                                                              idx.release());
+        variable->quoted(name.quoted);
+        return variable;
     }
     case Tok::ParOpen: {
         if (isModel(LA(2)))

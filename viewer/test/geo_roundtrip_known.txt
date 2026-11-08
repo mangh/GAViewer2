@@ -19,6 +19,3 @@ FIG_16_12 r1
 
 # hidden after opening: a dynamic statement assigns it quietly (';'), which hides it
 FIG_13_7 rXtrue[0]
-
-# the text of the label: not examined yet
-FIG_1_3 normend_label
