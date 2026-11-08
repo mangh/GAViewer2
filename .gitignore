@@ -365,3 +365,6 @@ FodyWeavers.xsd
 # CMake build folders
 build/
 out/
+
+# Test folder
+trial/
