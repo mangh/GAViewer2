@@ -1099,7 +1099,7 @@ int state::setInputWaitState(int wait)
     }
 
     // if in fullscreen mode: redraw glWindow
-    if (gui_state->m_fullscreen)
+    if (gui_state && gui_state->m_fullscreen)
     {
         gui_state->m_glWindow->redraw();
     }

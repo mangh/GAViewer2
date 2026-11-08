@@ -13,7 +13,7 @@
 // be identical) and the algebra implementation (numbers may differ slightly).
 //
 // Usage:
-//   gaviewer_regress [-I <dir>]... [-o <actual>] [-g <golden> [-u]] [-t <tol>] <command>
+//   gaviewer_regress [-I <dir>]... [-l <geo>] [-s <geo>] [-o <actual>] [-g <golden> [-u]] [-t <tol>] <command>
 //
 //   -I <dir>     load all .g files in <dir> (sorted by name); may be repeated
 //   -o <file>    write the dump to <file> (default: stdout, unless -g is given)
@@ -21,6 +21,10 @@
 //   -u           (with -g) write/overwrite the golden reference instead of comparing
 //   -t <tol>     numeric tolerance, relative to magnitude (default 1e-6)
 //   -f <n>       maximum number of frames (default 100)
+//   -l <file>    open the GA file <file> (e.g. a .geo file) before the command, as File > Open
+//                of the GUI does (the command may then be omitted)
+//   -s <file>    save the state to the .geo file <file> after the command, as File > Save
+//                of the GUI does (without the parts that need the GUI: title, camera, ...)
 
 // <windows.h> (pulled in by the OpenGL headers) must not define min/max macros:
 #ifndef NOMINMAX
@@ -46,6 +50,7 @@
 
 #include "console/console.h"
 #include "console/consolescope.h"
+#include "gafile.h"
 #include "gaincludes.h"
 #include "mvint.h"
 #include "object.h"
@@ -468,8 +473,8 @@ bool writeFile(const fs::path &p, const std::string &content)
 
 int usage()
 {
-    std::fprintf(stderr, "usage: gaviewer_regress [-I <dir>]... [-o <actual>] [-g <golden> [-u]] [-t <tol>] [-f <n>] "
-                         "<command>\n");
+    std::fprintf(stderr, "usage: gaviewer_regress [-I <dir>]... [-l <geo>] [-s <geo>] [-o <actual>] [-g <golden> [-u]] "
+                         "[-t <tol>] [-f <n>] <command>\n");
     return 2;
 }
 
@@ -483,6 +488,7 @@ int main(int argc, char *argv[])
     double tol = 1e-6;
     int maxFrames = 100;
     std::string command;
+    fs::path loadPath, savePath;
 
     for (int i = 1; i < argc; i++)
     {
@@ -501,12 +507,16 @@ int main(int argc, char *argv[])
             tol = std::atof(v);
         else if (a == "-f" && (v = next()))
             maxFrames = std::atoi(v);
+        else if (a == "-l" && (v = next()))
+            loadPath = v;
+        else if (a == "-s" && (v = next()))
+            savePath = v;
         else if (!a.empty() && a[0] != '-' && command.empty())
             command = a;
         else
             return usage();
     }
-    if (command.empty() || (update && goldenPath.empty()))
+    if ((command.empty() && loadPath.empty()) || (update && goldenPath.empty()))
         return usage();
 
     g_cprintfHook = captureCprintf;
@@ -545,8 +555,22 @@ int main(int argc, char *argv[])
     }
     dump += "== load ==\n" + takeLog();
 
+    if (!loadPath.empty())
+    {
+        // the GUI reads an opened file from its timer, a part at a time: read it to the end
+        if (g_state->openGAfile(loadPath.generic_string().c_str()) != 0)
+        {
+            std::fprintf(stderr, "cannot open '%s'\n", loadPath.string().c_str());
+            return 2;
+        }
+        for (int k = 0; g_state->currentGAfile() && (k < 100000); k++)
+            g_state->currentGAfile()->read(g_state);
+        dump += "== open ==\n" + takeLog();
+    }
+
     // run the command, then keep resuming while the script is suspended
-    g_consoleCommandCallback(command.c_str(), g_state);
+    if (!command.empty())
+        g_consoleCommandCallback(command.c_str(), g_state);
     int frame = 0;
     for (;;)
     {
@@ -562,6 +586,12 @@ int main(int argc, char *argv[])
             break;
         }
         g_state->consoleCommandCallback(""); // empty input resumes the suspended statement list
+    }
+
+    if (!savePath.empty() && (g_state->writeStateToGeoFile(savePath.generic_string().c_str()) != 0))
+    {
+        std::fprintf(stderr, "cannot write '%s'\n", savePath.string().c_str());
+        return 2;
     }
 
     if (!outPath.empty() && !writeFile(outPath, dump))

@@ -66,7 +66,8 @@ int state::writeStateToGeoFile(const char *filename)
     }
     // output current global state
 
-    fprintf(F, "title \"%s\"\n", gui_state->m_mainWindow->label());
+    if (gui_state) // (no GUI: e.g. the headless regression harness)
+        fprintf(F, "title \"%s\"\n", gui_state->m_mainWindow->label());
     printColor(F, "fgcolor", m_fgColor);
     printColor(F, "bgcolor", m_bgColor);
     printColor(F, "olcolor", m_olColor);
@@ -82,10 +83,13 @@ int state::writeStateToGeoFile(const char *filename)
     fprintf(F, "tsmode %s\n", m_tsMode);
     fprintf(F, "tsfont %s\n", m_tsFont);
 
-    fprintf(F, "eyepos [%s]\n", ga::toString(gui_state->m_glWindow->getCamPos(), "%e").c_str());
-    e3ga::mv B;
-    rotor2Bivector(B, gui_state->m_glWindow->getCamOri());
-    fprintf(F, "eyeori [%s]\n", ga::toString(e3ga::mv(-B), "%e").c_str());
+    if (gui_state)
+    {
+        fprintf(F, "eyepos [%s]\n", ga::toString(gui_state->m_glWindow->getCamPos(), "%e").c_str());
+        e3ga::mv B;
+        rotor2Bivector(B, gui_state->m_glWindow->getCamOri());
+        fprintf(F, "eyeori [%s]\n", ga::toString(e3ga::mv(-B), "%e").c_str());
+    }
 
     writeConsoleControlsToGeoFile(F);
 

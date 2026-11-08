@@ -113,6 +113,7 @@ cmake --build build --target regress_update_golden              # regenerate gol
 - Console output lines that print a multivector (`name = c*blade + ...`) are compared as maps blade -> coefficient (a missing term is 0, tolerance relative to the largest coefficient): rounding noise near the 1e-14 print threshold may be printed on one side only.
 - Golden files are references of the Gaigen behaviour: when a test script changes, regenerate its golden file with a build from before the switch of the algebras concerned to Garamon (`git log --grep "Switch GAViewer to the Garamon"`), not with the converted one.
 - Run one figure by hand: `gaviewer_regress -I <figs-src> "FIG_2_2();"` (dump to stdout).
+- Save / reopen a `.geo` file headless (as File > Save / Open of the GUI, without the GUI-only parts: title, camera, range controls): `gaviewer_regress -I <figs-src> -s out.geo "FIG_14_3();"`, then `gaviewer_regress -l out.geo` (in a new process: no figure scripts loaded).
 - Code reachable from console functions or GA-file commands must check `gui_state` for NULL (the harness has no GUI).
 
 ---
