@@ -1923,7 +1923,7 @@ object VA c3ga drawMode=0x70 color=0 0 0 1
     1 0.9995162823
     e1^e3 0.02781656245
     e2^e3 -0.01390828123
-  int type=0x6000 valid=1
+  int type=0x6000 valid=0
     point0 0 0 0
     point1 0 0 0
     point2 0 0 0
@@ -1937,7 +1937,7 @@ object VMA c3ga drawMode=0x70 color=0 0 0 1
     1 0.9984523779
     e1^e3 0.0556133896
     e3^ni 0.0278066948
-  int type=0x6000 valid=1
+  int type=0x6000 valid=0
     point0 0 0 0
     point1 0 0 0
     point2 0 0 0
@@ -7587,7 +7587,7 @@ object VA c3ga drawMode=0x70 color=0 0 0 1
     1 0.9995162823
     e1^e3 0.02781656245
     e2^e3 -0.01390828123
-  int type=0x6000 valid=1
+  int type=0x6000 valid=0
     point0 0 0 0
     point1 0 0 0
     point2 0 0 0
@@ -7601,7 +7601,7 @@ object VMA c3ga drawMode=0x70 color=0 0 0 1
     1 0.9984523779
     e1^e3 0.0556133896
     e3^ni 0.0278066948
-  int type=0x6000 valid=1
+  int type=0x6000 valid=0
     point0 0 0 0
     point1 0 0 0
     point2 0 0 0
@@ -12370,7 +12370,7 @@ object VA c3ga drawMode=0x70 color=0 0 0 1
     1 0.9995162823
     e1^e3 0.02781656245
     e2^e3 -0.01390828123
-  int type=0x6000 valid=1
+  int type=0x6000 valid=0
     point0 0 0 0
     point1 0 0 0
     point2 0 0 0
@@ -12384,7 +12384,7 @@ object VMA c3ga drawMode=0x70 color=0 0 0 1
     1 0.9984523779
     e1^e3 0.0556133896
     e3^ni 0.0278066948
-  int type=0x6000 valid=1
+  int type=0x6000 valid=0
     point0 0 0 0
     point1 0 0 0
     point2 0 0 0

@@ -776,7 +776,7 @@ object RM c3ga drawMode=0x70 color=0 0 0 1
     e2^ni -0.05355291887
     e3^ni 0.4605484785
     no^ni 0.137275228
-  int type=0x6000 valid=1
+  int type=0x6000 valid=0
     point0 0 0 0
     point1 0 0 0
     point2 0 0 0
@@ -819,7 +819,7 @@ object RMt c3ga drawMode=0x70 color=0 0 0 1
     e2^ni -0.005538526406
     e3^ni 0.04763064205
     no^ni 0.01419721822
-  int type=0x6000 valid=1
+  int type=0x6000 valid=0
     point0 0 0 0
     point1 0 0 0
     point2 0 0 0

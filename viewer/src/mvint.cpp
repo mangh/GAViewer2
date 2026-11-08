@@ -97,5 +97,6 @@ int mvInt::copy(const mvInt *I)
     for (i = 0; i < MVINT_NB_SCALAR; i++)
         m_scalar[i] = I->m_scalar[i];
     m_type = I->m_type;
+    m_valid = I->m_valid; // (was not copied: an updated object kept the flag of its first value)
     return 0;
 }

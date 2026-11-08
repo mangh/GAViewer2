@@ -143,7 +143,7 @@ object I2 e3ga drawMode=0x70 color=0 0 1 1
 object R c3ga drawMode=0x70 color=0 0 0 1
   mv
     1 -1
-  int type=0x6108 valid=0
+  int type=0x6108 valid=1
     point0 0 0 0
     point1 0 0 0
     point2 0 0 0
