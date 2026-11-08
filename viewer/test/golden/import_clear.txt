@@ -4,6 +4,7 @@
 Parsing '<dir>/algebra_functions.g'
 Parsing '<dir>/algebra_objects.g'
 Parsing '<dir>/import_clear.g'
+Parsing '<dir>/import_clear_dynamic.g'
 == frame 0 ==
 -- console --
 The console was cleared: the rest of the current command is not executed.

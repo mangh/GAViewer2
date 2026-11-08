@@ -2256,11 +2256,15 @@ consoleVariable *consoleDynStmt::execute(consoleScope *s)
         // but not assignment displat, since this will be done on first eval...
         int nad = s->noAssignmentDisplay();
         s->noAssignmentDisplay(1);
-        sl->execute(s);
+        delete sl->execute(s);
         s->noAssignmentDisplay(nad);
 
-        // add dynamic
-        g_state->addDynStmt(sl, m_workingDirectory, m_name);
+        // add dynamic (unless it cleared the console, e.g. by importing a file that starts with 'clear':
+        // it would do that again at the next update)
+        if (s->retired())
+            delete sl;
+        else
+            g_state->addDynStmt(sl, m_workingDirectory, m_name);
     }
 
     return (result) ? result : new consoleVariable("", e3ga::mv(0.0));

@@ -1,0 +1,75 @@
+# gaviewer_regress
+# command: import_clear_dynamic();
+== load ==
+Parsing '<dir>/algebra_functions.g'
+Parsing '<dir>/algebra_objects.g'
+Parsing '<dir>/import_clear.g'
+Parsing '<dir>/import_clear_dynamic.g'
+== frame 0 ==
+-- console --
+The console was cleared: the rest of the current command is not executed.
+b = 1.00*e1 + 2.00*e2 + 1.00*e3
+-- objects --
+object a e3ga drawMode=0x20 color=1 0 0 1
+  mv
+    e1 1
+    e2 2
+  int type=0x2109 valid=1
+    point0 1 2 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0.4472135955 0.894427191 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 2.236067977 0
+object autocolor e3ga drawMode=0x150 color=1 0 0 1
+  mv
+    1 1
+  int type=0x2108 valid=1
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1 0
+object b e3ga drawMode=0x30 color=1 0 0 1
+  mv
+    e1 1
+    e2 2
+    e3 1
+  int type=0x2109 valid=1
+    point0 1 2 1
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0.4082482905 0.8164965809 0.4082482905
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 2.449489743 0
+object camori e3ga drawMode=0x150 color=1 0 0 1
+  mv
+    1 1
+  int type=0x2108 valid=1
+    point0 0 0 0
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 0
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 1 0
+object campos e3ga drawMode=0x170 color=1 0 0 1
+  mv
+    e3 11
+  int type=0x2109 valid=1
+    point0 0 0 11
+    point1 0 0 0
+    point2 0 0 0
+    vector0 0 0 1
+    vector1 0 0 0
+    vector2 0 0 0
+    vector3 0 0 0
+    scalar 11 0

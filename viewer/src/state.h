@@ -166,11 +166,23 @@ class state
     int consoleCommandCallback(const char *cmd); // handles commands entered at the console
 
     consoleGlobalScope *m_globalScope;
-    // The number of nested console commands being executed (consoleCommandCallback()); while one
-    // is, a replaced global scope is only retired (see newGlobalScope()), and deleted when the
-    // outermost command has finished.
+    // The number of nested executions of console code (console commands, updates of the dynamic
+    // statements); while there is one, a replaced global scope or a removed dynamic statement is
+    // only retired (see newGlobalScope(), removeDynStmts()) and deleted when the outermost
+    // execution has finished: the code being executed may belong to it.
     int m_consoleCommandDepth = 0;
     std::vector<consoleGlobalScope *> m_retiredGlobalScopes;
+    class executionGuard
+    {
+      public:
+        explicit executionGuard(state *s);
+        ~executionGuard();
+        executionGuard(const executionGuard &) = delete;
+        executionGuard &operator=(const executionGuard &) = delete;
+
+      private:
+        state *m_state;
+    };
     int consoleSourceFileRead(
         const char *filename); // reads a '.g' file, parses it, adds functions/batches to global scope
     int consoleSourceDirRead(const char *filename); // reads all '.g' files in directory
@@ -255,7 +267,11 @@ class state
         //		dynStmtInfo(consoleStmtListStmt *dynStmt, const std::string &workingDirectory, const std::string &name)
         //{}
         dynStmtInfo(consoleStmtListStmt *dynStmt, const std::string &workingDirectory, const std::string &name);
-        dynStmtInfo(const dynStmtInfo &dsi);
+        dynStmtInfo(const dynStmtInfo &dsi); // (a deep copy of the statement)
+        // moved, not copied, when m_dynStmt grows or shrinks: the statements stay where they are (one of
+        // them may be executing)
+        dynStmtInfo(dynStmtInfo &&) noexcept = default;
+        dynStmtInfo &operator=(dynStmtInfo &&) noexcept = default;
         ~dynStmtInfo();
 
         void set(const dynStmtInfo &dsi);
@@ -305,6 +321,10 @@ class state
                        consoleStmtListStmt *newStmt); // replace old by new, deletes old (deletes new on failure)
     int removeAllDynStmt();
     int updateDynStmts(); // goes through all dynamic statements, updates them as requied
+    // removed dynamic statements: deleted when no console code runs any more (see executionGuard)
+    std::vector<dynStmtInfo> m_retiredDynStmts;
+    unsigned m_dynStmtVersion = 0; // incremented when dynamic statements are removed
+    void removeDynStmts(DSI first, DSI last);
 
     // current properties, as set through file commands
     int setColor(const char *colorName, const char *value);

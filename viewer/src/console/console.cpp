@@ -56,30 +56,27 @@ consoleStmtListStmt *consoleParse(const char *cmd, const char *wd /* = NULL */)
     return consoleParseSource(cmd);
 }
 
+state::executionGuard::executionGuard(state *s) : m_state(s)
+{
+    m_state->m_consoleCommandDepth++;
+}
+
+state::executionGuard::~executionGuard()
+{
+    if (--m_state->m_consoleCommandDepth == 0)
+    {
+        for (consoleGlobalScope *gs : m_state->m_retiredGlobalScopes)
+            delete gs;
+        m_state->m_retiredGlobalScopes.clear();
+        m_state->m_retiredDynStmts.clear();
+    }
+}
+
 int state::consoleCommandCallback(const char *cmd)
 {
-    // (a global scope replaced during the command is deleted when the outermost command has finished)
-    struct depthGuard
-    {
-        state *s;
-        explicit depthGuard(state *st) : s(st)
-        {
-            s->m_consoleCommandDepth++;
-        }
-        ~depthGuard()
-        {
-            if (--s->m_consoleCommandDepth == 0)
-            {
-                for (consoleGlobalScope *gs : s->m_retiredGlobalScopes)
-                    delete gs;
-                s->m_retiredGlobalScopes.clear();
-            }
-        }
-    };
-
     bool reset;
     {
-        depthGuard guard(this);
+        executionGuard guard(this); // (see m_consoleCommandDepth)
 
         consoleStmtListStmt *stmtList = consoleParse(cmd);
 

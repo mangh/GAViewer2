@@ -121,6 +121,18 @@ int state::addDynStmt(consoleStmtListStmt *stmt, const std::string &workingDirec
     return 0;
 }
 
+void state::removeDynStmts(DSI first, DSI last)
+{
+    // while console code runs, one of them may be executing (e.g. a dynamic statement that calls
+    // cmd("import file.geo") of a file that starts with 'clear', or remove_dynamics()): retired,
+    // deleted when the outermost execution has finished (see executionGuard)
+    if (m_consoleCommandDepth > 0)
+        for (DSI I = first; I != last; I++)
+            m_retiredDynStmts.push_back(std::move(*I));
+    m_dynStmt.erase(first, last);
+    m_dynStmtVersion++;
+}
+
 int state::removeDynStmt(int idx)
 {
 
@@ -130,7 +142,7 @@ int state::removeDynStmt(int idx)
         return -1;
     }
 
-    m_dynStmt.erase(m_dynStmt.begin() + idx);
+    removeDynStmts(m_dynStmt.begin() + idx, m_dynStmt.begin() + idx + 1);
 
     return 0;
 }
@@ -157,7 +169,7 @@ int state::removeDynStmt(consoleStmtListStmt *stmt)
     {
         if (I->ds() == stmt)
         {
-            m_dynStmt.erase(I);
+            removeDynStmts(I, I + 1);
             return 0;
         }
     }
@@ -167,7 +179,7 @@ int state::removeDynStmt(consoleStmtListStmt *stmt)
 
 int state::removeAllDynStmt()
 {
-    m_dynStmt.clear();
+    removeDynStmts(m_dynStmt.begin(), m_dynStmt.end());
     return 0;
 }
 
@@ -194,6 +206,9 @@ int state::updateDynStmts()
     if (running)
         return 0; // prevent reentrance (single theaded)
     running = 1;
+    executionGuard guard(this); // (see m_consoleCommandDepth)
+    const unsigned version = m_dynStmtVersion;
+    bool aborted = false;
 
     // little hack: call updateConsoleControls() too
     updateConsoleControls();
@@ -211,6 +226,8 @@ int state::updateDynStmts()
         e = 0;
         for (i = 0; i < (int)m_dynStmt.size(); i++)
         {
+            if (evalDone.size() < m_dynStmt.size()) // (a statement may add dynamic statements, e.g. by import)
+                evalDone.resize(m_dynStmt.size(), 0);
 
             if ((!evalDone[i]) && m_dynStmt[i].ds()->evalRequired())
             {
@@ -245,6 +262,15 @@ int state::updateDynStmts()
                     return 0;
                 }
 
+                // dynamic statements were removed (e.g. by 'clear' in a file the statement imported):
+                // the indices are no longer valid, stop this update (the new statements are evaluated
+                // at the next one)
+                if (m_dynStmtVersion != version)
+                {
+                    aborted = true;
+                    break;
+                }
+
                 // transfer the variable names on which m_dynStmt[i] depends
                 std::set<std::string> *dynStmtVariables = m_globalScope->getDynStmtVariables();
                 /*if (dynStmtVariables)
@@ -258,13 +284,14 @@ int state::updateDynStmts()
                 evalDone[i] = 1;                    // keep track of which dyn stmts have been evalled this round
             }
         }
-    } while (e);
+    } while (e && !aborted);
 
     // force all dynamic statements to 'no eval required'
-    for (i = 0; i < (int)m_dynStmt.size(); i++)
-    {
-        m_dynStmt[i].ds()->evalRequired(0);
-    }
+    if (!aborted)
+        for (i = 0; i < (int)m_dynStmt.size(); i++)
+        {
+            m_dynStmt[i].ds()->evalRequired(0);
+        }
 
     m_globalScope->supressWarnings(sw);
     m_globalScope->supressErrors(se);
