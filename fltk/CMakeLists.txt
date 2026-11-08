@@ -60,9 +60,8 @@ Include(FetchContent)
 
 FetchContent_Declare(
   fltk
-  # GIT_REPOSITORY https://github.com/fltk/fltk
-  GIT_REPOSITORY "c:/Users/marek/source/repos/GeometricAlgebra/fltk/"
-  GIT_TAG        a9b1113516ffd15fc7602a6d425a317df30f4720   # FLTK 1.4.5 released on Apr. 25, 2026
+  GIT_REPOSITORY https://github.com/fltk/fltk
+  GIT_TAG        a9b1113516ffd15fc7602a6d425a317df30f4720   # FLTK 1.4.5 (tag release-1.4.5) released on Apr. 25, 2026
   GIT_SHALLOW    TRUE
 )
 

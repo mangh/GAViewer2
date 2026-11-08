@@ -16,8 +16,7 @@ Include(FetchContent)
 
 FetchContent_Declare(
   figs
-  # URL https://geometricalgebra.org/downloads/figures.zip
-  URL "c:/Users/marek/source/repos/GA/exercises/figures.zip"
+  URL https://geometricalgebra.org/downloads/figures.zip
   URL_HASH SHA256=7d0f6f29fba1833ea6f4ccf0eb983cf5a0b1b2cec3c1f591f42f6352a0f54de1
 )
 
