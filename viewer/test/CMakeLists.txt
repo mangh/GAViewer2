@@ -67,6 +67,40 @@ foreach(figure_file ${figure_files})
   )
 endforeach()
 
+# The round trip of every book figure through a .geo file (save, open after a "restart", compare
+# the objects; see geo_roundtrip.cmake); the known differences are listed in
+# geo_roundtrip_known.txt.
+set(geo_known_file "${CMAKE_CURRENT_SOURCE_DIR}/geo_roundtrip_known.txt")
+set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS "${geo_known_file}")
+file(STRINGS "${geo_known_file}" geo_known_lines)
+foreach(line IN LISTS geo_known_lines)
+  string(REGEX REPLACE "#.*" "" line "${line}") # (comments)
+  string(STRIP "${line}" line)
+  if (line)
+    string(REGEX REPLACE "[ \t]+" ";" words "${line}")
+    list(POP_FRONT words known_figure)
+    list(JOIN words "|" geo_known_${known_figure})
+  endif()
+endforeach()
+foreach(figure_file ${figure_files})
+  get_filename_component(figure "${figure_file}" NAME_WE)
+  set(ignore_arg "")
+  if (DEFINED geo_known_${figure})
+    set(ignore_arg "-DIGNORE=${geo_known_${figure}}")
+  endif()
+  add_test(
+    NAME "geo.${figure}"
+    COMMAND ${CMAKE_COMMAND}
+      "-DHARNESS=$<TARGET_FILE:${harness}>"
+      "-DFIGS=${figs_SOURCE_DIR}"
+      "-DFIGURE=${figure}"
+      "-DWORK=${CMAKE_CURRENT_BINARY_DIR}/geo"
+      ${ignore_arg}
+      -P "${CMAKE_CURRENT_SOURCE_DIR}/geo_roundtrip.cmake"
+  )
+  set_tests_properties("geo.${figure}" PROPERTIES TIMEOUT 120 LABELS "geo")
+endforeach()
+
 # Differential test of the Garamon based algebra layer (viewer/src/ga) against
 # the Gaigen algebras it replaces (same operations on the same multivectors):
 # one test per algebra, gadiff.<algebra>.

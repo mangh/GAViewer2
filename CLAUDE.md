@@ -114,6 +114,7 @@ cmake --build build --target regress_update_golden              # regenerate gol
 - Golden files are references of the Gaigen behaviour: when a test script changes, regenerate its golden file with a build from before the switch of the algebras concerned to Garamon (`git log --grep "Switch GAViewer to the Garamon"`), not with the converted one.
 - Run one figure by hand: `gaviewer_regress -I <figs-src> "FIG_2_2();"` (dump to stdout).
 - Save / reopen a `.geo` file headless (as File > Save / Open of the GUI, without the GUI-only parts: title, camera, range controls): `gaviewer_regress -I <figs-src> -s out.geo "FIG_14_3();"`, then `gaviewer_regress -l out.geo` (in a new process: no figure scripts loaded).
+- `.geo` round trip tests `geo.FIG_x_y` (label `geo`; skip them with `ctest -LE geo`, they take ~2-3 minutes in a debug build): `viewer/test/geo_roundtrip.cmake` runs the figure and saves it (`-s`, `-o`), then opens the file in a new process and compares the objects (`gaviewer_regress -l <geo> -c <run dump> [-i <object>]...`: no errors on the console while opening, same objects, coordinates, draw flags, interpretations; not compared: the camera, `ans`, the vertices of polygons). Known differences (GAViewer's evaluation order): `viewer/test/geo_roundtrip_known.txt`.
 - Code reachable from console functions or GA-file commands must check `gui_state` for NULL (the harness has no GUI).
 
 ---

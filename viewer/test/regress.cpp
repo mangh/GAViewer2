@@ -25,6 +25,10 @@
 //                of the GUI does (the command may then be omitted)
 //   -s <file>    save the state to the .geo file <file> after the command, as File > Save
 //                of the GUI does (without the parts that need the GUI: title, camera, ...)
+//   -c <file>    (with -l) round trip: compare the objects after opening the .geo file with those
+//                of the last frame of the dump <file> (of the run that saved it, see -o, -s) and
+//                check the console output of the opening for errors; exit code 1 on mismatch
+//   -i <name>    (with -c) do not compare the object <name> (a known difference); may be repeated
 
 // <windows.h> (pulled in by the OpenGL headers) must not define min/max macros:
 #ifndef NOMINMAX
@@ -41,6 +45,7 @@
 #include <fstream>
 #include <ios>
 #include <map>
+#include <set>
 #include <sstream>
 #include <string>
 #include <string_view>
@@ -450,6 +455,95 @@ int compare(const std::string &expected, const std::string &actual, double tol)
     return mismatches;
 }
 
+// The objects of the last frame of a dump: name -> its lines (the "object <name> <type> ..." line
+// and the indented lines that follow it).
+std::map<std::string, std::vector<std::string>> lastFrameObjects(const std::string &dump)
+{
+    std::map<std::string, std::vector<std::string>> objects;
+    const std::string::size_type frame = dump.rfind("== frame ");
+    const std::string::size_type start = dump.find("-- objects --\n", (frame == std::string::npos) ? 0 : frame);
+    if (start == std::string::npos)
+        return objects;
+    std::vector<std::string> *current = nullptr;
+    for (const std::string &line : splitLines(dump.substr(start + 14)))
+    {
+        if (line.rfind("object ", 0) == 0)
+        {
+            // the name may contain spaces: it ends before the type, the word before " drawMode="
+            std::string::size_type end = line.find(" drawMode=");
+            end = (end == std::string::npos) ? line.size() : line.rfind(' ', end - 1);
+            current = &objects[line.substr(7, end - 7)];
+            current->push_back(line);
+        }
+        else if (current && !line.empty() && (line[0] == ' '))
+            current->push_back(line);
+        else if (line.rfind("==", 0) == 0)
+            break;
+    }
+    return objects;
+}
+
+// The round trip through a .geo file: compares the objects of 'dump' (the state after opening the
+// file) with those of 'runDump' (the state that was saved), and checks the console output of the
+// opening ('openLog') for errors. Objects that are not compared: the camera (camori, campos: the
+// GUI, interpreted with the factorization of the moment), 'ans', the vertices that a polygon is
+// saved with, and the names in 'ignore' (known differences). Returns the number of mismatches.
+int compareRoundTrip(const std::string &runDump, const std::string &dump, const std::string &openLog,
+                     const std::vector<std::string> &ignore, double tol)
+{
+    int mismatches = 0;
+    for (const std::string &line : splitLines(openLog))
+    {
+        std::string lower = line;
+        std::transform(lower.begin(), lower.end(), lower.begin(), [](unsigned char c) { return std::tolower(c); });
+        int l, c;
+        char rest;
+        if ((lower.find("error") != std::string::npos) || (lower.find("unexpected") != std::string::npos) ||
+            (std::sscanf(line.c_str(), "line %d:%d%c", &l, &c, &rest) == 3))
+        {
+            std::fprintf(stderr, "console output while opening: %s\n", line.c_str());
+            mismatches++;
+        }
+    }
+
+    auto before = lastFrameObjects(runDump), after = lastFrameObjects(dump);
+    std::set<std::string> names;
+    for (const auto &o : before)
+        names.insert(o.first);
+    for (const auto &o : after)
+        names.insert(o.first);
+    for (const std::string &name : names)
+    {
+        if ((name == "camori") || (name == "campos") || (name == "ans") ||
+            (std::find(ignore.begin(), ignore.end(), name) != ignore.end()))
+            continue;
+        const auto b = before.find(name), a = after.find(name);
+        if (b == before.end())
+        {
+            const std::string::size_type v = name.rfind(" vertex ");
+            if ((v != std::string::npos) && (name.find_first_not_of("0123456789", v + 8) == std::string::npos))
+                continue; // (a vertex of a polygon, saved as a hidden object)
+        }
+        if ((b == before.end()) || (a == after.end()))
+        {
+            std::fprintf(stderr, "object '%s': only %s\n", name.c_str(),
+                         (b == before.end()) ? "after opening" : "before saving");
+            mismatches++;
+            continue;
+        }
+        const std::vector<std::string> &lb = b->second, &la = a->second;
+        for (std::size_t i = 0; i < std::max(lb.size(), la.size()); i++)
+            if ((i >= lb.size()) || (i >= la.size()) || !linesMatch(lb[i], la[i], tol))
+            {
+                std::fprintf(stderr, "object '%s':\n  before saving: %s\n  after opening: %s\n", name.c_str(),
+                             (i < lb.size()) ? lb[i].c_str() : "-", (i < la.size()) ? la[i].c_str() : "-");
+                mismatches++;
+                break;
+            }
+    }
+    return mismatches;
+}
+
 bool readFile(const fs::path &p, std::string &content)
 {
     std::ifstream in(p, std::ios::binary);
@@ -473,8 +567,8 @@ bool writeFile(const fs::path &p, const std::string &content)
 
 int usage()
 {
-    std::fprintf(stderr, "usage: gaviewer_regress [-I <dir>]... [-l <geo>] [-s <geo>] [-o <actual>] [-g <golden> [-u]] "
-                         "[-t <tol>] [-f <n>] <command>\n");
+    std::fprintf(stderr, "usage: gaviewer_regress [-I <dir>]... [-l <geo> [-c <run dump> [-i <name>]...]] [-s <geo>] "
+                         "[-o <actual>] [-g <golden> [-u]] [-t <tol>] [-f <n>] <command>\n");
     return 2;
 }
 
@@ -488,7 +582,9 @@ int main(int argc, char *argv[])
     double tol = 1e-6;
     int maxFrames = 100;
     std::string command;
-    fs::path loadPath, savePath;
+    fs::path loadPath, savePath, runDumpPath;
+    std::vector<std::string> ignore;
+    std::string openLog;
 
     for (int i = 1; i < argc; i++)
     {
@@ -511,12 +607,17 @@ int main(int argc, char *argv[])
             loadPath = v;
         else if (a == "-s" && (v = next()))
             savePath = v;
+        else if (a == "-c" && (v = next()))
+            runDumpPath = v;
+        else if (a == "-i" && (v = next()))
+            ignore.emplace_back(v);
         else if (!a.empty() && a[0] != '-' && command.empty())
             command = a;
         else
             return usage();
     }
-    if ((command.empty() && loadPath.empty()) || (update && goldenPath.empty()))
+    if ((command.empty() && loadPath.empty()) || (update && goldenPath.empty()) ||
+        (!runDumpPath.empty() && loadPath.empty()))
         return usage();
 
     g_cprintfHook = captureCprintf;
@@ -565,7 +666,8 @@ int main(int argc, char *argv[])
         }
         for (int k = 0; g_state->currentGAfile() && (k < 100000); k++)
             g_state->currentGAfile()->read(g_state);
-        dump += "== open ==\n" + takeLog();
+        openLog = takeLog();
+        dump += "== open ==\n" + openLog;
     }
 
     // run the command, then keep resuming while the script is suspended
@@ -598,6 +700,21 @@ int main(int argc, char *argv[])
     {
         std::fprintf(stderr, "cannot write '%s'\n", outPath.string().c_str());
         return 2;
+    }
+
+    if (!runDumpPath.empty())
+    {
+        std::string runDump;
+        if (!readFile(runDumpPath, runDump))
+        {
+            std::fprintf(stderr, "cannot read '%s'\n", runDumpPath.string().c_str());
+            return 2;
+        }
+        int mismatches = compareRoundTrip(runDump, dump, openLog, ignore, tol);
+        if (mismatches)
+            std::fprintf(stderr, "%d mismatch(es) after the round trip through '%s'\n", mismatches,
+                         loadPath.string().c_str());
+        return mismatches ? 1 : 0;
     }
 
     if (goldenPath.empty())
