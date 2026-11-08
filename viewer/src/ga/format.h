@@ -41,8 +41,9 @@ namespace ga
 // The multivector as text: the terms "<coordinate>*<basis blade>" (in display
 // basis order) of the coordinates with an absolute value > 1e-14, separated by
 // " + "; "0" if there are none. 'fp' is the printf conversion of a coordinate
-// (e.g. "%2.2f", "%e"); the coordinate is printed as a float (as in Gaigen).
-template <garamonMV MV> std::string toString(const MV &a, const char *fp = "%2.2f")
+// (e.g. "%2.2f", "%e"); the coordinate is printed as a float (as in Gaigen), unless
+// 'asFloat' is false (e.g. "%.17e" then writes text that reads back exactly).
+template <garamonMV MV> std::string toString(const MV &a, const char *fp = "%2.2f", bool asFloat = true)
 {
     char format[64], term[512];
     std::snprintf(format, sizeof(format), "%%s%s%%s%%s", fp);
@@ -54,7 +55,7 @@ template <garamonMV MV> std::string toString(const MV &a, const char *fp = "%2.2
         double c = coordinate(a, i);
         if (std::fabs(c) > 1e-14)
         {
-            std::snprintf(term, sizeof(term), format, first ? "" : " + ", (float)c, (i) ? "*" : "",
+            std::snprintf(term, sizeof(term), format, first ? "" : " + ", asFloat ? (double)(float)c : c, (i) ? "*" : "",
                           (i) ? algebraTraits<MV>::displayBasis[i].name.c_str() : "");
             s += term;
             first = false;

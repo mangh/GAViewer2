@@ -18,6 +18,9 @@
 #include <cstdlib>
 #include <cstring>
 
+#include <set>
+#include <string>
+
 #include <vector>
 
 #include "console/consolecontrol.h"
@@ -32,6 +35,13 @@
 #include "state.h"
 #include "uistate.h"
 #include "util.h"
+
+// A multivector as text for a .geo file: exactly (17 significant digits of the double), unlike the
+// console, which prints the coordinates as floats (as Gaigen did).
+template <class MV> static std::string geoText(const MV &mv)
+{
+    return ga::toString(mv, "%.17e", false);
+}
 
 static inline void printColor(FILE *F, const char *colName, float c[4])
 {
@@ -53,11 +63,11 @@ int state::writeStateToGeoFile(const char *filename)
     fprintf(F, "clear\n");
 
     for (i = 0; i < 3; i++)
-        fprintf(F, "factor e3ga %d [%s]\n", i + 1, ga::toString(m_e3gaFactor[i], "%2.15e").c_str());
+        fprintf(F, "factor e3ga %d [%s]\n", i + 1, geoText(m_e3gaFactor[i]).c_str());
     for (i = 0; i < 4; i++)
-        fprintf(F, "factor p3ga %d [%s]\n", i + 1, ga::toString(m_p3gaFactor[i], "%2.15e").c_str());
+        fprintf(F, "factor p3ga %d [%s]\n", i + 1, geoText(m_p3gaFactor[i]).c_str());
     for (i = 0; i < 5; i++)
-        fprintf(F, "factor c3ga %d [%s]\n", i + 1, ga::toString(m_c3gaFactor[i], "%2.15e").c_str());
+        fprintf(F, "factor c3ga %d [%s]\n", i + 1, geoText(m_c3gaFactor[i]).c_str());
 
     // first output every object
     for (oi = g_state->m_objects.begin(); oi != g_state->m_objects.end(); oi++)
@@ -86,10 +96,10 @@ int state::writeStateToGeoFile(const char *filename)
 
     if (gui_state)
     {
-        fprintf(F, "eyepos [%s]\n", ga::toString(gui_state->m_glWindow->getCamPos(), "%e").c_str());
+        fprintf(F, "eyepos [%s]\n", geoText(gui_state->m_glWindow->getCamPos()).c_str());
         e3ga::mv B;
         rotor2Bivector(B, gui_state->m_glWindow->getCamOri());
-        fprintf(F, "eyeori [%s]\n", ga::toString(e3ga::mv(-B), "%e").c_str());
+        fprintf(F, "eyeori [%s]\n", geoText(e3ga::mv(-B)).c_str());
     }
 
     // the default model and the inner product of the console (they affect how the constants,
@@ -173,7 +183,10 @@ int consoleGlobalScope::writeConstantsToGeoFile(FILE *F)
 {
     for (UCI I = m_userConstants.begin(); I != m_userConstants.end(); I++)
     {
-        fprintf(F, "console add_const(%s = %s);\n", I->first.c_str(), I->second.string().c_str());
+        // (the value exactly, see geoText())
+        const std::string value =
+            I->second.visitMV([](const auto &mv) { return geoText(mv); }, std::string("0"));
+        fprintf(F, "console add_const(%s = %s);\n", I->first.c_str(), value.c_str());
     }
     return 0;
 }
@@ -190,7 +203,7 @@ int consoleControlRange::writeToGeoFile(FILE *F)
 {
     if (m_valueSlider)
     {
-        fprintf(F, "console ctrl_range(\"%s\" = %e, %e, %e, %e);\n", name(), lookupValue(), m_valueSlider->minimum(),
+        fprintf(F, "console ctrl_range(\"%s\" = %.17g, %.17g, %.17g, %.17g);\n", name(), lookupValue(), m_valueSlider->minimum(),
                 m_valueSlider->maximum(), m_valueSlider->step());
     }
 
@@ -199,12 +212,12 @@ int consoleControlRange::writeToGeoFile(FILE *F)
 
 int consoleControlSelection::writeToGeoFile(FILE *F)
 {
-    fprintf(F, "console ctrl_select(%s = %e", name(), lookupValue());
+    fprintf(F, "console ctrl_select(%s = %.17g", name(), lookupValue());
 
     int i = 0;
     while (m_menuItems[i].text)
     {
-        fprintf(F, ", %s = %e", m_menuItems[i].text, m_menuValues[i]);
+        fprintf(F, ", %s = %.17g", m_menuItems[i].text, m_menuValues[i]);
         i++;
     }
 
@@ -285,7 +298,7 @@ int e3gaObject::writeToGeoFile(FILE *F)
 {
     object::writeToGeoFile(F);
 
-    fprintf(F, "e3ga \"%s\" [%s] ", m_name.c_str(), ga::toString(m_mv, "%2.20e").c_str());
+    fprintf(F, "e3ga \"%s\" [%s] ", m_name.c_str(), geoText(m_mv).c_str());
     writeToGeoFileProperties(F);
     fprintf(F, "\n");
     return 0;
@@ -295,7 +308,7 @@ int p3gaObject::writeToGeoFile(FILE *F)
 {
     object::writeToGeoFile(F);
 
-    fprintf(F, "p3ga \"%s\" [%s] ", m_name.c_str(), ga::toString(m_mv, "%2.20e").c_str());
+    fprintf(F, "p3ga \"%s\" [%s] ", m_name.c_str(), geoText(m_mv).c_str());
     writeToGeoFileProperties(F);
     fprintf(F, "\n");
     return 0;
@@ -305,7 +318,7 @@ int c3gaObject::writeToGeoFile(FILE *F)
 {
     object::writeToGeoFile(F);
 
-    fprintf(F, "c3ga \"%s\" [%s] ", m_name.c_str(), ga::toString(m_mv, "%2.20e").c_str());
+    fprintf(F, "c3ga \"%s\" [%s] ", m_name.c_str(), geoText(m_mv).c_str());
     writeToGeoFileProperties(F);
     fprintf(F, "\n");
     return 0;
@@ -315,7 +328,7 @@ int c5gaObject::writeToGeoFile(FILE *F)
 {
     object::writeToGeoFile(F);
 
-    fprintf(F, "c5ga \"%s\" [%s] ", m_name.c_str(), ga::toString(m_mv, "%2.20e").c_str());
+    fprintf(F, "c5ga \"%s\" [%s] ", m_name.c_str(), geoText(m_mv).c_str());
     writeToGeoFileProperties(F);
     fprintf(F, "\n");
     return 0;
@@ -325,7 +338,7 @@ int i2gaObject::writeToGeoFile(FILE *F)
 {
     object::writeToGeoFile(F);
 
-    fprintf(F, "i2ga \"%s\" [%s] ", m_name.c_str(), ga::toString(m_mv, "%2.20e").c_str());
+    fprintf(F, "i2ga \"%s\" [%s] ", m_name.c_str(), geoText(m_mv).c_str());
     writeToGeoFileProperties(F);
     fprintf(F, "\n");
     return 0;
@@ -344,7 +357,7 @@ int textObject::writeToGeoFile(FILE *F)
 
     // get label position
     if (!(m_flags & LABEL_DYNAMIC))
-        sprintf(labelPosName, "[%s]", ga::toString(m_pos, "%e").c_str());
+        sprintf(labelPosName, "[%s]", geoText(m_pos).c_str());
     else
         sprintf(labelPosName, "\"%s\"", m_pointName.c_str());
 
@@ -391,7 +404,7 @@ int polygonObject::writeToGeoFile(FILE *F)
     for (i = 0; i < m_nbVertices; i++)
     {
         fprintf(F, "e3ga \"%s vertex %d\" [%s] hide \n", m_name.c_str(), i,
-                ga::toString(e3ga::vector(m_vertex + i * 3), "%2.20e").c_str());
+                geoText(e3ga::vector(m_vertex + i * 3)).c_str());
     }
 
     fprintf(F, "%s \"%s\" %d ", (m_simplex) ? "simplex" : "polygon", m_name.c_str(), m_nbVertices);
@@ -441,12 +454,12 @@ int meshObject::writeToGeoFile(FILE *F)
         if (m_vertex[i].posName)
             fprintf(F, "meshvertex \"%s\" %d \"%s\"\n", m_name.c_str(), i, m_vertex[i].posName);
         else
-            fprintf(F, "meshvertex \"%s\" %d [%s]\n", m_name.c_str(), i, ga::toString(e3ga::vector(m_vertex[i].pos), "%e").c_str());
+            fprintf(F, "meshvertex \"%s\" %d [%s]\n", m_name.c_str(), i, geoText(e3ga::vector(m_vertex[i].pos)).c_str());
 
         if (m_vertex[i].nlName)
             fprintf(F, "meshnormal \"%s\" %d \"%s\"\n", m_name.c_str(), i, m_vertex[i].nlName);
         else
-            fprintf(F, "meshnormal \"%s\" %d [%s]\n", m_name.c_str(), i, ga::toString(e3ga::vector(m_vertex[i].nl), "%e").c_str());
+            fprintf(F, "meshnormal \"%s\" %d [%s]\n", m_name.c_str(), i, geoText(e3ga::vector(m_vertex[i].nl)).c_str());
     }
 
     for (i = 0; i < m_nbFaces; i++)
