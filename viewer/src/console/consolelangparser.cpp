@@ -663,6 +663,15 @@ class Parser
     Ptr<consoleFuncArgSpecStmt> argspec();
     int model();
 
+    // The body of an if / else / while / for that is a single statement (not a "{...}" statement
+    // list) is printed in braces by string(): it then needs its terminator (";" or ","), which a
+    // statement prints when it is a child of a statement list.
+    static void body(const Ptr<consoleStatement> &s)
+    {
+        if (s && !dynamic_cast<consoleStmtListStmt *>(s.get()))
+            s->stmtListChild(1);
+    }
+
     static void append(Ptr<consoleStmtListStmt> &list, Ptr<consoleStatement> s)
     {
         if (!s)
@@ -869,6 +878,7 @@ Ptr<consoleStatement> Parser::while_()
     Ptr<consoleExprListStmt> el = exprlist();
     match(Tok::ParClose);
     Ptr<consoleStatement> s = stmt();
+    body(s);
     return std::make_unique<consoleWhileStmt>(t.line, t.column, el.release(), s.release());
 }
 
@@ -883,6 +893,7 @@ Ptr<consoleStatement> Parser::for_()
     Ptr<consoleExprListStmt> update = exprlist();
     match(Tok::ParClose);
     Ptr<consoleStatement> s = stmt();
+    body(s);
     return std::make_unique<consoleForStmt>(t.line, t.column, init.release(), cond.release(), update.release(),
                                             s.release());
 }
@@ -894,12 +905,14 @@ Ptr<consoleStatement> Parser::if_()
     Ptr<consoleExprListStmt> el = exprlist();
     match(Tok::ParClose);
     Ptr<consoleStatement> ifStmt = stmt();
+    body(ifStmt);
     Ptr<consoleStatement> elseStmt;
     LT(3); // (the ANTLR parser decided with three tokens of lookahead here)
     if (LA(1) == Tok::Else)
     {
         consume();
         elseStmt = stmt();
+        body(elseStmt);
     }
     return std::make_unique<consoleIfElseStmt>(t.line, t.column, el.release(), ifStmt.release(), elseStmt.release());
 }

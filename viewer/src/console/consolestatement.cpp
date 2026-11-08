@@ -491,8 +491,15 @@ consoleConstantScalarStmt::~consoleConstantScalarStmt()
 
 char *consoleConstantScalarStmt::string(int cr /*= 0*/, int tl /* = 0 */)
 {
+    // the shortest text that reads back as the same value (e.g. "0.7", "2", "1e-07"; "%f" lost all
+    // but 6 decimals, which matters when the statement is saved, e.g. in a .geo file)
     char *str = (char *)malloc(256);
-    sprintf(str, "%f", m_value);
+    for (int precision = 15; precision <= 17; precision++)
+    {
+        snprintf(str, 256, "%.*g", precision, m_value);
+        if (strtod(str, NULL) == m_value)
+            break;
+    }
     return str;
 }
 
