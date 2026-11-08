@@ -221,7 +221,13 @@ int consoleControl::writeToGeoFileMemFun(FILE *F)
 int state::writeConsoleControlsToGeoFile(FILE *F)
 {
     for (std::vector<consoleControl *>::const_iterator I = m_consoleControls.begin(); I != m_consoleControls.end(); I++)
+    {
         (*I)->writeToGeoFileMemFun(F);
+        // the control assigns its variable, which shows or hides it depending on the context (e.g.
+        // shown if a dynamic statement exists): restore its visibility explicitly
+        if (object *o = getObjectPtrByName((*I)->name()))
+            fprintf(F, "%s \"%s\"\n", (o->m_drawMode & OD_HIDE) ? "hide" : "show", (*I)->name());
+    }
 
     /*
     // keep? or is this not portable or just MS???? Fuck the STL!
