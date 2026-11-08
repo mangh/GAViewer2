@@ -127,6 +127,18 @@ class consoleScope
     int dynStmtVariableCollect(int val);
     int resetRequested();
     int resetRequested(int val);
+
+    // true if the global scope this scope belongs to was replaced (e.g. by 'clear' in a file that a
+    // running console command imports): the statements still running in it stop (see
+    // state::newGlobalScope())
+    bool retired() const
+    {
+        return m_parentScope ? m_parentScope->retired() : m_retired;
+    }
+    void retire()
+    {
+        m_retired = true;
+    }
     int supressWarnings();
     int supressWarnings(int val);
     int supressErrors();
@@ -256,6 +268,7 @@ class consoleScope
 
   private:
     int m_flags;
+    bool m_retired = false;
 
     int *m_suspendIdx; // length stored at first index
     int *m_resumeIdx;  // length stored at first index

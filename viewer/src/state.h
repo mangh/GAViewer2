@@ -166,6 +166,11 @@ class state
     int consoleCommandCallback(const char *cmd); // handles commands entered at the console
 
     consoleGlobalScope *m_globalScope;
+    // The number of nested console commands being executed (consoleCommandCallback()); while one
+    // is, a replaced global scope is only retired (see newGlobalScope()), and deleted when the
+    // outermost command has finished.
+    int m_consoleCommandDepth = 0;
+    std::vector<consoleGlobalScope *> m_retiredGlobalScopes;
     int consoleSourceFileRead(
         const char *filename); // reads a '.g' file, parses it, adds functions/batches to global scope
     int consoleSourceDirRead(const char *filename); // reads all '.g' files in directory

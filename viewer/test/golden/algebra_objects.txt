@@ -3,6 +3,7 @@
 == load ==
 Parsing '<dir>/algebra_functions.g'
 Parsing '<dir>/algebra_objects.g'
+Parsing '<dir>/import_clear.g'
 == frame 0 ==
 -- console --
 -- objects --

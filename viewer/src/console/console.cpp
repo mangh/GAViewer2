@@ -58,26 +58,50 @@ consoleStmtListStmt *consoleParse(const char *cmd, const char *wd /* = NULL */)
 
 int state::consoleCommandCallback(const char *cmd)
 {
-    consoleStmtListStmt *stmtList = consoleParse(cmd);
-
-    if ((stmtList == NULL) || (stmtList->dummy()))
+    // (a global scope replaced during the command is deleted when the outermost command has finished)
+    struct depthGuard
     {
-        // if we have suspended stmtLists resume the top one on the stack
-        //			cprintf("Dummy!\n");
-        if (stmtList)
-            delete stmtList;
-        g_state->m_globalScope->resumeStmtList();
+        state *s;
+        explicit depthGuard(state *st) : s(st)
+        {
+            s->m_consoleCommandDepth++;
+        }
+        ~depthGuard()
+        {
+            if (--s->m_consoleCommandDepth == 0)
+            {
+                for (consoleGlobalScope *gs : s->m_retiredGlobalScopes)
+                    delete gs;
+                s->m_retiredGlobalScopes.clear();
+            }
+        }
+    };
+
+    bool reset;
+    {
+        depthGuard guard(this);
+
+        consoleStmtListStmt *stmtList = consoleParse(cmd);
+
+        if ((stmtList == NULL) || (stmtList->dummy()))
+        {
+            // if we have suspended stmtLists resume the top one on the stack
+            //			cprintf("Dummy!\n");
+            if (stmtList)
+                delete stmtList;
+            g_state->m_globalScope->resumeStmtList();
+        }
+        else
+            g_state->m_globalScope->execStmtList(stmtList);
+
+        reset = m_globalScope->resetRequested();
+        if (!reset)
+            g_state->updateDynStmts();
     }
-    else
-        g_state->m_globalScope->execStmtList(stmtList);
 
-    if (m_globalScope->resetRequested())
-    {
+    // (reset() requested by the command: after it, the command has finished)
+    if (reset)
         g_state->reset();
-        return 0;
-    }
-
-    g_state->updateDynStmts();
 
     return 0;
 }

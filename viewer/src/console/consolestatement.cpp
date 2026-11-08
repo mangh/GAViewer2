@@ -916,7 +916,7 @@ char *consoleWhileStmt::string(int cr /*= 0*/, int tl /* = 0 */)
 
 consoleVariable *consoleWhileStmt::execute(consoleScope *s_in)
 {
-    consoleVariable *cv, *result;
+    consoleVariable *cv, *result = NULL; // (was not initialized: returned if the condition is false at once)
     int cond;
 
     consoleScope *s = s_in->subScope();
@@ -924,7 +924,7 @@ consoleVariable *consoleWhileStmt::execute(consoleScope *s_in)
     consoleExprListStmt *c = condEl();
     consoleStatement *st = stmt();
 
-    while (1)
+    while (!s->retired()) // (see state::newGlobalScope())
     {
         // switch break & continue off for the conditional
         s->breakStmtAllowed(0);
@@ -1054,7 +1054,7 @@ char *consoleForStmt::string(int cr /*= 0*/, int tl /* = 0 */)
 
 consoleVariable *consoleForStmt::execute(consoleScope *s_in)
 {
-    consoleVariable *cv;
+    consoleVariable *cv = NULL;
     int cond, b;
 
     consoleScope *s = s_in->subScope();
@@ -1070,7 +1070,7 @@ consoleVariable *consoleForStmt::execute(consoleScope *s_in)
     // do the loop
     consoleExprListStmt *c = condEl(), *e = execEl();
     consoleStatement *st = stmt();
-    for (;;)
+    while (!s->retired()) // (see state::newGlobalScope())
     {
         // check condition
         cond = 1;
@@ -1772,6 +1772,8 @@ consoleVariable *consoleStmtListStmt::execute(consoleScope *s, int stmtIdx)
     // execute all statements in list
     for (i = startIdx; i < m_nbChildren; i++)
     {
+        if (s->retired())
+            break; // (the console was cleared by the previous statement, see state::newGlobalScope())
         if (m_child[i] == NULL)
             continue;
         s->startStatement();

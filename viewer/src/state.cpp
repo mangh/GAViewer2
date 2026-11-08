@@ -253,7 +253,20 @@ void state::setDefaultGlobalScopeVariables()
 void state::newGlobalScope()
 {
     if (m_globalScope)
-        delete m_globalScope;
+    {
+        if (m_consoleCommandDepth > 0)
+        {
+            // a console command is running (e.g. cmd("import file.geo") of a file that starts with
+            // 'clear'): its statements, and the functions it runs, belong to this scope; it is deleted
+            // when the command has finished, and the rest of the command is skipped
+            if (m_retiredGlobalScopes.empty()) // (once per command)
+                cprintf("The console was cleared: the rest of the current command is not executed.\n");
+            m_globalScope->retire();
+            m_retiredGlobalScopes.push_back(m_globalScope);
+        }
+        else
+            delete m_globalScope;
+    }
     m_globalScope = new consoleGlobalScope();
 
     // create global state variables:
