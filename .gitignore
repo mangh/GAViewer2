@@ -368,3 +368,7 @@ out/
 
 # Test folder
 trial/
+
+# Local only (not published): editor settings, the FLTK editor sample
+.vscode/
+editor/

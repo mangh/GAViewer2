@@ -117,6 +117,3 @@ add_subdirectory("figures")
 if(GAVIEWER_BUILD_TESTS)
   add_subdirectory("viewer/test")
 endif()
-
-# # FLTK Editor (unrelated to GAViewer, to check/play with FLTK)
-# add_subdirectory("editor")
