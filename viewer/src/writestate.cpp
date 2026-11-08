@@ -91,6 +91,16 @@ int state::writeStateToGeoFile(const char *filename)
         fprintf(F, "eyeori [%s]\n", ga::toString(e3ga::mv(-B), "%e").c_str());
     }
 
+    // constants (before the functions and dynamic statements that may use them)
+    m_globalScope->writeConstantsToGeoFile(F);
+
+    // the user functions the dynamic statements call (otherwise they would be unknown when the
+    // file is opened in a new session, or after the 'clear' above)
+    std::set<std::string> called;
+    for (i = 0; i < (int)m_dynStmt.size(); i++)
+        m_dynStmt[i].ds()->calledFunctions(called);
+    m_globalScope->writeFunctionsToGeoFile(F, called);
+
     writeConsoleControlsToGeoFile(F);
 
     for (i = 0; i < (int)m_dynStmt.size(); i++)
@@ -108,11 +118,46 @@ int state::writeStateToGeoFile(const char *filename)
 
     // todo: store animation state??
 
-    // constants
-    m_globalScope->writeConstantsToGeoFile(F);
-
     fclose(F);
 
+    return 0;
+}
+
+int consoleGlobalScope::writeFunctionsToGeoFile(FILE *F, const std::set<std::string> &names)
+{
+    // the user functions (all overloads) of the names, and of the names they call
+    std::set<std::string> todo(names), done;
+    std::vector<consoleFuncStmt *> functions; // (in the order of m_functions: sorted)
+    while (!todo.empty())
+    {
+        const std::string name = *todo.begin();
+        todo.erase(todo.begin());
+        if (!done.insert(name).second)
+            continue;
+        for (const auto &[key, func] : m_functions)
+            if (func->funcStmt && (name == func->name))
+            {
+                functions.push_back(func->funcStmt);
+                std::set<std::string> called;
+                func->funcStmt->calledFunctions(called);
+                for (const std::string &c : called)
+                    if (!done.count(c))
+                        todo.insert(c);
+            }
+    }
+
+    for (consoleFuncStmt *f : functions)
+    {
+        char *args = f->argSpecList() ? f->argSpecList()->string(0, 0) : strdup("");
+        fprintf(F, "console %s %s(%s);\n", f->function() ? "function" : "batch", f->name(), args);
+        free(args);
+    }
+    for (consoleFuncStmt *f : functions)
+    {
+        char *str = f->string(0, 0);
+        fprintf(F, "console %s\n", str);
+        free(str);
+    }
     return 0;
 }
 
@@ -127,7 +172,8 @@ int consoleGlobalScope::writeConstantsToGeoFile(FILE *F)
 
 int consoleControlBool::writeToGeoFile(FILE *F)
 {
-    fprintf(F, "console ctrl_bool(%s = %d);\n", name(), lookupValueBool());
+    // (the name quoted: it may be any text, e.g. "  pan/tilt control ?")
+    fprintf(F, "console ctrl_bool(\"%s\" = %d);\n", name(), lookupValueBool());
 
     return 0;
 }
@@ -136,7 +182,7 @@ int consoleControlRange::writeToGeoFile(FILE *F)
 {
     if (m_valueSlider)
     {
-        fprintf(F, "console ctrl_range(%s = %e, %e, %e, %e);\n", name(), lookupValue(), m_valueSlider->minimum(),
+        fprintf(F, "console ctrl_range(\"%s\" = %e, %e, %e, %e);\n", name(), lookupValue(), m_valueSlider->minimum(),
                 m_valueSlider->maximum(), m_valueSlider->step());
     }
 

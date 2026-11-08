@@ -69,6 +69,9 @@ class consoleStatement
 
     int addChild(consoleStatement *s);
 
+    // adds the names of the functions this statement (with its children) calls to 'names'
+    void calledFunctions(std::set<std::string> &names) const;
+
     /*	inline int inputIdx() const {return m_inputIdx;}
         inline int inputIdx(int inputIdx) {m_inputIdx = inputIdx; return 0;}*/
     inline int line() const
@@ -223,6 +226,11 @@ class consoleFuncCallStmt : public consoleStatement
 
     virtual consoleVariable *execute(consoleScope *s);
     virtual char *string(int cr = 0, int tl = 0); // cr = carriage return requested selected positions; tl = tab level
+
+    inline const char *name() const
+    {
+        return m_name;
+    }
 
   protected:
     inline consoleFuncArgListStmt *argList()

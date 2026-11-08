@@ -303,6 +303,10 @@ class consoleGlobalScope : public consoleScope
     void removeConstant(const std::string &name);
     int lookupUserConstant(const std::string &name, consoleVariable **variable);
     int writeConstantsToGeoFile(FILE *F);
+    // writes the user functions named in 'names' and the user functions these call (directly or
+    // not): first a declaration of each (so that a function used before its definition is parsed
+    // as a function), then its definition
+    int writeFunctionsToGeoFile(FILE *F, const std::set<std::string> &names);
 
     void renameBuiltinConstant(const std::string &oldName, const std::string &newName);
 

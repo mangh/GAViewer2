@@ -130,6 +130,15 @@ int consoleStatement::addChild(consoleStatement *s)
     return 0;
 }
 
+void consoleStatement::calledFunctions(std::set<std::string> &names) const
+{
+    if (auto *call = dynamic_cast<const consoleFuncCallStmt *>(this))
+        names.insert(call->name());
+    for (int i = 0; i < m_nbChildren; i++)
+        if (m_child[i])
+            m_child[i]->calledFunctions(names);
+}
+
 int consoleStatement::verbose(int v)
 {
     setFlag(CSF_VERBOSE, v);
