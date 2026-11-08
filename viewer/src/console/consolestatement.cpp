@@ -2352,8 +2352,9 @@ char *consoleSetStmt::string(int cr /*= 0*/, int tl /*= 0*/)
     }
     else if (m_what == "default_model")
     {
-        sprintf(str + i, "%s(%s)%s", m_what.c_str(),
-                (modelName(m_intValue)) ? modelName(m_intValue) : "none",
+        // ("default_model()": no default model; it was printed as "default_model(none)", which
+        // does not parse)
+        sprintf(str + i, "%s(%s)%s", m_what.c_str(), (modelName(m_intValue)) ? modelName(m_intValue) : "",
                 (cr) ? "\n" : "");
     }
     else

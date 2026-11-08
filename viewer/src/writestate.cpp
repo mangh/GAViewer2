@@ -27,6 +27,7 @@
 #include "gaincludes.h"
 #include "glwindow.h"
 #include "mainwindow.h"
+#include "models.h"
 #include "object.h"
 #include "state.h"
 #include "uistate.h"
@@ -90,6 +91,13 @@ int state::writeStateToGeoFile(const char *filename)
         rotor2Bivector(B, gui_state->m_glWindow->getCamOri());
         fprintf(F, "eyeori [%s]\n", ga::toString(e3ga::mv(-B), "%e").c_str());
     }
+
+    // the default model and the inner product of the console (they affect how the constants,
+    // functions and dynamic statements below evaluate)
+    const char *defaultModel = modelName(m_globalScope->getDefaultModel());
+    fprintf(F, "console default_model(%s);\n", defaultModel ? defaultModel : "");
+    if (!m_globalScope->innerProduct().empty())
+        fprintf(F, "console inner_product(%s);\n", m_globalScope->innerProduct().c_str());
 
     // constants (before the functions and dynamic statements that may use them)
     m_globalScope->writeConstantsToGeoFile(F);
