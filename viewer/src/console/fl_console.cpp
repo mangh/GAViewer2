@@ -402,6 +402,23 @@ int Fl_Console::cprint(const char *str, int insert /* = 0 */)
         {
             currentCmdString = command();
             command("");
+
+            // output that was not typed (e.g. of the console lines of an opened file): remove the
+            // prompt too, the new prompt follows the output (otherwise every line of the output
+            // started with the prompt)
+            const int pl = (m_prompt) ? (int)strlen(m_prompt) : 0;
+            if (currentCmdString && (pl > 0) && (m_promptPos >= pl))
+            {
+                char *before = buffer()->text_range(m_promptPos - pl, m_promptPos);
+                if (before && !strcmp(before, m_prompt))
+                {
+                    m_modifySelf = 1;
+                    buffer()->remove(m_promptPos - pl, m_promptPos);
+                    m_modifySelf = 0;
+                    m_promptPos -= pl;
+                }
+                free(before);
+            }
         }
         insert_position(buffer()->length());
         buffer()->append(str);

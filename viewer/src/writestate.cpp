@@ -28,6 +28,7 @@
 #include "console/consolestatement.h"
 #include "console/consolevariable.h"
 #include "gaincludes.h"
+#include "geosphere.h"
 #include "glwindow.h"
 #include "mainwindow.h"
 #include "models.h"
@@ -78,7 +79,18 @@ int state::writeStateToGeoFile(const char *filename)
     // output current global state
 
     if (gui_state) // (no GUI: e.g. the headless regression harness)
-        fprintf(F, "title \"%s\"\n", gui_state->m_mainWindow->label());
+    {
+        // without the prefix "GAViewer: " of the window label, which the title entry adds again
+        // (mainWindow::setTitle())
+        const char *title = gui_state->m_mainWindow->label();
+        if (title == NULL)
+            title = "";
+        if (!strncmp(title, "GAViewer: ", strlen("GAViewer: ")))
+            title += strlen("GAViewer: ");
+        else if (!strcmp(title, "GAViewer"))
+            title = "";
+        fprintf(F, "title \"%s\"\n", title);
+    }
     printColor(F, "fgcolor", m_fgColor);
     printColor(F, "bgcolor", m_bgColor);
     printColor(F, "olcolor", m_olColor);
@@ -93,6 +105,21 @@ int state::writeStateToGeoFile(const char *filename)
 
     fprintf(F, "tsmode %s\n", m_tsMode);
     fprintf(F, "tsfont %s\n", m_tsFont);
+
+    // the drawing settings (set by the figures with set_point_size(), set_gl_lines(), ...; not
+    // reset when a file is opened, so they are always written)
+    if (gui_state)
+    {
+        fprintf(F, "console set_point_size(%.17g);\n", gui_state->m_pointSize);
+        fprintf(F, "console set_line_width(%.17g);\n", gui_state->m_tubeDraw.getLineWidth());
+        fprintf(F, "console set_gl_lines(%d);\n", gui_state->m_tubeDraw.getUseOpenGL() ? 1 : 0);
+        fprintf(F, "console set_text_scale(%.17g);\n", gui_state->m_textScale);
+        fprintf(F, "console set_vector_head_size(%.17g);\n", gui_state->m_vectorHeadSize);
+    }
+    if (g_pointSphere)
+        fprintf(F, "console set_point_sub_div(%d);\n", g_pointSphere->depth);
+    if (g_sphereSphere)
+        fprintf(F, "console set_sphere_sub_div(%d);\n", g_sphereSphere->depth);
 
     if (gui_state)
     {
