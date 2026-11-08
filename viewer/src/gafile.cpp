@@ -416,6 +416,8 @@ int GAfile::parseFlags(const char *line, int &drawMode, int &creationFlags)
                 drawMode |= OD_SHADE;
             else if (!strcmpnc(str[i], "outline"))
                 drawMode |= OD_OUTLINE;
+            else if (!strcmpnc(str[i], "hide_always"))
+                drawMode |= OD_HIDE_ALWAYS;
             else if (!strcmpnc(str[i], "versor"))
                 creationFlags |= OC_VERSOR;
             else if (!strcmpnc(str[i], "blade"))
@@ -561,7 +563,7 @@ int GAfile::readString(const char *buf, int startIdx, char *str, const char *noS
 
 int GAfile::parseLine(state *s)
 {
-    int e3gaO, p3gaO, c3gaO, c5gaO;
+    int e3gaO, p3gaO, c3gaO, c5gaO, i2gaO;
     int n, nbTabs, i, idx, commentFound, err, drawMode, creationFlags, labelMode, h, w, x, y, action, vtxIdx[16];
     char *line = m_buf;
     char entryname[256], name[1024], text[2048], filename[1024], pointName[256];
@@ -577,6 +579,7 @@ int GAfile::parseLine(state *s)
     p3ga::mv p3gaMv;
     c3ga::mv c3gaMv;
     c5ga::mv c5gaMv;
+    i2ga::mv i2gaMv;
     ga::basisNames<e3ga::mv> eBen('[', ']');
     eBen.add("I3", e3ga::I<double>());
     ga::basisNames<p3ga::mv> pBen('[', ']');
@@ -587,6 +590,7 @@ int GAfile::parseLine(state *s)
     ga::basisNames<c5ga::mv> c5Ben('[', ']');
     c5Ben.add("einf", c5ga::ei<double>());
     c5Ben.add("e0", c5ga::eo<double>());
+    ga::basisNames<i2ga::mv> i2Ben('[', ']');
 
     // first get rid of crap at the end of the line, plus spaces and tabs at the beginning
     n = strlen(line);
@@ -656,8 +660,8 @@ int GAfile::parseLine(state *s)
     else if ((e3gaO = (!strcmpnc(entryname, "e3ga")) || (!strcmpnc(entryname, "ca3d"))) ||
              (p3gaO = (!strcmpnc(entryname, "p3ga")) || (!strcmpnc(entryname, "ca4d"))) ||
              (c3gaO = (!strcmpnc(entryname, "c3ga")) || (!strcmpnc(entryname, "ca5d"))) ||
-             (c5gaO = (!strcmpnc(entryname, "c5ga"))))
-    { // e3ga, ca3d, p3ga, ca4d, c3ga, ca5d *********************
+             (c5gaO = (!strcmpnc(entryname, "c5ga"))) || (i2gaO = (!strcmpnc(entryname, "i2ga"))))
+    { // e3ga, ca3d, p3ga, ca4d, c3ga, ca5d, c5ga, i2ga *********************
         // first retrieve the name string
         if ((idx = readString(line, strlen(entryname) + 1, name)) < 0)
         {
@@ -687,6 +691,11 @@ int GAfile::parseLine(state *s)
             if ((n = ga::parse(line + idx, c5gaMv, c5Ben)) < 0)
                 err = -1;
         }
+        else if (i2gaO)
+        {
+            if ((n = ga::parse(line + idx, i2gaMv, i2Ben)) < 0)
+                err = -1;
+        }
         if (err < 0)
         {
             cprintf("GAfile::parseLine(): file '%s': Could not parse multivector coordinates '%s'\n", m_filename,
@@ -698,19 +707,20 @@ int GAfile::parseLine(state *s)
         // parse flags
         parseFlags(line + idx, drawMode, creationFlags); // todo: return force flags TOO
 
-        // add the multivector to the list of objects
+        // add the multivector to the list of objects; the flags of the line are its draw mode: forced
+        // (otherwise e.g. a new object is shaded by default, and an existing one keeps its flags)
+        const int forceFlags = OFF_COLOR | OFF_ALPHA | OFF_STIPPLE | OFF_ORI | OFF_WIREFRAME | OFF_SHADE |
+                               OFF_MAGNITUDE | OFF_HIDE | OFF_OUTLINE | OFF_HIDE_ALWAYS;
         if (e3gaO)
-        { // todo: the force flags should include every property that was set not just 'OFF_COLOR | OFF_ALPHA'
-            s->addE3gaObject(e3gaMv, name, drawMode, creationFlags, OFF_COLOR | OFF_ALPHA);
-        }
+            s->addE3gaObject(e3gaMv, name, drawMode, creationFlags, forceFlags);
         else if (p3gaO)
-        {
-            s->addP3gaObject(p3gaMv, name, drawMode, creationFlags, OFF_COLOR | OFF_ALPHA);
-        }
+            s->addP3gaObject(p3gaMv, name, drawMode, creationFlags, forceFlags);
         else if (c3gaO)
-        {
-            s->addC3gaObject(c3gaMv, name, drawMode, creationFlags, OFF_COLOR | OFF_ALPHA);
-        }
+            s->addC3gaObject(c3gaMv, name, drawMode, creationFlags, forceFlags);
+        else if (c5gaO)
+            s->addC5gaObject(c5gaMv, name, drawMode, creationFlags, forceFlags);
+        else if (i2gaO)
+            s->addI2gaObject(i2gaMv, name, drawMode, creationFlags, forceFlags);
     }
     else if (!strcmpnc(entryname, "label"))
     { // label *********************

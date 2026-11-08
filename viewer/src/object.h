@@ -87,6 +87,7 @@ struct Fl_Menu_Item;
 #define OFF_HIDE OD_HIDE
 #define OFF_OUTLINE OD_OUTLINE
 #define OFF_MUTE OD_MUTE
+#define OFF_HIDE_ALWAYS OD_HIDE_ALWAYS
 
 #define OFF_COLOR (1 << 15)
 #define OFF_ALPHA (1 << 16)

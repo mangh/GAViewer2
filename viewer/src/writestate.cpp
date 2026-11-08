@@ -282,6 +282,8 @@ int object::writeToGeoFileProperties(FILE *F)
         fprintf(F, "shade ");
     if (m_drawMode & OD_OUTLINE)
         fprintf(F, "outline ");
+    if (m_drawMode & OD_HIDE_ALWAYS)
+        fprintf(F, "hide_always ");
 
     if (m_dmMenuIdx >= 0)
         fprintf(F, "dm%d", m_dmMenuIdx + 1);
