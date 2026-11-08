@@ -57,7 +57,7 @@ GAViewer2
 |--------|----------|
 | `gaviewer_e3ga`, `gaviewer_p3ga`, `gaviewer_c3ga`, `gaviewer_c5ga`, `gaviewer_i2ga` | the Gaigen algebras GAViewer was built on (`src/<name>/*.cpp`), used only by the differential tests `gadiff.<algebra>` (GAViewer uses the Garamon algebras) |
 | `garamon_<name>` (`garamon/CMakeLists.txt`) | header-only Garamon algebra generated at build time from `garamon/<name>.conf` by the fetched fork's `garamon_generator` (`#include <<name>/Mvec.hpp>`, needs Eigen, provided as `Eigen3::Eigen`); so far `garamon_e3ga` (smoke test `garamon.smoke_e3ga`) `garamon_p3ga` (Euclidean metric like the Gaigen p3ga, unlike the fork's `conf/p3ga.conf`), `garamon_c3ga`, `garamon_c5ga` and `garamon_i2ga` (basis order e1 ... no ni [go gi] as in Gaigen) |
-| `gaviewer_ga` | header-only algebra layer `src/ga` (`ga::algebraTraits<MV>`, grade masks `ga::GRADEk`, `ga/algorithms.h`, `ga/format.h`) over the Garamon algebras; links `garamon_e3ga`, `garamon_p3ga`, `garamon_c3ga`, `garamon_c5ga`, `garamon_i2ga` |
+| `gaviewer_ga` | header-only algebra layer `src/ga` (`ga::algebraTraits<MV>`, grade masks `ga::GRADEk`, `ga/algorithms.h`, `ga/format.h`, `ga/cast.h`: `ga::castByVectors<To>(x)`, the casts between the models, by the canonical basis vector names `algebraTraits<MV>::vectorNames`, `e0` = `no`) over the Garamon algebras; links `garamon_e3ga`, `garamon_p3ga`, `garamon_c3ga`, `garamon_c5ga`, `garamon_i2ga` |
 | `gaviewer_core` | everything else except `main.cpp` (console, objects, `mvInt`, GUI, …); links `gaviewer_ga` and FLTK |
 | `GAViewer2` | the GUI application: `main.cpp` + `gaviewer_core` |
 | `gaviewer_regress` | the headless regression harness (`viewer/test`) + `gaviewer_core` |

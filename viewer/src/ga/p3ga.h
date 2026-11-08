@@ -55,6 +55,7 @@ inline std::array<double, 4> xyzw(const mv &v)
 template <> struct ga::algebraTraits<p3ga::mv>
 {
     static constexpr int dimension = 4;
+    static constexpr std::array<const char *, 4> vectorNames = {"e1", "e2", "e3", "e0"};
     static constexpr bool euclideanMetric = true; // (e0.e0 = 1, as in the Gaigen p3ga)
 
     static p3ga::mv I()

@@ -53,6 +53,7 @@ inline mv vector(double x, double y, double o, double i, double go, double gi)
 template <> struct ga::algebraTraits<i2ga::mv>
 {
     static constexpr int dimension = 6;
+    static constexpr std::array<const char *, 6> vectorNames = {"e1", "e2", "no", "ni", "go", "gi"};
     static constexpr bool euclideanMetric = false; // no.ni = go.gi = -1
 
     static i2ga::mv I()

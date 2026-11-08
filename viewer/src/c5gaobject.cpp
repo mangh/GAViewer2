@@ -21,7 +21,7 @@
 #include <string>
 
 #include "c3gadraw.h"
-#include "console/consolevariable.h"
+#include "ga/cast.h"
 #include "draw.h"
 #include "gaincludes.h"
 #include "glwindow.h"
@@ -194,8 +194,7 @@ int c5gaObject::translate(glwindow *window, double depth, double motionX, double
 int c5gaObject::description(char *buf, int bufLen, int sl /* = 0 */)
 {
     int dim = 5;
-    c3ga::mv tmp;
-    consoleVariable::castC5gaToC3ga(m_mv, tmp);
+    c3ga::mv tmp = ga::compress(ga::castByVectors<c3ga::mv>(m_mv));
     return conformalObject::description(tmp, dim, buf, bufLen, sl);
 }
 

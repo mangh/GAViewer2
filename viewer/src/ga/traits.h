@@ -25,6 +25,9 @@ multivector type MV (e.g. in ga/e3ga.h) with
     static MV I();                           // the pseudoscalar
     static MV Iinv();                        // its inverse
     static std::array<displayBlade, 1 << dimension> displayBasis;
+    static constexpr std::array<const char *, dimension> vectorNames; // canonical names of the
+                                             // basis vectors, in Garamon order (e.g. "e1", "no"),
+                                             // not changed by renameBasisVector() (see ga/cast.h)
 
 A Garamon multivector addresses its coordinates by 'bitmap' (xor index: bit
 i set = basis vector i is a factor of the basis blade, e.g. e1^e3 = 0b101).

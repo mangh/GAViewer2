@@ -86,7 +86,6 @@ class consoleVariable
     consoleVariable *next();
     consoleVariable *m_next;
 
-    static void castC5gaToC3ga(const c5ga::mv &vc, c3ga::mv &vp);
 
     consoleVariable *castToE3ga() const;
     consoleVariable *castToP3ga() const;
@@ -198,31 +197,6 @@ class consoleVariable
     int m_creationFlags;
     int m_forceFlags;
     float m_color[4];
-
-    consoleVariable *castE3gaToP3ga() const;
-    consoleVariable *castE3gaToC3ga() const;
-    consoleVariable *castE3gaToC5ga() const;
-    consoleVariable *castE3gaToI2ga() const;
-
-    consoleVariable *castP3gaToE3ga() const;
-    consoleVariable *castP3gaToC3ga() const;
-    consoleVariable *castP3gaToC5ga() const;
-    consoleVariable *castP3gaToI2ga() const;
-
-    consoleVariable *castC3gaToE3ga() const;
-    consoleVariable *castC3gaToP3ga() const;
-    consoleVariable *castC3gaToC5ga() const;
-    consoleVariable *castC3gaToI2ga() const;
-
-    consoleVariable *castI2gaToE3ga() const;
-    consoleVariable *castI2gaToP3ga() const;
-    consoleVariable *castI2gaToC3ga() const;
-    consoleVariable *castI2gaToC5ga() const;
-
-    consoleVariable *castC5gaToE3ga() const;
-    consoleVariable *castC5gaToP3ga() const;
-    consoleVariable *castC5gaToC3ga() const;
-    consoleVariable *castC5gaToI2ga() const;
 
     template <class MV> int setMV(const std::string &name, const MV &mv);
 

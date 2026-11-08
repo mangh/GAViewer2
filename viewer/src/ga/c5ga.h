@@ -53,6 +53,7 @@ inline mv vector(double x1, double x2, double x3, double x4, double x5, double o
 template <> struct ga::algebraTraits<c5ga::mv>
 {
     static constexpr int dimension = 7;
+    static constexpr std::array<const char *, 7> vectorNames = {"e1", "e2", "e3", "e4", "e5", "no", "ni"};
     static constexpr bool euclideanMetric = false; // no.ni = -1
 
     static c5ga::mv I()

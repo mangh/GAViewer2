@@ -14,7 +14,7 @@
 
 // Copyright 2002-2009, Daniel Fontijne, University of Amsterdam -- fontijne@science.uva.nl
 
-#include "console/consolevariable.h"
+#include "ga/cast.h"
 #include "gaincludes.h"
 #include "models.h"
 #include "mvint.h"
@@ -22,9 +22,8 @@
 
 int mvInt::interpret(const c5ga::mv &X, int creationFlags /* = 0*/)
 {
-    // use c3ga to interpret
-    c3ga::mv X3ga;
-    consoleVariable::castC5gaToC3ga(X, X3ga);
+    // use c3ga to interpret (the cast drops e4, e5)
+    c3ga::mv X3ga = ga::compress(ga::castByVectors<c3ga::mv>(X));
     m_type = (m_type ^ MVI_C3GA) | MVI_C5GA;
 
     return interpret(X3ga, creationFlags);
