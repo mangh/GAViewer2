@@ -390,6 +390,8 @@ int textObject::writeToGeoFile(FILE *F)
     else
         sprintf(labelPosName, "\"%s\"", m_pointName.c_str());
 
+    // KNOWN LIMITATION: a '"' in the text is written as it is, and GAfile::readString() ends the
+    // text there (e.g. 'say "hi"' is read back as 'say '); see GAfile::readString()
     fprintf(F, "label \"%s\" %s \"%s\" ", m_name.c_str(), labelPosName, m_text);
 
     if (m_flags & LABEL_2D)

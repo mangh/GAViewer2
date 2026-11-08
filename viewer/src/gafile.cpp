@@ -517,6 +517,12 @@ int GAfile::parseLabelFlags(const char *line, int &labelMode, int &width)
 
 // returns -1 if no string found (first char found is a member of 'noStrStart', or no char found at all)
 // returns the 'endIdx' plus string in 'str'
+//
+// KNOWN LIMITATION: a quoted string ends at the next '"', there is no escape for a '"' in it (unlike
+// the console language, where it is \"). So a text with a '"' (e.g. of a label: 'say "hi"' is
+// written as "say "hi"") is cut short when the file is read. Not fixed: no book figure has such a
+// text, and making \" an escape here would misread the existing files whose text ends with a
+// backslash (e.g. LaTeX "...\\" would then not end the string).
 int GAfile::readString(const char *buf, int startIdx, char *str, const char *noStrStart /* = "[]+-1234567890" */)
 {
     int endIdx;
