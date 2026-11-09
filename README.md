@@ -35,11 +35,17 @@ assistant (Claude, by Anthropic); see [License and credits](#license-and-credits
 - CMake 3.25 or newer, Git, and a C++20 compiler.
 - Internet access the first time CMake configures the project (it downloads FLTK, the Garamon fork,
   Eigen, CLI11 and the book figures).
-- On Linux / BSD: the development packages FLTK needs for X11 and OpenGL.
+- On Linux / BSD: the development packages FLTK needs for X11 and OpenGL. On Debian:
 
-Tested on Windows 11 with clang 23.1.5 and Visual C++ 19.51 (Visual Studio 2026). Earlier versions of
-this project also built on Debian Linux 12 (gcc 12) and FreeBSD 14 (clang 18), but the current version
-has not been re-checked there yet.
+  ```sh
+  sudo apt install build-essential cmake ninja-build git libx11-dev libxext-dev libglu1-mesa-dev
+  # optional, for antialiased fonts (Xft) and multiple monitors (Xinerama):
+  sudo apt install libxft-dev libfontconfig1-dev libxinerama-dev
+  ```
+
+Tested on Windows 11 with clang 23.1.5 and Visual C++ 19.51 (Visual Studio 2026), and on Debian 13
+under WSL 2 (gcc 14.2). Earlier versions of this project also built on Debian Linux 12 (gcc 12) and
+FreeBSD 14 (clang 18), but the current version has not been re-checked there yet.
 
 ### From the command line
 
