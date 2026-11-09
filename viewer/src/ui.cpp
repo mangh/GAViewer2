@@ -35,7 +35,9 @@
 #include <FL/Fl_Value_Slider.H>
 #include <FL/Fl_Widget.H>
 #include <FL/fl_ask.H>
-#include <FL/x.H> /* required to use windows file browser (contains definition of fl_xid()) */
+#ifdef WIN32
+#include <FL/x.H> /* required to use windows file browser (contains definition of fl_xid()); on X11 it would define macros (Success, ...) that break Eigen */
+#endif            /* WIN32 */
 
 #ifndef WIN32
 #include "gaviewer.xbm"

@@ -20,7 +20,9 @@
 
 #include <FL/Enumerations.H>
 #include <FL/Fl.H>
-#include <FL/x.H>
+#ifdef WIN32
+#include <FL/x.H> /* for fl_xid(); on X11 it would define macros (Success, ...) that break Eigen */
+#endif            /* WIN32 */
 
 #include "console/consolewindow.h"
 #include "glwindow.h"

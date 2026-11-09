@@ -34,6 +34,7 @@
 #include <FL/Fl.H>
 #include <FL/Fl_Button.H>
 #include <FL/Fl_Check_Button.H>
+#include <FL/Fl_File_Chooser.H>
 #include <FL/Fl_Input.H>
 #include <FL/Fl_Int_Input.H>
 #include <FL/Fl_Output.H>
