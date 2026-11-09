@@ -20,6 +20,7 @@
 
 #include <fstream>
 #include <sstream>
+#include <string>
 
 #include "../osdep.h"
 #include "../state.h"
@@ -39,7 +40,7 @@ int state::consoleSourceFileRead(const char *filename)
 
     setWorkingDirectory(filename, true);
 
-    std::ifstream input(filename); // text mode: line endings are normalized
+    std::ifstream input(filename);
     if (!input)
     {
         cprintf("\nstate::consoleSourceFileRead(): could not open '%s'\n", filename);
@@ -47,7 +48,18 @@ int state::consoleSourceFileRead(const char *filename)
     }
     std::ostringstream source;
     source << input.rdbuf();
-    sl = consoleParseSource(source.str(), filename);
+
+    // CRLF -> LF on every platform (text mode does this on Windows only; the
+    // book figures have CRLF line endings, and a '\r' inside an operator token
+    // would be rejected by consoleStatement::setOp())
+    std::string text = source.str();
+    std::size_t length = 0;
+    for (std::size_t i = 0; i < text.size(); i++)
+        if ((text[i] != '\r') || (i + 1 == text.size()) || (text[i + 1] != '\n'))
+            text[length++] = text[i];
+    text.resize(length);
+
+    sl = consoleParseSource(text, filename);
 
     if (sl)
     {
