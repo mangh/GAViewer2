@@ -155,21 +155,28 @@ template <class A> std::vector<std::string> run(const std::vector<coords> &input
             // differently in Gaigen and Garamon), e.g. meet(B, B) of a large bivector B, or the
             // delta product of a versor with itself. Meet and join are defined for blades only:
             // they are compared for blades (according to mvType, itself compared above) of
-            // moderate size. The meet (delta product / join) is compared only if the join is
-            // well conditioned: not rounding noise itself (e.g. for nested blades, whose delta
-            // product vanishes) and not a null blade (its versor inverse divides by its square).
+            // moderate size, and only if the delta product is not itself rounding noise, i.e.
+            // negligible next to the size of its operands (e.g. for nearly parallel blades: which
+            // grade survives the epsilon, and so the join and the meet, depends on the rounding of
+            // the compiler). norm_a is the sum of the squared coordinates, whatever the metric.
+            // The meet is compared only if the join is also well conditioned: not rounding noise
+            // itself and not a null blade (its versor inverse divides by its square).
             int gradeMask;
             const bool blades = (A::mvType(a, gradeMask) == 1) && (A::mvType(b, gradeMask) == 1);
             if (blades && (A::norm_a(a) < 1e4) && (A::norm_a(b) < 1e4))
             {
-                const MV j = A::join(a, b);
-                const double jn = A::norm_a(j), jj = std::fabs(A::coordsOf(A::scp(j, j))[0]);
-                if ((jn > 1e-9 * std::fmax(1.0, A::norm_a(a) * A::norm_a(b))) && (jj > 1e-9 * jn * jn))
-                    mvs(l + "meet", A::meet(a, b));
-                mvs(l + "join", j);
                 MV d;
-                put(l + "deltaProduct", " " + std::to_string(A::deltaProduct(a, b, d)));
-                mvs(l + "deltaProduct value", d);
+                const int deltaGrades = A::deltaProduct(a, b, d);
+                if (A::norm_a(d) > 1e-18 * A::norm_a(a) * A::norm_a(b))
+                {
+                    const MV j = A::join(a, b);
+                    const double jn = A::norm_a(j), jj = std::fabs(A::coordsOf(A::scp(j, j))[0]);
+                    if ((jn > 1e-9 * std::fmax(1.0, A::norm_a(a) * A::norm_a(b))) && (jj > 1e-9 * jn * jn))
+                        mvs(l + "meet", A::meet(a, b));
+                    mvs(l + "join", j);
+                    put(l + "deltaProduct", " " + std::to_string(deltaGrades));
+                    mvs(l + "deltaProduct value", d);
+                }
             }
         }
     return out;
