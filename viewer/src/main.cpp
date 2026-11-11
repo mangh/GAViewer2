@@ -20,6 +20,7 @@
 #include <string.h> // NOLINT(modernize-deprecated-headers): strdup() is POSIX, not in <cstring>
 
 #include <FL/Fl.H>
+#include <FL/Enumerations.H>
 
 #include "gafile.h"
 #include "state.h"
@@ -114,6 +115,9 @@ int main(int argc, char *argv[])
             i -= nbArgsEaten;
         }
     }
+
+    // Set the global font size (FLTK's default is 14) - make sure you do this before you create any widget:
+    FL_NORMAL_SIZE = 12;
 
     g_state = new state();
 
